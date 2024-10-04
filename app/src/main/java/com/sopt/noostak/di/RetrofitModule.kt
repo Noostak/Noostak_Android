@@ -1,9 +1,9 @@
 package com.sopt.noostak.di
 
-import com.example.multimodule.BuildConfig.BASE_URL
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.sopt.core.extension.isJsonArray
 import com.sopt.core.extension.isJsonObject
+import com.sopt.noostak.BuildConfig.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

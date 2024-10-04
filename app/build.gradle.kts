@@ -15,11 +15,11 @@ val properties =
     Properties().apply { load(project.rootProject.file("local.properties").inputStream()) }
 
 android {
-    namespace = "com.example.multimodule"
+    namespace = "com.sopt.noostak"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.example.multimodule"
+        applicationId = "com.sopt.noostak"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = libs.versions.versionCode.get().toInt()
