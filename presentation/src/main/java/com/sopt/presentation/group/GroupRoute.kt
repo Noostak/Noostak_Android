@@ -36,7 +36,7 @@ fun GroupScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun AppointmentScreenPreview() {
+fun GroupScreenPreview() {
     NoostakAndroidTheme {
         GroupScreen()
     }

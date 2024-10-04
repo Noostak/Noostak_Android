@@ -26,7 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sopt.core.designsystem.component.appbar.BaseTopAppBar
+import com.sopt.core.designsystem.component.topappbar.BaseTopAppBar
 import com.sopt.core.designsystem.component.button.BaseButton
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.extension.toast

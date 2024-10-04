@@ -15,8 +15,6 @@ fun BaseTextField(
     onValueChange: (String) -> Unit,
     label: String,
     placeholder: String,
-    isError: Boolean,
-    errorMessage: String,
     isEnabled: Boolean = true,
     modifier: Modifier
 ) {
@@ -24,6 +22,12 @@ fun BaseTextField(
         modifier = modifier,
         value = value,
         onValueChange = { onValueChange(it) },
+        label = {
+            Text(
+                text = label,
+                color = Color.Black
+            )
+        },
         placeholder = {
             Text(
                 text = placeholder,
@@ -37,20 +41,4 @@ fun BaseTextField(
             disabledContainerColor = Color.Transparent,
         )
     )
-}
-
-@Preview
-@Composable
-fun BaseTextFieldPreview() {
-    NoostakAndroidTheme {
-        BaseTextField(
-            value = "Value",
-            onValueChange = {},
-            label = "Label",
-            placeholder = "Placeholder",
-            isError = false,
-            errorMessage = "Error message",
-            modifier = Modifier
-        )
-    }
 }

@@ -71,8 +71,6 @@ fun MyPageScreen(
             onValueChange = { text = it },
             label = "텍스트 입력칸",
             placeholder = "텍스트를 적어주세요",
-            isError = false,
-            errorMessage = "",
             modifier = Modifier.padding(bottom = 10.dp)
         )
         BaseButton(

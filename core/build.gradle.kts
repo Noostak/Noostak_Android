@@ -41,7 +41,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.kotlin)
     implementation(libs.core.ktx)
     implementation(libs.material)

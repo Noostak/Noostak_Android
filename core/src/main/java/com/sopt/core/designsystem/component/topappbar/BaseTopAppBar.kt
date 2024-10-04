@@ -1,4 +1,4 @@
-package com.sopt.core.designsystem.component.appbar
+package com.sopt.core.designsystem.component.topappbar
 
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding

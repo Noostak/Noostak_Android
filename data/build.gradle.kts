@@ -37,7 +37,6 @@ android {
 }
 
 dependencies {
-
     implementation(project(":domain"))
 
     // Kotlin
