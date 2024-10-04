@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Noostak-Android</string>
+
+    <!-- Bottom Navigation -->
+    <string name="bottom_nav_calendar">캘린더</string>
+    <string name="bottom_nav_group">약속</string>
+    <string name="bottom_nav_my_page">내정보</string>
+
+    <!-- Example -->
+    <string name="server_success">Server Success</string>
+    <string name="server_failure">Server Error</string>
+    <string name="appbar_example_title">팔로워 목록</string>
+    <string name="btn_my_page">예제 화면으로 이동하기</string>
+    <string name="btn_example_back">뒤로 돌아가기</string>
+</resources>
