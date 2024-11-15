@@ -77,9 +77,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     // Retrofit (Networking)
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.kotlin.serialization)
-    implementation(libs.okhttp.logging)
+    implementation(libs.bundles.retrofit)
 
     // Image Loading
     implementation(libs.coil.compose)
@@ -89,11 +87,7 @@ dependencies {
     implementation(libs.timber)
 
     // DataStore (Local Storage)
-    implementation(libs.androidx.datastore.core)
-    implementation(libs.androidx.datastore.preferences)
-    implementation(libs.encrypted.datastore.preference.ksp)
-    implementation(libs.encrypted.datastore.preference.ksp.annotations)
-    implementation(libs.encrypted.datastore.preference.security)
+    implementation(libs.bundles.datastore)
 
     // ViewPager Indicator
     implementation(libs.viewpager.indicator)

@@ -170,3 +170,7 @@ androidx-test-core = { group = "androidx.test", name = "core", version.ref = "an
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+[bundles]
+retrofit = ["retrofit-core", "retrofit-kotlin-serialization", "okhttp-logging"]
+datastore = ["androidx-datastore-core", "androidx-datastore-preferences", "encrypted-datastore-preference-ksp", "encrypted-datastore-preference-ksp-annotations", "encrypted-datastore-preference-security"]

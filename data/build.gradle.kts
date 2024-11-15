@@ -53,9 +53,7 @@ dependencies {
     implementation(libs.javax.inject)
 
     // Retrofit (Networking)
-    implementation(libs.retrofit.core)
-    implementation(libs.retrofit.kotlin.serialization)
-    implementation(libs.okhttp.logging)
+    implementation(libs.bundles.retrofit)
 
     // Logging
     implementation(libs.timber)
