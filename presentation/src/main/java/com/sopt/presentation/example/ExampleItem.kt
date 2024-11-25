@@ -49,7 +49,7 @@ fun ExampleItem(
                     .size(60.dp)
                     .clip(RoundedCornerShape(12.dp)),
                 model = data.avatar,
-                contentDescription = null,
+                contentDescription = null
             )
         }
     }
@@ -60,6 +60,7 @@ fun ExampleItem(
 fun ExampleItemPreview() {
     ExampleItem(
         data = ExampleEntity(
+            id = 1,
             firstName = "John",
             email = "",
             avatar = ""

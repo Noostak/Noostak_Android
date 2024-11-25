@@ -26,7 +26,7 @@ fun BaseButton(
     text: String,
     onButtonClick: () -> Unit,
     modifier: Modifier = Modifier,
-    isEnabled: Boolean = true,
+    isEnabled: Boolean = true
 ) {
     CompositionLocalProvider(value = LocalRippleConfiguration provides NoRippleConfiguration) {
         Button(

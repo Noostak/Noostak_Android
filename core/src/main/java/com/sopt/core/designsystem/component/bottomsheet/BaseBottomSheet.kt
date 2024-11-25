@@ -17,7 +17,7 @@ fun BaseBottomSheet(
     ModalBottomSheet(
         onDismissRequest = { onDismissRequest() },
         sheetState = sheetState,
-        containerColor = Color.White,
+        containerColor = Color.White
     ) {
         content()
     }

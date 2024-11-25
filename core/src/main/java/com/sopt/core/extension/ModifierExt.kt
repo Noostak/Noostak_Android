@@ -27,8 +27,10 @@ import androidx.compose.ui.unit.dp
 
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
 inline fun Modifier.noRippleClickable(crossinline onClick: () -> Unit): Modifier = composed {
-    clickable(indication = null,
-        interactionSource = remember { MutableInteractionSource() }) {
+    clickable(
+        indication = null,
+        interactionSource = remember { MutableInteractionSource() }
+    ) {
         onClick()
     }
 }
@@ -47,7 +49,7 @@ fun Modifier.customShadow(
     shadowRadius: Dp = 0.dp,
     shadowWidth: Dp = 2.dp,
     offsetX: Dp = 0.dp,
-    offsetY: Dp = 0.dp,
+    offsetY: Dp = 0.dp
 ) = composed {
     val paint: Paint = remember { Paint() }
     val density = LocalDensity.current
@@ -78,7 +80,7 @@ fun Modifier.customShadow(
                     bottom = bottomPixel,
                     radiusX = radiusPx,
                     radiusY = radiusPx,
-                    paint = paint,
+                    paint = paint
                 )
             } else {
                 canvas.drawRect(
@@ -86,7 +88,7 @@ fun Modifier.customShadow(
                     top = topPixel,
                     right = rightPixel,
                     bottom = bottomPixel,
-                    paint = paint,
+                    paint = paint
                 )
             }
         }

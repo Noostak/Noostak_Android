@@ -22,7 +22,7 @@ fun NavGraphBuilder.groupNavGraph(
 ) {
     composable<Group> {
         GroupRoute(
-            paddingValues = paddingValues,
+            paddingValues = paddingValues
         )
     }
 }

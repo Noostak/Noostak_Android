@@ -46,7 +46,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
-    navigator: MainNavigator = rememberMainNavigator(),
+    navigator: MainNavigator = rememberMainNavigator()
 ) {
     val context = LocalContext.current
     val systemUiController = rememberSystemUiController()
@@ -93,7 +93,7 @@ fun MainScreen(
             ) { snackBarData ->
                 BaseSnackBar {
                     Text(
-                        text = snackBarData.visuals.message,
+                        text = snackBarData.visuals.message
                     )
                 }
             }
@@ -105,7 +105,7 @@ fun MainScreen(
                 currentTab = navigator.currentTab,
                 onTabSelected = navigator::navigate
             )
-        },
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -150,10 +150,10 @@ private fun MainBottomBar(
     isVisible: Boolean,
     tabs: List<MainTab>,
     currentTab: MainTab?,
-    onTabSelected: (MainTab) -> Unit,
+    onTabSelected: (MainTab) -> Unit
 ) {
     AnimatedVisibility(
-        visible = isVisible,
+        visible = isVisible
     ) {
         NavigationBar(
             containerColor = White
