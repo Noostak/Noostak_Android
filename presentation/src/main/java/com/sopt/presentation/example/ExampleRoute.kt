@@ -33,6 +33,7 @@ import com.sopt.core.extension.toast
 import com.sopt.core.state.UiState
 import com.sopt.domain.entity.ExampleEntity
 import com.sopt.presentation.R
+import okhttp3.internal.toImmutableList
 
 @Composable
 fun ExampleRoute(
@@ -76,7 +77,7 @@ fun ExampleRoute(
         is UiState.Success -> {
             ExampleScreen(
                 text = text,
-                followers = (state.followers as UiState.Success<List<ExampleEntity>>).data,
+                followers = (state.followers as UiState.Success<List<ExampleEntity>>).data.toImmutableList(),
                 onBackButtonClick = exampleViewModel::navigateUp
             )
         }

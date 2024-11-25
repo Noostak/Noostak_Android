@@ -14,6 +14,7 @@ dependencies {
     // KotlinDependencies
     implementation(libs.kotlin)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.collections)
 
     // Hilt
     ksp(libs.hilt.compiler)
