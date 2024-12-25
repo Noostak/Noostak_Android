@@ -46,7 +46,7 @@ class NoostakTypography internal constructor(
     c1Bold: TextStyle,
     c2SemiBold: TextStyle,
     c3Regular: TextStyle,
-    c4Regular: TextStyle,
+    c4Regular: TextStyle
 ) {
     var codeMedium: TextStyle by mutableStateOf(codeMedium)
         private set
@@ -115,7 +115,7 @@ class NoostakTypography internal constructor(
         c1Bold: TextStyle = this.c1Bold,
         c2SemiBold: TextStyle = this.c2SemiBold,
         c3Regular: TextStyle = this.c3Regular,
-        c4Regular: TextStyle = this.c4Regular,
+        c4Regular: TextStyle = this.c4Regular
     ): NoostakTypography = NoostakTypography(
         codeMedium = codeMedium,
         h1Bold = h1Bold,
@@ -138,7 +138,7 @@ class NoostakTypography internal constructor(
         c1Bold = c1Bold,
         c2SemiBold = c2SemiBold,
         c3Regular = c3Regular,
-        c4Regular = c4Regular,
+        c4Regular = c4Regular
     )
 
     fun update(other: NoostakTypography) {
@@ -284,7 +284,7 @@ fun noostakTypography(): NoostakTypography {
             fontWeight = FontWeight.SemiBold,
             fontSize = 15.sp,
             lineHeight = 21.sp,
-            letterSpacing = 0.15.sp,
+            letterSpacing = 0.15.sp
         ),
         b4Regular = noostakTextStyle(
             fontFamily = PretendardRegular,
@@ -321,6 +321,6 @@ fun noostakTypography(): NoostakTypography {
             fontWeight = FontWeight.Normal,
             fontSize = 11.sp,
             lineHeight = 15.sp
-        ),
+        )
     )
 }
