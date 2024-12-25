@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
+import com.sopt.core.designsystem.theme.NoostakTheme
 
 @Composable
 fun CalendarRoute(
@@ -30,7 +31,10 @@ fun CalendarScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(text = "Calendar Screen")
+        Text(
+            text = "Calendar Screen",
+            style = NoostakTheme.typography.h1Bold
+        )
     }
 }
 
