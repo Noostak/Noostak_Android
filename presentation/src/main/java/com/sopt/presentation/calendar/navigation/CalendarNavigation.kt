@@ -22,7 +22,7 @@ fun NavGraphBuilder.calendarNavGraph(
 ) {
     composable<Calendar> {
         CalendarRoute(
-            paddingValues = paddingValues,
+            paddingValues = paddingValues
         )
     }
 }

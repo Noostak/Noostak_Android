@@ -13,7 +13,7 @@ import com.sopt.presentation.mypage.navigation.MyPage
 enum class MainTab(
     @DrawableRes val icon: Int,
     @StringRes val contentDescription: Int,
-    val route: MainTabRoute,
+    val route: MainTabRoute
 ) {
     CALENDAR(
         icon = R.drawable.ic_android_black_24dp,

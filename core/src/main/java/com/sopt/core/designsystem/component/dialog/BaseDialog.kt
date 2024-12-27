@@ -28,13 +28,13 @@ fun BaseDialog(
         usePlatformDefaultWidth = false,
         decorFitsSystemWindows = true,
         dismissOnBackPress = true,
-        dismissOnClickOutside = true,
+        dismissOnClickOutside = true
     ),
-    content: @Composable () -> Unit,
+    content: @Composable () -> Unit
 ) {
     Dialog(
         onDismissRequest = { onDismissRequest() },
-        properties = properties,
+        properties = properties
     ) {
         Box(
             modifier = Modifier
@@ -43,7 +43,7 @@ fun BaseDialog(
                 .background(
                     color = Color.White,
                     shape = RoundedCornerShape(20.dp)
-                ),
+                )
         ) {
             Row(
                 modifier = Modifier

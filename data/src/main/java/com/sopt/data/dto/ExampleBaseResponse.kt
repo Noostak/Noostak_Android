@@ -10,11 +10,11 @@ data class ExampleBaseResponse<T>(
     @SerialName("total") val total: Int,
     @SerialName("total_pages") val totalPages: Int,
     @SerialName("data") val data: T? = null,
-    @SerialName("support") val support: Support,
+    @SerialName("support") val support: Support
 )
 
 @Serializable
 data class Support(
     @SerialName("url") val url: String,
-    @SerialName("text") val text: String,
+    @SerialName("text") val text: String
 )

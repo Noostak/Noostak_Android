@@ -56,7 +56,7 @@ class MainNavigator(
 
 @Composable
 fun rememberMainNavigator(
-    navController: NavHostController = rememberNavController(),
+    navController: NavHostController = rememberNavController()
 ): MainNavigator = remember(navController) {
     MainNavigator(navController)
 }

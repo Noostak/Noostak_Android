@@ -30,7 +30,7 @@ import com.sopt.presentation.R
 fun MyPageRoute(
     paddingValues: PaddingValues,
     navigateToExample: (String) -> Unit,
-    myPageViewModel: MyPageViewModel = hiltViewModel(),
+    myPageViewModel: MyPageViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 
@@ -42,7 +42,6 @@ fun MyPageRoute(
                 }
             }
         }
-
     }
 
     MyPageScreen(
@@ -54,7 +53,7 @@ fun MyPageRoute(
 @Composable
 fun MyPageScreen(
     paddingValues: PaddingValues = PaddingValues(),
-    onExampleClick: (String) -> Unit,
+    onExampleClick: (String) -> Unit
 ) {
     var text by remember { mutableStateOf("") }
 

@@ -22,14 +22,14 @@ import com.sopt.core.R
 fun BaseTopAppBar(
     title: String = "",
     modifier: Modifier,
-    onBackButtonClick: () -> Unit = {},
+    onBackButtonClick: () -> Unit = {}
 ) {
     CenterAlignedTopAppBar(
         modifier = modifier,
         title = {
             Text(
                 text = title,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
         },
         navigationIcon = {
@@ -52,6 +52,6 @@ fun BaseTopAppBar(
             top = 0,
             right = 0,
             bottom = 0
-        ),
+        )
     )
 }

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.ktlint)
 }
 
 android {
@@ -58,6 +59,7 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.test)
+    implementation(libs.kotlinx.collections)
 
     // AndroidX Core
     implementation(libs.core.ktx)

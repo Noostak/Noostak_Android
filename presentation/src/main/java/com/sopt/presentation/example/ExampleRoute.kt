@@ -26,13 +26,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sopt.core.designsystem.component.topappbar.BaseTopAppBar
 import com.sopt.core.designsystem.component.button.BaseButton
+import com.sopt.core.designsystem.component.topappbar.BaseTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.extension.toast
 import com.sopt.core.state.UiState
 import com.sopt.domain.entity.ExampleEntity
 import com.sopt.presentation.R
+import okhttp3.internal.toImmutableList
 
 @Composable
 fun ExampleRoute(
@@ -43,11 +44,11 @@ fun ExampleRoute(
     val context = LocalContext.current
     val state by exampleViewModel.state.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = Unit) {
         exampleViewModel.getFollowers(2)
     }
 
-    LaunchedEffect(exampleViewModel.sideEffects) {
+    LaunchedEffect(key1 = exampleViewModel.sideEffects) {
         exampleViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
                 is ExampleSideEffect.ShowToast -> {
@@ -76,7 +77,7 @@ fun ExampleRoute(
         is UiState.Success -> {
             ExampleScreen(
                 text = text,
-                followers = (state.followers as UiState.Success<List<ExampleEntity>>).data,
+                followers = (state.followers as UiState.Success<List<ExampleEntity>>).data.toImmutableList(),
                 onBackButtonClick = exampleViewModel::navigateUp
             )
         }
@@ -100,7 +101,7 @@ fun ExampleRoute(
 fun ExampleScreen(
     text: String = "",
     followers: List<ExampleEntity>,
-    onBackButtonClick: () -> Unit,
+    onBackButtonClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -111,7 +112,7 @@ fun ExampleScreen(
         BaseTopAppBar(
             title = stringResource(R.string.appbar_example_title),
             modifier = Modifier.fillMaxWidth(),
-            onBackButtonClick = { onBackButtonClick() },
+            onBackButtonClick = { onBackButtonClick() }
         )
         if (text.isNotBlank()) {
             Text(
@@ -122,7 +123,7 @@ fun ExampleScreen(
         LazyColumn(
             modifier = Modifier.weight(1f)
         ) {
-            items(followers) { follower ->
+            items(followers, key = { follower -> follower.id }) { follower ->
                 ExampleItem(follower)
             }
         }
