@@ -12,4 +12,12 @@
     <string name="appbar_example_title">팔로워 목록</string>
     <string name="btn_my_page">예제 화면으로 이동하기</string>
     <string name="btn_example_back">뒤로 돌아가기</string>
+
+    <!-- 그룹 상세 -->
+    <string name="fab_group_detail">약속 만들기</string>
+    <string name="topbar_group_detail">그룹</string>
+    <string name="tv_group_detail_member">그룹 멤버 %1$s</string>
+    <string name="tv_group_detail_list">약속 리스트</string>
+    <string name="tv_group_detail_no_progress">현재 진행 중인 약속이 없어요</string>
+    <string name="tv_group_detail_no_complete">현재 확정된 약속이 없어요</string>
 </resources>
