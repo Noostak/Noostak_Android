@@ -33,7 +33,8 @@ fun CalendarScreen(
     ) {
         Text(
             text = "Calendar Screen",
-            style = NoostakTheme.typography.h1Bold
+            style = NoostakTheme.typography.h1Bold,
+            color = NoostakTheme.colors.blue600
         )
     }
 }
