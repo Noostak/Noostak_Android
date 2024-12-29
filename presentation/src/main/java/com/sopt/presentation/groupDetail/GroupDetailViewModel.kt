@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import okhttp3.internal.immutableListOf
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,6 +24,7 @@ class GroupDetailViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    val tabs = immutableListOf("진행중", "완료")
     val mockGroupDetail = GroupDetailEntity(
         name = "누스탁",
         memberCount = 10,

@@ -5,23 +5,43 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 
 @Composable
 fun GroupRoute(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigateToGroupDetail: (Long) -> Unit,
+    groupViewModel: GroupViewModel = hiltViewModel()
 ) {
-    GroupScreen(paddingValues = paddingValues)
+
+    LaunchedEffect(groupViewModel.sideEffects) {
+        groupViewModel.sideEffects.collect { sideEffect ->
+            when (sideEffect) {
+                is GroupSideEffect.NavigateToGroupDetail -> {
+                    navigateToGroupDetail(sideEffect.id)
+                }
+            }
+        }
+    }
+
+    GroupScreen(
+        paddingValues = paddingValues,
+        onGroupClick = groupViewModel::navigateToGroupDetail
+    )
 }
 
 @Composable
 fun GroupScreen(
-    paddingValues: PaddingValues = PaddingValues()
+    paddingValues: PaddingValues = PaddingValues(),
+    onGroupClick: (Long) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -31,6 +51,9 @@ fun GroupScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "Appointment Screen")
+        Button(onClick = { onGroupClick(1L) }) {
+            Text(text = "그룹 상세 페이지로 이동")
+        }
     }
 }
 
@@ -38,6 +61,8 @@ fun GroupScreen(
 @Composable
 fun GroupScreenPreview() {
     NoostakAndroidTheme {
-        GroupScreen()
+        GroupScreen(
+            onGroupClick = {}
+        )
     }
 }

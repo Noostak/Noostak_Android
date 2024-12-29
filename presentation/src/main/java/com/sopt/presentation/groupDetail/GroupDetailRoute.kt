@@ -2,7 +2,6 @@ package com.sopt.presentation.groupDetail
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,20 +13,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FabPosition
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -41,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -52,6 +44,7 @@ import com.sopt.core.designsystem.component.button.NoostakFloatingActionButton
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.extension.showIf
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.domain.entity.CompleteEntity
@@ -78,6 +71,7 @@ fun GroupDetailRoute(
 
     GroupDetailScreen(
         id = id,
+        tabs = groupDetailViewModel.tabs,
         data = groupDetailViewModel.mockGroupDetail,
         onBackButtonClick = groupDetailViewModel::navigateUp
     )
@@ -86,10 +80,10 @@ fun GroupDetailRoute(
 @Composable
 fun GroupDetailScreen(
     id: Long,
+    tabs: List<String>,
     data: GroupDetailEntity,
     onBackButtonClick: () -> Unit
 ) {
-    val tabs = listOf("진행 중", "확정")
     val pagerState = rememberPagerState { tabs.size }
     val topPagerState = rememberPagerState { 2 }
     Scaffold(
@@ -104,8 +98,9 @@ fun GroupDetailScreen(
         floatingActionButton = {
             NoostakFloatingActionButton(
                 title = stringResource(R.string.fab_group_detail),
-                modifier = Modifier.offset(x = 0.dp, y = (-74).dp)) {
-                
+                modifier = Modifier.offset(x = 0.dp, y = (-74).dp)
+            ) {
+                // TODO: 클릭 이벤트
             }
         },
         floatingActionButtonPosition = FabPosition.End
@@ -135,16 +130,14 @@ fun GroupDetailScreen(
                         style = NoostakTheme.typography.h1Bold
                     )
                 }
-                IconButton(
-                    modifier = Modifier.size(24.dp),
-                    onClick = { /*TODO*/ }
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_share),
-                        contentDescription = null,
-                        tint = NoostakTheme.colors.gray700
-                    )
-                }
+                Icon(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .noRippleClickable { },
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_share),
+                    contentDescription = null,
+                    tint = NoostakTheme.colors.gray700
+                )
             }
             Row(
                 modifier = Modifier.padding(top = 2.dp),
@@ -247,8 +240,8 @@ fun CustomTabPager(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 when (page) {
-                    0 -> ProgressScreen(data = progress)
-                    1 -> CompleteScreen(data = complete)
+                    0 -> ProgressScreen(progresses = progress)
+                    1 -> CompleteScreen(completes = complete)
                 }
             }
         }
@@ -262,6 +255,7 @@ fun GroupDetailRoutePreview() {
     NoostakAndroidTheme {
         GroupDetailScreen(
             id = 0,
+            tabs = groupDetailViewModel.tabs,
             data = groupDetailViewModel.mockGroupDetail,
             onBackButtonClick = {}
         )
