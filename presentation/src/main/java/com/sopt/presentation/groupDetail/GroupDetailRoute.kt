@@ -129,7 +129,7 @@ fun GroupDetailScreen(
                     )
                     Text(
                         modifier = Modifier.padding(start = 3.dp),
-                        text = data.name,
+                        text = data.groupName,
                         color = NoostakTheme.colors.gray900,
                         style = NoostakTheme.typography.h1Bold
                     )
@@ -150,7 +150,7 @@ fun GroupDetailScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(R.string.tv_group_detail_member, data.memberCount),
+                    text = stringResource(R.string.tv_group_detail_member, data.groupMembersCount),
                     color = NoostakTheme.colors.gray800,
                     style = NoostakTheme.typography.b2Regular
                 )
@@ -208,7 +208,7 @@ fun CustomTabPager(
                     thickness = 4.dp,
                     color = NoostakTheme.colors.gray200
                 )
-            },
+            }
         ) {
             tabs.forEachIndexed { index, title ->
                 Tab(
@@ -252,11 +252,12 @@ fun CustomTabPager(
                 when (page) {
                     0 -> ProgressScreen(
                         groupId = groupId,
-                        progresses = progressEntities
+                        progressEntities = progressEntities
                     )
+
                     1 -> ConfirmedScreen(
                         groupId = groupId,
-                        completes = confirmedEntities,
+                        confirmedEntities = confirmedEntities,
                         onItemClicked = { groupId, confirmedId ->
                             onConfirmedClick(groupId, confirmedId)
                         }

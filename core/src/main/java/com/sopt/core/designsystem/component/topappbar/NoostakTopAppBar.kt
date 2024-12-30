@@ -1,7 +1,6 @@
 package com.sopt.core.designsystem.component.topappbar
 
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -22,8 +21,6 @@ import androidx.compose.ui.unit.dp
 import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.designsystem.theme.NoostakTypography
-import com.sopt.core.extension.showIf
 import com.sopt.core.util.NoRippleInteractionSource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,7 +30,7 @@ fun NoostakTopAppBar(
     modifier: Modifier = Modifier,
     isIconVisible: Boolean,
     onBackButtonClick: () -> Unit = {}
-){
+) {
     CenterAlignedTopAppBar(
         modifier = modifier.fillMaxWidth(),
         title = {
@@ -71,7 +68,7 @@ fun NoostakTopAppBarPreview() {
         NoostakTopAppBar(
             modifier = Modifier.fillMaxWidth(),
             isIconVisible = false,
-            title = "그룹",
+            title = "그룹"
         )
     }
 }

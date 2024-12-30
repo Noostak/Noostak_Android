@@ -48,7 +48,6 @@ fun ConfirmedDetailRoute(
                 is ConfirmedDetailSideEffect.NavigateUp -> navigateUp()
             }
         }
-
     }
     ConfirmedDetailScreen(
         data = confirmedDetailViewModel.mockConfirmedDetail,
@@ -115,13 +114,18 @@ fun ConfirmedDetailScreen(
                     }
                 }
                 CompleteDetailInfo(text = stringResource(R.string.tv_complete_detail_category)) {
-                    NoostakCategoryChip(text = data.category, backgroundColor = NoostakTheme.colors.orange)
+                    NoostakCategoryChip(
+                        text = data.category,
+                        backgroundColor = NoostakTheme.colors.orange
+                    )
                 }
                 Column {
-                    CompleteDetailInfo(text = stringResource(
-                        R.string.tv_complete_detail_available,
-                        data.availableMembersCount
-                    ))
+                    CompleteDetailInfo(
+                        text = stringResource(
+                            R.string.tv_complete_detail_available,
+                            data.availableMembersCount
+                        )
+                    )
                     LazyVerticalStaggeredGrid(
                         modifier = Modifier.padding(top = 10.dp),
                         columns = StaggeredGridCells.Fixed(6),
@@ -140,10 +144,12 @@ fun ConfirmedDetailScreen(
                     }
                 }
                 Column {
-                    CompleteDetailInfo(text = stringResource(
-                        R.string.tv_complete_detail_unavailable,
-                        data.unavailableMembersCount
-                    ))
+                    CompleteDetailInfo(
+                        text = stringResource(
+                            R.string.tv_complete_detail_unavailable,
+                            data.unavailableMembersCount
+                        )
+                    )
                     LazyVerticalStaggeredGrid(
                         modifier = Modifier.padding(top = 10.dp),
                         columns = StaggeredGridCells.Fixed(6),

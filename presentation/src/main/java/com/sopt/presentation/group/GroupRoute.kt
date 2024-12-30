@@ -22,7 +22,6 @@ fun GroupRoute(
     navigateToGroupDetail: (Long) -> Unit,
     groupViewModel: GroupViewModel = hiltViewModel()
 ) {
-
     LaunchedEffect(groupViewModel.sideEffects) {
         groupViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {

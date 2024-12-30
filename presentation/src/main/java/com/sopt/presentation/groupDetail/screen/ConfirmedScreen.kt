@@ -18,19 +18,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.presentation.R
+import com.sopt.presentation.groupDetail.GroupDetailViewModel
 
 @Composable
 fun ConfirmedScreen(
     groupId: Long,
-    completes: List<ConfirmedEntity>,
+    confirmedEntities: List<ConfirmedEntity>,
     onItemClicked: (Long, Long) -> Unit
 ) {
-    if (completes.isEmpty()) {
+    if (confirmedEntities.isEmpty()) {
         Text(
             modifier = Modifier.padding(top = 103.dp),
             text = stringResource(R.string.tv_group_detail_no_complete),
@@ -39,10 +41,10 @@ fun ConfirmedScreen(
         )
     } else {
         LazyColumn {
-            items(completes, key = { it.id }) {
+            items(confirmedEntities, key = { it.appointmentId }) {
                 ConfirmedItem(
                     groupId = groupId,
-                    confirmed = it,
+                    confirmedEntity = it,
                     onItemClicked = onItemClicked
                 )
                 HorizontalDivider(
@@ -58,13 +60,13 @@ fun ConfirmedScreen(
 @Composable
 fun ConfirmedItem(
     groupId: Long,
-    confirmed: ConfirmedEntity,
+    confirmedEntity: ConfirmedEntity,
     onItemClicked: (Long, Long) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .noRippleClickable { onItemClicked(groupId, confirmed.id) }
+            .noRippleClickable { onItemClicked(groupId, confirmedEntity.appointmentId) }
             .padding(
                 top = 15.dp,
                 bottom = 16.dp,
@@ -94,7 +96,7 @@ fun ConfirmedItem(
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = confirmed.title,
+                    text = confirmedEntity.appointmentName,
                     color = NoostakTheme.colors.gray900,
                     style = NoostakTheme.typography.b1SemiBold,
                     textAlign = TextAlign.Start
@@ -103,15 +105,13 @@ fun ConfirmedItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 1.dp),
-                    text = confirmed.date,
+                    text = "${confirmedEntity.date} ${confirmedEntity.weekday}",
                     color = NoostakTheme.colors.gray700,
                     style = NoostakTheme.typography.c3Regular,
                     textAlign = TextAlign.Start
                 )
             }
         }
-
-
     }
 }
 
@@ -119,15 +119,10 @@ fun ConfirmedItem(
 @Composable
 fun CompleteScreenPreview() {
     NoostakAndroidTheme {
+        val groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
         ConfirmedScreen(
             groupId = 1,
-            completes = listOf(
-                ConfirmedEntity(
-                    id = 1,
-                    title = "약속 제목",
-                    date = "2024년 9월 7일 일요일"
-                )
-            ),
+            confirmedEntities = groupDetailViewModel.mockGroupDetail.confirmedEntities,
             onItemClicked = { _, _ -> }
         )
     }

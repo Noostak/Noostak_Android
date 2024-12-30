@@ -32,50 +32,62 @@ class GroupDetailViewModel @Inject constructor() : ViewModel() {
 
     val tabs = immutableListOf("진행중", "완료")
     val mockGroupDetail = GroupDetailEntity(
-        name = "누스탁",
-        memberCount = 10,
+        groupName = "누스탁",
+        groupMembersCount = 10,
         progressEntities = listOf(
             ProgressEntity(
-                id = 1,
-                title = "1주차",
-                date = "2021.10.01 ~ 2021.10.07",
-                number = 3,
-                total = 5
+                appointmentId = 1,
+                appointmentName = "1주차",
+                date = "2024-09-27",
+                weekday = "금",
+                startTime = "11:00",
+                endTime = "14:00",
+                participants = 3,
+                maxParticipants = 5
             ),
             ProgressEntity(
-                id = 2,
-                title = "2주차",
-                date = "2021.10.08 ~ 2021.10.14",
-                number = 2,
-                total = 5
+                appointmentId = 2,
+                appointmentName = "2주차",
+                date = "2024-09-27",
+                weekday = "금",
+                startTime = "11:00",
+                endTime = "14:00",
+                participants = 2,
+                maxParticipants = 5
             ),
             ProgressEntity(
-                id = 3,
-                title = "3주차",
-                date = "2021.10.15 ~ 2021.10.21",
-                number = 0,
-                total = 5
+                appointmentId = 3,
+                appointmentName = "3주차",
+                date = "2024-09-27",
+                weekday = "금",
+                startTime = "11:00",
+                endTime = "14:00",
+                participants = 0,
+                maxParticipants = 5
             ),
             ProgressEntity(
-                id = 4,
-                title = "4주차",
-                date = "2021.10.22 ~ 2021.10.28",
-                number = 0,
-                total = 5
+                appointmentId = 4,
+                appointmentName = "4주차",
+                date = "2024-09-27",
+                weekday = "금",
+                startTime = "11:00",
+                endTime = "14:00",
+                participants = 0,
+                maxParticipants = 5
             )
         ),
         confirmedEntities = listOf(
             ConfirmedEntity(
-                id = 1,
-                title = "5주차",
-                date = "2021.10.29 ~ 2021.11.04",
-
+                appointmentId = 1,
+                appointmentName = "3차 회의",
+                date = "2024-09-27",
+                weekday = "금요일"
             ),
             ConfirmedEntity(
-                id = 2,
-                title = "6주차",
-                date = "2021.11.05 ~ 2021.11.11",
-
+                appointmentId = 2,
+                appointmentName = "회의",
+                date = "2024-09-27",
+                weekday = "금요일"
             )
         )
     )

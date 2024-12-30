@@ -1,7 +1,6 @@
 package com.sopt.presentation.groupDetail.screen
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,19 +24,21 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.domain.entity.ProgressEntity
 import com.sopt.presentation.R
+import com.sopt.presentation.groupDetail.GroupDetailViewModel
 import timber.log.Timber
 
 @Composable
 fun ProgressScreen(
     groupId: Long,
-    progresses: List<ProgressEntity>
+    progressEntities: List<ProgressEntity>
 ) {
-    if (progresses.isEmpty()) {
+    if (progressEntities.isEmpty()) {
         Text(
             modifier = Modifier.padding(top = 103.dp),
             text = stringResource(R.string.tv_group_detail_no_progress),
@@ -48,10 +49,10 @@ fun ProgressScreen(
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(11.dp)
         ) {
-            items(progresses, key = { it.id }) {
+            items(progressEntities, key = { it.appointmentId }) {
                 ProgressItem(
                     groupId = groupId,
-                    progress = it
+                    progressEntity = it
                 )
             }
         }
@@ -61,12 +62,12 @@ fun ProgressScreen(
 @Composable
 fun ProgressItem(
     groupId: Long,
-    progress: ProgressEntity
+    progressEntity: ProgressEntity
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .noRippleClickable { Timber.d("Item Id: ${progress.id}") }
+            .noRippleClickable { Timber.d("Item Id: ${progressEntity.appointmentId}") }
             .border(
                 width = 1.dp,
                 shape = RoundedCornerShape(15.dp),
@@ -86,7 +87,7 @@ fun ProgressItem(
         ) {
             Text(
                 modifier = Modifier.weight(1f),
-                text = progress.title,
+                text = progressEntity.appointmentName,
                 color = NoostakTheme.colors.gray900,
                 style = NoostakTheme.typography.t4Bold,
                 textAlign = TextAlign.Start
@@ -104,19 +105,19 @@ fun ProgressItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = progress.date,
+                text = "${progressEntity.date} (${progressEntity.weekday}) ${progressEntity.startTime}~${progressEntity.endTime}",
                 color = NoostakTheme.colors.gray800,
                 style = NoostakTheme.typography.b5Regular
             )
             Text(
-                text = "${progress.number}명/${progress.total}명",
+                text = "${progressEntity.participants}명/${progressEntity.maxParticipants}명",
                 color = NoostakTheme.colors.gray700,
                 style = NoostakTheme.typography.b5Regular
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
         LinearProgressIndicator(
-            progress = { progress.number.toFloat() / progress.total },
+            progress = { progressEntity.participants.toFloat() / progressEntity.maxParticipants },
             modifier = Modifier.fillMaxWidth(),
             color = NoostakTheme.colors.blue300,
             trackColor = NoostakTheme.colors.gray200,
@@ -131,17 +132,10 @@ fun ProgressItem(
 @Composable
 fun ProgressScreenPreview() {
     NoostakAndroidTheme {
+        val groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
         ProgressScreen(
             groupId = 1,
-            progresses = listOf(
-                ProgressEntity(
-                    id = 1,
-                    title = "약속 제목",
-                    date = "09/07 (일) 11시~14시",
-                    number = 3,
-                    total = 5
-                )
-            )
+            progressEntities = groupDetailViewModel.mockGroupDetail.progressEntities
         )
     }
 }
