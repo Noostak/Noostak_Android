@@ -1,7 +1,6 @@
 package com.sopt.presentation.groupDetail.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,13 +21,14 @@ import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
-import com.sopt.domain.entity.CompleteEntity
+import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.presentation.R
 
 @Composable
-fun CompleteScreen(
-    completes: List<CompleteEntity>,
-    onItemClicked: (Long) -> Unit
+fun ConfirmedScreen(
+    groupId: Long,
+    completes: List<ConfirmedEntity>,
+    onItemClicked: (Long, Long) -> Unit
 ) {
     if (completes.isEmpty()) {
         Text(
@@ -40,8 +40,9 @@ fun CompleteScreen(
     } else {
         LazyColumn {
             items(completes, key = { it.id }) {
-                CompleteItem(
-                    complete = it,
+                ConfirmedItem(
+                    groupId = groupId,
+                    confirmed = it,
                     onItemClicked = onItemClicked
                 )
                 HorizontalDivider(
@@ -55,14 +56,15 @@ fun CompleteScreen(
 }
 
 @Composable
-fun CompleteItem(
-    complete: CompleteEntity,
-    onItemClicked: (Long) -> Unit
+fun ConfirmedItem(
+    groupId: Long,
+    confirmed: ConfirmedEntity,
+    onItemClicked: (Long, Long) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .noRippleClickable { onItemClicked(complete.id) }
+            .noRippleClickable { onItemClicked(groupId, confirmed.id) }
             .padding(
                 top = 15.dp,
                 bottom = 16.dp,
@@ -92,7 +94,7 @@ fun CompleteItem(
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = complete.title,
+                    text = confirmed.title,
                     color = NoostakTheme.colors.gray900,
                     style = NoostakTheme.typography.b1SemiBold,
                     textAlign = TextAlign.Start
@@ -101,7 +103,7 @@ fun CompleteItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 1.dp),
-                    text = complete.date,
+                    text = confirmed.date,
                     color = NoostakTheme.colors.gray700,
                     style = NoostakTheme.typography.c3Regular,
                     textAlign = TextAlign.Start
@@ -117,15 +119,16 @@ fun CompleteItem(
 @Composable
 fun CompleteScreenPreview() {
     NoostakAndroidTheme {
-        CompleteScreen(
+        ConfirmedScreen(
+            groupId = 1,
             completes = listOf(
-                CompleteEntity(
+                ConfirmedEntity(
                     id = 1,
                     title = "약속 제목",
                     date = "2024년 9월 7일 일요일"
                 )
             ),
-            onItemClicked = { }
+            onItemClicked = { _, _ -> }
         )
     }
 }

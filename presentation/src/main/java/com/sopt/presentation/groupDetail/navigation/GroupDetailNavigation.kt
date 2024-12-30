@@ -7,25 +7,29 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
 import com.sopt.presentation.groupDetail.GroupDetailRoute
-import com.sopt.presentation.groupDetail.screen.CompleteDetailRoute
+import com.sopt.presentation.groupDetail.screen.ConfirmedDetailRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateGroupDetail(
-    id: Long,
+    groupId: Long,
     navOptions: NavOptions? = null
 ) {
     navigate(
-        route = GroupDetail(id = id),
+        route = GroupDetail(groupId = groupId),
         navOptions = navOptions
     )
 }
 
-fun NavController.navigateCompleteDetail(
-    id: Long,
+fun NavController.navigateConfirmedDetail(
+    groupId: Long,
+    confirmedId: Long,
     navOptions: NavOptions? = null
 ) {
     navigate(
-        route = CompleteDetail(id = id),
+        route = ConfirmedDetail(
+            groupId = groupId,
+            confirmedId = confirmedId
+        ),
         navOptions = navOptions
     )
 }
@@ -36,18 +40,22 @@ fun NavGraphBuilder.groupDetailNavGraph(
     composable<GroupDetail> {
         val args = it.toRoute<GroupDetail>() // 이전 화면에서 데이터 전달 받기
         GroupDetailRoute(
-            id = args.id,
+            groupId = args.groupId,
             navigateUp = navHostController::navigateUp,
-            navigateToCompleteDetail = { id ->
-                navHostController.navigateCompleteDetail(id = id)
+            navigateToConfirmedDetail = { groupId, confirmedId ->
+                navHostController.navigateConfirmedDetail(
+                    groupId = groupId,
+                    confirmedId = confirmedId
+                )
             }
         )
     }
 
-    composable<CompleteDetail> {
-        val args = it.toRoute<CompleteDetail>() // 이전 화면에서 데이터 전달 받기
-        CompleteDetailRoute(
-            id = args.id,
+    composable<ConfirmedDetail> {
+        val args = it.toRoute<ConfirmedDetail>() // 이전 화면에서 데이터 전달 받기
+        ConfirmedDetailRoute(
+            groupId = args.groupId,
+            confirmedId = args.confirmedId,
             navigateUp = navHostController::navigateUp
         )
     }
@@ -55,10 +63,11 @@ fun NavGraphBuilder.groupDetailNavGraph(
 
 @Serializable
 data class GroupDetail(
-    val id: Long
+    val groupId: Long
 ) : Route
 
 @Serializable
-data class CompleteDetail(
-    val id: Long
+data class ConfirmedDetail(
+    val groupId: Long,
+    val confirmedId: Long
 ) : Route

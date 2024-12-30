@@ -34,6 +34,7 @@ import timber.log.Timber
 
 @Composable
 fun ProgressScreen(
+    groupId: Long,
     progresses: List<ProgressEntity>
 ) {
     if (progresses.isEmpty()) {
@@ -48,7 +49,10 @@ fun ProgressScreen(
             verticalArrangement = Arrangement.spacedBy(11.dp)
         ) {
             items(progresses, key = { it.id }) {
-                ProgressItem(progress = it)
+                ProgressItem(
+                    groupId = groupId,
+                    progress = it
+                )
             }
         }
     }
@@ -56,6 +60,7 @@ fun ProgressScreen(
 
 @Composable
 fun ProgressItem(
+    groupId: Long,
     progress: ProgressEntity
 ) {
     Column(
@@ -127,6 +132,7 @@ fun ProgressItem(
 fun ProgressScreenPreview() {
     NoostakAndroidTheme {
         ProgressScreen(
+            groupId = 1,
             progresses = listOf(
                 ProgressEntity(
                     id = 1,

@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
+import timber.log.Timber
 
 @Composable
 fun GroupRoute(
@@ -27,6 +28,7 @@ fun GroupRoute(
             when (sideEffect) {
                 is GroupSideEffect.NavigateToGroupDetail -> {
                     navigateToGroupDetail(sideEffect.id)
+                    Timber.d("group id: ${sideEffect.id}")
                 }
             }
         }
@@ -51,7 +53,7 @@ fun GroupScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Text(text = "Appointment Screen")
-        Button(onClick = { onGroupClick(1L) }) {
+        Button(onClick = { onGroupClick(2) }) {
             Text(text = "그룹 상세 페이지로 이동")
         }
     }

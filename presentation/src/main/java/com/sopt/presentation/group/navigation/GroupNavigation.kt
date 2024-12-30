@@ -24,8 +24,8 @@ fun NavGraphBuilder.groupNavGraph(
     composable<Group> {
         GroupRoute(
             paddingValues = paddingValues,
-            navigateToGroupDetail = { id ->
-                navHostController.navigateGroupDetail(id = id)
+            navigateToGroupDetail = { groupId ->
+                navHostController.navigateGroupDetail(groupId = groupId)
             }
         )
     }

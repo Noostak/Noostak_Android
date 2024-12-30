@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -47,51 +46,50 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.extension.showIf
 import com.sopt.core.util.NoRippleInteractionSource
-import com.sopt.domain.entity.CompleteEntity
+import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.domain.entity.GroupDetailEntity
 import com.sopt.domain.entity.ProgressEntity
 import com.sopt.presentation.R
-import com.sopt.presentation.groupDetail.screen.CompleteScreen
+import com.sopt.presentation.groupDetail.screen.ConfirmedScreen
 import com.sopt.presentation.groupDetail.screen.ProgressScreen
 import kotlinx.coroutines.launch
 
 @Composable
 fun GroupDetailRoute(
-    id: Long,
+    groupId: Long,
     navigateUp: () -> Unit,
-    navigateToCompleteDetail: (Long) -> Unit,
+    navigateToConfirmedDetail: (Long, Long) -> Unit,
     groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = groupDetailViewModel.sideEffects) {
         groupDetailViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
                 is GroupDetailSideEffect.NavigateUp -> navigateUp()
-                is GroupDetailSideEffect.NavigateToCompleteDetail -> {
-                    navigateToCompleteDetail(sideEffect.id)
+                is GroupDetailSideEffect.NavigateToConfirmedDetail -> {
+                    navigateToConfirmedDetail(sideEffect.groupId, sideEffect.confirmedId)
                 }
             }
         }
     }
 
     GroupDetailScreen(
-        id = id,
+        groupId = groupId,
         tabs = groupDetailViewModel.tabs,
         data = groupDetailViewModel.mockGroupDetail,
         onBackButtonClick = groupDetailViewModel::navigateUp,
-        onCompleteClick = groupDetailViewModel::navigateToCompleteDetail
+        onConfirmedClick = groupDetailViewModel::navigateToConfirmedDetail
     )
 }
 
 @Composable
 fun GroupDetailScreen(
-    id: Long,
+    groupId: Long,
     tabs: List<String>,
     data: GroupDetailEntity,
     onBackButtonClick: () -> Unit,
-    onCompleteClick: (Long) -> Unit
+    onConfirmedClick: (Long, Long) -> Unit
 ) {
     val pagerState = rememberPagerState { tabs.size }
-    val topPagerState = rememberPagerState { 2 }
     Scaffold(
         topBar = {
             NoostakTopAppBar(
@@ -106,7 +104,7 @@ fun GroupDetailScreen(
                 title = stringResource(R.string.fab_group_detail),
                 modifier = Modifier.offset(x = 0.dp, y = (-74).dp)
             ) {
-                // TODO: 클릭 이벤트
+                // 약속 생성 페이지로 이동
             }
         },
         floatingActionButtonPosition = FabPosition.End
@@ -139,7 +137,9 @@ fun GroupDetailScreen(
                 Icon(
                     modifier = Modifier
                         .size(24.dp)
-                        .noRippleClickable { },
+                        .noRippleClickable {
+                            // 공유 기능
+                        },
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_share),
                     contentDescription = null,
                     tint = NoostakTheme.colors.gray700
@@ -167,11 +167,12 @@ fun GroupDetailScreen(
                 style = NoostakTheme.typography.b1SemiBold
             )
             CustomTabPager(
+                groupId = groupId,
                 pagerState = pagerState,
                 tabs = tabs,
-                progress = data.progress,
-                complete = data.complete,
-                onCompleteClick = onCompleteClick
+                progressEntities = data.progressEntities,
+                confirmedEntities = data.confirmedEntities,
+                onConfirmedClick = onConfirmedClick
             )
         }
     }
@@ -179,11 +180,12 @@ fun GroupDetailScreen(
 
 @Composable
 fun CustomTabPager(
+    groupId: Long,
     pagerState: PagerState,
     tabs: List<String>,
-    progress: List<ProgressEntity>,
-    complete: List<CompleteEntity>,
-    onCompleteClick: (Long) -> Unit
+    progressEntities: List<ProgressEntity>,
+    confirmedEntities: List<ConfirmedEntity>,
+    onConfirmedClick: (Long, Long) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     Column {
@@ -248,10 +250,16 @@ fun CustomTabPager(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 when (page) {
-                    0 -> ProgressScreen(progresses = progress)
-                    1 -> CompleteScreen(
-                        completes = complete,
-                        onItemClicked = { onCompleteClick }
+                    0 -> ProgressScreen(
+                        groupId = groupId,
+                        progresses = progressEntities
+                    )
+                    1 -> ConfirmedScreen(
+                        groupId = groupId,
+                        completes = confirmedEntities,
+                        onItemClicked = { groupId, confirmedId ->
+                            onConfirmedClick(groupId, confirmedId)
+                        }
                     )
                 }
             }
@@ -265,11 +273,11 @@ fun GroupDetailRoutePreview() {
     val groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
     NoostakAndroidTheme {
         GroupDetailScreen(
-            id = 0,
+            groupId = 0,
             tabs = groupDetailViewModel.tabs,
             data = groupDetailViewModel.mockGroupDetail,
             onBackButtonClick = {},
-            onCompleteClick = {}
+            onConfirmedClick = { _, _ -> }
         )
     }
 }

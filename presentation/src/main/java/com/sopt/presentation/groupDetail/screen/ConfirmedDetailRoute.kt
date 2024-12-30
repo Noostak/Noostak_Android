@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -18,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,41 +30,46 @@ import com.sopt.core.designsystem.component.chip.NoostakUserChip
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.domain.entity.CompleteEntity
-import com.sopt.presentation.groupDetail.GroupDetailSideEffect
-import com.sopt.presentation.groupDetail.GroupDetailViewModel
+import com.sopt.domain.entity.ConfirmedDetailEntity
+import com.sopt.presentation.R
+import com.sopt.presentation.groupDetail.ConfirmedDetailSideEffect
+import com.sopt.presentation.groupDetail.ConfirmedDetailViewModel
 
 @Composable
-fun CompleteDetailRoute(
-    id: Long,
+fun ConfirmedDetailRoute(
+    groupId: Long,
+    confirmedId: Long,
     navigateUp: () -> Unit,
-    groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
+    confirmedDetailViewModel: ConfirmedDetailViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(key1 = groupDetailViewModel.sideEffects) {
-        groupDetailViewModel.sideEffects.collect { sideEffect ->
+    LaunchedEffect(key1 = confirmedDetailViewModel.sideEffects) {
+        confirmedDetailViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
-                is GroupDetailSideEffect.NavigateUp -> navigateUp()
-                is GroupDetailSideEffect.NavigateToCompleteDetail -> navigateUp()
+                is ConfirmedDetailSideEffect.NavigateUp -> navigateUp()
             }
         }
 
     }
-    CompleteDetailScreen(
-        data = groupDetailViewModel.mockGroupDetail.complete[id.toInt()],
-        onBackButtonClick = groupDetailViewModel::navigateUp
+    ConfirmedDetailScreen(
+        data = confirmedDetailViewModel.mockConfirmedDetail,
+        onBackButtonClick = confirmedDetailViewModel::navigateUp
     )
 }
 
 @Composable
-fun CompleteDetailScreen(
-    data: CompleteEntity,
+fun ConfirmedDetailScreen(
+    data: ConfirmedDetailEntity,
     onBackButtonClick: () -> Unit
 ) {
     Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         topBar = {
             NoostakTopAppBar(
-                title = data.title,
-                modifier = Modifier,
+                title = data.appointName,
+                modifier = Modifier.fillMaxWidth(),
                 isIconVisible = true,
                 onBackButtonClick = { onBackButtonClick() }
             )
@@ -74,7 +83,7 @@ fun CompleteDetailScreen(
         ) {
             Text(
                 modifier = Modifier.padding(top = 12.dp),
-                text = "약속 정보",
+                text = stringResource(R.string.tv_complete_detail_header),
                 color = NoostakTheme.colors.gray800,
                 style = NoostakTheme.typography.t4Bold
             )
@@ -89,54 +98,61 @@ fun CompleteDetailScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                CompleteDetailInfo(text = "약속 시간") {
+                CompleteDetailInfo(text = stringResource(R.string.tv_complete_detail_time)) {
                     Row(
                         horizontalArrangement = Arrangement.spacedBy(13.dp)
                     ) {
                         Text(
-                            text = "9/5",
+                            text = data.date,
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )
                         Text(
-                            text = "10:00",
+                            text = "${data.startTime}~${data.endTime}",
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )
                     }
                 }
-                CompleteDetailInfo(text = "약속 유형") {
-                    NoostakCategoryChip(text = "중요", backgroundColor = NoostakTheme.colors.orange)
+                CompleteDetailInfo(text = stringResource(R.string.tv_complete_detail_category)) {
+                    NoostakCategoryChip(text = data.category, backgroundColor = NoostakTheme.colors.orange)
                 }
                 Column {
-                    CompleteDetailInfo(text = "가능한 친구 1")
+                    CompleteDetailInfo(text = stringResource(
+                        R.string.tv_complete_detail_available,
+                        data.availableMembersCount
+                    ))
                     LazyVerticalStaggeredGrid(
                         modifier = Modifier.padding(top = 10.dp),
                         columns = StaggeredGridCells.Fixed(6),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalItemSpacing = 8.dp
                     ) {
-                        items(12) {
+                        items(data.availableMembers) { member ->
+                            val isFirst = data.availableMembers.indexOf(member) == 0
                             NoostakUserChip(
-                                text = "이가을",
-                                textColor = if (it == 0) NoostakTheme.colors.black else NoostakTheme.colors.gray800,
-                                backgroundColor = if (it == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
+                                text = member,
+                                textColor = NoostakTheme.colors.black,
+                                backgroundColor = if (isFirst) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
                                 borderColor = NoostakTheme.colors.blue200
                             )
                         }
                     }
                 }
                 Column {
-                    CompleteDetailInfo(text = "불가능한 친구 1")
+                    CompleteDetailInfo(text = stringResource(
+                        R.string.tv_complete_detail_unavailable,
+                        data.unavailableMembersCount
+                    ))
                     LazyVerticalStaggeredGrid(
                         modifier = Modifier.padding(top = 10.dp),
                         columns = StaggeredGridCells.Fixed(6),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalItemSpacing = 8.dp
                     ) {
-                        items(12) {
+                        items(data.unavailableMembers) {
                             NoostakUserChip(
-                                text = "이가을",
+                                text = it,
                                 textColor = NoostakTheme.colors.gray800,
                                 backgroundColor = NoostakTheme.colors.gray200,
                                 borderColor = NoostakTheme.colors.gray200
@@ -172,12 +188,9 @@ fun CompleteDetailInfo(
 @Composable
 fun PreviewCompleteDetailScreen() {
     NoostakAndroidTheme {
-        CompleteDetailScreen(
-            data = CompleteEntity(
-                id = 0,
-                title = "3차 회의",
-                date = "Date"
-            ),
+        val confirmedDetailViewModel: ConfirmedDetailViewModel = hiltViewModel()
+        ConfirmedDetailScreen(
+            data = confirmedDetailViewModel.mockConfirmedDetail,
             onBackButtonClick = {}
         )
     }

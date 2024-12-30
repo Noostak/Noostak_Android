@@ -2,7 +2,7 @@ package com.sopt.presentation.groupDetail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sopt.domain.entity.CompleteEntity
+import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.domain.entity.GroupDetailEntity
 import com.sopt.domain.entity.ProgressEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,9 +24,9 @@ class GroupDetailViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    fun navigateToCompleteDetail(id: Long) {
+    fun navigateToConfirmedDetail(groupId: Long, confirmedId: Long) {
         viewModelScope.launch {
-            _sideEffects.emit(GroupDetailSideEffect.NavigateToCompleteDetail(id))
+            _sideEffects.emit(GroupDetailSideEffect.NavigateToConfirmedDetail(groupId, confirmedId))
         }
     }
 
@@ -34,7 +34,7 @@ class GroupDetailViewModel @Inject constructor() : ViewModel() {
     val mockGroupDetail = GroupDetailEntity(
         name = "누스탁",
         memberCount = 10,
-        progress = listOf(
+        progressEntities = listOf(
             ProgressEntity(
                 id = 1,
                 title = "1주차",
@@ -64,14 +64,14 @@ class GroupDetailViewModel @Inject constructor() : ViewModel() {
                 total = 5
             )
         ),
-        complete = listOf(
-            CompleteEntity(
+        confirmedEntities = listOf(
+            ConfirmedEntity(
                 id = 1,
                 title = "5주차",
                 date = "2021.10.29 ~ 2021.11.04",
 
             ),
-            CompleteEntity(
+            ConfirmedEntity(
                 id = 2,
                 title = "6주차",
                 date = "2021.11.05 ~ 2021.11.11",

@@ -1,6 +1,6 @@
 package com.sopt.domain.entity
 
-data class CompleteEntity(
+data class ConfirmedEntity(
     val id: Long,
     val title: String,
     val date: String

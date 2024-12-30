@@ -20,4 +20,11 @@
     <string name="tv_group_detail_list">약속 리스트</string>
     <string name="tv_group_detail_no_progress">현재 진행 중인 약속이 없어요</string>
     <string name="tv_group_detail_no_complete">현재 확정된 약속이 없어요</string>
+
+    <!-- 확정된 약속 정보 -->
+    <string name="tv_complete_detail_header">약속 정보</string>
+    <string name="tv_complete_detail_time">약속 시간</string>
+    <string name="tv_complete_detail_category">약속 유형</string>
+    <string name="tv_complete_detail_available">가능한 친구 %1$s</string>
+    <string name="tv_complete_detail_unavailable">불가능한 친구 %1$s</string>
 </resources>
