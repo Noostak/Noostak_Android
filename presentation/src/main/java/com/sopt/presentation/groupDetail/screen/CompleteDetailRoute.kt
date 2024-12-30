@@ -1,9 +1,7 @@
 package com.sopt.presentation.groupDetail.screen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,7 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.sopt.core.designsystem.component.chip.NoostakChip
+import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
+import com.sopt.core.designsystem.component.chip.NoostakUserChip
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -107,17 +106,7 @@ fun CompleteDetailScreen(
                     }
                 }
                 CompleteDetailInfo(text = "약속 유형") {
-                    Text(
-                        modifier = Modifier
-                            .background(
-                                color = NoostakTheme.colors.orange,
-                                shape = RoundedCornerShape(20.dp)
-                            )
-                            .padding(horizontal = 15.dp, vertical = 6.dp),
-                        text = "중요",
-                        color = NoostakTheme.colors.white,
-                        style = NoostakTheme.typography.c2SemiBold
-                    )
+                    NoostakCategoryChip(text = "중요", backgroundColor = NoostakTheme.colors.orange)
                 }
                 Column {
                     CompleteDetailInfo(text = "가능한 친구 1")
@@ -128,7 +117,7 @@ fun CompleteDetailScreen(
                         verticalItemSpacing = 8.dp
                     ) {
                         items(12) {
-                            NoostakChip(
+                            NoostakUserChip(
                                 text = "이가을",
                                 textColor = if (it == 0) NoostakTheme.colors.black else NoostakTheme.colors.gray800,
                                 backgroundColor = if (it == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
@@ -146,7 +135,7 @@ fun CompleteDetailScreen(
                         verticalItemSpacing = 8.dp
                     ) {
                         items(12) {
-                            NoostakChip(
+                            NoostakUserChip(
                                 text = "이가을",
                                 textColor = NoostakTheme.colors.gray800,
                                 backgroundColor = NoostakTheme.colors.gray200,
