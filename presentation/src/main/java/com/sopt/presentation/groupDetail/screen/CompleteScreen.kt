@@ -27,7 +27,8 @@ import com.sopt.presentation.R
 
 @Composable
 fun CompleteScreen(
-    completes: List<CompleteEntity>
+    completes: List<CompleteEntity>,
+    onItemClicked: (Long) -> Unit
 ) {
     if (completes.isEmpty()) {
         Text(
@@ -39,7 +40,10 @@ fun CompleteScreen(
     } else {
         LazyColumn {
             items(completes, key = { it.id }) {
-                CompleteItem(complete = it)
+                CompleteItem(
+                    complete = it,
+                    onItemClicked = onItemClicked
+                )
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
                     thickness = 1.dp,
@@ -52,12 +56,13 @@ fun CompleteScreen(
 
 @Composable
 fun CompleteItem(
-    complete: CompleteEntity
+    complete: CompleteEntity,
+    onItemClicked: (Long) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .noRippleClickable {  }
+            .noRippleClickable { onItemClicked(complete.id) }
             .padding(
                 top = 15.dp,
                 bottom = 16.dp,
@@ -119,7 +124,8 @@ fun CompleteScreenPreview() {
                     title = "약속 제목",
                     date = "2024년 9월 7일 일요일"
                 )
-            )
+            ),
+            onItemClicked = { }
         )
     }
 }

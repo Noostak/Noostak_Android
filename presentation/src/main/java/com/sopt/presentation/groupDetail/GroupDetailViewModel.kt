@@ -24,6 +24,12 @@ class GroupDetailViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun navigateToCompleteDetail(id: Long) {
+        viewModelScope.launch {
+            _sideEffects.emit(GroupDetailSideEffect.NavigateToCompleteDetail(id))
+        }
+    }
+
     val tabs = immutableListOf("진행중", "완료")
     val mockGroupDetail = GroupDetailEntity(
         name = "누스탁",

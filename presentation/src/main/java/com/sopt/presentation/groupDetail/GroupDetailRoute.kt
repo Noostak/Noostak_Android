@@ -59,12 +59,16 @@ import kotlinx.coroutines.launch
 fun GroupDetailRoute(
     id: Long,
     navigateUp: () -> Unit,
+    navigateToCompleteDetail: (Long) -> Unit,
     groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = groupDetailViewModel.sideEffects) {
         groupDetailViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
                 is GroupDetailSideEffect.NavigateUp -> navigateUp()
+                is GroupDetailSideEffect.NavigateToCompleteDetail -> {
+                    navigateToCompleteDetail(sideEffect.id)
+                }
             }
         }
     }
@@ -73,7 +77,8 @@ fun GroupDetailRoute(
         id = id,
         tabs = groupDetailViewModel.tabs,
         data = groupDetailViewModel.mockGroupDetail,
-        onBackButtonClick = groupDetailViewModel::navigateUp
+        onBackButtonClick = groupDetailViewModel::navigateUp,
+        onCompleteClick = groupDetailViewModel::navigateToCompleteDetail
     )
 }
 
@@ -82,7 +87,8 @@ fun GroupDetailScreen(
     id: Long,
     tabs: List<String>,
     data: GroupDetailEntity,
-    onBackButtonClick: () -> Unit
+    onBackButtonClick: () -> Unit,
+    onCompleteClick: (Long) -> Unit
 ) {
     val pagerState = rememberPagerState { tabs.size }
     val topPagerState = rememberPagerState { 2 }
@@ -164,7 +170,8 @@ fun GroupDetailScreen(
                 pagerState = pagerState,
                 tabs = tabs,
                 progress = data.progress,
-                complete = data.complete
+                complete = data.complete,
+                onCompleteClick = onCompleteClick
             )
         }
     }
@@ -175,7 +182,8 @@ fun CustomTabPager(
     pagerState: PagerState,
     tabs: List<String>,
     progress: List<ProgressEntity>,
-    complete: List<CompleteEntity>
+    complete: List<CompleteEntity>,
+    onCompleteClick: (Long) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     Column {
@@ -241,7 +249,10 @@ fun CustomTabPager(
             ) {
                 when (page) {
                     0 -> ProgressScreen(progresses = progress)
-                    1 -> CompleteScreen(completes = complete)
+                    1 -> CompleteScreen(
+                        completes = complete,
+                        onItemClicked = { onCompleteClick }
+                    )
                 }
             }
         }
@@ -257,7 +268,8 @@ fun GroupDetailRoutePreview() {
             id = 0,
             tabs = groupDetailViewModel.tabs,
             data = groupDetailViewModel.mockGroupDetail,
-            onBackButtonClick = {}
+            onBackButtonClick = {},
+            onCompleteClick = {}
         )
     }
 }
