@@ -82,7 +82,7 @@ fun ConfirmedDetailScreen(
         ) {
             Text(
                 modifier = Modifier.padding(top = 12.dp),
-                text = stringResource(R.string.tv_complete_detail_header),
+                text = stringResource(R.string.header_complete_detail),
                 color = NoostakTheme.colors.gray800,
                 style = NoostakTheme.typography.t4Bold
             )

@@ -8,6 +8,7 @@ import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
 import com.sopt.presentation.groupDetail.GroupDetailRoute
 import com.sopt.presentation.groupDetail.screen.ConfirmedDetailRoute
+import com.sopt.presentation.groupDetail.screen.GroupMemberRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateGroupDetail(
@@ -34,6 +35,16 @@ fun NavController.navigateConfirmedDetail(
     )
 }
 
+fun NavController.navigateGroupMember(
+    groupId: Long,
+    navOptions: NavOptions? = null
+) {
+    navigate(
+        route = GroupMember(groupId = groupId),
+        navOptions = navOptions
+    )
+}
+
 fun NavGraphBuilder.groupDetailNavGraph(
     navHostController: NavController
 ) {
@@ -47,6 +58,9 @@ fun NavGraphBuilder.groupDetailNavGraph(
                     groupId = groupId,
                     confirmedId = confirmedId
                 )
+            },
+            navigateToGroupMember = { groupId ->
+                navHostController.navigateGroupMember(groupId = groupId)
             }
         )
     }
@@ -56,6 +70,14 @@ fun NavGraphBuilder.groupDetailNavGraph(
         ConfirmedDetailRoute(
             groupId = args.groupId,
             confirmedId = args.confirmedId,
+            navigateUp = navHostController::navigateUp
+        )
+    }
+
+    composable<GroupMember> {
+        val args = it.toRoute<GroupMember>() // 이전 화면에서 데이터 전달 받기
+        GroupMemberRoute(
+            groupId = args.groupId,
             navigateUp = navHostController::navigateUp
         )
     }
@@ -70,4 +92,9 @@ data class GroupDetail(
 data class ConfirmedDetail(
     val groupId: Long,
     val confirmedId: Long
+) : Route
+
+@Serializable
+data class GroupMember(
+    val groupId: Long
 ) : Route

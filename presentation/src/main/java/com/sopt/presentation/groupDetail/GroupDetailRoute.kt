@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -53,12 +55,14 @@ import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.screen.ConfirmedScreen
 import com.sopt.presentation.groupDetail.screen.ProgressScreen
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @Composable
 fun GroupDetailRoute(
     groupId: Long,
     navigateUp: () -> Unit,
     navigateToConfirmedDetail: (Long, Long) -> Unit,
+    navigateToGroupMember: (Long) -> Unit,
     groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = groupDetailViewModel.sideEffects) {
@@ -67,6 +71,10 @@ fun GroupDetailRoute(
                 is GroupDetailSideEffect.NavigateUp -> navigateUp()
                 is GroupDetailSideEffect.NavigateToConfirmedDetail -> {
                     navigateToConfirmedDetail(sideEffect.groupId, sideEffect.confirmedId)
+                }
+
+                is GroupDetailSideEffect.NavigateToGroupMember -> {
+                    navigateToGroupMember(sideEffect.groupId)
                 }
             }
         }
@@ -77,7 +85,8 @@ fun GroupDetailRoute(
         tabs = groupDetailViewModel.tabs,
         data = groupDetailViewModel.mockGroupDetail,
         onBackButtonClick = groupDetailViewModel::navigateUp,
-        onConfirmedClick = groupDetailViewModel::navigateToConfirmedDetail
+        onConfirmedClick = groupDetailViewModel::navigateToConfirmedDetail,
+        onGroupMemberClick = groupDetailViewModel::navigateToGroupMember
     )
 }
 
@@ -87,13 +96,17 @@ fun GroupDetailScreen(
     tabs: List<String>,
     data: GroupDetailEntity,
     onBackButtonClick: () -> Unit,
-    onConfirmedClick: (Long, Long) -> Unit
+    onConfirmedClick: (Long, Long) -> Unit,
+    onGroupMemberClick: (Long) -> Unit
 ) {
     val pagerState = rememberPagerState { tabs.size }
     Scaffold(
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         topBar = {
             NoostakTopAppBar(
-                title = stringResource(R.string.topbar_group_detail),
+                title = stringResource(R.string.appbar_group_detail),
                 modifier = Modifier,
                 isIconVisible = false,
                 onBackButtonClick = onBackButtonClick
@@ -105,6 +118,7 @@ fun GroupDetailScreen(
                 modifier = Modifier.offset(x = 0.dp, y = (-74).dp)
             ) {
                 // 약속 생성 페이지로 이동
+                Timber.d("약속 생성 페이지로 이동")
             }
         },
         floatingActionButtonPosition = FabPosition.End
@@ -146,7 +160,9 @@ fun GroupDetailScreen(
                 )
             }
             Row(
-                modifier = Modifier.padding(top = 2.dp),
+                modifier = Modifier
+                    .padding(top = 2.dp)
+                    .noRippleClickable { onGroupMemberClick(groupId) },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -278,7 +294,8 @@ fun GroupDetailRoutePreview() {
             tabs = groupDetailViewModel.tabs,
             data = groupDetailViewModel.mockGroupDetail,
             onBackButtonClick = {},
-            onConfirmedClick = { _, _ -> }
+            onConfirmedClick = { _, _ -> },
+            onGroupMemberClick = {}
         )
     }
 }

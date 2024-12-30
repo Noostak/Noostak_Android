@@ -14,6 +14,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.util.NoRippleInteractionSource
 
 @Composable
 fun NoostakFloatingActionButton(
@@ -27,7 +28,8 @@ fun NoostakFloatingActionButton(
         containerColor = NoostakTheme.colors.black,
         contentColor = NoostakTheme.colors.white,
         elevation = FloatingActionButtonDefaults.elevation(4.dp),
-        onClick = { onClick() }
+        onClick = { onClick() },
+        interactionSource = NoRippleInteractionSource
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_add),

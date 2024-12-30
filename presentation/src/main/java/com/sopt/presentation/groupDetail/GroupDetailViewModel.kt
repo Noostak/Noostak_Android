@@ -30,6 +30,12 @@ class GroupDetailViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun navigateToGroupMember(groupId: Long) {
+        viewModelScope.launch {
+            _sideEffects.emit(GroupDetailSideEffect.NavigateToGroupMember(groupId))
+        }
+    }
+
     val tabs = immutableListOf("진행중", "완료")
     val mockGroupDetail = GroupDetailEntity(
         groupName = "누스탁",
