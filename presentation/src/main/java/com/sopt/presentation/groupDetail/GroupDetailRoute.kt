@@ -1,5 +1,6 @@
 package com.sopt.presentation.groupDetail
 
+import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,11 +37,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakFloatingActionButton
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
@@ -101,6 +104,8 @@ fun GroupDetailScreen(
     onGroupMemberClick: (Long) -> Unit
 ) {
     val pagerState = rememberPagerState { tabs.size }
+    val context = LocalContext.current
+
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
@@ -154,6 +159,16 @@ fun GroupDetailScreen(
                         .size(24.dp)
                         .noRippleClickable {
                             // 공유 기능
+                            val sendIntent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(
+                                    Intent.EXTRA_TEXT,
+                                    "공유하고자 하는 그룹 아이디: $groupId"
+                                )
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            ContextCompat.startActivity(context, shareIntent, null)
                         },
                     imageVector = ImageVector.vectorResource(id = R.drawable.ic_share),
                     contentDescription = null,
