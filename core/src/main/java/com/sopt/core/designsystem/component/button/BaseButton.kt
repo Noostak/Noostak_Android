@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.NoRippleConfiguration
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -33,7 +34,8 @@ fun BaseButton(
             modifier = modifier,
             shape = shape,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Gray
+                containerColor = if (isEnabled) NoostakTheme.colors.black else NoostakTheme.colors.gray500,
+                contentColor = NoostakTheme.colors.white
             ),
             contentPadding = PaddingValues(
                 vertical = paddingVertical,
@@ -44,7 +46,6 @@ fun BaseButton(
         ) {
             Text(
                 text = text,
-                color = Color.White,
                 style = style
             )
         }
