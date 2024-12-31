@@ -31,12 +31,12 @@ class ConfirmedDetailViewModel @Inject constructor() : ViewModel() {
         likes = 15,
         availableMembersCount = 5,
         availableMembers = listOf(
-            "김철수", "이영희", "박영수", "최영희", "정영수",
+            "나", "선우정아", "대한민국만세", "최영희", "정영수",
             "이가을", "김언지", "박유진", "임하늘", "변우석", "김혜윤", "카리나", "닝닝",
             "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
         ),
         unavailableMembersCount = 5,
-        unavailableMembers = listOf("김철수", "이영희", "박영수", "최영희", "정영수")
+        unavailableMembers = listOf("나", "한강", "이영희", "박영수", "최영희", "정영수")
     )
 }
 

@@ -3,6 +3,8 @@ package com.sopt.presentation.groupDetail.screen
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,9 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -56,6 +55,7 @@ fun ConfirmedDetailRoute(
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ConfirmedDetailScreen(
     data: ConfirmedDetailEntity,
@@ -127,18 +127,16 @@ fun ConfirmedDetailScreen(
                             data.availableMembersCount
                         )
                     )
-                    LazyVerticalStaggeredGrid(
+                    FlowRow(
                         modifier = Modifier.padding(top = 10.dp),
-                        columns = StaggeredGridCells.Fixed(6),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalItemSpacing = 8.dp
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        items(data.availableMembers) { member ->
-                            val isFirst = data.availableMembers.indexOf(member) == 0
+                        data.availableMembers.forEach { member ->
                             NoostakUserChip(
                                 text = member,
                                 textColor = NoostakTheme.colors.black,
-                                backgroundColor = if (isFirst) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
+                                backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
                                 borderColor = NoostakTheme.colors.blue200
                             )
                         }
@@ -151,18 +149,17 @@ fun ConfirmedDetailScreen(
                             data.unavailableMembersCount
                         )
                     )
-                    LazyVerticalStaggeredGrid(
+                    FlowRow(
                         modifier = Modifier.padding(top = 10.dp),
-                        columns = StaggeredGridCells.Fixed(6),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalItemSpacing = 8.dp
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        items(data.unavailableMembers) {
+                        data.unavailableMembers.forEach { member ->
                             NoostakUserChip(
-                                text = it,
+                                text = member,
                                 textColor = NoostakTheme.colors.gray800,
-                                backgroundColor = NoostakTheme.colors.gray200,
-                                borderColor = NoostakTheme.colors.gray200
+                                backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
+                                borderColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
                             )
                         }
                     }
