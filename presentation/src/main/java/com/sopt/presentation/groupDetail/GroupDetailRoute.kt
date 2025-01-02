@@ -67,6 +67,7 @@ fun GroupDetailRoute(
     navigateUp: () -> Unit,
     navigateToConfirmedDetail: (Long, Long) -> Unit,
     navigateToGroupMember: (Long) -> Unit,
+    navigateToAppointment: (Long, Long, String) -> Unit,
     groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = groupDetailViewModel.sideEffects) {
@@ -80,6 +81,14 @@ fun GroupDetailRoute(
                 is GroupDetailSideEffect.NavigateToGroupMember -> {
                     navigateToGroupMember(sideEffect.groupId)
                 }
+
+                is GroupDetailSideEffect.NavigateToAppointment -> {
+                    navigateToAppointment(
+                        sideEffect.groupId,
+                        sideEffect.appointmentsId,
+                        sideEffect.appointmentName
+                    )
+                }
             }
         }
     }
@@ -90,7 +99,8 @@ fun GroupDetailRoute(
         data = groupDetailViewModel.mockGroupDetail,
         onBackButtonClick = groupDetailViewModel::navigateUp,
         onConfirmedClick = groupDetailViewModel::navigateToConfirmedDetail,
-        onGroupMemberClick = groupDetailViewModel::navigateToGroupMember
+        onGroupMemberClick = groupDetailViewModel::navigateToGroupMember,
+        onProgressClick = groupDetailViewModel::navigateToAppointment
     )
 }
 
@@ -101,7 +111,8 @@ fun GroupDetailScreen(
     data: GroupDetailEntity,
     onBackButtonClick: () -> Unit,
     onConfirmedClick: (Long, Long) -> Unit,
-    onGroupMemberClick: (Long) -> Unit
+    onGroupMemberClick: (Long) -> Unit,
+    onProgressClick: (Long, Long, String) -> Unit
 ) {
     val pagerState = rememberPagerState { tabs.size }
     val context = LocalContext.current
@@ -204,6 +215,7 @@ fun GroupDetailScreen(
                 tabs = tabs,
                 progressEntities = data.progressEntities,
                 confirmedEntities = data.confirmedEntities,
+                onProgressClick = onProgressClick,
                 onConfirmedClick = onConfirmedClick
             )
         }
@@ -217,6 +229,7 @@ fun CustomTabPager(
     tabs: List<String>,
     progressEntities: List<ProgressEntity>,
     confirmedEntities: List<ConfirmedEntity>,
+    onProgressClick: (Long, Long, String) -> Unit,
     onConfirmedClick: (Long, Long) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -284,7 +297,10 @@ fun CustomTabPager(
                 when (page) {
                     0 -> ProgressScreen(
                         groupId = groupId,
-                        progressEntities = progressEntities
+                        progressEntities = progressEntities,
+                        onItemClicked = { groupId, appointmentsId, appointmentName ->
+                            onProgressClick(groupId, appointmentsId, appointmentName)
+                        }
                     )
 
                     1 -> ConfirmedScreen(
@@ -311,7 +327,8 @@ fun GroupDetailRoutePreview() {
             data = groupDetailViewModel.mockGroupDetail,
             onBackButtonClick = {},
             onConfirmedClick = { _, _ -> },
-            onGroupMemberClick = {}
+            onGroupMemberClick = {},
+            onProgressClick = { _, _, _ -> }
         )
     }
 }

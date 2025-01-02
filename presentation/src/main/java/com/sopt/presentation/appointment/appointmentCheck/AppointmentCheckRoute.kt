@@ -6,7 +6,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -20,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.timetable.NoostakTimeTable
+import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 
@@ -27,6 +30,7 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 fun AppointmentCheckRoute(
     groupId: Long,
     appointmentsId: Long,
+    appointmentName: String,
     navigateUp: () -> Unit,
     appointmentCheckViewModel: AppointmentCheckViewModel = hiltViewModel()
 ) {
@@ -37,17 +41,30 @@ fun AppointmentCheckRoute(
             }
         }
     }
-    AppointmentCheckScreen()
+    AppointmentCheckScreen(
+        appointmentName = appointmentName,
+        onBackButtonClick = appointmentCheckViewModel::navigateUp
+    )
 }
 
 @Composable
-fun AppointmentCheckScreen() {
+fun AppointmentCheckScreen(
+    appointmentName: String,
+    onBackButtonClick: () -> Unit
+) {
     val days = 6
     val time = 18
 
     Scaffold(
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         topBar = {
-
+            NoostakTopAppBar(
+                title = appointmentName,
+                isIconVisible = true,
+                onBackButtonClick = onBackButtonClick
+            )
         }
     ) { innerPadding ->
         Column(
@@ -93,6 +110,9 @@ fun AppointmentCheckScreen() {
 @Composable
 fun PreviewAppointmentConfirmScreen() {
     NoostakAndroidTheme {
-        AppointmentCheckScreen()
+        AppointmentCheckScreen(
+            appointmentName = "3차 회의",
+            onBackButtonClick = {}
+        )
     }
 }

@@ -10,6 +10,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GroupDetailViewModel @Inject constructor() : BaseViewModel<GroupDetailSideEffect>() {
+
     fun navigateUp() {
         emitSideEffect(GroupDetailSideEffect.NavigateUp)
     }
@@ -20,6 +21,16 @@ class GroupDetailViewModel @Inject constructor() : BaseViewModel<GroupDetailSide
 
     fun navigateToGroupMember(groupId: Long) {
         emitSideEffect(GroupDetailSideEffect.NavigateToGroupMember(groupId))
+    }
+
+    fun navigateToAppointment(groupId: Long, appointmentsId: Long, appointmentName: String) {
+        emitSideEffect(
+            GroupDetailSideEffect.NavigateToAppointment(
+                groupId,
+                appointmentsId,
+                appointmentName
+            )
+        )
     }
 
     val tabs = immutableListOf("진행중", "확정")

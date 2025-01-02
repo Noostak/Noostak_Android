@@ -4,7 +4,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,33 +13,47 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakButton
+import com.sopt.core.designsystem.component.chip.NoostakUserChip
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
-import com.sopt.core.util.NoRippleInteractionSource
+import com.sopt.domain.entity.AppointmentEntity
+import com.sopt.domain.entity.RecommendationEntity
 import com.sopt.presentation.R
+import timber.log.Timber
 
 @Composable
-fun RecommendationScreen() {
-    var isSelected by remember { mutableStateOf(false) }
+fun RecommendationScreen(
+    selectedItemIndex: Int,
+    data: List<AppointmentEntity>
+) {
+    val filteredData = data.find { it.priority == selectedItemIndex + 1 }?.recommendations.orEmpty()
+    var selectedItemId by remember { mutableStateOf<Long?>(null) }
+
+    // filteredData가 변경될 때마다 초기화
+    LaunchedEffect(filteredData) {
+        selectedItemId = null
+    }
+
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -46,38 +61,46 @@ fun RecommendationScreen() {
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(2) {
+            items(filteredData, key = { it.id }) { recommendation ->
                 RecommendationItem(
-                    onItemClick = { isSelected = !isSelected }
+                    data = recommendation,
+                    isSelected = selectedItemId == recommendation.id,
+                    onItemClick = {
+                        selectedItemId =
+                            if (selectedItemId == recommendation.id) null else recommendation.id
+                    }
                 )
             }
         }
         NoostakButton(
             text = "확정",
-            onButtonClick = { /*TODO*/ },
-            isEnabled = isSelected
+            onButtonClick = { Timber.d("selectedItemId: $selectedItemId") },
+            isEnabled = selectedItemId != null
         )
         Spacer(modifier = Modifier.height(16.dp))
     }
-
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RecommendationItem(
+    data: RecommendationEntity,
+    isSelected: Boolean,
     onItemClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .background(
-                color = NoostakTheme.colors.blue50,
+                color = if (isSelected) NoostakTheme.colors.blue200 else NoostakTheme.colors.blue50,
                 shape = RoundedCornerShape(20.dp)
             )
             .border(
                 width = 1.dp,
-                color = NoostakTheme.colors.blue100,
+                color = if (isSelected) Color.Transparent else NoostakTheme.colors.blue100,
                 shape = RoundedCornerShape(20.dp)
             )
             .padding(16.dp)
+            .noRippleClickable { onItemClick() }
     ) {
         Row(
             modifier = Modifier
@@ -87,7 +110,7 @@ fun RecommendationItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "9월 7일 (일) 10:00 - 12:00",
+                text = "${data.date} (일) ${data.startTime} - ${data.endTime}",
                 color = NoostakTheme.colors.black,
                 style = NoostakTheme.typography.t4Bold
             )
@@ -114,13 +137,51 @@ fun RecommendationItem(
                 )
                 Text(
                     modifier = Modifier.padding(start = 2.dp),
-                    text = "1",
+                    text = data.likes.toString(),
                     color = NoostakTheme.colors.black,
                     style = NoostakTheme.typography.c4Regular
                 )
             }
         }
-
+        Text(
+            text = "가능한 친구 ${data.availableMembersCount}",
+            color = NoostakTheme.colors.black,
+            style = NoostakTheme.typography.c2SemiBold
+        )
+        FlowRow(
+            modifier = Modifier.padding(top = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            data.availableMembers.forEach { member ->
+                NoostakUserChip(
+                    text = member,
+                    textColor = NoostakTheme.colors.black,
+                    backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
+                    borderColor = NoostakTheme.colors.blue200
+                )
+            }
+        }
+        Text(
+            modifier = Modifier.padding(top = 20.dp),
+            text = "불가능한 친구 ${data.unavailableMembersCount}",
+            color = NoostakTheme.colors.black,
+            style = NoostakTheme.typography.c2SemiBold
+        )
+        FlowRow(
+            modifier = Modifier.padding(top = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            data.unavailableMembers.forEach { member ->
+                NoostakUserChip(
+                    text = member,
+                    textColor = NoostakTheme.colors.gray800,
+                    backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
+                    borderColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
+                )
+            }
+        }
     }
 }
 
@@ -128,6 +189,10 @@ fun RecommendationItem(
 @Composable
 fun RecommendationScreenPreview() {
     NoostakAndroidTheme {
-        RecommendationScreen()
+        val appointmentViewModel: AppointmentViewModel = hiltViewModel()
+        RecommendationScreen(
+            selectedItemIndex = 1,
+            data = appointmentViewModel.mockRecommendations
+        )
     }
 }

@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -29,16 +31,18 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
-import com.sopt.core.extension.showIf
+import com.sopt.domain.entity.AppointmentEntity
 import com.sopt.presentation.R
 
 @Composable
 fun AppointmentRoute(
     groupId: Long,
     appointmentsId: Long,
+    appointmentName: String,
     navigateUp: () -> Unit,
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
@@ -49,14 +53,31 @@ fun AppointmentRoute(
             }
         }
     }
-    AppointmentScreen()
+    AppointmentScreen(
+        appointmentName = appointmentName,
+        onBackButtonClick = appointmentViewModel::navigateUp,
+        recommendations = appointmentViewModel.mockRecommendations
+    )
 }
 
 @Composable
-fun AppointmentScreen() {
+fun AppointmentScreen(
+    appointmentName: String,
+    onBackButtonClick: () -> Unit,
+    recommendations: List<AppointmentEntity>
+) {
     var selectedItemIndex by remember { mutableIntStateOf(-1) }
     Scaffold(
-        topBar = {}
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding(),
+        topBar = {
+            NoostakTopAppBar(
+                title = appointmentName,
+                isIconVisible = true,
+                onBackButtonClick = onBackButtonClick
+            )
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -94,7 +115,7 @@ fun AppointmentScreen() {
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                items(6) { index ->
+                items(recommendations.size) { index ->
                     RecommendationHeaderItem(
                         selectedItemIndex = selectedItemIndex,
                         onHeaderItemClick = { selectedIndex ->
@@ -107,7 +128,10 @@ fun AppointmentScreen() {
             if (selectedItemIndex == -1) {
                 CurrentStatusScreen()
             } else {
-                RecommendationScreen()
+                RecommendationScreen(
+                    selectedItemIndex = selectedItemIndex,
+                    data = recommendations
+                )
             }
         }
     }
@@ -196,6 +220,11 @@ fun RecommendationHeaderItem(
 @Composable
 fun AppointmentScreenPreview() {
     NoostakAndroidTheme {
-        AppointmentScreen()
+        val appointmentViewModel: AppointmentViewModel = hiltViewModel()
+        AppointmentScreen(
+            appointmentName = "3차 회의",
+            onBackButtonClick = {},
+            recommendations = appointmentViewModel.mockRecommendations
+        )
     }
 }

@@ -1,23 +1,14 @@
 package com.sopt.presentation.appointment.appointmentCheck
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.sopt.core.util.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AppointmentCheckViewModel @Inject constructor() : ViewModel() {
-    private val _sideEffects: MutableSharedFlow<AppointmentCheckSideEffect> = MutableSharedFlow()
-    val sideEffects: SharedFlow<AppointmentCheckSideEffect> get() = _sideEffects.asSharedFlow()
-
+class AppointmentCheckViewModel @Inject constructor() :
+    BaseViewModel<AppointmentCheckSideEffect>() {
     fun navigateUp() {
-        viewModelScope.launch {
-            _sideEffects.emit(AppointmentCheckSideEffect.NavigateUp)
-        }
+        emitSideEffect(AppointmentCheckSideEffect.NavigateUp)
     }
 }
 

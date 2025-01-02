@@ -6,30 +6,34 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
-import com.sopt.presentation.appointment.appointmentCheck.AppointmentCheckRoute
 import com.sopt.presentation.appointment.AppointmentRoute
+import com.sopt.presentation.appointment.appointmentCheck.AppointmentCheckRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateAppointment(
     groupId: Long,
-    appointmentsId: Long
+    appointmentsId: Long,
+    appointmentName: String
 ) {
     navigate(
         route = Appointment(
             groupId = groupId,
-            appointmentsId = appointmentsId
+            appointmentsId = appointmentsId,
+            appointmentName = appointmentName
         )
     )
 }
 
 fun NavController.navigateAppointmentCheck(
     groupId: Long,
-    appointmentsId: Long
+    appointmentsId: Long,
+    appointmentName: String
 ) {
     navigate(
         route = AppointmentCheck(
             groupId = groupId,
-            appointmentsId = appointmentsId
+            appointmentsId = appointmentsId,
+            appointmentName = appointmentName
         )
     )
 }
@@ -42,6 +46,7 @@ fun NavGraphBuilder.appointmentNavGraph(
         AppointmentRoute(
             groupId = args.groupId,
             appointmentsId = args.appointmentsId,
+            appointmentName = args.appointmentName,
             navigateUp = navHostController::navigateUp
         )
     }
@@ -51,6 +56,7 @@ fun NavGraphBuilder.appointmentNavGraph(
         AppointmentCheckRoute(
             groupId = args.groupId,
             appointmentsId = args.appointmentsId,
+            appointmentName = args.appointmentName,
             navigateUp = navHostController::navigateUp
         )
     }
@@ -59,11 +65,13 @@ fun NavGraphBuilder.appointmentNavGraph(
 @Serializable
 data class Appointment(
     val groupId: Long,
-    val appointmentsId: Long
+    val appointmentsId: Long,
+    val appointmentName: String
 ) : Route
 
 @Serializable
 data class AppointmentCheck(
     val groupId: Long,
-    val appointmentsId: Long
+    val appointmentsId: Long,
+    val appointmentName: String
 ) : Route

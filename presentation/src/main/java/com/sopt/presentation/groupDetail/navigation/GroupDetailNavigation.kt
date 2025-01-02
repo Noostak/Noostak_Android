@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
+import com.sopt.presentation.appointment.navigation.navigateAppointment
 import com.sopt.presentation.groupDetail.GroupDetailRoute
 import com.sopt.presentation.groupDetail.screen.ConfirmedDetailRoute
 import com.sopt.presentation.groupDetail.screen.GroupMemberRoute
@@ -61,6 +62,13 @@ fun NavGraphBuilder.groupDetailNavGraph(
             },
             navigateToGroupMember = { groupId ->
                 navHostController.navigateGroupMember(groupId = groupId)
+            },
+            navigateToAppointment = { groupId, appointmentsId, appointmentName ->
+                navHostController.navigateAppointment(
+                    groupId = groupId,
+                    appointmentsId = appointmentsId,
+                    appointmentName = appointmentName
+                )
             }
         )
     }
