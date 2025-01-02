@@ -1,42 +1,28 @@
 package com.sopt.presentation.groupDetail
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.domain.entity.GroupDetailEntity
 import com.sopt.domain.entity.ProgressEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
 import okhttp3.internal.immutableListOf
 import javax.inject.Inject
 
 @HiltViewModel
-class GroupDetailViewModel @Inject constructor() : ViewModel() {
-    private val _sideEffects: MutableSharedFlow<GroupDetailSideEffect> = MutableSharedFlow()
-    val sideEffects: SharedFlow<GroupDetailSideEffect> get() = _sideEffects.asSharedFlow()
-
+class GroupDetailViewModel @Inject constructor() : BaseViewModel<GroupDetailSideEffect>() {
     fun navigateUp() {
-        viewModelScope.launch {
-            _sideEffects.emit(GroupDetailSideEffect.NavigateUp)
-        }
+        emitSideEffect(GroupDetailSideEffect.NavigateUp)
     }
 
     fun navigateToConfirmedDetail(groupId: Long, confirmedId: Long) {
-        viewModelScope.launch {
-            _sideEffects.emit(GroupDetailSideEffect.NavigateToConfirmedDetail(groupId, confirmedId))
-        }
+        emitSideEffect(GroupDetailSideEffect.NavigateToConfirmedDetail(groupId, confirmedId))
     }
 
     fun navigateToGroupMember(groupId: Long) {
-        viewModelScope.launch {
-            _sideEffects.emit(GroupDetailSideEffect.NavigateToGroupMember(groupId))
-        }
+        emitSideEffect(GroupDetailSideEffect.NavigateToGroupMember(groupId))
     }
 
-    val tabs = immutableListOf("진행중", "완료")
+    val tabs = immutableListOf("진행중", "확정")
     val mockGroupDetail = GroupDetailEntity(
         groupName = "누스탁",
         groupMembersCount = 10,

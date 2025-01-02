@@ -1,26 +1,16 @@
 package com.sopt.presentation.groupDetail
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.GroupLeaderEntity
 import com.sopt.domain.entity.GroupMemberEntity
 import com.sopt.domain.entity.GroupMembersEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GroupMemberViewModel @Inject constructor() : ViewModel() {
-    private val _sideEffects: MutableSharedFlow<GroupMemberSideEffect> = MutableSharedFlow()
-    val sideEffects: SharedFlow<GroupMemberSideEffect> get() = _sideEffects.asSharedFlow()
-
+class GroupMemberViewModel @Inject constructor() : BaseViewModel<GroupMemberSideEffect>() {
     fun navigateUp() {
-        viewModelScope.launch {
-            _sideEffects.emit(GroupMemberSideEffect.NavigateUp)
-        }
+        emitSideEffect(GroupMemberSideEffect.NavigateUp)
     }
 
     val mockGroupMembers = GroupMembersEntity(

@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -21,7 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.util.NoRippleInteractionSource
+import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.extension.showIf
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,19 +41,15 @@ fun NoostakTopAppBar(
             )
         },
         navigationIcon = {
-            IconButton(
-                onClick = { onBackButtonClick() },
-                enabled = isIconVisible,
-                interactionSource = NoRippleInteractionSource
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_back),
-                    contentDescription = stringResource(id = R.string.ic_back),
-                    modifier = Modifier
-                        .padding(start = 8.dp),
-                    tint = if (isIconVisible) NoostakTheme.colors.black else Color.Transparent
-                )
-            }
+            Icon(
+                painter = painterResource(id = R.drawable.ic_back),
+                contentDescription = stringResource(id = R.string.ic_back),
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .noRippleClickable { onBackButtonClick() }
+                    .showIf(isIconVisible),
+                tint = NoostakTheme.colors.black
+            )
         },
         colors = TopAppBarDefaults.topAppBarColors(White),
         windowInsets = WindowInsets(0)
@@ -67,7 +62,7 @@ fun NoostakTopAppBarPreview() {
     NoostakAndroidTheme {
         NoostakTopAppBar(
             modifier = Modifier.fillMaxWidth(),
-            isIconVisible = false,
+            isIconVisible = true,
             title = "그룹"
         )
     }
