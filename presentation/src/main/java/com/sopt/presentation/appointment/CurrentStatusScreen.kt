@@ -13,10 +13,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.component.timetable.NoostakTimeTable
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.presentation.R
 
 @Composable
@@ -31,11 +33,12 @@ fun CurrentStatusScreen(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "실시간 현황",
+            text = stringResource(R.string.header_appointment_current_status),
             color = NoostakTheme.colors.black,
             style = NoostakTheme.typography.b1SemiBold
         )
         Button(
+            interactionSource = NoRippleInteractionSource,
             colors = ButtonDefaults.buttonColors(
                 containerColor = NoostakTheme.colors.blue200,
                 contentColor = NoostakTheme.colors.gray700
@@ -57,7 +60,7 @@ fun CurrentStatusScreen(
                     contentDescription = null
                 )
                 Text(
-                    text = "일정 수정",
+                    text = stringResource(R.string.btn_appointment_modify),
                     style = NoostakTheme.typography.c4Regular
                 )
             }

@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -73,7 +74,7 @@ fun RecommendationScreen(
             }
         }
         NoostakButton(
-            text = "확정",
+            text = stringResource(R.string.btn_appointment_confirm),
             onButtonClick = { Timber.d("selectedItemId: $selectedItemId") },
             isEnabled = selectedItemId != null
         )
@@ -144,7 +145,7 @@ fun RecommendationItem(
             }
         }
         Text(
-            text = "가능한 친구 ${data.availableMembersCount}",
+            text = stringResource(R.string.header_appointment_available, data.availableMembersCount),
             color = NoostakTheme.colors.black,
             style = NoostakTheme.typography.c2SemiBold
         )
@@ -164,7 +165,10 @@ fun RecommendationItem(
         }
         Text(
             modifier = Modifier.padding(top = 20.dp),
-            text = "불가능한 친구 ${data.unavailableMembersCount}",
+            text = stringResource(
+                R.string.header_appointment_unavailable,
+                data.unavailableMembersCount
+            ),
             color = NoostakTheme.colors.black,
             style = NoostakTheme.typography.c2SemiBold
         )

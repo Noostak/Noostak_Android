@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -25,6 +26,7 @@ import com.sopt.core.designsystem.component.timetable.NoostakTimeTable
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.presentation.R
 
 @Composable
 fun AppointmentCheckRoute(
@@ -76,7 +78,7 @@ fun AppointmentCheckScreen(
         ) {
             Text(
                 modifier = Modifier.padding(top = 11.dp, start = 6.dp, bottom = 16.dp),
-                text = "가능한 시간을\n모두 선택해주세요",
+                text = stringResource(R.string.title_appointment_check),
                 color = NoostakTheme.colors.black,
                 style = NoostakTheme.typography.h4Bold,
                 textAlign = TextAlign.Start
@@ -97,7 +99,7 @@ fun AppointmentCheckScreen(
                 onClick = { }
             ) {
                 Text(
-                    text = "확인",
+                    text = stringResource(R.string.btn_appointment_check),
                     style = NoostakTheme.typography.t3Bold,
                     color = NoostakTheme.colors.white
                 )

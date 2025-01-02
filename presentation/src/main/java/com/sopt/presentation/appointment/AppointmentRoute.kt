@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -93,13 +94,13 @@ fun AppointmentScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "추천 시간",
+                    text = stringResource(R.string.header_appointment_recommendation),
                     color = NoostakTheme.colors.black,
                     style = NoostakTheme.typography.b1SemiBold
                 )
                 Row {
                     Text(
-                        text = "전체보기",
+                        text = stringResource(R.string.btn_appointment_total),
                         color = NoostakTheme.colors.gray800,
                         style = NoostakTheme.typography.c3Regular
                     )

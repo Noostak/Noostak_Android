@@ -33,4 +33,15 @@
     <string name="header_group_member_leader">방장</string>
     <string name="header_group_member_member">멤버</string>
 
+    <!-- 약속 확정 -->
+    <string name="header_appointment_current_status">실시간 현황</string>
+    <string name="btn_appointment_modify">일정 수정</string>
+    <string name="header_appointment_available">가능한 친구 %1$s</string>
+    <string name="header_appointment_unavailable">불가능한 친구 %1$s</string>
+    <string name="btn_appointment_confirm">확정</string>
+    <string name="title_appointment_check">가능한 시간을\n모두 선택해주세요</string>
+    <string name="btn_appointment_check">확인</string>
+    <string name="header_appointment_recommendation">추천 시간</string>
+    <string name="btn_appointment_total">전체보기</string>
+
 </resources>
