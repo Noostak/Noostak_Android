@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="chip_radius">16dp</dimen>
+    <dimen name="user_chip_horizontal_padding">8dp</dimen>
+    <dimen name="user_chip_vertical_padding">6dp</dimen>
+    <dimen name="category_chip_horizontal_padding">15dp</dimen>
+    <dimen name="category_chip_vertical_padding">6dp</dimen>
+    <dimen name="fab_radius">30dp</dimen>
+</resources>
