@@ -17,6 +17,18 @@
     <string name="btn_next">다음</string>
     <string name="btn_submit">확인</string>
 
+    <!-- 로그인 -->
+    <string name="tv_login_description">SNS 계정으로 빠르게 시작하기</string>
+    <string name="iv_login_description">로고</string>
+    <string name="btn_login_kakao">카카오로 로그인</string>
+    <string name="btn_login_google">Google로 로그인</string>
+
+    <!-- 회원가입 -->
+    <string name="tv_signup_profile">프로필 설정</string>
+    <string name="tv_signup_example_name">예) 홍길동</string>
+    <string name="hint_signup_name">이름을 입력해주세요</string>
+    <string name="tv_signup_count">%1$d / %2$d</string>
+
     <!-- 그룹 상세 -->
     <string name="fab_group_detail">약속 만들기</string>
     <string name="appbar_group_detail">그룹</string>
