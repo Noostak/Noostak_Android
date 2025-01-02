@@ -38,9 +38,18 @@ import androidx.navigation.compose.NavHost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sopt.core.designsystem.component.snackbar.BaseSnackBar
 import com.sopt.core.util.NoRippleInteractionSource
+import com.sopt.presentation.auth.login.navigation.loginNavGraph
+import com.sopt.presentation.auth.signup.checkInvite.navigation.checkInviteNavGraph
+import com.sopt.presentation.auth.signup.checkInvite.navigation.navigateCheckInvite
+import com.sopt.presentation.auth.signup.inputGroupCode.navigation.inputGroupCodeNavGraph
+import com.sopt.presentation.auth.signup.inputGroupCode.navigation.navigateInputGroupCode
+import com.sopt.presentation.auth.signup.navigation.navigateSignUp
+import com.sopt.presentation.auth.signup.navigation.signUpNavGraph
 import com.sopt.presentation.calendar.navigation.calendarNavGraph
+import com.sopt.presentation.calendar.navigation.navigateCalendar
 import com.sopt.presentation.example.navigation.exampleNavGraph
 import com.sopt.presentation.group.navigation.groupNavGraph
+import com.sopt.presentation.group.navigation.navigateGroup
 import com.sopt.presentation.groupDetail.navigation.groupDetailNavGraph
 import com.sopt.presentation.mypage.navigation.myPageNavGraph
 import kotlinx.coroutines.launch
@@ -141,6 +150,35 @@ fun MainScreen(
                 myPageNavGraph(
                     paddingValues = paddingValues,
                     navHostController = navigator.navController
+                )
+                loginNavGraph(
+                    navigateHome = {
+                        navigator.navController.navigateCalendar()
+                    },
+                    navigateSignUp = {
+                        navigator.navController.navigateSignUp("authId")
+                    }
+                )
+                signUpNavGraph(
+                    navigateToCheckInvite = {
+                        navigator.navController.navigateCheckInvite()
+                    }
+                )
+                checkInviteNavGraph(
+                    navigateToGroup = {
+                        navigator.navController.navigateGroup()
+                    },
+                    navigateToInputGroupCode = {
+                        navigator.navController.navigateInputGroupCode()
+                    }
+                )
+                inputGroupCodeNavGraph(
+                    navigateUp = {
+                        navigator.navController.navigateUp()
+                    },
+                    navigateHome = {
+                        navigator.navController.navigateCalendar()
+                    }
                 )
             }
         }
