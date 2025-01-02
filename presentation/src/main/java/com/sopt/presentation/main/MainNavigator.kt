@@ -9,11 +9,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
-import com.sopt.presentation.calendar.navigation.Calendar
 import com.sopt.presentation.calendar.navigation.navigateCalendar
 import com.sopt.presentation.group.navigation.navigateGroup
 import com.sopt.presentation.mypage.navigation.navigateMyPage
-
+import com.sopt.presentation.auth.login.navigation.Login
 class MainNavigator(
     val navController: NavHostController
 ) {
@@ -21,7 +20,7 @@ class MainNavigator(
         @Composable get() = navController
             .currentBackStackEntryAsState().value?.destination
 
-    val startDestination = Calendar
+    val startDestination = Login
 
     val currentTab: MainTab?
         @Composable get() = MainTab.find { tab ->
