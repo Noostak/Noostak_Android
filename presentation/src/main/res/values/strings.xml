@@ -29,6 +29,13 @@
     <string name="hint_signup_name">이름을 입력해주세요</string>
     <string name="tv_signup_count">%1$d / %2$d</string>
 
+    <!-- 그룹 초대 입력 -->
+    <string name="iv_invite_description">그룹 초대 설명 이미지</string>
+    <string name="tv_invite_description">환영해요 %1$s님!\n그룹코드를 받으셨나요?</string>
+    <string name="tv_invite_empty">아니요, 초대받은 그룹이 없어요.</string>
+    <string name="btn_invite_code">그룹코드 입력하기</string>
+    <string name="tv_input_code_description">초대를 받으셨다면,\n그룹코드를 입력해주세요.</string>
+
     <!-- 그룹 상세 -->
     <string name="fab_group_detail">약속 만들기</string>
     <string name="appbar_group_detail">그룹</string>
