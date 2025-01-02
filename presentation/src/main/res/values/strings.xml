@@ -13,6 +13,10 @@
     <string name="btn_my_page">예제 화면으로 이동하기</string>
     <string name="btn_example_back">뒤로 돌아가기</string>
 
+    <!-- 버튼 -->
+    <string name="btn_next">다음</string>
+    <string name="btn_submit">확인</string>
+
     <!-- 그룹 상세 -->
     <string name="fab_group_detail">약속 만들기</string>
     <string name="appbar_group_detail">그룹</string>
