@@ -6,6 +6,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sopt.core.navigation.Route
 import com.sopt.presentation.auth.login.LoginRoute
+import com.sopt.presentation.auth.signup.navigation.navigateSignUp
+import com.sopt.presentation.group.navigation.navigateGroup
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateLogin(
@@ -18,13 +20,14 @@ fun NavController.navigateLogin(
 }
 
 fun NavGraphBuilder.loginNavGraph(
-    navigateHome: () -> Unit,
-    navigateSignUp: (String) -> Unit
+    navHostController: NavController
 ) {
     composable<Login> {
         LoginRoute(
-            navigateToHome = navigateHome,
-            navigateToSignUp = navigateSignUp
+            navigateToHome = { navHostController.navigateGroup() },
+            navigateToSignUp = { authId ->
+                navHostController.navigateSignUp(authId)
+            }
         )
     }
 }

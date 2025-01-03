@@ -43,7 +43,6 @@ import com.sopt.presentation.auth.signup.checkInvite.navigation.checkInviteNavGr
 import com.sopt.presentation.auth.signup.checkInvite.navigation.navigateCheckInvite
 import com.sopt.presentation.auth.signup.inputGroupCode.navigation.inputGroupCodeNavGraph
 import com.sopt.presentation.auth.signup.inputGroupCode.navigation.navigateInputGroupCode
-import com.sopt.presentation.auth.signup.navigation.navigateSignUp
 import com.sopt.presentation.auth.signup.navigation.signUpNavGraph
 import com.sopt.presentation.calendar.navigation.calendarNavGraph
 import com.sopt.presentation.calendar.navigation.navigateCalendar
@@ -151,14 +150,7 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navHostController = navigator.navController
                 )
-                loginNavGraph(
-                    navigateHome = {
-                        navigator.navController.navigateCalendar()
-                    },
-                    navigateSignUp = {
-                        navigator.navController.navigateSignUp("authId")
-                    }
-                )
+                loginNavGraph(navHostController = navigator.navController)
                 signUpNavGraph(
                     navigateToCheckInvite = {
                         navigator.navController.navigateCheckInvite()
