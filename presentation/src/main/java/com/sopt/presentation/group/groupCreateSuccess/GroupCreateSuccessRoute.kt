@@ -1,6 +1,10 @@
 package com.sopt.presentation.group.groupCreateSuccess
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,40 +16,150 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
+import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.component.topappbar.NoostakCloseAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
 import com.sopt.presentation.group.groupCreateSuccess.regex.generateRandomCode
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
-fun GroupCreateSuccessRoute() {
-    GroupCreateSuccessScreen()
+fun GroupCreateSuccessRoute(
+    viewModel: GroupCreateSuccessViewModel = hiltViewModel(),
+    navigateToGroupDetail: (Long) -> Unit
+) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
+
+    val snackBarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val snackBarVisible = remember { mutableStateOf(false) }
+
+    val groupCode = generateRandomCode()
+
+    val sendIntent = Intent(Intent.ACTION_SEND).apply {
+        putExtra(Intent.EXTRA_TEXT, groupCode)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(sendIntent, null)
+
+    val onShowCopySnackBar: (message: String) -> Unit = {
+        coroutineScope.launch {
+            snackBarVisible.value = true
+            val job = launch { snackBarHostState.showSnackbar(message = it) }
+            delay(SNACK_BAR_DURATION)
+            job.cancel()
+            snackBarVisible.value = false
+        }
+    }
+
+    LaunchedEffect(lifecycleOwner) {
+        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collectLatest { sideEffect ->
+                when (sideEffect) {
+                    is GroupCreateSuccessSideEffect.NavigateToGroupDetail -> navigateToGroupDetail(
+                        sideEffect.groupId
+                    )
+
+                    is GroupCreateSuccessSideEffect.ShowSnackBar -> onShowCopySnackBar(
+                        context.getString(
+                            sideEffect.message
+                        )
+                    )
+                }
+            }
+    }
+
+    GroupCreateSuccessScreen(
+        groupCode = groupCode,
+        snackBarHostState = snackBarHostState,
+        snackBarVisible = snackBarVisible,
+        onCloseBtnClick = viewModel::navigateToGroupDetail,
+        onCopyBtnClick = {
+            coroutineScope.launch {
+                viewModel.onCodeCopyBtnClick()
+            }
+        },
+        onSendBtnClick = {
+            startActivity(context, shareIntent, null)
+        }
+    )
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun GroupCreateSuccessScreen() {
+fun GroupCreateSuccessScreen(
+    groupCode: String,
+    snackBarHostState: SnackbarHostState,
+    snackBarVisible: MutableState<Boolean>,
+    onCloseBtnClick: (Long) -> Unit,
+    onCopyBtnClick: () -> Unit,
+    onSendBtnClick: () -> Unit,
+) {
+    val clipboardManager = LocalClipboardManager.current
+
     Scaffold(
         modifier = Modifier.statusBarsPadding(),
         topBar = {
             NoostakCloseAppBar(
                 modifier = Modifier,
                 onBackButtonClick = {
-                    // nav to group detail page
-                })
+                    onCloseBtnClick(
+                        // 임의 id - api 통신에서 변경해야 함
+                        0
+                    )
+                }
+            )
         },
+        snackbarHost = {
+            AnimatedVisibility(
+                visible = snackBarVisible.value,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                SnackbarHost(
+                    modifier = Modifier.padding(bottom = 78.dp),
+                    hostState = snackBarHostState,
+                    snackbar = { snackBarData ->
+                        NoostakSnackBar(
+                            message = snackBarData.visuals.message,
+                            textStyle = NoostakTheme.typography.c3Regular,
+                            textColor = NoostakTheme.colors.white,
+                            backgroundColor = NoostakTheme.colors.gray900
+                        )
+                    }
+                )
+            }
+        }
     ) { innerPadding ->
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
@@ -86,7 +200,7 @@ fun GroupCreateSuccessScreen() {
                         .align(Alignment.CenterHorizontally),
                 )
                 Text(
-                    text = generateRandomCode(),
+                    text = groupCode,
                     color = NoostakTheme.colors.gray800,
                     style = NoostakTheme.typography.codeMedium,
                     modifier = Modifier
@@ -103,7 +217,8 @@ fun GroupCreateSuccessScreen() {
                 modifier = Modifier
                     .padding(12.dp)
                     .clickable {
-                        // copy code
+                        clipboardManager.setText(AnnotatedString(groupCode))
+                        onCopyBtnClick()
                     }
                     .align(Alignment.CenterHorizontally),
             )
@@ -113,7 +228,7 @@ fun GroupCreateSuccessScreen() {
                 deactivateColor = NoostakTheme.colors.gray500,
                 isEnabled = true,
                 onButtonClick = {
-                    // enter clip board
+                    onSendBtnClick()
                 })
         }
     }
@@ -123,6 +238,13 @@ fun GroupCreateSuccessScreen() {
 @Composable
 fun GroupCreateSuccessScreenPreview() {
     NoostakAndroidTheme {
-        GroupCreateSuccessScreen()
+        GroupCreateSuccessScreen(
+            groupCode = generateRandomCode(),
+            snackBarHostState = SnackbarHostState(),
+            snackBarVisible = remember { mutableStateOf(true) },
+            onCloseBtnClick = {},
+            onCopyBtnClick = {},
+            onSendBtnClick = {}
+        )
     }
 }
