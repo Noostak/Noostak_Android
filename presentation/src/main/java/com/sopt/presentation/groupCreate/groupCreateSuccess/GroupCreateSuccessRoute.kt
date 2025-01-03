@@ -1,4 +1,4 @@
-package com.sopt.presentation.group.groupCreateSuccess
+package com.sopt.presentation.groupCreate.groupCreateSuccess
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -47,7 +47,7 @@ import com.sopt.core.designsystem.component.topappbar.NoostakCloseAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
-import com.sopt.presentation.group.groupCreateSuccess.regex.generateRandomCode
+import com.sopt.presentation.groupCreate.groupCreateSuccess.regex.generateRandomCode
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

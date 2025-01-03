@@ -1,4 +1,4 @@
-package com.sopt.presentation.group.groupCreate.permission
+package com.sopt.presentation.groupCreate.permission
 
 import android.content.Context
 import android.os.Build

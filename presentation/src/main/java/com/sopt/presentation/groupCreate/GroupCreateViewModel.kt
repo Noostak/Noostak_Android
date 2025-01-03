@@ -1,4 +1,4 @@
-package com.sopt.presentation.group.groupCreate
+package com.sopt.presentation.groupCreate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

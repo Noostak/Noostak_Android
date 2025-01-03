@@ -1,4 +1,4 @@
-package com.sopt.presentation.group.groupCreateSuccess.regex
+package com.sopt.presentation.groupCreate.groupCreateSuccess.regex
 
 fun generateRandomCode(): String {
     val charset = ('0'..'9') + ('A'..'Z')

@@ -6,8 +6,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sopt.core.navigation.MainTabRoute
 import com.sopt.presentation.group.GroupRoute
-import com.sopt.presentation.group.groupCreate.navigation.navigateToGroupCreate
-import com.sopt.presentation.group.groupCreate.navigation.navigateToGroupEnter
+import com.sopt.presentation.groupCreate.navigation.navigateToGroupCreate
+import com.sopt.presentation.groupCreate.navigation.navigateToGroupEnter
 import com.sopt.presentation.groupDetail.navigation.navigateGroupDetail
 import kotlinx.serialization.Serializable
 

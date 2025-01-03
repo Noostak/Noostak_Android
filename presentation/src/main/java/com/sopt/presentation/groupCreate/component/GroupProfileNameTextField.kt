@@ -1,4 +1,4 @@
-package com.sopt.presentation.group.groupCreate.component
+package com.sopt.presentation.groupCreate.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth

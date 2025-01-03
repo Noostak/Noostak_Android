@@ -1,4 +1,4 @@
-package com.sopt.presentation.group.groupCreate.component
+package com.sopt.presentation.groupCreate.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box

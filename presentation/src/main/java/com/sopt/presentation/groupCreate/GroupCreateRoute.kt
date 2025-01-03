@@ -1,4 +1,4 @@
-package com.sopt.presentation.group.groupCreate
+package com.sopt.presentation.groupCreate
 
 import android.Manifest
 import android.os.Build
@@ -37,11 +37,11 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.domain.entity.GroupProfileEntity
 import com.sopt.presentation.R
-import com.sopt.presentation.group.groupCreate.component.GroupProfileImagePicker
-import com.sopt.presentation.group.groupCreate.component.GroupProfileNameTextField
-import com.sopt.presentation.group.groupCreate.permission.launchImagePicker
-import com.sopt.presentation.group.groupCreate.permission.rememberGalleryLauncher
-import com.sopt.presentation.group.groupCreate.permission.rememberPhotoPickerLauncher
+import com.sopt.presentation.groupCreate.component.GroupProfileImagePicker
+import com.sopt.presentation.groupCreate.component.GroupProfileNameTextField
+import com.sopt.presentation.groupCreate.permission.launchImagePicker
+import com.sopt.presentation.groupCreate.permission.rememberGalleryLauncher
+import com.sopt.presentation.groupCreate.permission.rememberPhotoPickerLauncher
 import timber.log.Timber
 
 @Composable

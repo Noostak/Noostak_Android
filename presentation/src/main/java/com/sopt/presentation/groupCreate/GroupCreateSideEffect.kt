@@ -1,4 +1,4 @@
-package com.sopt.presentation.group.groupCreate
+package com.sopt.presentation.groupCreate
 
 sealed interface GroupCreateSideEffect {
     data object RequestImagePicker : GroupCreateSideEffect
