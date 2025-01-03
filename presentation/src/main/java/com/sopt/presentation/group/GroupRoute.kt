@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.FabPosition
@@ -39,9 +41,10 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun GroupRoute(
-    paddingValues: PaddingValues,
+    viewModel: GroupViewModel = hiltViewModel(),
     navigateToGroupDetail: (Long) -> Unit,
-    viewModel: GroupViewModel = hiltViewModel()
+    navigateToGroupCreate: () -> Unit,
+    navigateToGroupEnter: () -> Unit,
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val groupItems = viewModel.groupItems
@@ -52,9 +55,9 @@ fun GroupRoute(
         viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collectLatest { sideEffect ->
                 when (sideEffect) {
-                    is GroupSideEffect.NavigateToGroupDetail -> navigateToGroupDetail(
-                        sideEffect.groupId
-                    )
+                    is GroupSideEffect.NavigateToGroupDetail -> navigateToGroupDetail(sideEffect.groupId)
+                    is GroupSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
+                    is GroupSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
                 }
             }
     }
@@ -69,7 +72,8 @@ fun GroupRoute(
         else -> GroupScreen(
             groupItems = groupItems,
             onItemClick = viewModel::navigateToGroupDetail,
-            paddingValues = paddingValues,
+            onGroupCreateBtnClick = viewModel::navigateToGroupCreate,
+            onGroupEnterBtnClick = viewModel::navigateToGroupEnter,
         )
     }
 }
@@ -79,13 +83,15 @@ fun GroupRoute(
 fun GroupScreen(
     groupItems: List<GroupEntity>,
     onItemClick: (Long) -> Unit,
-    paddingValues: PaddingValues = PaddingValues(),
+    onGroupCreateBtnClick: () -> Unit,
+    onGroupEnterBtnClick: () -> Unit,
 ) {
     var isFabClicked by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier
-            .padding(paddingValues),
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         topBar = {
             BaseTopAppBar(
                 title = stringResource(R.string.bottom_nav_group),
@@ -97,13 +103,16 @@ fun GroupScreen(
             if (!isFabClicked) {
                 NoostakFloatingActionButtonWithText(
                     title = stringResource(R.string.fab_group_create),
+                    modifier = Modifier.offset(x = 0.dp, y = (-74).dp)
                 ) {
                     isFabClicked = true
                 }
             } else {
-                GroupFloatingActionButton {
-                    isFabClicked = false
-                }
+                GroupFloatingActionButton(
+                    onClick = { isFabClicked = false },
+                    onCreateGroupClick = onGroupCreateBtnClick,
+                    onEnterGroupClick = onGroupEnterBtnClick
+                )
             }
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -111,7 +120,6 @@ fun GroupScreen(
         Box {
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxSize()
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp)
             ) {
@@ -151,7 +159,9 @@ fun GroupScreenPreview() {
                 ),
                 GroupEntity(groupId = 3, groupName = "솝트", groupPersonnel = 191, newsImage = null),
             ),
-            onItemClick = {}
+            onItemClick = {},
+            onGroupCreateBtnClick = {},
+            onGroupEnterBtnClick = {}
         )
     }
 }
