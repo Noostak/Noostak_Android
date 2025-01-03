@@ -27,7 +27,9 @@ import com.sopt.presentation.R
 
 @Composable
 fun GroupFloatingActionButton(
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onCreateGroupClick: () -> Unit,
+    onEnterGroupClick: () -> Unit
 ) {
     Column {
         Box(
@@ -41,14 +43,14 @@ fun GroupFloatingActionButton(
                     painter = painterResource(id = R.drawable.ic_launcher_background),
                     text = stringResource(R.string.text_group_create_title),
                 ) {
-                    // nav to group create page
+                    onCreateGroupClick()
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 GroupFloatingActionButtonItem(
                     painter = painterResource(id = R.drawable.ic_launcher_background),
                     text = stringResource(R.string.text_group_fab_enter)
                 ) {
-                    // nav to group enter page
+                    onEnterGroupClick()
                 }
             }
         }
@@ -67,6 +69,7 @@ fun GroupFloatingActionButton(
                 tint = NoostakTheme.colors.black
             )
         }
+        Spacer(modifier = Modifier.height(73.dp))
     }
 }
 
@@ -74,6 +77,10 @@ fun GroupFloatingActionButton(
 @Composable
 fun GroupFloatingActionButtonPreview() {
     NoostakAndroidTheme {
-        GroupFloatingActionButton(onClick = {})
+        GroupFloatingActionButton(
+            onClick = {},
+            onCreateGroupClick = {},
+            onEnterGroupClick = {}
+        )
     }
 }
