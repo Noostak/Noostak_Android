@@ -45,18 +45,14 @@ fun LoginRoute(
     }
 
     LoginScreen(
-        onKaKaoLoginClick = {
-            loginViewModel.navigateToHome()
-        },
-        onGoogleLoginCLick = {
-            loginViewModel.navigateToSignup()
-        }
+        onKakaoLoginClick = loginViewModel::kakaoLogin,
+        onGoogleLoginCLick = loginViewModel::googleLogin
     )
 }
 
 @Composable
 fun LoginScreen(
-    onKaKaoLoginClick: () -> Unit,
+    onKakaoLoginClick: () -> Unit,
     onGoogleLoginCLick: () -> Unit
 ) {
     val offsetY = remember { Animatable(0f) }
@@ -77,7 +73,7 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.weight(1f))
         SocialLoginBottom(
-            onKaKaoLoginCLick = onKaKaoLoginClick,
+            onKaKaoLoginCLick = onKakaoLoginClick,
             onGoogleLoginCLick = onGoogleLoginCLick,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
@@ -128,13 +124,12 @@ private fun SocialLoginBottom(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun SignInScreenPreview() {
     NoostakAndroidTheme {
         LoginScreen(
-            onKaKaoLoginClick = {},
+            onKakaoLoginClick = {},
             onGoogleLoginCLick = {}
         )
     }
