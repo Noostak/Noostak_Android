@@ -75,7 +75,6 @@ fun SignUpScreen(
     onInputChange: (String) -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
-    val isNextEnabled = name.isNotBlank()
 
     Column(
         modifier = Modifier
@@ -110,7 +109,7 @@ fun SignUpScreen(
         AuthButton(
             padding = PaddingValues(vertical = 15.dp),
             onClick = onSignUpClick,
-            isEnabled = isNextEnabled,
+            isEnabled = name.isNotBlank(),
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text(
