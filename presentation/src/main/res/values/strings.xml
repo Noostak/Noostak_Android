@@ -48,5 +48,6 @@
     <string name="text_group_create_success_content">그룹코드를 복사해\n그룹원을 초대해주세요!</string>
     <string name="text_group_create_success_code_copy">그룹 코드 복사하기</string>
     <string name="btn_group_create_success_code_send">그룹 코드 보내기</string>
+    <string name="sb_group_create_success_code_copy">그룹 코드가 복사되었습니다</string>
 
 </resources>
