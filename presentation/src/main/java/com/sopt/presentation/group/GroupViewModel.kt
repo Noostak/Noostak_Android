@@ -21,6 +21,18 @@ class GroupViewModel @Inject constructor() : ViewModel() {
         }
     }
 
+    fun navigateToGroupCreate() {
+        viewModelScope.launch {
+            _sideEffect.emit(GroupSideEffect.NavigateToGroupCreate)
+        }
+    }
+
+    fun navigateToGroupEnter() {
+        viewModelScope.launch {
+            _sideEffect.emit(GroupSideEffect.NavigateToGroupEnter)
+        }
+    }
+
     val groupItems =
         listOf(
             GroupEntity(groupId = 1, groupName = "누스탁", groupPersonnel = 15, newsImage = null),
