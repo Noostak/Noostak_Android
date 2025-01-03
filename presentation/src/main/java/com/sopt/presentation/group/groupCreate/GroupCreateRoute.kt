@@ -2,6 +2,7 @@ package com.sopt.presentation.group.groupCreate
 
 import android.Manifest
 import android.os.Build
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,6 +50,7 @@ fun GroupCreateRoute(
     navigateToGroupCreateSuccess: () -> Unit,
     viewModel: GroupCreateViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val groupProfileState by viewModel.groupProfileState.collectAsStateWithLifecycle()
 
@@ -91,12 +94,21 @@ fun GroupCreateRoute(
                     is GroupCreateSideEffect.ShowPermissionDeniedDialog -> isGalleryPermission =
                         true
 
-                    is GroupCreateSideEffect.RequestImagePicker -> launchImagePicker(
+                    is GroupCreateSideEffect.RequestImagePicker -> context.launchImagePicker(
                         galleryLauncher,
                         photoPickerLauncher
                     )
                 }
             }
+    }
+
+    if (isGalleryPermission) {
+        Toast.makeText(
+            context,
+            "설정에서 갤러리 권한을 설정하세요",
+            Toast.LENGTH_SHORT
+        ).show()
+        isGalleryPermission = false
     }
 
     GroupCreateScreen(
@@ -153,8 +165,9 @@ fun GroupCreateScreen(
             )
             Spacer(modifier = Modifier.height(27.dp))
             GroupProfileNameTextField(
+                value = groupProfileState.groupName,
                 placeholder = stringResource(R.string.tf_group_create_placeholder),
-                onValueChange = onNameChange
+                onValueChange = { onNameChange(it) }
             )
         }
         NoostakBottomButton(
