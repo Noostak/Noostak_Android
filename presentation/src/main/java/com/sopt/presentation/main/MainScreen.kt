@@ -40,7 +40,6 @@ import com.sopt.core.designsystem.component.snackbar.BaseSnackBar
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.presentation.auth.login.navigation.loginNavGraph
 import com.sopt.presentation.auth.signup.checkInvite.navigation.checkInviteNavGraph
-import com.sopt.presentation.auth.signup.checkInvite.navigation.navigateCheckInvite
 import com.sopt.presentation.auth.signup.inputGroupCode.navigation.inputGroupCodeNavGraph
 import com.sopt.presentation.auth.signup.inputGroupCode.navigation.navigateInputGroupCode
 import com.sopt.presentation.auth.signup.navigation.signUpNavGraph
@@ -151,11 +150,7 @@ fun MainScreen(
                     navHostController = navigator.navController
                 )
                 loginNavGraph(navHostController = navigator.navController)
-                signUpNavGraph(
-                    navigateToCheckInvite = {
-                        navigator.navController.navigateCheckInvite()
-                    }
-                )
+                signUpNavGraph(navHostController = navigator.navController)
                 checkInviteNavGraph(
                     navigateToGroup = {
                         navigator.navController.navigateGroup()
