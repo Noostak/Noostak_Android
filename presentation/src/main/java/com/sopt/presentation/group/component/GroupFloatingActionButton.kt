@@ -67,7 +67,6 @@ fun GroupFloatingActionButton(
                 tint = NoostakTheme.colors.black
             )
         }
-        Spacer(modifier = Modifier.height(73.dp))
     }
 }
 
