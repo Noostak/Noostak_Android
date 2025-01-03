@@ -78,7 +78,7 @@ fun InputGroupCodeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding)),
+                .padding(dimensionResource(id = R.dimen.horizontal_padding)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(147.dp))
