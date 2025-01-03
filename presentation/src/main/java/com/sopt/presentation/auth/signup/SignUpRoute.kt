@@ -42,7 +42,7 @@ import com.sopt.presentation.auth.component.AuthTextField
 @Composable
 fun SignUpRoute(
     authId: String,
-    navigateToCheckInvite: () -> Unit,
+    navigateToCheckInvite: (String) -> Unit,
     signUpviewModel: SignUpViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
@@ -56,7 +56,7 @@ fun SignUpRoute(
         signUpviewModel.sideEffects.flowWithLifecycle(lifecycle = lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
-                    is SignUpSideEffect.NavigateToCheckInvite -> navigateToCheckInvite()
+                    is SignUpSideEffect.NavigateToCheckInvite -> navigateToCheckInvite(sideEffect.name)
                     is SignUpSideEffect.ShowToast -> context.toast(sideEffect.message)
                 }
             }
@@ -64,10 +64,8 @@ fun SignUpRoute(
 
     SignUpScreen(
         onProfileEditClick = { },
-        onSignUpClick = { signUpviewModel.navigateToCheckInvite() },
-        onInputChange = { name ->
-            signUpviewModel.updateName(name)
-        }
+        onSignUpClick = signUpviewModel::navigateToCheckInvite,
+        onInputChange = signUpviewModel::updateName
     )
 }
 

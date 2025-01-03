@@ -26,6 +26,9 @@ class SignUpViewModel @Inject constructor() : BaseViewModel<SignUpSideEffect>() 
     }
 
     fun navigateToCheckInvite() {
-        emitSideEffect(SignUpSideEffect.NavigateToCheckInvite)
+        val name = _state.value.name
+        if (name.isNotEmpty()) {
+            emitSideEffect(SignUpSideEffect.NavigateToCheckInvite(name))
+        }
     }
 }
