@@ -13,11 +13,8 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sopt.core.designsystem.theme.Blue600
-import com.sopt.core.designsystem.theme.Gray500
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.designsystem.theme.White
 import com.sopt.presentation.R
 
 @Composable
@@ -26,11 +23,11 @@ internal fun AuthButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(8.dp),
-    containerColor: Color = Blue600,
-    contentColor: Color = White,
+    containerColor: Color = NoostakTheme.colors.blue600,
+    contentColor: Color = NoostakTheme.colors.white,
     isEnabled: Boolean = true,
-    disabledContainerColor: Color = Gray500,
-    disabledContentColor: Color = White,
+    disabledContainerColor: Color = NoostakTheme.colors.gray500,
+    disabledContentColor: Color = NoostakTheme.colors.white,
     content: @Composable () -> Unit,
 ) {
     Button(

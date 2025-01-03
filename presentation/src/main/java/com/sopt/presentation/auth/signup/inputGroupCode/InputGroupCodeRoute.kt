@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
-import com.sopt.core.designsystem.theme.Gray900
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
@@ -84,7 +83,7 @@ fun InputGroupCodeScreen(
             Spacer(modifier = Modifier.height(147.dp))
             Text(
                 text = stringResource(R.string.tv_input_code_description),
-                color = Gray900,
+                color = NoostakTheme.colors.gray900,
                 style = NoostakTheme.typography.t1SemiBold,
                 textAlign = TextAlign.Center,
             )

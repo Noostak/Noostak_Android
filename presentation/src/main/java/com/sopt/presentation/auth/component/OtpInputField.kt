@@ -18,15 +18,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sopt.core.designsystem.theme.Gray100
-import com.sopt.core.designsystem.theme.Gray800
 import com.sopt.core.designsystem.theme.NoostakTheme
 
 @Composable
@@ -49,8 +46,7 @@ fun OtpInputField(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
-            )
-            {
+            ) {
                 repeat(otpCount) { index ->
                     CharView(
                         index = index,
@@ -73,13 +69,13 @@ private fun CharView(
         modifier = Modifier
             .width(46.dp)
             .background(
-                color = Gray100,
+                color = NoostakTheme.colors.gray100,
                 shape = RoundedCornerShape(10.dp)
             )
             .padding(13.dp),
         text = char,
         style = NoostakTheme.typography.h1SemiBold,
-        color = Gray800,
+        color = NoostakTheme.colors.gray800,
         textAlign = TextAlign.Center
     )
 }
@@ -91,7 +87,7 @@ fun PreviewOtpInputField() {
     Surface(
         modifier = Modifier
             .padding(20.dp)
-            .background(Color.White)
+            .background(NoostakTheme.colors.white)
     ) {
         OtpInputField(
             otpText = otpValue,

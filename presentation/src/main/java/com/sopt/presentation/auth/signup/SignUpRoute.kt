@@ -31,10 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
-import com.sopt.core.designsystem.theme.Black
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.designsystem.theme.White
 import com.sopt.core.extension.toast
 import com.sopt.presentation.R
 import com.sopt.presentation.auth.component.AuthButton
@@ -87,7 +85,7 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.height(70.dp))
         Text(
             text = stringResource(R.string.tv_signup_profile),
-            color = Black,
+            color = NoostakTheme.colors.black,
             style = NoostakTheme.typography.h2Bold
         )
         Spacer(modifier = Modifier.height(46.dp))
@@ -137,7 +135,7 @@ fun ProfileImage(
             contentDescription = "Profile Image",
             modifier = Modifier
                 .size(112.dp)
-                .background(color = White, shape = CircleShape)
+                .background(color = NoostakTheme.colors.white, shape = CircleShape)
         )
         Image(
             painter = painterResource(id = R.drawable.ic_profile_camera),

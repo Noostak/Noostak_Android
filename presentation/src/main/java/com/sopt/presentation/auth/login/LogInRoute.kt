@@ -22,11 +22,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.sopt.core.designsystem.theme.Black
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.designsystem.theme.White
-import com.sopt.core.designsystem.theme.Yellow
 import com.sopt.presentation.R
 import com.sopt.presentation.auth.component.AuthButton
 
@@ -101,8 +98,8 @@ private fun SocialLoginBottom(
             padding = PaddingValues(vertical = 13.dp),
             onClick = onKakaoLoginClick,
             modifier = Modifier.fillMaxWidth(),
-            containerColor = Yellow,
-            contentColor = Black
+            containerColor = NoostakTheme.colors.yellow,
+            contentColor = NoostakTheme.colors.black
         ) {
             Text(
                 text = stringResource(R.string.btn_login_kakao),
@@ -114,8 +111,8 @@ private fun SocialLoginBottom(
             padding = PaddingValues(vertical = 13.dp),
             onClick = onGoogleLoginClick,
             modifier = Modifier.fillMaxWidth(),
-            containerColor = Black,
-            contentColor = White
+            containerColor = NoostakTheme.colors.black,
+            contentColor = NoostakTheme.colors.white
         ) {
             Text(
                 text = stringResource(R.string.btn_login_google),
