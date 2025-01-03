@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.sopt.core.designsystem.component.snackbar.BaseSnackBar
+import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.presentation.calendar.navigation.calendarNavGraph
 import com.sopt.presentation.example.navigation.exampleNavGraph
@@ -94,11 +94,7 @@ fun MainScreen(
                 hostState = snackBarHostState,
                 modifier = Modifier.padding(bottom = 10.dp)
             ) { snackBarData ->
-                BaseSnackBar {
-                    Text(
-                        text = snackBarData.visuals.message
-                    )
-                }
+                NoostakSnackBar(message = snackBarData.visuals.message)
             }
         },
         bottomBar = {
