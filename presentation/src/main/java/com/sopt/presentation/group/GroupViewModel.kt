@@ -15,7 +15,7 @@ class GroupViewModel @Inject constructor() : ViewModel() {
     private val _sideEffect = MutableSharedFlow<GroupSideEffect>()
     val sideEffect: SharedFlow<GroupSideEffect> get() = _sideEffect.asSharedFlow()
 
-    fun navigateToDetail(groupId: Long) {
+    fun navigateToGroupDetail(groupId: Long) {
         viewModelScope.launch {
             _sideEffect.emit(GroupSideEffect.NavigateToGroupDetail(groupId))
         }
