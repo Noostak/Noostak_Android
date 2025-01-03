@@ -41,13 +41,10 @@ import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.presentation.auth.login.navigation.loginNavGraph
 import com.sopt.presentation.auth.signup.checkInvite.navigation.checkInviteNavGraph
 import com.sopt.presentation.auth.signup.inputGroupCode.navigation.inputGroupCodeNavGraph
-import com.sopt.presentation.auth.signup.inputGroupCode.navigation.navigateInputGroupCode
 import com.sopt.presentation.auth.signup.navigation.signUpNavGraph
 import com.sopt.presentation.calendar.navigation.calendarNavGraph
-import com.sopt.presentation.calendar.navigation.navigateCalendar
 import com.sopt.presentation.example.navigation.exampleNavGraph
 import com.sopt.presentation.group.navigation.groupNavGraph
-import com.sopt.presentation.group.navigation.navigateGroup
 import com.sopt.presentation.groupDetail.navigation.groupDetailNavGraph
 import com.sopt.presentation.mypage.navigation.myPageNavGraph
 import kotlinx.coroutines.launch
@@ -152,14 +149,7 @@ fun MainScreen(
                 loginNavGraph(navHostController = navigator.navController)
                 signUpNavGraph(navHostController = navigator.navController)
                 checkInviteNavGraph(navHostController = navigator.navController)
-                inputGroupCodeNavGraph(
-                    navigateUp = {
-                        navigator.navController.navigateUp()
-                    },
-                    navigateHome = {
-                        navigator.navController.navigateCalendar()
-                    }
-                )
+                inputGroupCodeNavGraph(navHostController = navigator.navController)
             }
         }
     }
