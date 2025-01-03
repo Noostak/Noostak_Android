@@ -7,9 +7,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -44,6 +44,7 @@ import timber.log.Timber
 
 @Composable
 fun GroupCreateRoute(
+    paddingValues: PaddingValues,
     navigateToGroupCreateSuccess: () -> Unit,
     viewModel: GroupCreateViewModel = hiltViewModel()
 ) {
@@ -99,6 +100,7 @@ fun GroupCreateRoute(
     }
 
     GroupCreateScreen(
+        paddingValues = paddingValues,
         groupProfileState = groupProfileState,
         onProfileCameraBtnClick = { viewModel.requestGalleryPicker() },
         onNameChange = { newName ->
@@ -112,6 +114,7 @@ fun GroupCreateRoute(
 
 @Composable
 fun GroupCreateScreen(
+    paddingValues: PaddingValues = PaddingValues(),
     groupProfileState: GroupProfileEntity,
     onProfileCameraBtnClick: () -> Unit = {},
     onNameChange: (String) -> Unit = {},
@@ -123,11 +126,11 @@ fun GroupCreateScreen(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
             .fillMaxSize()
+            .padding(paddingValues)
             .padding(horizontal = 16.dp)
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
                 .weight(1f)
                 .pointerInput(Unit) {
                     detectTapGestures(onTap = {
