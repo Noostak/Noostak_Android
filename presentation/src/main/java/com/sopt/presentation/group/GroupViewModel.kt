@@ -5,8 +5,11 @@ import androidx.lifecycle.viewModelScope
 import com.sopt.domain.entity.GroupEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,6 +17,13 @@ import javax.inject.Inject
 class GroupViewModel @Inject constructor() : ViewModel() {
     private val _sideEffect = MutableSharedFlow<GroupSideEffect>()
     val sideEffect: SharedFlow<GroupSideEffect> get() = _sideEffect.asSharedFlow()
+
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> get() = _showDialog
+
+    fun showLoginDialog(show: Boolean) {
+        _showDialog.update { show }
+    }
 
     fun navigateToGroupDetail(groupId: Long) {
         viewModelScope.launch {
