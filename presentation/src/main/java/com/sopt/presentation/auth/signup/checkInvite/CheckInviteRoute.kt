@@ -33,6 +33,7 @@ import com.sopt.presentation.auth.component.AuthButton
 
 @Composable
 fun CheckInviteRoute(
+    name: String,
     navigateToGroup: () -> Unit,
     navigateToInputGroupCode: () -> Unit,
     checkInviteViewModel: CheckInviteViewModel = hiltViewModel(),
@@ -46,6 +47,7 @@ fun CheckInviteRoute(
         }
     }
     CheckInviteScreen(
+        name = name,
         onNoInViteTextClick = {
             checkInviteViewModel.navigateToGroup()
         },
@@ -57,6 +59,7 @@ fun CheckInviteRoute(
 
 @Composable
 fun CheckInviteScreen(
+    name: String,
     onNoInViteTextClick: () -> Unit,
     onInputGroupCodeClick: () -> Unit
 ) {
@@ -71,7 +74,7 @@ fun CheckInviteScreen(
     ) {
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = stringResource(R.string.tv_invite_description, "박유진"),
+            text = stringResource(R.string.tv_invite_description, name),
             textAlign = TextAlign.Center,
             color = NoostakTheme.colors.gray900,
             style = NoostakTheme.typography.t1SemiBold
@@ -111,6 +114,7 @@ fun CheckInviteScreen(
 fun SignInScreenPreview() {
     NoostakAndroidTheme {
         CheckInviteScreen(
+            name = "이름",
             onNoInViteTextClick = {},
             onInputGroupCodeClick = {}
         )
