@@ -11,7 +11,7 @@ class InputGroupCodeViewModel @Inject constructor() : BaseViewModel<InputGroupCo
         emitSideEffect(InputGroupCodeSideEffect.NavigateUp)
     }
 
-    fun navigateToSignup() {
-        emitSideEffect(InputGroupCodeSideEffect.NavigateToHome)
+    fun navigateToGroup() {
+        emitSideEffect(InputGroupCodeSideEffect.NavigateToGroup)
     }
 }

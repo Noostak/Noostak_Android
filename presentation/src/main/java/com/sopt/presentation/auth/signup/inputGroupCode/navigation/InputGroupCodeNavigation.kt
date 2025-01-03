@@ -6,9 +6,12 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sopt.core.navigation.Route
 import com.sopt.presentation.auth.signup.inputGroupCode.InputGroupCodeRoute
+import com.sopt.presentation.group.navigation.navigateGroup
 import kotlinx.serialization.Serializable
 
-fun NavController.navigateInputGroupCode(navOptions: NavOptions? = null) {
+fun NavController.navigateInputGroupCode(
+    navOptions: NavOptions? = null
+) {
     navigate(
         route = InputGroupCode,
         navOptions = navOptions
@@ -16,13 +19,12 @@ fun NavController.navigateInputGroupCode(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.inputGroupCodeNavGraph(
-    navigateUp: () -> Unit,
-    navigateHome: () -> Unit
+    navHostController: NavController
 ) {
     composable<InputGroupCode> {
         InputGroupCodeRoute(
-            navigateUp = navigateUp,
-            navigateToHome = navigateHome
+            navigateUp = { navHostController.navigateUp() },
+            navigateToGroup = { navHostController.navigateGroup() }
         )
     }
 }

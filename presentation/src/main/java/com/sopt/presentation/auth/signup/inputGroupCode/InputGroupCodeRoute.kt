@@ -30,12 +30,12 @@ import com.sopt.core.designsystem.theme.Gray900
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
-import com.sopt.presentation.auth.component.OtpInputField
 import com.sopt.presentation.auth.component.AuthButton
+import com.sopt.presentation.auth.component.OtpInputField
 
 @Composable
 fun InputGroupCodeRoute(
-    navigateToHome: () -> Unit,
+    navigateToGroup: () -> Unit,
     navigateUp: () -> Unit,
     inputGroupCodeViewModel: InputGroupCodeViewModel = hiltViewModel(),
 ) {
@@ -43,16 +43,14 @@ fun InputGroupCodeRoute(
         inputGroupCodeViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
                 is InputGroupCodeSideEffect.NavigateUp -> navigateUp()
-                is InputGroupCodeSideEffect.NavigateToHome -> navigateToHome()
+                is InputGroupCodeSideEffect.NavigateToGroup -> navigateToGroup()
             }
         }
     }
 
     InputGroupCodeScreen(
         onBackButtonClick = inputGroupCodeViewModel::navigateUp,
-        onCheckGroupCodeClick = {
-            inputGroupCodeViewModel.navigateToSignup()
-        }
+        onCheckGroupCodeClick = inputGroupCodeViewModel::navigateToGroup
     )
 }
 
