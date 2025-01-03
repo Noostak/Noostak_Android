@@ -39,8 +39,11 @@ fun AuthTextField(
         OutlinedTextField(
             value = text,
             onValueChange = {
-                if (it.length <= maxLength) {
-                    onTextChange(it)
+                val sanitizedInput = it.filter { char ->
+                    char.isLetterOrDigit()
+                }
+                if (sanitizedInput.length <= maxLength) {
+                    onTextChange(sanitizedInput)
                 }
             },
             placeholder = {
