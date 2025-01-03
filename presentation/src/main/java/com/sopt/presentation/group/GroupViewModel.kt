@@ -17,7 +17,7 @@ class GroupViewModel @Inject constructor() : ViewModel() {
 
     fun navigateToDetail(groupId: Long) {
         viewModelScope.launch {
-            _sideEffect.emit(GroupSideEffect.NavigateToDetail(groupId))
+            _sideEffect.emit(GroupSideEffect.NavigateToGroupDetail(groupId))
         }
     }
 
