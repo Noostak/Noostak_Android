@@ -1,10 +1,7 @@
 package com.sopt.presentation.group
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -17,16 +14,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakFloatingActionButtonWithText
 import com.sopt.core.designsystem.component.topappbar.BaseTopAppBar
@@ -35,8 +30,10 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.domain.entity.GroupEntity
 import com.sopt.presentation.R
-import com.sopt.presentation.group.component.GroupFloatingActionButton
+import com.sopt.presentation.group.component.GroupFloatingActionDialog
 import com.sopt.presentation.group.component.GroupItem
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -51,6 +48,8 @@ fun GroupRoute(
 
     val isEmpty = groupItems.isEmpty()
 
+    val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
+
     LaunchedEffect(lifecycleOwner) {
         viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collectLatest { sideEffect ->
@@ -62,6 +61,15 @@ fun GroupRoute(
             }
     }
 
+    if (showDialog) {
+        GroupFloatingActionDialog(
+            onClick = { viewModel.showLoginDialog(false) },
+            onDismissRequest = { viewModel.showLoginDialog(false) },
+            onCreateGroupClick = viewModel::navigateToGroupCreate,
+            onEnterGroupClick = viewModel::navigateToGroupEnter
+        )
+    }
+
     when {
         isEmpty -> NoostakEmptyScreen(
             emptyText = R.string.text_group_empty,
@@ -71,23 +79,21 @@ fun GroupRoute(
 
         else -> GroupScreen(
             groupItems = groupItems,
+            isFabClicked = viewModel.showDialog,
             onItemClick = viewModel::navigateToGroupDetail,
-            onGroupCreateBtnClick = viewModel::navigateToGroupCreate,
-            onGroupEnterBtnClick = viewModel::navigateToGroupEnter,
+            onFabClick = { viewModel.showLoginDialog(true) }
         )
     }
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
 @Composable
 fun GroupScreen(
     groupItems: List<GroupEntity>,
+    isFabClicked: StateFlow<Boolean>,
     onItemClick: (Long) -> Unit,
-    onGroupCreateBtnClick: () -> Unit,
-    onGroupEnterBtnClick: () -> Unit,
+    onFabClick: () -> Unit,
 ) {
-    var isFabClicked by remember { mutableStateOf(false) }
-
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
@@ -100,19 +106,13 @@ fun GroupScreen(
             )
         },
         floatingActionButton = {
-            if (!isFabClicked) {
+            if (!isFabClicked.value) {
                 NoostakFloatingActionButtonWithText(
                     title = stringResource(R.string.fab_group_create),
                     modifier = Modifier.offset(x = 0.dp, y = (-74).dp)
                 ) {
-                    isFabClicked = true
+                    onFabClick()
                 }
-            } else {
-                GroupFloatingActionButton(
-                    onClick = { isFabClicked = false },
-                    onCreateGroupClick = onGroupCreateBtnClick,
-                    onEnterGroupClick = onGroupEnterBtnClick
-                )
             }
         },
         floatingActionButtonPosition = FabPosition.End,
@@ -130,15 +130,6 @@ fun GroupScreen(
                         color = NoostakTheme.colors.gray100,
                     )
                 }
-            }
-
-            if (isFabClicked) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.5f))
-                        .clickable { isFabClicked = false }
-                )
             }
         }
     }
@@ -159,9 +150,9 @@ fun GroupScreenPreview() {
                 ),
                 GroupEntity(groupId = 3, groupName = "솝트", groupPersonnel = 191, newsImage = null),
             ),
+            isFabClicked = remember { MutableStateFlow(false) },
             onItemClick = {},
-            onGroupCreateBtnClick = {},
-            onGroupEnterBtnClick = {}
+            onFabClick = {}
         )
     }
 }
