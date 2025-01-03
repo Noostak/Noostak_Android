@@ -151,14 +151,7 @@ fun MainScreen(
                 )
                 loginNavGraph(navHostController = navigator.navController)
                 signUpNavGraph(navHostController = navigator.navController)
-                checkInviteNavGraph(
-                    navigateToGroup = {
-                        navigator.navController.navigateGroup()
-                    },
-                    navigateToInputGroupCode = {
-                        navigator.navController.navigateInputGroupCode()
-                    }
-                )
+                checkInviteNavGraph(navHostController = navigator.navController)
                 inputGroupCodeNavGraph(
                     navigateUp = {
                         navigator.navController.navigateUp()

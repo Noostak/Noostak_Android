@@ -48,12 +48,8 @@ fun CheckInviteRoute(
     }
     CheckInviteScreen(
         name = name,
-        onNoInViteTextClick = {
-            checkInviteViewModel.navigateToGroup()
-        },
-        onInputGroupCodeClick = {
-            checkInviteViewModel.navigateToInputGroupCode()
-        }
+        onNoInViteTextClick = checkInviteViewModel::navigateToGroup,
+        onInputGroupCodeClick = checkInviteViewModel::navigateToInputGroupCode
     )
 }
 

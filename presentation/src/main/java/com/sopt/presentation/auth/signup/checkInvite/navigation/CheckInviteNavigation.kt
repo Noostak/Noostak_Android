@@ -7,6 +7,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
 import com.sopt.presentation.auth.signup.checkInvite.CheckInviteRoute
+import com.sopt.presentation.auth.signup.inputGroupCode.navigation.navigateInputGroupCode
+import com.sopt.presentation.group.navigation.navigateGroup
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateCheckInvite(
@@ -20,15 +22,14 @@ fun NavController.navigateCheckInvite(
 }
 
 fun NavGraphBuilder.checkInviteNavGraph(
-    navigateToGroup: () -> Unit,
-    navigateToInputGroupCode: () -> Unit,
+    navHostController: NavController
 ) {
     composable<CheckInvite> {
         val args = it.toRoute<CheckInvite>()
         CheckInviteRoute(
             name = args.name,
-            navigateToGroup = navigateToGroup,
-            navigateToInputGroupCode = navigateToInputGroupCode,
+            navigateToGroup = { navHostController.navigateGroup() },
+            navigateToInputGroupCode = { navHostController.navigateInputGroupCode() }
         )
     }
 }
