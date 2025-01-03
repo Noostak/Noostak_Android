@@ -46,14 +46,14 @@ fun LoginRoute(
 
     LoginScreen(
         onKakaoLoginClick = loginViewModel::kakaoLogin,
-        onGoogleLoginCLick = loginViewModel::googleLogin
+        onGoogleLoginClick = loginViewModel::googleLogin
     )
 }
 
 @Composable
 fun LoginScreen(
     onKakaoLoginClick: () -> Unit,
-    onGoogleLoginCLick: () -> Unit
+    onGoogleLoginClick: () -> Unit
 ) {
     val offsetY = remember { Animatable(0f) }
 
@@ -73,8 +73,8 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.weight(1f))
         SocialLoginBottom(
-            onKaKaoLoginCLick = onKakaoLoginClick,
-            onGoogleLoginCLick = onGoogleLoginCLick,
+            onKakaoLoginClick = onKakaoLoginClick,
+            onGoogleLoginClick = onGoogleLoginClick,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
     }
@@ -82,8 +82,8 @@ fun LoginScreen(
 
 @Composable
 private fun SocialLoginBottom(
-    onKaKaoLoginCLick: () -> Unit,
-    onGoogleLoginCLick: () -> Unit,
+    onKakaoLoginClick: () -> Unit,
+    onGoogleLoginClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -98,7 +98,7 @@ private fun SocialLoginBottom(
         Spacer(modifier = Modifier.height(8.dp))
         AuthButton(
             padding = PaddingValues(vertical = 13.dp),
-            onClick = onKaKaoLoginCLick,
+            onClick = onKakaoLoginClick,
             modifier = Modifier.fillMaxWidth(),
             containerColor = Yellow,
             contentColor = Black
@@ -111,7 +111,7 @@ private fun SocialLoginBottom(
         Spacer(modifier = Modifier.height(12.dp))
         AuthButton(
             padding = PaddingValues(vertical = 13.dp),
-            onClick = onGoogleLoginCLick,
+            onClick = onGoogleLoginClick,
             modifier = Modifier.fillMaxWidth(),
             containerColor = Black,
             contentColor = White
@@ -126,11 +126,11 @@ private fun SocialLoginBottom(
 
 @Preview(showBackground = true)
 @Composable
-fun SignInScreenPreview() {
+fun LoginScreenPreview() {
     NoostakAndroidTheme {
         LoginScreen(
             onKakaoLoginClick = {},
-            onGoogleLoginCLick = {}
+            onGoogleLoginClick = {}
         )
     }
 }
