@@ -1,11 +1,12 @@
 package com.sopt.presentation.group.groupCreate.permission
 
+import android.content.Context
 import android.os.Build
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 
-fun launchImagePicker(
+fun Context.launchImagePicker(
     galleryLauncher: ActivityResultLauncher<String>,
     photoPickerLauncher: ActivityResultLauncher<PickVisualMediaRequest>,
 ) {
