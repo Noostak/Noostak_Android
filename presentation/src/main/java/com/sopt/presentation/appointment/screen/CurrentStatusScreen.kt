@@ -15,15 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.timetable.NoostakTimeTable
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.NoRippleInteractionSource
+import com.sopt.domain.entity.TimeTableEntity
 import com.sopt.presentation.R
+import com.sopt.presentation.appointment.AppointmentViewModel
 
 @Composable
 fun CurrentStatusScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    data: TimeTableEntity
 ) {
     Row(
         modifier = modifier
@@ -66,5 +71,14 @@ fun CurrentStatusScreen(
             }
         }
     }
-    NoostakTimeTable(days = 7, time = 16)
+    NoostakTimeTable(data = data, modifier = Modifier.fillMaxWidth())
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CurrentStatusScreenPreview() {
+    val appointmentViewModel: AppointmentViewModel = hiltViewModel()
+    CurrentStatusScreen(
+        data = appointmentViewModel.mockCurrentStatus
+    )
 }

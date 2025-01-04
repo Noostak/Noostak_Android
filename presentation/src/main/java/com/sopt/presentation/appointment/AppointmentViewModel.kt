@@ -2,8 +2,11 @@ package com.sopt.presentation.appointment
 
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AppointmentEntity
+import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.PriorityEntity
 import com.sopt.domain.entity.RecommendationEntity
+import com.sopt.domain.entity.AvailableTimeEntity
+import com.sopt.domain.entity.TimeTableEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -38,6 +41,105 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
             )
         )
     }
+
+    val mockCurrentStatus =
+        TimeTableEntity(
+            startTime = "09:00",
+            endTime = "23:00",
+            timeEntity = listOf(
+                TimeEntity(
+                    date = "2024-09-27",
+                    times = null
+                ),
+                TimeEntity(
+                    date = "2024-09-28",
+                    times = listOf(
+                        AvailableTimeEntity(
+                            startTime = "11:00",
+                            endTime = "12:00",
+                            level = 10
+                        ),
+                        AvailableTimeEntity(
+                            startTime = "12:00",
+                            endTime = "13:00",
+                            level = 30
+                        ),
+                        AvailableTimeEntity(
+                            startTime = "13:00",
+                            endTime = "14:00",
+                            level = 70
+                        ),
+                        AvailableTimeEntity(
+                            startTime = "14:00",
+                            endTime = "15:00",
+                            level = 90
+                        )
+                    )
+                ),
+                TimeEntity(
+                    date = "2024-09-29",
+                    times = null
+                ),
+                TimeEntity(
+                    date = "2024-09-30",
+                    times = null
+                ),
+                TimeEntity(
+                    date = "2024-10-01",
+                    times = listOf(
+                        AvailableTimeEntity(
+                            startTime = "11:00",
+                            endTime = "12:00",
+                            level = 10
+                        ),
+                        AvailableTimeEntity(
+                            startTime = "12:00",
+                            endTime = "13:00",
+                            level = 60
+                        ),
+                        AvailableTimeEntity(
+                            startTime = "13:00",
+                            endTime = "14:00",
+                            level = 80
+                        ),
+                        AvailableTimeEntity(
+                            startTime = "14:00",
+                            endTime = "15:00",
+                            level = 100
+                        )
+                    )
+                ),
+                TimeEntity(
+                    date = "2024-10-02",
+                    times = listOf(
+                        AvailableTimeEntity(
+                            startTime = "11:00",
+                            endTime = "12:00",
+                            level = 10
+                        ),
+                        AvailableTimeEntity(
+                            startTime = "12:00",
+                            endTime = "13:00",
+                            level = 70
+                        ),
+                        AvailableTimeEntity(
+                            startTime = "13:00",
+                            endTime = "14:00",
+                            level = 90
+                        ),
+                        AvailableTimeEntity(
+                            startTime = "14:00",
+                            endTime = "15:00",
+                            level = 100
+                        )
+                    )
+                ),
+                TimeEntity(
+                    date = "2024-10-03",
+                    times = null
+                )
+            )
+        )
 
     val mockRecommendations =
         AppointmentEntity(

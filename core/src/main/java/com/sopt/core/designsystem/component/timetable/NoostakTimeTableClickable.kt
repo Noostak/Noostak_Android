@@ -83,7 +83,7 @@ fun NoostakTimeTableBoxClickable(
             )
             .defaultMinSize(minWidth = 42.dp, minHeight = 36.dp)
             .then(
-                if (getTimeTableText(index, days, time).isEmpty()) {
+                if (getTimeTableClickableText(index, days, time).isEmpty()) {
                     Modifier.clickable(
                         indication = null,
                         interactionSource = NoRippleInteractionSource
@@ -91,8 +91,8 @@ fun NoostakTimeTableBoxClickable(
                         // 텍스트가 비어 있을 때 클릭 가능하고, 색상 변경
                         backgroundColor =
                             if (backgroundColor == Color.Transparent) Blue400 else Color.Transparent
-                        val dateInfo = getTimeTableText(index % (days + 1), days, time)
-                        val timeInfo = getTimeTableText(index / (days + 1) * (days + 1), days, time)
+                        val dateInfo = getTimeTableClickableText(index % (days + 1), days, time)
+                        val timeInfo = getTimeTableClickableText(index / (days + 1) * (days + 1), days, time)
                         Timber.d("Area Clicked: $dateInfo $timeInfo")
                     }
                 } else {
@@ -103,7 +103,7 @@ fun NoostakTimeTableBoxClickable(
     ) {
         Text(
             modifier = Modifier.padding(horizontal = 5.dp, vertical = 3.dp),
-            text = getTimeTableText(index, days, time),
+            text = getTimeTableClickableText(index, days, time),
             color = NoostakTheme.colors.gray600,
             style = NoostakTheme.typography.c4Regular,
             textAlign = TextAlign.Center,
@@ -112,7 +112,7 @@ fun NoostakTimeTableBoxClickable(
     }
 }
 
-fun getTimeTableText(index: Int, days: Int, time: Int): String {
+fun getTimeTableClickableText(index: Int, days: Int, time: Int): String {
     return when {
         index == 0 -> "\n" // 맨 왼쪽 위 빈 셀
         index in 1..days -> {

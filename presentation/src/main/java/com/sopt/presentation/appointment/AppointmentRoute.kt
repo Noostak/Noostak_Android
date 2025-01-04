@@ -40,6 +40,7 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.domain.entity.AppointmentEntity
+import com.sopt.domain.entity.TimeTableEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
 import com.sopt.presentation.appointment.screen.RecommendationScreen
@@ -65,6 +66,7 @@ fun AppointmentRoute(
                         sideEffect.appointmentName
                     )
                 }
+
                 is AppointmentSideEffect.NavigateToAppointmentConfirm -> {
                     navigateToAppointmentConfirm(
                         sideEffect.groupId,
@@ -83,6 +85,7 @@ fun AppointmentRoute(
         onBackButtonClick = appointmentViewModel::navigateUp,
         onSubmitButtonClick = appointmentViewModel::navigateToAppointmentCheck,
         onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
+        currentStatus = appointmentViewModel.mockCurrentStatus,
         recommendations = appointmentViewModel.mockRecommendations
     )
 }
@@ -95,6 +98,7 @@ fun AppointmentScreen(
     onBackButtonClick: () -> Unit,
     onSubmitButtonClick: (Long, Long, String) -> Unit,
     onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
+    currentStatus: TimeTableEntity,
     recommendations: AppointmentEntity
 ) {
     var selectedItemIndex by remember { mutableIntStateOf(-1) }
@@ -180,7 +184,9 @@ fun AppointmentScreen(
                 }
             }
             if (selectedItemIndex == -1) {
-                CurrentStatusScreen()
+                CurrentStatusScreen(
+                    data = currentStatus
+                )
             } else {
                 RecommendationScreen(
                     selectedItemIndex = selectedItemIndex,
@@ -287,6 +293,7 @@ fun AppointmentScreenPreview() {
             onBackButtonClick = {},
             onSubmitButtonClick = { _, _, _ -> },
             onConfirmButtonClick = { _, _, _, _ -> },
+            currentStatus = appointmentViewModel.mockCurrentStatus,
             recommendations = appointmentViewModel.mockRecommendations
         )
     }
