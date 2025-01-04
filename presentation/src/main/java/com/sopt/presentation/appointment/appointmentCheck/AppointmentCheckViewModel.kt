@@ -10,8 +10,23 @@ class AppointmentCheckViewModel @Inject constructor() :
     fun navigateUp() {
         emitSideEffect(AppointmentCheckSideEffect.NavigateUp)
     }
+
+    fun navigateToAppointment(groupId: Long, appointmentsId: Long, appointmentName: String) {
+        emitSideEffect(
+            AppointmentCheckSideEffect.NavigateToAppointment(
+                groupId,
+                appointmentsId,
+                appointmentName
+            )
+        )
+    }
 }
 
 sealed class AppointmentCheckSideEffect {
     data object NavigateUp : AppointmentCheckSideEffect()
+    data class NavigateToAppointment(
+        val groupId: Long,
+        val appointmentsId: Long,
+        val appointmentName: String
+    ) : AppointmentCheckSideEffect()
 }

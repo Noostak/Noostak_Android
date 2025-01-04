@@ -2,9 +2,7 @@ package com.sopt.presentation.groupDetail
 
 import android.content.Intent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,7 +48,6 @@ import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
-import com.sopt.core.extension.showIf
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.domain.entity.GroupDetailEntity
@@ -268,22 +265,11 @@ fun CustomTabPager(
                     unselectedContentColor = NoostakTheme.colors.gray500,
                     interactionSource = NoRippleInteractionSource
                 ) {
-                    Box {
-                        Text(
-                            modifier = Modifier.padding(2.dp),
-                            text = title,
-                            style = NoostakTheme.typography.b1SemiBold
-                        )
-                        Box(
-                            modifier = Modifier
-                                .showIf(pagerState.currentPage == index)
-                                .align(Alignment.TopEnd)
-                                .offset(x = 8.dp, y = (-2).dp)
-                                .clip(CircleShape)
-                                .size(8.dp)
-                                .background(NoostakTheme.colors.red02)
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.padding(2.dp),
+                        text = title,
+                        style = NoostakTheme.typography.b1SemiBold
+                    )
                 }
             }
         }

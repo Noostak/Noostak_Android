@@ -1,5 +1,6 @@
-package com.sopt.presentation.appointment
+package com.sopt.presentation.appointment.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,17 +39,18 @@ import com.sopt.core.designsystem.component.chip.NoostakUserChip
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
-import com.sopt.domain.entity.AppointmentEntity
+import com.sopt.domain.entity.PriorityEntity
 import com.sopt.domain.entity.RecommendationEntity
 import com.sopt.presentation.R
-import timber.log.Timber
+import com.sopt.presentation.appointment.AppointmentViewModel
 
 @Composable
 fun RecommendationScreen(
     selectedItemIndex: Int,
-    data: List<AppointmentEntity>
+    data: List<PriorityEntity>,
+    onConfirmButtonClick: (Long) -> Unit
 ) {
-    val filteredData = data.find { it.priority == selectedItemIndex + 1 }?.recommendations.orEmpty()
+    val filteredData = data.find { it.priority == selectedItemIndex }?.recommendations.orEmpty()
     var selectedItemId by remember { mutableStateOf<Long?>(null) }
 
     // filteredData가 변경될 때마다 초기화
@@ -59,8 +62,7 @@ fun RecommendationScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         LazyColumn(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier.weight(1f)
         ) {
             items(filteredData, key = { it.id }) { recommendation ->
                 RecommendationItem(
@@ -71,14 +73,15 @@ fun RecommendationScreen(
                             if (selectedItemId == recommendation.id) null else recommendation.id
                     }
                 )
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
         NoostakButton(
             text = stringResource(R.string.btn_appointment_confirm),
-            onButtonClick = { Timber.d("selectedItemId: $selectedItemId") },
+            onButtonClick = { selectedItemId?.let { onConfirmButtonClick(it) } },
             isEnabled = selectedItemId != null
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.vertical_padding)))
     }
 }
 
@@ -89,6 +92,9 @@ fun RecommendationItem(
     isSelected: Boolean,
     onItemClick: () -> Unit
 ) {
+    var isLiked by remember { mutableStateOf(data.isLiked) }
+    var likes by remember { mutableStateOf(data.likes) }
+
     Column(
         modifier = Modifier
             .background(
@@ -100,7 +106,7 @@ fun RecommendationItem(
                 color = if (isSelected) Color.Transparent else NoostakTheme.colors.blue100,
                 shape = RoundedCornerShape(20.dp)
             )
-            .padding(16.dp)
+            .padding(dimensionResource(id = R.dimen.default_padding))
             .noRippleClickable { onItemClick() }
     ) {
         Row(
@@ -130,22 +136,29 @@ fun RecommendationItem(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    modifier = Modifier.noRippleClickable { },
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_heart),
-                    contentDescription = null,
-                    tint = NoostakTheme.colors.red02
+                Image(
+                    modifier = Modifier.noRippleClickable {
+                        isLiked = !isLiked
+                        likes = if (isLiked) likes + 1 else likes - 1
+                    },
+                    imageVector = if (isLiked) ImageVector.vectorResource(id = R.drawable.ic_heart_on) else ImageVector.vectorResource(
+                        id = R.drawable.ic_heart_off
+                    ),
+                    contentDescription = null
                 )
                 Text(
                     modifier = Modifier.padding(start = 2.dp),
-                    text = data.likes.toString(),
-                    color = NoostakTheme.colors.black,
-                    style = NoostakTheme.typography.c4Regular
+                    text = likes.toString(),
+                    color = if (isLiked) NoostakTheme.colors.black else NoostakTheme.colors.gray600,
+                    style = NoostakTheme.typography.c2SemiBold
                 )
             }
         }
         Text(
-            text = stringResource(R.string.header_appointment_available, data.availableMembersCount),
+            text = stringResource(
+                R.string.header_appointment_available,
+                data.availableMembersCount
+            ),
             color = NoostakTheme.colors.black,
             style = NoostakTheme.typography.c2SemiBold
         )
@@ -196,7 +209,8 @@ fun RecommendationScreenPreview() {
         val appointmentViewModel: AppointmentViewModel = hiltViewModel()
         RecommendationScreen(
             selectedItemIndex = 1,
-            data = appointmentViewModel.mockRecommendations
+            data = appointmentViewModel.mockRecommendations.priorities,
+            onConfirmButtonClick = {}
         )
     }
 }

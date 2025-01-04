@@ -65,7 +65,7 @@ class GroupDetailViewModel @Inject constructor() : BaseViewModel<GroupDetailSide
                 weekday = "금",
                 startTime = "11:00",
                 endTime = "14:00",
-                participants = 0,
+                participants = 5,
                 maxParticipants = 5
             ),
             ProgressEntity(

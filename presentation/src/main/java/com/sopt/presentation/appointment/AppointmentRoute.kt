@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,12 +34,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sopt.core.designsystem.component.dialog.AppointmentDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.domain.entity.AppointmentEntity
 import com.sopt.presentation.R
+import com.sopt.presentation.appointment.screen.CurrentStatusScreen
+import com.sopt.presentation.appointment.screen.RecommendationScreen
 
 @Composable
 fun AppointmentRoute(
@@ -45,29 +50,60 @@ fun AppointmentRoute(
     appointmentsId: Long,
     appointmentName: String,
     navigateUp: () -> Unit,
+    navigateToAppointmentCheck: (Long, Long, String) -> Unit,
+    navigateToAppointmentConfirm: (Long, Long, Long, String) -> Unit,
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = appointmentViewModel.sideEffects) {
         appointmentViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
                 is AppointmentSideEffect.NavigateUp -> navigateUp()
+                is AppointmentSideEffect.NavigateToAppointmentCheck -> {
+                    navigateToAppointmentCheck(
+                        sideEffect.groupId,
+                        sideEffect.appointmentsId,
+                        sideEffect.appointmentName
+                    )
+                }
+                is AppointmentSideEffect.NavigateToAppointmentConfirm -> {
+                    navigateToAppointmentConfirm(
+                        sideEffect.groupId,
+                        sideEffect.appointmentsId,
+                        sideEffect.optionId,
+                        sideEffect.appointmentName
+                    )
+                }
             }
         }
     }
     AppointmentScreen(
+        groupId = groupId,
+        appointmentsId = appointmentsId,
         appointmentName = appointmentName,
         onBackButtonClick = appointmentViewModel::navigateUp,
+        onSubmitButtonClick = appointmentViewModel::navigateToAppointmentCheck,
+        onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
         recommendations = appointmentViewModel.mockRecommendations
     )
 }
 
 @Composable
 fun AppointmentScreen(
+    groupId: Long,
+    appointmentsId: Long,
     appointmentName: String,
     onBackButtonClick: () -> Unit,
-    recommendations: List<AppointmentEntity>
+    onSubmitButtonClick: (Long, Long, String) -> Unit,
+    onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
+    recommendations: AppointmentEntity
 ) {
     var selectedItemIndex by remember { mutableIntStateOf(-1) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = Unit) {
+        showDialog = !recommendations.isSubmitted
+    }
+
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
@@ -86,6 +122,21 @@ fun AppointmentScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
         ) {
+            if (showDialog) {
+                AppointmentDialog(
+                    onDismissRequest = {
+                        showDialog = false
+                        onBackButtonClick()
+                    },
+                    onConfirmButtonClick = {
+                        showDialog = false
+                        onSubmitButtonClick(groupId, appointmentsId, appointmentName)
+                    },
+                    description = "이미 일정을 등록하지 않았어요!\n일정을 등록하러 가볼까요?",
+                    dismissText = "나중에 등록하기",
+                    confirmButtonText = "가능일정 등록하기"
+                )
+            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -116,13 +167,15 @@ fun AppointmentScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                items(recommendations.size) { index ->
+                items(recommendations.priorities, key = { it.priority }) { priority ->
                     RecommendationHeaderItem(
+                        availableMembersCount = priority.availableMembersCount,
+                        totalMembersCount = priority.totalMembersCount,
                         selectedItemIndex = selectedItemIndex,
                         onHeaderItemClick = { selectedIndex ->
-                            selectedItemIndex = selectedIndex // 선택된 아이템의 인덱스 업데이트
+                            selectedItemIndex = selectedIndex
                         },
-                        itemIndex = index // 현재 아이템의 인덱스 전달
+                        priority = priority.priority
                     )
                 }
             }
@@ -131,7 +184,10 @@ fun AppointmentScreen(
             } else {
                 RecommendationScreen(
                     selectedItemIndex = selectedItemIndex,
-                    data = recommendations
+                    data = recommendations.priorities,
+                    onConfirmButtonClick = { optionId ->
+                        onConfirmButtonClick(groupId, appointmentsId, optionId, appointmentName)
+                    }
                 )
             }
         }
@@ -140,9 +196,11 @@ fun AppointmentScreen(
 
 @Composable
 fun RecommendationHeaderItem(
+    availableMembersCount: Int, // 가능한 멤버 수
+    totalMembersCount: Int, // 전체 멤버 수
     selectedItemIndex: Int, // 현재 선택된 아이템 인덱스
     onHeaderItemClick: (Int) -> Unit,
-    itemIndex: Int // 현재 아이템의 인덱스
+    priority: Int // 현재 아이템의 인덱스
 ) {
     Column(
         modifier = Modifier
@@ -150,7 +208,7 @@ fun RecommendationHeaderItem(
                 width = 1.dp,
                 color = when (selectedItemIndex) {
                     -1 -> NoostakTheme.colors.gray200
-                    itemIndex -> NoostakTheme.colors.blue700
+                    priority -> NoostakTheme.colors.blue700
                     else -> NoostakTheme.colors.gray50
                 },
                 shape = RoundedCornerShape(12.dp)
@@ -158,7 +216,7 @@ fun RecommendationHeaderItem(
             .background(
                 color = when (selectedItemIndex) {
                     -1 -> NoostakTheme.colors.white
-                    itemIndex -> NoostakTheme.colors.blue50
+                    priority -> NoostakTheme.colors.blue50
                     else -> NoostakTheme.colors.gray50
                 },
                 shape = RoundedCornerShape(12.dp)
@@ -170,19 +228,19 @@ fun RecommendationHeaderItem(
                 end = 34.dp
             )
             .noRippleClickable {
-                if (itemIndex == selectedItemIndex) {
+                if (priority == selectedItemIndex) {
                     onHeaderItemClick(-1) // 이미 선택된 아이템을 다시 클릭하면 선택 해제
                 } else {
-                    onHeaderItemClick(itemIndex) // 선택되지 않은 아이템을 클릭하면 선택
+                    onHeaderItemClick(priority) // 선택되지 않은 아이템을 클릭하면 선택
                 }
             }
     ) {
         Text(
             modifier = Modifier.padding(bottom = 6.dp),
-            text = "Best${itemIndex + 1}",
+            text = "Best${priority}",
             color = when (selectedItemIndex) {
                 -1 -> NoostakTheme.colors.black
-                itemIndex -> NoostakTheme.colors.blue700
+                priority -> NoostakTheme.colors.blue700
                 else -> NoostakTheme.colors.gray500
             },
             style = NoostakTheme.typography.t4Bold
@@ -193,23 +251,23 @@ fun RecommendationHeaderItem(
                     style = SpanStyle(
                         color = when (selectedItemIndex) {
                             -1 -> NoostakTheme.colors.black
-                            itemIndex -> NoostakTheme.colors.blue700
+                            priority -> NoostakTheme.colors.blue700
                             else -> NoostakTheme.colors.gray700
                         }
                     )
                 ) {
-                    append("6명")
+                    append("${availableMembersCount}명")
                 }
                 withStyle(
                     style = SpanStyle(
                         color = when (selectedItemIndex) {
                             -1 -> NoostakTheme.colors.gray700
-                            itemIndex -> NoostakTheme.colors.gray700
+                            priority -> NoostakTheme.colors.gray700
                             else -> NoostakTheme.colors.gray500
                         }
                     )
                 ) {
-                    append(" / 10명")
+                    append(" / ${totalMembersCount}명")
                 }
             },
             style = NoostakTheme.typography.b4SemiBold
@@ -223,8 +281,12 @@ fun AppointmentScreenPreview() {
     NoostakAndroidTheme {
         val appointmentViewModel: AppointmentViewModel = hiltViewModel()
         AppointmentScreen(
+            groupId = 1,
+            appointmentsId = 1,
             appointmentName = "3차 회의",
             onBackButtonClick = {},
+            onSubmitButtonClick = { _, _, _ -> },
+            onConfirmButtonClick = { _, _, _, _ -> },
             recommendations = appointmentViewModel.mockRecommendations
         )
     }

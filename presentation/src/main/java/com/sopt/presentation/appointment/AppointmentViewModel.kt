@@ -2,6 +2,7 @@ package com.sopt.presentation.appointment
 
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AppointmentEntity
+import com.sopt.domain.entity.PriorityEntity
 import com.sopt.domain.entity.RecommendationEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -12,123 +13,199 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
         emitSideEffect(AppointmentSideEffect.NavigateUp)
     }
 
-    val mockRecommendations = listOf(
+    fun navigateToAppointmentCheck(groupId: Long, appointmentsId: Long, appointmentName: String) {
+        emitSideEffect(
+            AppointmentSideEffect.NavigateToAppointmentCheck(
+                groupId,
+                appointmentsId,
+                appointmentName
+            )
+        )
+    }
+
+    fun navigateToAppointmentConfirm(
+        groupId: Long,
+        appointmentsId: Long,
+        optionId: Long,
+        appointmentName: String
+    ) {
+        emitSideEffect(
+            AppointmentSideEffect.NavigateToAppointmentConfirm(
+                groupId,
+                appointmentsId,
+                optionId,
+                appointmentName
+            )
+        )
+    }
+
+    val mockRecommendations =
         AppointmentEntity(
-            priority = 1,
-            recommendations = listOf(
-                RecommendationEntity(
-                    id = 1,
-                    date = "2021-09-01",
-                    startTime = "09:00",
-                    endTime = "10:00",
-                    likes = 3,
-                    availableMembersCount = 3,
-                    availableMembers = listOf("카리나", "윈터", "닝닝"),
-                    unavailableMembersCount = 1,
-                    unavailableMembers = listOf("나")
+            isSubmitted = true,
+            priorities = listOf(
+                PriorityEntity(
+                    priority = 1,
+                    availableMembersCount = 6,
+                    totalMembersCount = 10,
+                    recommendations = listOf(
+                        RecommendationEntity(
+                            id = 1,
+                            date = "2024-09-27",
+                            startTime = "11:00",
+                            endTime = "14:00",
+                            likes = 15,
+                            isLiked = true,
+                            availableMembersCount = 5,
+                            availableMembers = listOf(
+                                "나", "선우정아", "대한민국만세", "최영희", "정영수",
+                                "이가을", "김언지", "박유진", "임하늘", "변우석", "김혜윤", "정해인", "카리나", "닝닝",
+                                "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
+                            ),
+                            unavailableMembersCount = 5,
+                            unavailableMembers = listOf("한강", "이영희", "박영수", "최영희", "정영수")
+                        ),
+                        RecommendationEntity(
+                            id = 2,
+                            date = "2024-09-27",
+                            startTime = "11:00",
+                            endTime = "14:00",
+                            likes = 15,
+                            isLiked = true,
+                            availableMembersCount = 10,
+                            availableMembers = listOf(
+                                "선우정아", "대한민국만세", "최영희", "정영수",
+                                "이가을", "김언지", "박유진", "임하늘", "변우석", "김혜윤", "정해인", "카리나", "닝닝",
+                                "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
+                            ),
+                            unavailableMembersCount = 5,
+                            unavailableMembers = listOf("나", "한강", "이영희", "박영수", "최영희", "정영수")
+                        ),
+                    )
                 ),
-                RecommendationEntity(
-                    id = 2,
-                    date = "2021-09-01",
-                    startTime = "09:00",
-                    endTime = "10:00",
-                    likes = 3,
-                    availableMembersCount = 3,
-                    availableMembers = listOf("카리나", "윈터", "닝닝", "지젤"),
-                    unavailableMembersCount = 1,
-                    unavailableMembers = listOf("나")
+                PriorityEntity(
+                    priority = 2,
+                    availableMembersCount = 5,
+                    totalMembersCount = 10,
+                    recommendations = listOf(
+                        RecommendationEntity(
+                            id = 3,
+                            date = "2024-09-27",
+                            startTime = "11:00",
+                            endTime = "14:00",
+                            likes = 15,
+                            isLiked = false,
+                            availableMembersCount = 10,
+                            availableMembers = listOf(
+                                "선우정아", "대한민국만세", "최영희", "정영수",
+                                "이가을", "김언지", "박유진", "임하늘", "변우석", "김혜윤", "정해인", "카리나", "닝닝",
+                                "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
+                            ),
+                            unavailableMembersCount = 5,
+                            unavailableMembers = listOf("나", "한강", "이영희", "박영수", "최영희", "정영수")
+                        ),
+                        RecommendationEntity(
+                            id = 4,
+                            date = "2024-09-27",
+                            startTime = "11:00",
+                            endTime = "14:00",
+                            likes = 15,
+                            isLiked = true,
+                            availableMembersCount = 15,
+                            availableMembers = listOf(
+                                "선우정아", "대한민국만세", "최영희", "정영수",
+                                "이가을", "김언지", "박유진", "임하늘", "변우석", "김혜윤", "정해인", "카리나", "닝닝",
+                                "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
+                            ),
+                            unavailableMembersCount = 5,
+                            unavailableMembers = listOf("나", "한강", "이영희", "박영수", "최영희", "정영수")
+                        ),
+                        RecommendationEntity(
+                            id = 5,
+                            date = "2024-09-27",
+                            startTime = "11:00",
+                            endTime = "14:00",
+                            likes = 15,
+                            isLiked = false,
+                            availableMembersCount = 15,
+                            availableMembers = listOf(
+                                "선우정아", "대한민국만세", "최영희", "정영수",
+                                "이가을", "김언지", "박유진", "임하늘", "변우석", "김혜윤", "정해인", "카리나", "닝닝",
+                                "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
+                            ),
+                            unavailableMembersCount = 5,
+                            unavailableMembers = listOf("나", "한강", "이영희", "박영수", "최영희", "정영수")
+                        )
+                    )
                 ),
-                RecommendationEntity(
-                    id = 3,
-                    date = "2021-09-01",
-                    startTime = "09:00",
-                    endTime = "10:00",
-                    likes = 3,
-                    availableMembersCount = 3,
-                    availableMembers = listOf("나", "윈터", "닝닝", "지젤"),
-                    unavailableMembersCount = 1,
-                    unavailableMembers = listOf("카리나")
-                )
-            )
-        ),
-        AppointmentEntity(
-            priority = 2,
-            recommendations = listOf(
-                RecommendationEntity(
-                    id = 4,
-                    date = "2021-09-01",
-                    startTime = "09:00",
-                    endTime = "10:00",
-                    likes = 3,
-                    availableMembersCount = 3,
-                    availableMembers = listOf("카리나", "윈터", "닝닝"),
-                    unavailableMembersCount = 1,
-                    unavailableMembers = listOf("나")
+                PriorityEntity(
+                    priority = 3,
+                    availableMembersCount = 4,
+                    totalMembersCount = 10,
+                    recommendations = listOf(
+                        RecommendationEntity(
+                            id = 6,
+                            date = "2024-09-27",
+                            startTime = "11:00",
+                            endTime = "14:00",
+                            likes = 15,
+                            isLiked = false,
+                            availableMembersCount = 15,
+                            availableMembers = listOf(
+                                "선우정아", "대한민국만세", "최영희", "정영수",
+                                "이가을", "김언지", "박유진", "임하늘", "변우석", "김혜윤", "정해인", "카리나", "닝닝",
+                                "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
+                            ),
+                            unavailableMembersCount = 5,
+                            unavailableMembers = listOf("나", "한강", "이영희", "박영수", "최영희", "정영수")
+                        )
+                    )
                 ),
-                RecommendationEntity(
-                    id = 5,
-                    date = "2021-09-01",
-                    startTime = "09:00",
-                    endTime = "10:00",
-                    likes = 3,
+                PriorityEntity(
+                    priority = 4,
                     availableMembersCount = 3,
-                    availableMembers = listOf("카리나", "윈터", "닝닝", "지젤"),
-                    unavailableMembersCount = 1,
-                    unavailableMembers = listOf("나")
-                )
-            )
-        ),
-        AppointmentEntity(
-            priority = 3,
-            recommendations = listOf(
-                RecommendationEntity(
-                    id = 6,
-                    date = "2021-09-01",
-                    startTime = "09:00",
-                    endTime = "10:00",
-                    likes = 3,
-                    availableMembersCount = 3,
-                    availableMembers = listOf("카리나", "윈터", "닝닝"),
-                    unavailableMembersCount = 1,
-                    unavailableMembers = listOf("나")
-                )
-            )
-        ),
-        AppointmentEntity(
-            priority = 4,
-            recommendations = listOf(
-                RecommendationEntity(
-                    id = 7,
-                    date = "2021-09-01",
-                    startTime = "09:00",
-                    endTime = "10:00",
-                    likes = 3,
-                    availableMembersCount = 3,
-                    availableMembers = listOf("나", "윈터", "닝닝"),
-                    unavailableMembersCount = 8,
-                    unavailableMembers = listOf("변우석", "카리나", "지젤", "이가을", "김혜윤", "정해인", "대한민국만세", "유연석")
-                )
-            )
-        ),
-        AppointmentEntity(
-            priority = 5,
-            recommendations = listOf(
-                RecommendationEntity(
-                    id = 8,
-                    date = "2021-09-01",
-                    startTime = "09:00",
-                    endTime = "10:00",
-                    likes = 3,
-                    availableMembersCount = 3,
-                    availableMembers = listOf("카리나", "윈터", "닝닝"),
-                    unavailableMembersCount = 1,
-                    unavailableMembers = listOf("나")
+                    totalMembersCount = 10,
+                    recommendations = listOf(
+                        RecommendationEntity(
+                            id = 6,
+                            date = "2024-09-27",
+                            startTime = "11:00",
+                            endTime = "14:00",
+                            likes = 15,
+                            isLiked = false,
+                            availableMembersCount = 20,
+                            availableMembers = listOf(
+                                "선우정아", "대한민국만세", "최영희", "정영수",
+                                "이가을", "김언지", "박유진", "임하늘", "변우석", "김혜윤", "정해인", "카리나", "닝닝",
+                                "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
+                            ),
+                            unavailableMembersCount = 5,
+                            unavailableMembers = listOf("나", "한강", "이영희", "박영수", "최영희", "정영수")
+                        )
+                    )
+                ),
+                PriorityEntity(
+                    priority = 5,
+                    availableMembersCount = 2,
+                    totalMembersCount = 10,
+                    recommendations = listOf(
+                        RecommendationEntity(
+                            id = 7,
+                            date = "2024-09-27",
+                            startTime = "11:00",
+                            endTime = "14:00",
+                            likes = 15,
+                            isLiked = true,
+                            availableMembersCount = 25,
+                            availableMembers = listOf(
+                                "선우정아", "대한민국만세", "최영희", "정영수",
+                                "이가을", "김언지", "박유진", "임하늘", "변우석", "김혜윤", "정해인", "카리나", "닝닝",
+                                "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
+                            ),
+                            unavailableMembersCount = 5,
+                            unavailableMembers = listOf("나", "한강", "이영희", "박영수", "최영희", "정영수")
+                        )
+                    )
                 )
             )
         )
-    )
-}
-
-sealed class AppointmentSideEffect {
-    data object NavigateUp : AppointmentSideEffect()
 }

@@ -1,4 +1,4 @@
-package com.sopt.presentation.groupDetail.screen
+package com.sopt.presentation.groupDetail.groupMember
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -43,8 +43,6 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.domain.entity.GroupMembersEntity
 import com.sopt.presentation.R
-import com.sopt.presentation.groupDetail.GroupMemberSideEffect
-import com.sopt.presentation.groupDetail.GroupMemberViewModel
 
 @Composable
 fun GroupMemberRoute(

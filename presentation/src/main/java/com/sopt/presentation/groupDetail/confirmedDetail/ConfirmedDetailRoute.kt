@@ -1,4 +1,4 @@
-package com.sopt.presentation.groupDetail.screen
+package com.sopt.presentation.groupDetail.confirmedDetail
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -32,8 +32,6 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.domain.entity.ConfirmedDetailEntity
 import com.sopt.presentation.R
-import com.sopt.presentation.groupDetail.ConfirmedDetailSideEffect
-import com.sopt.presentation.groupDetail.ConfirmedDetailViewModel
 
 @Composable
 fun ConfirmedDetailRoute(
@@ -68,7 +66,7 @@ fun ConfirmedDetailScreen(
             .navigationBarsPadding(),
         topBar = {
             NoostakTopAppBar(
-                title = data.appointName,
+                title = data.appointmentName,
                 modifier = Modifier.fillMaxWidth(),
                 isIconVisible = true,
                 onBackButtonClick = { onBackButtonClick() }

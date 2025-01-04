@@ -8,8 +8,8 @@ import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
 import com.sopt.presentation.appointment.navigation.navigateAppointment
 import com.sopt.presentation.groupDetail.GroupDetailRoute
-import com.sopt.presentation.groupDetail.screen.ConfirmedDetailRoute
-import com.sopt.presentation.groupDetail.screen.GroupMemberRoute
+import com.sopt.presentation.groupDetail.confirmedDetail.ConfirmedDetailRoute
+import com.sopt.presentation.groupDetail.groupMember.GroupMemberRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateGroupDetail(
