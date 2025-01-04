@@ -33,7 +33,7 @@ class GroupDetailViewModel @Inject constructor() : BaseViewModel<GroupDetailSide
         )
     }
 
-    val tabs = immutableListOf("진행중", "확정")
+    val tabs = immutableListOf("진행 중", "확정")
     val mockGroupDetail = GroupDetailEntity(
         groupName = "누스탁",
         groupMembersCount = 10,

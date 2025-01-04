@@ -14,5 +14,5 @@ data class TimeEntity(
 data class AvailableTimeEntity(
     val startTime: String,
     val endTime: String,
-    val level: Int
+    val level: Int? = null
 )

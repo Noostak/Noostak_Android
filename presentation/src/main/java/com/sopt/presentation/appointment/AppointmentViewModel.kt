@@ -2,10 +2,10 @@ package com.sopt.presentation.appointment
 
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AppointmentEntity
-import com.sopt.domain.entity.TimeEntity
+import com.sopt.domain.entity.AvailableTimeEntity
 import com.sopt.domain.entity.PriorityEntity
 import com.sopt.domain.entity.RecommendationEntity
-import com.sopt.domain.entity.AvailableTimeEntity
+import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -44,7 +44,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
 
     val mockCurrentStatus =
         TimeTableEntity(
-            startTime = "09:00",
+            startTime = "07:00",
             endTime = "23:00",
             timeEntity = listOf(
                 TimeEntity(
@@ -181,7 +181,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
                             ),
                             unavailableMembersCount = 5,
                             unavailableMembers = listOf("나", "한강", "이영희", "박영수", "최영희", "정영수")
-                        ),
+                        )
                     )
                 ),
                 PriorityEntity(

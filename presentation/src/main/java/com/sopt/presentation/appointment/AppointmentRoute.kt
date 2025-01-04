@@ -243,7 +243,7 @@ fun RecommendationHeaderItem(
     ) {
         Text(
             modifier = Modifier.padding(bottom = 6.dp),
-            text = "Best${priority}",
+            text = "Best$priority",
             color = when (selectedItemIndex) {
                 -1 -> NoostakTheme.colors.black
                 priority -> NoostakTheme.colors.blue700

@@ -51,7 +51,6 @@ fun AppointmentConfirmRoute(
                 }
             }
         }
-
     }
     AppointmentConfirmScreen(
         groupId = groupId,

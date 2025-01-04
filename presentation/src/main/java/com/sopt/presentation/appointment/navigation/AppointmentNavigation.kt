@@ -97,6 +97,9 @@ fun NavGraphBuilder.appointmentNavGraph(
                     appointmentsId = appointmentsId,
                     appointmentName = appointmentName
                 )
+            },
+            navigateToGroupDetail = { groupId ->
+                navHostController.navigateGroupDetail(groupId = groupId)
             }
         )
     }

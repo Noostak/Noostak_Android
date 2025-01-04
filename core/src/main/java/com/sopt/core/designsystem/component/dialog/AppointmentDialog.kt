@@ -45,14 +45,14 @@ fun AppointmentDialog(
                     .background(
                         shape = CircleShape,
                         color = NoostakTheme.colors.gray200
-                    ),
+                    )
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = description,
                 color = NoostakTheme.colors.gray900,
                 style = NoostakTheme.typography.b2Regular,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(20.dp))
             Button(
@@ -62,12 +62,12 @@ fun AppointmentDialog(
                 ),
                 shape = RoundedCornerShape(6.dp),
                 onClick = onConfirmButtonClick,
-                interactionSource = NoRippleInteractionSource,
+                interactionSource = NoRippleInteractionSource
             ) {
                 Text(
                     text = confirmButtonText,
                     color = NoostakTheme.colors.white,
-                    textAlign = TextAlign.Center,
+                    textAlign = TextAlign.Center
                 )
             }
             Spacer(modifier = Modifier.height(6.5.dp))
@@ -75,7 +75,7 @@ fun AppointmentDialog(
                 modifier = Modifier.noRippleClickable { onDismissRequest() },
                 text = dismissText,
                 color = NoostakTheme.colors.gray700,
-                style = NoostakTheme.typography.b2Regular,
+                style = NoostakTheme.typography.b2Regular
             )
         }
     }

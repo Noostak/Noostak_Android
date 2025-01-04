@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -141,9 +140,11 @@ fun RecommendationItem(
                         isLiked = !isLiked
                         likes = if (isLiked) likes + 1 else likes - 1
                     },
-                    imageVector = if (isLiked) ImageVector.vectorResource(id = R.drawable.ic_heart_on) else ImageVector.vectorResource(
-                        id = R.drawable.ic_heart_off
-                    ),
+                    imageVector = if (isLiked) {
+                        ImageVector.vectorResource(id = R.drawable.ic_heart_on)
+                    } else {
+                        ImageVector.vectorResource(id = R.drawable.ic_heart_off)
+                    },
                     contentDescription = null
                 )
                 Text(
