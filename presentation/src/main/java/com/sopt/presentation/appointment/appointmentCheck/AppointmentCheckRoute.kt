@@ -118,11 +118,11 @@ fun AppointmentCheckScreen(
                 data = data,
                 modifier = Modifier
                     .constrainAs(timeTable) {
-                        top.linkTo(title.bottom) // 제목 아래에 위치
+                        top.linkTo(title.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                        bottom.linkTo(button.top) // 버튼 위에 위치
-                        height = Dimension.fillToConstraints // 높이 제약 설정
+                        bottom.linkTo(button.top)
+                        height = Dimension.fillToConstraints
                     }
             ) {
                 selectedData = it
@@ -133,14 +133,14 @@ fun AppointmentCheckScreen(
             NoostakButton(
                 modifier = Modifier
                     .constrainAs(button) {
-                        bottom.linkTo(parent.bottom) // 하단 고정
+                        bottom.linkTo(parent.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
                     }
                     .padding(
                         top = 7.dp,
                         bottom = dimensionResource(id = R.dimen.vertical_padding)
-                    ), // 하단 여백
+                    ),
                 text = stringResource(R.string.btn_appointment_check),
                 onButtonClick = { onConfirmButtonClick(groupId, appointmentsId, appointmentName) },
                 isEnabled = true

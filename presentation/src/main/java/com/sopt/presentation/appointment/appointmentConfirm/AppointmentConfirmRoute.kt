@@ -93,19 +93,19 @@ fun AppointmentConfirmScreen(
                 .padding(dimensionResource(id = R.dimen.horizontal_padding))
         ) {
             Text(
-                text = "이대로 약속을 확정 할까요?",
+                text = stringResource(R.string.title_appointment_confirm),
                 color = NoostakTheme.colors.black,
                 style = NoostakTheme.typography.h4Bold
             )
             Text(
                 modifier = Modifier.padding(top = 4.dp),
-                text = "한 번 확정된 약속은 수정이 어려워요!",
+                text = stringResource(R.string.subtitle_appointment_confirm),
                 color = NoostakTheme.colors.black,
                 style = NoostakTheme.typography.c3Regular
             )
             Text(
                 modifier = Modifier.padding(top = 20.dp, start = 3.dp, bottom = 12.dp),
-                text = "약속 정보",
+                text = stringResource(R.string.tv_appointment_confirm_info),
                 color = NoostakTheme.colors.black,
                 style = NoostakTheme.typography.t4Bold
             )
@@ -188,7 +188,7 @@ fun AppointmentConfirmScreen(
             }
             Spacer(modifier = Modifier.weight(1f))
             NoostakButton(
-                text = "완료",
+                text = stringResource(R.string.btn_appointment_confirm_complete),
                 onButtonClick = { onConfirmButtonClick(groupId) },
                 isEnabled = true
             )

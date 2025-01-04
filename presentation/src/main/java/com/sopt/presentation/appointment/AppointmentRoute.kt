@@ -136,9 +136,9 @@ fun AppointmentScreen(
                         showDialog = false
                         onSubmitButtonClick(groupId, appointmentsId, appointmentName)
                     },
-                    description = "이미 일정을 등록하지 않았어요!\n일정을 등록하러 가볼까요?",
-                    dismissText = "나중에 등록하기",
-                    confirmButtonText = "가능일정 등록하기"
+                    description = stringResource(R.string.dialog_appointment_description),
+                    dismissText = stringResource(R.string.dialog_appointment_dismiss),
+                    confirmButtonText = stringResource(R.string.dialog_appointment_confirm)
                 )
             }
             Row(
@@ -243,7 +243,7 @@ fun RecommendationHeaderItem(
     ) {
         Text(
             modifier = Modifier.padding(bottom = 6.dp),
-            text = "Best$priority",
+            text = stringResource(R.string.text_appointment_priority, priority),
             color = when (selectedItemIndex) {
                 -1 -> NoostakTheme.colors.black
                 priority -> NoostakTheme.colors.blue700
@@ -262,7 +262,12 @@ fun RecommendationHeaderItem(
                         }
                     )
                 ) {
-                    append("${availableMembersCount}명")
+                    append(
+                        stringResource(
+                            R.string.tv_appointment_availableMembersCount,
+                            availableMembersCount
+                        )
+                    )
                 }
                 withStyle(
                     style = SpanStyle(
@@ -273,7 +278,12 @@ fun RecommendationHeaderItem(
                         }
                     )
                 ) {
-                    append(" / ${totalMembersCount}명")
+                    append(
+                        stringResource(
+                            R.string.tv_appointment_totalMembersCount,
+                            totalMembersCount
+                        )
+                    )
                 }
             },
             style = NoostakTheme.typography.b4SemiBold
