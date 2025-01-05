@@ -22,7 +22,7 @@ fun NoostakSnackBar(
     message: String = "",
     textStyle: TextStyle = NoostakTheme.typography.c3Regular,
     textColor: Color = NoostakTheme.colors.white,
-    backgroundColor: Color = NoostakTheme.colors.gray900
+    backgroundColor: Color = NoostakTheme.colors.gray800
 ) {
     Box(
         modifier = Modifier
