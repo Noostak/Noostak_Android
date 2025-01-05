@@ -60,7 +60,7 @@ fun NoostakBottomButton(
     ) {
         Text(
             text = text,
-            color = Color.White,
+            color = NoostakTheme.colors.white,
             style = style
         )
     }
