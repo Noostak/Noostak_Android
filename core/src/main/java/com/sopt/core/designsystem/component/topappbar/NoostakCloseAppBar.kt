@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -36,7 +37,7 @@ fun NoostakCloseAppBar(
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_appbar_close),
-                contentDescription = "Icon Delete On AppBar"
+                contentDescription = stringResource(R.string.icon_noostak_close_appbar_description)
             )
         }
     }

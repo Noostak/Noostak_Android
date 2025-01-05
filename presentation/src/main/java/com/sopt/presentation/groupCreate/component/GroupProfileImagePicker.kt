@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.skydoves.landscapist.ImageOptions
@@ -40,7 +41,7 @@ fun GroupProfileImagePicker(
         )
         Image(
             painter = painterResource(id = R.drawable.ic_group_create_camera),
-            contentDescription = "Add Profile Image By Camera Button",
+            contentDescription = stringResource(R.string.image_group_profile_image_picker_description),
             modifier = Modifier
                 .size(35.dp)
                 .align(Alignment.BottomEnd)

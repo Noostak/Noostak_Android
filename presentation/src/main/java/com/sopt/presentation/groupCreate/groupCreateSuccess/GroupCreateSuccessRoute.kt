@@ -176,7 +176,7 @@ fun GroupCreateSuccessScreen(
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_launcher_background),
-                    contentDescription = "Image Group Create Success",
+                    contentDescription = stringResource(R.string.image_group_create_success_description),
                     modifier = Modifier
                         .padding(top = 56.dp)
                         .size(108.dp)

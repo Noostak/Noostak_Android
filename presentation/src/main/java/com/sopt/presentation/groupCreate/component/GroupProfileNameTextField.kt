@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,7 +60,7 @@ fun GroupProfileNameTextField(
                     IconButton(onClick = { onValueChange("") }) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_group_create_delete),
-                            contentDescription = "Delete Group Profile Name",
+                            contentDescription = stringResource(R.string.icon_group_profile_name_text_field_descrition),
                             tint = Color.Unspecified
                         )
                     }
@@ -72,7 +73,11 @@ fun GroupProfileNameTextField(
             keyboardActions = keyboardActions
         )
         Text(
-            text = "${value.length}/$maxLength",
+            text = stringResource(
+                R.string.text_group_profile_name_textfield_count,
+                value.length,
+                maxLength
+            ),
             color = NoostakTheme.colors.gray800,
             style = NoostakTheme.typography.b5Regular,
             modifier = modifier
