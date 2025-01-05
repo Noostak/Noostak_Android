@@ -28,7 +28,7 @@ fun NoostakFloatingActionButton(
         shape = RoundedCornerShape(dimensionResource(id = R.dimen.fab_radius)),
         containerColor = NoostakTheme.colors.black,
         contentColor = NoostakTheme.colors.white,
-        elevation = FloatingActionButtonDefaults.elevation(4.dp),
+        elevation = FloatingActionButtonDefaults.elevation(dimensionResource(id = R.dimen.fab_shadow)),
         onClick = { onClick() },
         interactionSource = NoRippleInteractionSource
     ) {

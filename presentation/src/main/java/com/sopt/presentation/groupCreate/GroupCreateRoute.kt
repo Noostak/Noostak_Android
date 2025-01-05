@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,11 +58,14 @@ fun GroupCreateRoute(
     var isGalleryPermission by remember { mutableStateOf(false) }
 
     val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
+        contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         try {
-            if (isGranted) viewModel.updateGalleryPermissionState(true)
-            else isGalleryPermission = true
+            if (isGranted) {
+                viewModel.updateGalleryPermissionState(true)
+            } else {
+                isGalleryPermission = true
+            }
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -91,8 +95,9 @@ fun GroupCreateRoute(
                 when (sideEffect) {
                     is GroupCreateSideEffect.NavigateToGroupCreateSuccess -> navigateToGroupCreateSuccess()
 
-                    is GroupCreateSideEffect.ShowPermissionDeniedDialog -> isGalleryPermission =
-                        true
+                    is GroupCreateSideEffect.ShowPermissionDeniedDialog ->
+                        isGalleryPermission =
+                            true
 
                     is GroupCreateSideEffect.RequestImagePicker -> context.launchImagePicker(
                         galleryLauncher,
@@ -120,7 +125,7 @@ fun GroupCreateRoute(
         },
         onNextBtnClick = { nickname, imageUri ->
             viewModel.navigateToGroupCreateSuccess()
-        },
+        }
     )
 }
 
@@ -130,7 +135,7 @@ fun GroupCreateScreen(
     groupProfileState: GroupProfileEntity,
     onProfileCameraBtnClick: () -> Unit = {},
     onNameChange: (String) -> Unit = {},
-    onNextBtnClick: (String, String?) -> Unit,
+    onNextBtnClick: (String, String?) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -139,7 +144,7 @@ fun GroupCreateScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(paddingValues)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
     ) {
         Column(
             modifier = Modifier
@@ -148,7 +153,7 @@ fun GroupCreateScreen(
                     detectTapGestures(onTap = {
                         focusManager.clearFocus()
                     })
-                },
+                }
         ) {
             Text(
                 text = stringResource(R.string.text_group_create_title),
@@ -161,7 +166,7 @@ fun GroupCreateScreen(
                 onCameraBtnClick = onProfileCameraBtnClick,
                 modifier = Modifier
                     .padding(top = 46.dp)
-                    .align(Alignment.CenterHorizontally),
+                    .align(Alignment.CenterHorizontally)
             )
             Spacer(modifier = Modifier.height(27.dp))
             GroupProfileNameTextField(
@@ -178,9 +183,10 @@ fun GroupCreateScreen(
             onButtonClick = {
                 onNextBtnClick(
                     groupProfileState.groupName,
-                    groupProfileState.selectedImageUri,
+                    groupProfileState.selectedImageUri
                 )
-            })
+            }
+        )
     }
 }
 
@@ -191,9 +197,11 @@ fun GroupCreateScreenPreview() {
         GroupCreateScreen(
             groupProfileState = GroupProfileEntity(
                 groupName = "누스탁",
-                selectedImageUri = null,
+                selectedImageUri = null
             ),
-            onProfileCameraBtnClick = {}, onNameChange = {}, onNextBtnClick = { _, _ -> }
+            onProfileCameraBtnClick = {},
+            onNameChange = {},
+            onNextBtnClick = { _, _ -> }
         )
     }
 }

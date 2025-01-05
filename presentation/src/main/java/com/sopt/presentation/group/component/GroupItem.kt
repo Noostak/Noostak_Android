@@ -1,6 +1,5 @@
 package com.sopt.presentation.group.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -16,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.noRippleClickable
 import com.sopt.domain.entity.GroupEntity
 
 @Composable
@@ -27,7 +27,7 @@ fun GroupItem(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onItemClick(data.groupId) }
+            .noRippleClickable { onItemClick(data.groupId) }
             .padding(vertical = 14.dp, horizontal = 6.dp)
     ) {
         GroupImage(
@@ -41,14 +41,14 @@ fun GroupItem(
             text = data.groupName,
             color = NoostakTheme.colors.gray900,
             style = NoostakTheme.typography.b4SemiBold,
-            modifier = Modifier.align(Alignment.CenterVertically),
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
         Spacer(modifier = Modifier.width(6.dp))
         Text(
             text = data.groupPersonnel.toString(),
             color = NoostakTheme.colors.gray700,
             style = NoostakTheme.typography.b4Regular,
-            modifier = Modifier.align(Alignment.CenterVertically),
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
     }
 }

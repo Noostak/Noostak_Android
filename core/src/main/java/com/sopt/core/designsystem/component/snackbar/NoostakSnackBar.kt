@@ -9,9 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 
@@ -26,9 +27,14 @@ fun NoostakSnackBar(
 ) {
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(30.dp))
+            .clip(RoundedCornerShape(dimensionResource(id = R.dimen.snack_bar_radius)))
             .background(color = backgroundColor)
-            .padding(vertical = 12.dp, horizontal = 20.dp)
+            .padding(
+                vertical = dimensionResource(id = R.dimen.snack_bar_vertical_padding),
+                horizontal = dimensionResource(
+                    id = R.dimen.snack_bar_horizontal_padding
+                )
+            )
     ) {
         Text(text = message, style = textStyle, color = textColor)
     }

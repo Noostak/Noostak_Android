@@ -1,7 +1,6 @@
 package com.sopt.presentation.group.component
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -26,6 +26,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.presentation.R
 
@@ -40,13 +41,20 @@ fun GroupFloatingActionDialog(
         onDismissRequest = onDismissRequest,
         properties = DialogProperties(
             usePlatformDefaultWidth = false,
-            dismissOnClickOutside = true,
-        ),
+            dismissOnClickOutside = true
+        )
     ) {
-        Box(modifier = Modifier.fillMaxSize().clickable { onDismissRequest() }) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .noRippleClickable { onDismissRequest() }
+        ) {
             Column(
                 modifier = Modifier
-                    .padding(end = 16.dp, bottom = 73.dp)
+                    .padding(
+                        end = dimensionResource(id = R.dimen.horizontal_padding),
+                        bottom = 73.dp
+                    )
                     .align(Alignment.BottomEnd)
             ) {
                 Box(
@@ -58,7 +66,7 @@ fun GroupFloatingActionDialog(
                     Column(modifier = Modifier.padding(horizontal = 17.dp, vertical = 18.dp)) {
                         GroupFloatingActionButtonItem(
                             painter = painterResource(id = R.drawable.ic_launcher_background),
-                            text = stringResource(R.string.text_group_create_title),
+                            text = stringResource(R.string.text_group_create_title)
                         ) {
                             onCreateGroupClick()
                         }

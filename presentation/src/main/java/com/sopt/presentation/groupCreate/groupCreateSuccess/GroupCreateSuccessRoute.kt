@@ -6,7 +6,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -29,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -46,6 +46,7 @@ import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.component.topappbar.NoostakCloseAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.noRippleClickable
 import com.sopt.presentation.R
 import com.sopt.presentation.groupCreate.groupCreateSuccess.regex.generateRandomCode
 import kotlinx.coroutines.delay
@@ -123,7 +124,7 @@ fun GroupCreateSuccessScreen(
     snackBarVisible: MutableState<Boolean>,
     onCloseBtnClick: (Long) -> Unit,
     onCopyBtnClick: () -> Unit,
-    onSendBtnClick: () -> Unit,
+    onSendBtnClick: () -> Unit
 ) {
     val clipboardManager = LocalClipboardManager.current
 
@@ -166,7 +167,7 @@ fun GroupCreateSuccessScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
         ) {
             Column(
                 modifier = Modifier
@@ -188,7 +189,7 @@ fun GroupCreateSuccessScreen(
                     style = NoostakTheme.typography.t1SemiBold,
                     modifier = Modifier
                         .padding(top = 8.dp)
-                        .align(Alignment.CenterHorizontally),
+                        .align(Alignment.CenterHorizontally)
                 )
                 Text(
                     text = stringResource(R.string.text_group_create_success_content),
@@ -197,7 +198,7 @@ fun GroupCreateSuccessScreen(
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .padding(top = 8.dp)
-                        .align(Alignment.CenterHorizontally),
+                        .align(Alignment.CenterHorizontally)
                 )
                 Text(
                     text = groupCode,
@@ -205,7 +206,7 @@ fun GroupCreateSuccessScreen(
                     style = NoostakTheme.typography.codeMedium,
                     modifier = Modifier
                         .padding(top = 16.dp)
-                        .align(Alignment.CenterHorizontally),
+                        .align(Alignment.CenterHorizontally)
                 )
             }
             Text(
@@ -216,11 +217,11 @@ fun GroupCreateSuccessScreen(
                 ),
                 modifier = Modifier
                     .padding(12.dp)
-                    .clickable {
+                    .noRippleClickable {
                         clipboardManager.setText(AnnotatedString(groupCode))
                         onCopyBtnClick()
                     }
-                    .align(Alignment.CenterHorizontally),
+                    .align(Alignment.CenterHorizontally)
             )
             NoostakBottomButton(
                 text = stringResource(R.string.btn_group_create_success_code_send),
@@ -229,7 +230,8 @@ fun GroupCreateSuccessScreen(
                 isEnabled = true,
                 onButtonClick = {
                     onSendBtnClick()
-                })
+                }
+            )
         }
     }
 }

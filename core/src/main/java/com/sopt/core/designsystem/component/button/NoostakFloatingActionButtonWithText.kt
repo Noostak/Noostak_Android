@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,10 +27,10 @@ fun NoostakFloatingActionButtonWithText(
 ) {
     ExtendedFloatingActionButton(
         modifier = modifier,
-        shape = RoundedCornerShape(30.dp),
+        shape = RoundedCornerShape(dimensionResource(id = R.dimen.fab_radius)),
         containerColor = NoostakTheme.colors.black,
         contentColor = NoostakTheme.colors.white,
-        elevation = FloatingActionButtonDefaults.elevation(4.dp),
+        elevation = FloatingActionButtonDefaults.elevation(dimensionResource(id = R.dimen.fab_shadow)),
         onClick = { onClick() },
         interactionSource = NoRippleInteractionSource
     ) {

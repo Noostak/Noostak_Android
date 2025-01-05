@@ -16,6 +16,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,7 +25,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakFloatingActionButtonWithText
-import com.sopt.core.designsystem.component.topappbar.BaseTopAppBar
+import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.screen.NoostakEmptyScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -41,7 +42,7 @@ fun GroupRoute(
     viewModel: GroupViewModel = hiltViewModel(),
     navigateToGroupDetail: (Long) -> Unit,
     navigateToGroupCreate: () -> Unit,
-    navigateToGroupEnter: () -> Unit,
+    navigateToGroupEnter: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val groupItems = viewModel.groupItems
@@ -92,17 +93,17 @@ fun GroupScreen(
     groupItems: List<GroupEntity>,
     isFabClicked: StateFlow<Boolean>,
     onItemClick: (Long) -> Unit,
-    onFabClick: () -> Unit,
+    onFabClick: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
             .navigationBarsPadding(),
         topBar = {
-            BaseTopAppBar(
+            NoostakTopAppBar(
                 title = stringResource(R.string.bottom_nav_group),
                 modifier = Modifier,
-                isBackButton = false
+                isIconVisible = false
             )
         },
         floatingActionButton = {
@@ -115,19 +116,19 @@ fun GroupScreen(
                 }
             }
         },
-        floatingActionButtonPosition = FabPosition.End,
+        floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->
         Box {
             LazyColumn(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
             ) {
                 items(items = groupItems, key = { item -> item.groupId }) {
                     GroupItem(it, onItemClick)
                     HorizontalDivider(
                         thickness = 1.dp,
-                        color = NoostakTheme.colors.gray100,
+                        color = NoostakTheme.colors.gray100
                     )
                 }
             }
@@ -148,7 +149,7 @@ fun GroupScreenPreview() {
                     groupPersonnel = 16,
                     newsImage = null
                 ),
-                GroupEntity(groupId = 3, groupName = "솝트", groupPersonnel = 191, newsImage = null),
+                GroupEntity(groupId = 3, groupName = "솝트", groupPersonnel = 191, newsImage = null)
             ),
             isFabClicked = remember { MutableStateFlow(false) },
             onItemClick = {},

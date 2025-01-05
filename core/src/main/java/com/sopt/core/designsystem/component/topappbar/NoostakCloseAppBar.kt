@@ -10,9 +10,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -26,17 +26,17 @@ fun NoostakCloseAppBar(
         modifier = modifier
             .fillMaxWidth()
             .background(color = NoostakTheme.colors.white)
-            .height(48.dp)
+            .height(dimensionResource(id = R.dimen.appbar_height))
     ) {
         IconButton(
             onClick = onBackButtonClick,
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .size(48.dp)
+                .size(dimensionResource(id = R.dimen.appbar_height))
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_appbar_close),
-                contentDescription = "Icon Delete On AppBar",
+                contentDescription = "Icon Delete On AppBar"
             )
         }
     }
