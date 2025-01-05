@@ -24,7 +24,6 @@ fun NavController.navigateToGroupEnter(navOptions: NavOptions? = null) {
     )
 }
 
-
 fun NavGraphBuilder.groupCreateNavGraph(
     paddingValues: PaddingValues,
     navHostController: NavController

@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class GroupCreateViewModel @Inject constructor() : ViewModel() {
     private val _sideEffect = MutableSharedFlow<GroupCreateSideEffect>()
@@ -36,8 +35,11 @@ class GroupCreateViewModel @Inject constructor() : ViewModel() {
 
     fun requestGalleryPicker() {
         viewModelScope.launch {
-            if (_groupProfileState.value.isPermissionGranted) _sideEffect.emit(GroupCreateSideEffect.RequestImagePicker)
-            else _sideEffect.emit(GroupCreateSideEffect.ShowPermissionDeniedDialog)
+            if (_groupProfileState.value.isPermissionGranted) {
+                _sideEffect.emit(GroupCreateSideEffect.RequestImagePicker)
+            } else {
+                _sideEffect.emit(GroupCreateSideEffect.ShowPermissionDeniedDialog)
+            }
         }
     }
 

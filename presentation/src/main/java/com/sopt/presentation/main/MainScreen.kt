@@ -40,9 +40,9 @@ import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.presentation.calendar.navigation.calendarNavGraph
 import com.sopt.presentation.example.navigation.exampleNavGraph
-import com.sopt.presentation.groupCreate.navigation.groupCreateNavGraph
-import com.sopt.presentation.groupCreate.groupCreateSuccess.navigation.groupCreateSuccessNavGraph
 import com.sopt.presentation.group.navigation.groupNavGraph
+import com.sopt.presentation.groupCreate.groupCreateSuccess.navigation.groupCreateSuccessNavGraph
+import com.sopt.presentation.groupCreate.navigation.groupCreateNavGraph
 import com.sopt.presentation.groupDetail.navigation.groupDetailNavGraph
 import com.sopt.presentation.mypage.navigation.myPageNavGraph
 import kotlinx.coroutines.launch

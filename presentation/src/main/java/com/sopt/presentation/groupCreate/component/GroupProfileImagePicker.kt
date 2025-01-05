@@ -23,20 +23,20 @@ import com.sopt.presentation.R
 fun GroupProfileImagePicker(
     selectedImageUri: String?,
     onCameraBtnClick: () -> Unit,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier) {
         GlideImage(
             imageModel = { selectedImageUri ?: R.drawable.ic_group_create_profile },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
-                alignment = Alignment.Center,
+                alignment = Alignment.Center
             ),
             modifier = Modifier
                 .size(112.dp)
                 .aspectRatio(1f)
                 .clip(CircleShape),
-            previewPlaceholder = painterResource(id = R.drawable.ic_group_create_profile),
+            previewPlaceholder = painterResource(id = R.drawable.ic_group_create_profile)
         )
         Image(
             painter = painterResource(id = R.drawable.ic_group_create_camera),
@@ -46,7 +46,7 @@ fun GroupProfileImagePicker(
                 .align(Alignment.BottomEnd)
                 .noRippleClickable {
                     onCameraBtnClick()
-                },
+                }
         )
     }
 }

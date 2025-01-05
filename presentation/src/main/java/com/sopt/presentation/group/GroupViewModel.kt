@@ -56,6 +56,6 @@ class GroupViewModel @Inject constructor() : ViewModel() {
             GroupEntity(groupId = 9, groupName = "솝트", groupPersonnel = 191, newsImage = null),
             GroupEntity(groupId = 10, groupName = "누스탁", groupPersonnel = 15, newsImage = null),
             GroupEntity(groupId = 11, groupName = "유니보이스", groupPersonnel = 16, newsImage = null),
-            GroupEntity(groupId = 12, groupName = "솝트", groupPersonnel = 191, newsImage = null),
+            GroupEntity(groupId = 12, groupName = "솝트", groupPersonnel = 191, newsImage = null)
         )
 }

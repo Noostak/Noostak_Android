@@ -4,5 +4,5 @@ data class GroupEntity(
     val groupId: Long = -1,
     val groupName: String = "",
     val groupPersonnel: Long = 0,
-    val newsImage: String? = null,
+    val newsImage: String? = null
 )

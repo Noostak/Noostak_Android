@@ -17,13 +17,13 @@ fun NoostakEmptyScreen(@StringRes emptyText: Int, color: Color, style: TextStyle
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .aspectRatio(1f),
+            .aspectRatio(1f)
     ) {
         Text(
             modifier = Modifier.align(Alignment.Center),
             text = stringResource(emptyText),
             color = color,
-            style = style,
+            style = style
         )
     }
 }

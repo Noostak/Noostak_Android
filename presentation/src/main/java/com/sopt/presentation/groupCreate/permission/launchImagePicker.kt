@@ -8,7 +8,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 
 fun Context.launchImagePicker(
     galleryLauncher: ActivityResultLauncher<String>,
-    photoPickerLauncher: ActivityResultLauncher<PickVisualMediaRequest>,
+    photoPickerLauncher: ActivityResultLauncher<PickVisualMediaRequest>
 ) {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
         // API 33 미만: 갤러리 실행

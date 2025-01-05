@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sopt.core.navigation.Route
-import com.sopt.presentation.groupCreate.navigation.GroupCreate
 import com.sopt.presentation.groupCreate.groupCreateSuccess.GroupCreateSuccessRoute
+import com.sopt.presentation.groupCreate.navigation.GroupCreate
 import com.sopt.presentation.groupDetail.navigation.navigateGroupDetail
 import kotlinx.serialization.Serializable
 
@@ -26,7 +26,7 @@ fun NavGraphBuilder.groupCreateSuccessNavGraph(
         GroupCreateSuccessRoute(
             navigateToGroupDetail = { groupId ->
                 navHostController.navigateGroupDetail(groupId = groupId)
-            },
+            }
         )
     }
 }

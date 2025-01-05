@@ -39,7 +39,7 @@ fun GroupProfileNameTextField(
     modifier: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    keyboardActions: KeyboardActions = KeyboardActions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     Column {
         OutlinedTextField(
@@ -52,7 +52,7 @@ fun GroupProfileNameTextField(
             shape = shape,
             colors = OutlinedTextFieldDefaults.colors(
                 focusedBorderColor = focusedBorderColor,
-                unfocusedBorderColor = unfocusedBorderColor,
+                unfocusedBorderColor = unfocusedBorderColor
             ),
             trailingIcon = {
                 if (value.isNotEmpty()) {
@@ -69,7 +69,7 @@ fun GroupProfileNameTextField(
             singleLine = true,
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
-            keyboardActions = keyboardActions,
+            keyboardActions = keyboardActions
         )
         Text(
             text = "${value.length}/$maxLength",
@@ -78,7 +78,7 @@ fun GroupProfileNameTextField(
             modifier = modifier
                 .align(Alignment.End)
                 .padding(top = 6.dp),
-            maxLines = 1,
+            maxLines = 1
         )
     }
 }
