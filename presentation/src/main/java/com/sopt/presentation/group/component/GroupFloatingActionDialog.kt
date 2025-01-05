@@ -71,7 +71,7 @@ fun GroupFloatingActionDialog(
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(9.dp))
+                Spacer(modifier = Modifier.height(8.dp))
                 FloatingActionButton(
                     modifier = Modifier.align(Alignment.End),
                     shape = CircleShape,
