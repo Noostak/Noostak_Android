@@ -24,7 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.sopt.core.designsystem.component.button.NoostakFloatingActionButtonWithText
+import com.sopt.core.designsystem.component.button.NoostakFloatingActionButton
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.screen.NoostakEmptyScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -108,7 +108,7 @@ fun GroupScreen(
         },
         floatingActionButton = {
             if (!isFabClicked.value) {
-                NoostakFloatingActionButtonWithText(
+                NoostakFloatingActionButton(
                     title = stringResource(R.string.fab_group_create),
                     modifier = Modifier.offset(x = 0.dp, y = (-74).dp)
                 ) {
