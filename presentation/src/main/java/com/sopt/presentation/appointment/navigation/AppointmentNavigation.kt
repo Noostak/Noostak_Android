@@ -3,6 +3,7 @@ package com.sopt.presentation.appointment.navigation
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
@@ -15,7 +16,8 @@ import kotlinx.serialization.Serializable
 fun NavController.navigateAppointment(
     groupId: Long,
     appointmentsId: Long,
-    appointmentName: String
+    appointmentName: String,
+    navOptions: NavOptions? = null
 ) {
     navigate(
         route = Appointment(
@@ -29,7 +31,8 @@ fun NavController.navigateAppointment(
 fun NavController.navigateAppointmentCheck(
     groupId: Long,
     appointmentsId: Long,
-    appointmentName: String
+    appointmentName: String,
+    navOptions: NavOptions? = null
 ) {
     navigate(
         route = AppointmentCheck(
@@ -44,7 +47,8 @@ fun NavController.navigateAppointmentConfirm(
     groupId: Long,
     appointmentsId: Long,
     appointmentName: String,
-    optionId: Long
+    optionId: Long,
+    navOptions: NavOptions? = null
 ) {
     navigate(
         route = AppointmentConfirm(
@@ -52,7 +56,8 @@ fun NavController.navigateAppointmentConfirm(
             appointmentsId = appointmentsId,
             appointmentName = appointmentName,
             optionId = optionId
-        )
+        ),
+        navOptions = navOptions
     )
 }
 

@@ -45,8 +45,7 @@ fun NoostakTimeTable(
         columns = GridCells.Fixed(days + 1)
     ) {
         items((days + 1) * (timeSlots + 1)) { index ->
-            val rowIndex = index / (days + 1)
-            val columnIndex = index % (days + 1)
+            val (rowIndex, columnIndex) = index / (days + 1) to index % (days + 1)
 
             val cellType = determineCellType(rowIndex, columnIndex)
             val backgroundColor = getBackgroundColor(cellType, rowIndex, columnIndex, data)
@@ -192,7 +191,7 @@ enum class AvailabilityLevel(val range: IntRange) {
     FEW(1..20),
     SOME(21..40),
     MANY(41..60),
-    MOST(61..80),
+    MOST(61..80)
 }
 
 @Preview(showBackground = true)

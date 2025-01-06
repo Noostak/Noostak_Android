@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
 import com.sopt.presentation.appointment.navigation.navigateAppointment
+import com.sopt.presentation.group.navigation.Group
 import com.sopt.presentation.groupDetail.GroupDetailRoute
 import com.sopt.presentation.groupDetail.confirmedDetail.ConfirmedDetailRoute
 import com.sopt.presentation.groupDetail.groupMember.GroupMemberRoute
@@ -18,7 +19,12 @@ fun NavController.navigateGroupDetail(
 ) {
     navigate(
         route = GroupDetail(groupId = groupId),
-        navOptions = navOptions
+        navOptions = navOptions ?: NavOptions.Builder()
+            .setPopUpTo(
+                route = Group,
+                inclusive = false
+            )
+            .build()
     )
 }
 
