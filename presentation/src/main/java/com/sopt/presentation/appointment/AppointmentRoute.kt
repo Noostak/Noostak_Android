@@ -153,7 +153,9 @@ fun AppointmentScreen(
                     color = NoostakTheme.colors.black,
                     style = NoostakTheme.typography.b1SemiBold
                 )
-                Row {
+                Row(
+                    modifier = Modifier.noRippleClickable { selectedItemIndex = 1 }
+                ) {
                     Text(
                         text = stringResource(R.string.btn_appointment_total),
                         color = NoostakTheme.colors.gray800,
