@@ -43,13 +43,11 @@ fun NoostakEditableTimeTable(
         columns = GridCells.Fixed(days + 1)
     ) {
         items((days + 1) * (timeSlots + 1)) { index ->
-            val rowIndex = index / (days + 1)
-            val columnIndex = index % (days + 1)
-
+            val (rowIndex, columnIndex) = index / (days + 1) to index % (days + 1)
             val cellType = determineCellType(rowIndex, columnIndex)
             val isSelected = selectedCells.contains(rowIndex to columnIndex)
             val backgroundColor =
-                getEditableBackgroundColor(cellType, rowIndex, columnIndex, isSelected)
+                getEditableBackgroundColor(cellType, isSelected)
             val text = getCellText(cellType, rowIndex, columnIndex, data)
 
             NoostakEditableTimeTableBox(
@@ -82,14 +80,10 @@ fun NoostakEditableTimeTable(
 @Composable
 fun getEditableBackgroundColor(
     cellType: CellType,
-    rowIndex: Int,
-    columnIndex: Int,
     isSelected: Boolean
-): Color {
-    return when (cellType) {
-        CellType.Blank, CellType.DateHeader, CellType.TimeHeader -> Color.Transparent
-        CellType.Data -> if (isSelected) NoostakTheme.colors.blue400 else Color.Transparent
-    }
+): Color = when (cellType) {
+    CellType.Blank, CellType.DateHeader, CellType.TimeHeader -> Color.Transparent
+    CellType.Data -> if (isSelected) NoostakTheme.colors.blue400 else Color.Transparent
 }
 
 @Composable
@@ -140,15 +134,14 @@ fun List<Pair<Int, Int>>.toTimeEntities(
     timeEntityList: List<TimeEntity>
 ): List<TimeEntity> {
     val startHour = startTime.split(":")[0].toInt()
-    val groupedByColumn = this.groupBy { it.second }
 
-    return groupedByColumn.mapNotNull { (columnIndex, cells) ->
+    return this.groupBy { it.second }.mapNotNull { (columnIndex, rowIndex) ->
         val date = timeEntityList.getOrNull(columnIndex - 1)?.date ?: return@mapNotNull null
-        val times = cells.map { cell ->
-            val hour = startHour + (cell.first - 1)
+        val times = rowIndex.map { row ->
+            val hour = startHour + (row.first - 1)
             AvailableTimeEntity(
-                startTime = "${"%02d".format(hour)}:00",
-                endTime = "${"%02d".format(hour + 1)}:00"
+                startTime = "%02d:00".format(hour),
+                endTime = "%02d:00".format(hour + 1)
             )
         }
         TimeEntity(date = date, times = times)

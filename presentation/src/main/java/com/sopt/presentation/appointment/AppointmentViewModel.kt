@@ -76,39 +76,39 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
                         )
                     )
                 ),
-                TimeEntity(
-                    date = "2024-09-29",
-                    times = null
-                ),
-                TimeEntity(
-                    date = "2024-09-30",
-                    times = null
-                ),
-                TimeEntity(
-                    date = "2024-10-01",
-                    times = listOf(
-                        AvailableTimeEntity(
-                            startTime = "11:00",
-                            endTime = "12:00",
-                            level = 10
-                        ),
-                        AvailableTimeEntity(
-                            startTime = "12:00",
-                            endTime = "13:00",
-                            level = 60
-                        ),
-                        AvailableTimeEntity(
-                            startTime = "13:00",
-                            endTime = "14:00",
-                            level = 80
-                        ),
-                        AvailableTimeEntity(
-                            startTime = "14:00",
-                            endTime = "15:00",
-                            level = 100
-                        )
-                    )
-                ),
+//                TimeEntity(
+//                    date = "2024-09-29",
+//                    times = null
+//                ),
+//                TimeEntity(
+//                    date = "2024-09-30",
+//                    times = null
+//                ),
+//                TimeEntity(
+//                    date = "2024-10-01",
+//                    times = listOf(
+//                        AvailableTimeEntity(
+//                            startTime = "11:00",
+//                            endTime = "12:00",
+//                            level = 10
+//                        ),
+//                        AvailableTimeEntity(
+//                            startTime = "12:00",
+//                            endTime = "13:00",
+//                            level = 60
+//                        ),
+//                        AvailableTimeEntity(
+//                            startTime = "13:00",
+//                            endTime = "14:00",
+//                            level = 80
+//                        ),
+//                        AvailableTimeEntity(
+//                            startTime = "14:00",
+//                            endTime = "15:00",
+//                            level = 100
+//                        )
+//                    )
+//                ),
                 TimeEntity(
                     date = "2024-10-02",
                     times = listOf(

@@ -1,15 +1,21 @@
 package com.sopt.presentation.groupDetail
 
+import android.content.Context
+import com.sopt.core.extension.stringOf
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.domain.entity.GroupDetailEntity
 import com.sopt.domain.entity.ProgressEntity
+import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import okhttp3.internal.immutableListOf
 import javax.inject.Inject
 
 @HiltViewModel
-class GroupDetailViewModel @Inject constructor() : BaseViewModel<GroupDetailSideEffect>() {
+class GroupDetailViewModel @Inject constructor(
+    @ApplicationContext private val context: Context
+) : BaseViewModel<GroupDetailSideEffect>() {
 
     fun navigateUp() {
         emitSideEffect(GroupDetailSideEffect.NavigateUp)
@@ -33,7 +39,10 @@ class GroupDetailViewModel @Inject constructor() : BaseViewModel<GroupDetailSide
         )
     }
 
-    val tabs = immutableListOf("진행 중", "확정")
+    val tabs = immutableListOf(
+        context.stringOf(R.string.tab_group_detail_progress),
+        context.stringOf(R.string.tab_group_detail_confirmed)
+    )
     val mockGroupDetail = GroupDetailEntity(
         groupName = "누스탁",
         groupMembersCount = 10,

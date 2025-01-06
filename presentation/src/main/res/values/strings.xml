@@ -14,6 +14,8 @@
     <string name="btn_example_back">뒤로 돌아가기</string>
 
     <!-- 그룹 상세 -->
+    <string name="tab_group_detail_progress">진행 중</string>
+    <string name="tab_group_detail_confirmed">확정</string>
     <string name="fab_group_detail">약속 만들기</string>
     <string name="appbar_group_detail">그룹</string>
     <string name="tv_group_detail_member">그룹 멤버 %1$s</string>
@@ -47,7 +49,7 @@
     <string name="subtitle_appointment_confirm">한 번 확정된 약속은 수정이 어려워요!</string>
     <string name="tv_appointment_confirm_info">약속 정보</string>
     <string name="btn_appointment_confirm_complete">완료</string>
-    <string name="dialog_appointment_description">이미 일정을 등록하지 않았어요!\n일정을 등록하러 가볼까요?</string>
+    <string name="dialog_appointment_description">아직 일정을 등록하지 않았어요!\n일정을 등록하러 가볼까요?</string>
     <string name="dialog_appointment_dismiss">나중에 등록하기</string>
     <string name="dialog_appointment_confirm">가능일정 등록하기</string>
     <string name="text_appointment_priority">Best%1$s</string>
