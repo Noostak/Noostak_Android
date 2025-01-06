@@ -10,6 +10,7 @@ import com.sopt.core.navigation.Route
 import com.sopt.presentation.appointment.AppointmentRoute
 import com.sopt.presentation.appointment.appointmentCheck.AppointmentCheckRoute
 import com.sopt.presentation.appointment.appointmentConfirm.AppointmentConfirmRoute
+import com.sopt.presentation.groupDetail.navigation.GroupDetail
 import com.sopt.presentation.groupDetail.navigation.navigateGroupDetail
 import kotlinx.serialization.Serializable
 
@@ -24,7 +25,13 @@ fun NavController.navigateAppointment(
             groupId = groupId,
             appointmentsId = appointmentsId,
             appointmentName = appointmentName
-        )
+        ),
+        navOptions = navOptions ?: NavOptions.Builder()
+            .setPopUpTo(
+                route = GroupDetail(groupId = groupId),
+                inclusive = false
+            )
+            .build()
     )
 }
 
@@ -39,7 +46,8 @@ fun NavController.navigateAppointmentCheck(
             groupId = groupId,
             appointmentsId = appointmentsId,
             appointmentName = appointmentName
-        )
+        ),
+        navOptions = navOptions
     )
 }
 
