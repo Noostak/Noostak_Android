@@ -34,6 +34,7 @@
     <string name="appbar_group_member">그룹 멤버</string>
     <string name="header_group_member_leader">방장</string>
     <string name="header_group_member_member">멤버</string>
+    <string name="placeholder_group_member">아직 그룹 멤버가 없어요\n멤버를 초대하고 그룹을 만들어보세요</string>
 
     <!-- 약속 확정 -->
     <string name="header_appointment_current_status">실시간 현황</string>
