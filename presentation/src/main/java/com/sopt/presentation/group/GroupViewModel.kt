@@ -1,46 +1,32 @@
 package com.sopt.presentation.group
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.GroupEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GroupViewModel @Inject constructor() : ViewModel() {
-    private val _sideEffect = MutableSharedFlow<GroupSideEffect>()
-    val sideEffect: SharedFlow<GroupSideEffect> get() = _sideEffect.asSharedFlow()
-
+class GroupViewModel @Inject constructor() : BaseViewModel<GroupSideEffect>() {
     private val _showDialog = MutableStateFlow(false)
     val showDialog: StateFlow<Boolean> get() = _showDialog
 
-    fun showLoginDialog(show: Boolean) {
+    fun showFloatingActionButtonDialog(show: Boolean) {
         _showDialog.update { show }
     }
 
     fun navigateToGroupDetail(groupId: Long) {
-        viewModelScope.launch {
-            _sideEffect.emit(GroupSideEffect.NavigateToGroupDetail(groupId))
-        }
+        emitSideEffect(GroupSideEffect.NavigateToGroupDetail(groupId))
     }
 
     fun navigateToGroupCreate() {
-        viewModelScope.launch {
-            _sideEffect.emit(GroupSideEffect.NavigateToGroupCreate)
-        }
+        emitSideEffect(GroupSideEffect.NavigateToGroupCreate)
     }
 
     fun navigateToGroupEnter() {
-        viewModelScope.launch {
-            _sideEffect.emit(GroupSideEffect.NavigateToGroupEnter)
-        }
+        emitSideEffect(GroupSideEffect.NavigateToGroupEnter)
     }
 
     val groupItems =

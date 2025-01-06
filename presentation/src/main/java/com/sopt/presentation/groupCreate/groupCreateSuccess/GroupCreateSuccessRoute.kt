@@ -84,7 +84,7 @@ fun GroupCreateSuccessRoute(
     }
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle)
+        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collectLatest { sideEffect ->
                 when (sideEffect) {
                     is GroupCreateSuccessSideEffect.NavigateToGroupDetail -> navigateToGroupDetail(

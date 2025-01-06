@@ -52,7 +52,7 @@ fun GroupRoute(
     val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffect.flowWithLifecycle(lifecycleOwner.lifecycle)
+        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collectLatest { sideEffect ->
                 when (sideEffect) {
                     is GroupSideEffect.NavigateToGroupDetail -> navigateToGroupDetail(sideEffect.groupId)
@@ -64,8 +64,8 @@ fun GroupRoute(
 
     if (showDialog) {
         GroupFloatingActionDialog(
-            onClick = { viewModel.showLoginDialog(false) },
-            onDismissRequest = { viewModel.showLoginDialog(false) },
+            onClick = { viewModel.showFloatingActionButtonDialog(false) },
+            onDismissRequest = { viewModel.showFloatingActionButtonDialog(false) },
             onCreateGroupClick = viewModel::navigateToGroupCreate,
             onEnterGroupClick = viewModel::navigateToGroupEnter
         )
@@ -82,7 +82,7 @@ fun GroupRoute(
             groupItems = groupItems,
             isFabClicked = viewModel.showDialog,
             onItemClick = viewModel::navigateToGroupDetail,
-            onFabClick = { viewModel.showLoginDialog(true) }
+            onFabClick = { viewModel.showFloatingActionButtonDialog(true) }
         )
     }
 }
