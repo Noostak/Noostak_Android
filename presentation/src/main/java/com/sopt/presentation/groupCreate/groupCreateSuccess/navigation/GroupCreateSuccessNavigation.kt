@@ -25,6 +25,7 @@ fun NavGraphBuilder.groupCreateSuccessNavGraph(
     composable<GroupCreateSuccess> {
         GroupCreateSuccessRoute(
             navigateToGroupDetail = { groupId ->
+                navHostController.popBackStack()
                 navHostController.navigateGroupDetail(groupId = groupId)
             }
         )
