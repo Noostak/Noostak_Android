@@ -5,5 +5,19 @@
     <dimen name="user_chip_vertical_padding">6dp</dimen>
     <dimen name="category_chip_horizontal_padding">15dp</dimen>
     <dimen name="category_chip_vertical_padding">6dp</dimen>
+
     <dimen name="fab_radius">30dp</dimen>
+    <dimen name="fab_shadow">4dp</dimen>
+
+    <dimen name="bottom_btn_vertical_padding">15dp</dimen>
+
+    <dimen name="bottom_padding">16dp</dimen>
+
+    <dimen name="snack_bar_radius">30dp</dimen>
+    <dimen name="snack_bar_vertical_padding">12dp</dimen>
+    <dimen name="snack_bar_horizontal_padding">20dp</dimen>
+
+    <dimen name="appbar_height">48dp</dimen>
+    <dimen name="appbar_start_padding">8dp</dimen>
+
 </resources>

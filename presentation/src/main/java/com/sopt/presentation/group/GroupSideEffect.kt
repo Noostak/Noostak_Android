@@ -1,5 +1,7 @@
 package com.sopt.presentation.group
 
-sealed class GroupSideEffect {
-    data class NavigateToGroupDetail(val id: Long) : GroupSideEffect()
+sealed interface GroupSideEffect {
+    data class NavigateToGroupDetail(val groupId: Long) : GroupSideEffect
+    data object NavigateToGroupCreate : GroupSideEffect
+    data object NavigateToGroupEnter : GroupSideEffect
 }

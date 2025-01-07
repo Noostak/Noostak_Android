@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Noostak Top App Bar -->
     <string name="ic_back">뒤로가기 버튼</string>
+
+    <!-- Noostak Close App Bar -->
+    <string name="icon_noostak_close_appbar_description">Icon Delete On AppBar</string>
+
 </resources>
