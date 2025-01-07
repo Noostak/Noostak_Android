@@ -48,7 +48,7 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.presentation.R
-import com.sopt.presentation.groupCreate.groupCreateSuccess.regex.generateRandomCode
+import com.sopt.presentation.groupCreate.groupCreateSuccess.regex.Regex
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -65,7 +65,7 @@ fun GroupCreateSuccessRoute(
     val coroutineScope = rememberCoroutineScope()
     val snackBarVisible = remember { mutableStateOf(false) }
 
-    val groupCode = generateRandomCode()
+    val groupCode = Regex().generateRandomCode()
 
     val sendIntent = Intent(Intent.ACTION_SEND).apply {
         putExtra(Intent.EXTRA_TEXT, groupCode)
@@ -242,7 +242,7 @@ fun GroupCreateSuccessScreen(
 fun GroupCreateSuccessScreenPreview() {
     NoostakAndroidTheme {
         GroupCreateSuccessScreen(
-            groupCode = generateRandomCode(),
+            groupCode = Regex().generateRandomCode(),
             snackBarHostState = SnackbarHostState(),
             snackBarVisible = remember { mutableStateOf(true) },
             onCloseBtnClick = {},

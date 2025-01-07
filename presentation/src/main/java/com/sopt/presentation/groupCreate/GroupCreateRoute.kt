@@ -36,13 +36,12 @@ import androidx.lifecycle.flowWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.launchImagePicker
 import com.sopt.domain.entity.GroupProfileEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupCreate.component.GroupProfileImagePicker
 import com.sopt.presentation.groupCreate.component.GroupProfileNameTextField
-import com.sopt.presentation.groupCreate.permission.launchImagePicker
-import com.sopt.presentation.groupCreate.permission.rememberGalleryLauncher
-import com.sopt.presentation.groupCreate.permission.rememberPhotoPickerLauncher
+import com.sopt.presentation.groupCreate.permission.ImagePickerLaunchers
 import timber.log.Timber
 
 @Composable
@@ -81,11 +80,11 @@ fun GroupCreateRoute(
         permissionLauncher.launch(permission)
     }
 
-    val galleryLauncher = rememberGalleryLauncher { uri ->
+    val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
         viewModel.onImageSelected(uri.toString())
     }
 
-    val photoPickerLauncher = rememberPhotoPickerLauncher { uri ->
+    val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
         viewModel.onImageSelected(uri.toString())
     }
 
