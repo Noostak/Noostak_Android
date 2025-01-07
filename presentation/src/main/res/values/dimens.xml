@@ -3,4 +3,6 @@
     <dimen name="horizontal_padding">16dp</dimen>
     <dimen name="vertical_padding">16dp</dimen>
     <dimen name="default_padding">16dp</dimen>
+
+    <dimen name="image_radius">10dp</dimen>
 </resources>

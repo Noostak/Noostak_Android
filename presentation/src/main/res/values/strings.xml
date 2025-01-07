@@ -57,4 +57,31 @@
     <string name="tv_appointment_availableMembersCount">%1$s명</string>
     <string name="tv_appointment_totalMembersCount">" / %1$s명"</string>
 
+    <!-- Group -->
+    <string name="fab_group_create">그룹추가</string>
+    <string name="text_group_empty">아직 생성된 그룹이 없어요.\n그룹을 추가해보세요!</string>
+    <string name="text_group_fab_enter">그룹 입장하기</string>
+    <string name="image_group_create_success_description">Image Group Create Success</string>
+
+    <!-- Group Create -->
+    <string name="text_group_create_title">그룹 만들기</string>
+    <string name="btn_group_create_next">다음</string>
+    <string name="tf_group_create_placeholder">그룹명을 입력해주세요</string>
+
+    <!-- Group Create Success -->
+    <string name="text_group_create_success_title">그룹 만들기가 완료되었습니다</string>
+    <string name="text_group_create_success_content">그룹코드를 복사해\n그룹원을 초대해주세요!</string>
+    <string name="text_group_create_success_code_copy">그룹 코드 복사하기</string>
+    <string name="btn_group_create_success_code_send">그룹 코드 보내기</string>
+    <string name="sb_group_create_success_code_copy">그룹 코드가 복사되었습니다</string>
+
+    <!-- Group Profile Name Text Field -->
+    <string name="text_group_profile_name_textfield_count">%1$s/%2$s</string>
+
+    <!-- Group Profile Image Picker -->
+    <string name="image_group_profile_image_picker_description">Add Profile Image By Camera Button</string>
+
+    <!-- Group Profile Name Text Field -->
+    <string name="icon_group_profile_name_text_field_descrition">Delete Group Profile Name</string>
+
 </resources>
