@@ -33,7 +33,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.sopt.core.designsystem.component.button.NoostakButton
+import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.chip.NoostakUserChip
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -75,10 +75,12 @@ fun RecommendationScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
-        NoostakButton(
+        NoostakBottomButton(
             text = stringResource(R.string.btn_appointment_confirm),
             onButtonClick = { selectedItemId?.let { onConfirmButtonClick(it) } },
-            isEnabled = selectedItemId != null
+            isEnabled = selectedItemId != null,
+            deactivateColor = NoostakTheme.colors.gray500,
+            activateColor = NoostakTheme.colors.gray900
         )
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.vertical_padding)))
     }

@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.sopt.core.designsystem.component.button.NoostakButton
+import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
 import com.sopt.core.designsystem.component.chip.NoostakUserChip
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
@@ -116,7 +116,7 @@ fun AppointmentConfirmScreen(
                         shape = RoundedCornerShape(20.dp),
                         color = NoostakTheme.colors.gray200
                     )
-                    .padding(16.dp),
+                    .padding(dimensionResource(id = R.dimen.default_padding)),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 CompleteDetailInfo(text = stringResource(R.string.tv_complete_detail_time)) {
@@ -187,10 +187,11 @@ fun AppointmentConfirmScreen(
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
-            NoostakButton(
+            NoostakBottomButton(
                 text = stringResource(R.string.btn_appointment_confirm_complete),
                 onButtonClick = { onConfirmButtonClick(groupId) },
-                isEnabled = true
+                isEnabled = true,
+                activateColor = NoostakTheme.colors.gray900
             )
         }
     }

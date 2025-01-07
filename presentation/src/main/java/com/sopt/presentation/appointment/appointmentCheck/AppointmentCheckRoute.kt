@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.sopt.core.designsystem.component.button.NoostakButton
+import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.timetable.NoostakEditableTimeTable
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -130,7 +130,7 @@ fun AppointmentCheckScreen(
             }
 
             // 버튼 (항상 하단 고정)
-            NoostakButton(
+            NoostakBottomButton(
                 modifier = Modifier
                     .constrainAs(button) {
                         bottom.linkTo(parent.bottom)
@@ -143,7 +143,8 @@ fun AppointmentCheckScreen(
                     ),
                 text = stringResource(R.string.btn_appointment_check),
                 onButtonClick = { onConfirmButtonClick(groupId, appointmentsId, appointmentName) },
-                isEnabled = true
+                isEnabled = true,
+                activateColor = NoostakTheme.colors.gray900
             )
         }
     }

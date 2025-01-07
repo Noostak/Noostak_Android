@@ -224,6 +224,7 @@ fun GroupCreateSuccessScreen(
                     .align(Alignment.CenterHorizontally)
             )
             NoostakBottomButton(
+                modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.vertical_padding)),
                 text = stringResource(R.string.btn_group_create_success_code_send),
                 activateColor = NoostakTheme.colors.blue600,
                 deactivateColor = NoostakTheme.colors.gray500,
