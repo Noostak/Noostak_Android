@@ -39,6 +39,7 @@ import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.extension.showIf
 import com.sopt.domain.entity.AppointmentEntity
 import com.sopt.domain.entity.TimeTableEntity
 import com.sopt.presentation.R
@@ -116,7 +117,13 @@ fun AppointmentScreen(
             NoostakTopAppBar(
                 title = appointmentName,
                 isIconVisible = true,
-                onBackButtonClick = onBackButtonClick
+                onBackButtonClick = {
+                    if (selectedItemIndex == -1) {
+                        onBackButtonClick()
+                    } else {
+                        selectedItemIndex = -1
+                    }
+                }
             )
         }
     ) { innerPadding ->
@@ -154,7 +161,9 @@ fun AppointmentScreen(
                     style = NoostakTheme.typography.b1SemiBold
                 )
                 Row(
-                    modifier = Modifier.noRippleClickable { selectedItemIndex = 1 }
+                    modifier = Modifier
+                        .showIf(selectedItemIndex == -1)
+                        .noRippleClickable { selectedItemIndex = 1 }
                 ) {
                     Text(
                         text = stringResource(R.string.btn_appointment_total),
