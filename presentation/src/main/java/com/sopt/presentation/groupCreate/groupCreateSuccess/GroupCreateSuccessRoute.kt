@@ -216,11 +216,11 @@ fun GroupCreateSuccessScreen(
                     textDecoration = TextDecoration.Underline
                 ),
                 modifier = Modifier
-                    .padding(12.dp)
                     .noRippleClickable {
                         clipboardManager.setText(AnnotatedString(groupCode))
                         onCopyBtnClick()
                     }
+                    .padding(12.dp)
                     .align(Alignment.CenterHorizontally)
             )
             NoostakBottomButton(

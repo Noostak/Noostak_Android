@@ -65,7 +65,6 @@
     <!-- Group Create -->
     <string name="text_group_create_title">그룹 만들기</string>
     <string name="btn_group_create_next">다음</string>
-    <string name="tf_group_create_placeholder">그룹명을 입력해주세요</string>
 
     <!-- Group Create Success -->
     <string name="text_group_create_success_title">그룹 만들기가 완료되었습니다</string>
@@ -73,14 +72,5 @@
     <string name="text_group_create_success_code_copy">그룹 코드 복사하기</string>
     <string name="btn_group_create_success_code_send">그룹 코드 보내기</string>
     <string name="sb_group_create_success_code_copy">그룹 코드가 복사되었습니다</string>
-
-    <!-- Group Profile Name Text Field -->
-    <string name="text_group_profile_name_textfield_count">%1$s/%2$s</string>
-
-    <!-- Group Profile Image Picker -->
-    <string name="image_group_profile_image_picker_description">Add Profile Image By Camera Button</string>
-
-    <!-- Group Profile Name Text Field -->
-    <string name="icon_group_profile_name_text_field_descrition">Delete Group Profile Name</string>
 
 </resources>

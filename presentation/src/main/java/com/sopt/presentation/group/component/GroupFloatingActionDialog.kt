@@ -63,14 +63,13 @@ fun GroupFloatingActionDialog(
                         shape = RoundedCornerShape(12.dp)
                     )
                 ) {
-                    Column(modifier = Modifier.padding(horizontal = 17.dp, vertical = 18.dp)) {
+                    Column(modifier = Modifier.padding(horizontal = 11.dp, vertical = 13.dp)) {
                         GroupFloatingActionButtonItem(
                             painter = painterResource(id = R.drawable.ic_launcher_background),
                             text = stringResource(R.string.text_group_create_title)
                         ) {
                             onCreateGroupClick()
                         }
-                        Spacer(modifier = Modifier.height(12.dp))
                         GroupFloatingActionButtonItem(
                             painter = painterResource(id = R.drawable.ic_launcher_background),
                             text = stringResource(R.string.text_group_fab_enter)

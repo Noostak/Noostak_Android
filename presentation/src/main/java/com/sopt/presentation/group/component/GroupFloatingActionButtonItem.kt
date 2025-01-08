@@ -28,14 +28,14 @@ fun GroupFloatingActionButtonItem(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .width(122.dp)
+            .width(134.dp)
             .noRippleClickable { onItemClick() }
     ) {
         Image(
             painter = painter,
             contentDescription = null,
             modifier = Modifier
-                .padding(end = 8.dp)
+                .padding(start = 6.dp, end = 8.dp, top = 6.dp, bottom = 6.dp)
                 .size(24.dp)
                 .aspectRatio(1f)
         )
