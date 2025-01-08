@@ -84,6 +84,7 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
     implementation(libs.lottie.compose)
+    implementation(libs.bundles.landscapist.glide)
 
     // Logging
     implementation(libs.timber)
