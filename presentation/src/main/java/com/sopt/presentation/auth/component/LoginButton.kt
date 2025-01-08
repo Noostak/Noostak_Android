@@ -18,16 +18,14 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
 
 @Composable
-internal fun AuthButton(
+internal fun LoginButton(
     padding: PaddingValues,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(8.dp),
-    containerColor: Color = NoostakTheme.colors.blue600,
-    contentColor: Color = NoostakTheme.colors.white,
+    containerColor: Color = NoostakTheme.colors.yellow,
+    contentColor: Color = NoostakTheme.colors.black,
     isEnabled: Boolean = true,
-    disabledContainerColor: Color = NoostakTheme.colors.gray500,
-    disabledContentColor: Color = NoostakTheme.colors.white,
     content: @Composable () -> Unit,
 ) {
     Button(
@@ -38,27 +36,24 @@ internal fun AuthButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
-            contentColor = contentColor,
-            disabledContainerColor = disabledContainerColor,
-            disabledContentColor = disabledContentColor
+            contentColor = contentColor
         )
     ) {
         content()
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun AuthButtonPreview() {
     NoostakAndroidTheme {
-        AuthButton(
+        LoginButton(
             padding = PaddingValues(vertical = 13.dp),
             onClick = { },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = stringResource(R.string.btn_next),
+                text = stringResource(R.string.btn_login_kakao),
                 style = NoostakTheme.typography.b1SemiBold
             )
         }

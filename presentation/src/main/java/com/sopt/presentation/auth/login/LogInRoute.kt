@@ -25,7 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
-import com.sopt.presentation.auth.component.AuthButton
+import com.sopt.presentation.auth.component.LoginButton
 
 @Composable
 fun LoginRoute(
@@ -94,7 +94,7 @@ private fun SocialLoginBottom(
             style = NoostakTheme.typography.c3Regular
         )
         Spacer(modifier = Modifier.height(8.dp))
-        AuthButton(
+        LoginButton(
             padding = PaddingValues(vertical = 13.dp),
             onClick = onKakaoLoginClick,
             modifier = Modifier.fillMaxWidth(),
@@ -107,7 +107,7 @@ private fun SocialLoginBottom(
             )
         }
         Spacer(modifier = Modifier.height(12.dp))
-        AuthButton(
+        LoginButton(
             padding = PaddingValues(vertical = 13.dp),
             onClick = onGoogleLoginClick,
             modifier = Modifier.fillMaxWidth(),
