@@ -1,58 +1,50 @@
 package com.sopt.presentation.auth.signup
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.image.ProfileImagePicker
+import com.sopt.core.designsystem.component.textfield.NoostakTextField
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.toast
+import com.sopt.core.type.TextFieldType
 import com.sopt.presentation.R
-import com.sopt.presentation.auth.component.AuthButton
-import com.sopt.presentation.auth.component.AuthTextField
 
 @Composable
 fun SignUpRoute(
     authId: String,
     navigateToCheckInvite: (String) -> Unit,
-    signUpviewModel: SignUpViewModel = hiltViewModel(),
+    signUpViewModel: SignUpViewModel = hiltViewModel(),
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val signUpState by signUpViewModel.state.collectAsStateWithLifecycle()
 
     LaunchedEffect(key1 = authId) {
-        signUpviewModel.updateAuthId(authId)
+        signUpViewModel.updateAuthId(authId)
     }
 
-    LaunchedEffect(signUpviewModel.sideEffects, lifecycleOwner) {
-        signUpviewModel.sideEffects.flowWithLifecycle(lifecycle = lifecycleOwner.lifecycle)
+    LaunchedEffect(signUpViewModel.sideEffects, lifecycleOwner) {
+        signUpViewModel.sideEffects.flowWithLifecycle(lifecycle = lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
                     is SignUpSideEffect.NavigateToCheckInvite -> navigateToCheckInvite(sideEffect.name)
@@ -62,86 +54,51 @@ fun SignUpRoute(
     }
 
     SignUpScreen(
-        onProfileEditClick = { },
-        onSignUpClick = signUpviewModel::navigateToCheckInvite,
-        onInputChange = signUpviewModel::updateName
+        signUpState = signUpState,
+        onProfileEditBtnClick = { /* Handle profile edit */ },
+        onSignUpClick = signUpViewModel::navigateToCheckInvite,
+        onNameChange = signUpViewModel::updateName
     )
 }
 
+
 @Composable
 fun SignUpScreen(
-    onProfileEditClick: () -> Unit,
-    onSignUpClick: () -> Unit,
-    onInputChange: (String) -> Unit,
+    signUpState: SignUpState,
+    onProfileEditBtnClick: () -> Unit,
+    onNameChange: (String) -> Unit,
+    onSignUpClick: () -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(dimensionResource(R.dimen.horizontal_padding)),
     ) {
-        Spacer(modifier = Modifier.height(70.dp))
         Text(
             text = stringResource(R.string.tv_signup_profile),
             color = NoostakTheme.colors.black,
-            style = NoostakTheme.typography.h2Bold
+            style = NoostakTheme.typography.h2Bold,
+            modifier = Modifier.padding(top = 70.dp)
         )
-        Spacer(modifier = Modifier.height(46.dp))
-        ProfileImage(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-            onImageClick = onProfileEditClick
+        ProfileImagePicker(
+            selectedImageUri = signUpState.profileImage,
+            onCameraBtnClick = onProfileEditBtnClick,
+            modifier = Modifier
+                .padding(top = 46.dp)
+                .align(Alignment.CenterHorizontally)
         )
         Spacer(modifier = Modifier.height(27.dp))
-        AuthTextField(
-            modifier = Modifier.fillMaxWidth(),
-            text = name,
-            onTextChange = {
-                name = it
-                onInputChange(it)
-            },
-            isExampleVisible = true,
-            placeholderText = stringResource(R.string.hint_signup_name),
+        NoostakTextField(
+            textFieldType = TextFieldType.SIGNUP,
+            value = signUpState.name,
             maxLength = 10,
-            exampleText = stringResource(R.string.tv_signup_example_name),
+            onValueChange = { onNameChange(it) }
         )
         Spacer(modifier = Modifier.weight(1f))
-        AuthButton(
-            padding = PaddingValues(vertical = 15.dp),
-            onClick = onSignUpClick,
-            isEnabled = name.isNotBlank(),
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text(
-                text = stringResource(R.string.btn_next),
-                style = NoostakTheme.typography.t3Bold
-            )
-        }
-    }
-}
-
-@Composable
-fun ProfileImage(
-    modifier: Modifier = Modifier,
-    onImageClick: () -> Unit
-) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.BottomEnd
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_profile),
-            contentDescription = "Profile Image",
-            modifier = Modifier
-                .size(112.dp)
-                .background(color = NoostakTheme.colors.white, shape = CircleShape)
-        )
-        Image(
-            painter = painterResource(id = R.drawable.ic_profile_camera),
-            contentDescription = "Camera Icon",
-            modifier = Modifier
-                .size(35.dp)
-                .clickable { onImageClick() }
+        NoostakBottomButton(
+            text = stringResource(R.string.btn_next),
+            isEnabled = signUpState.name.isNotEmpty(),
+            onButtonClick = onSignUpClick,
         )
     }
 }
@@ -151,9 +108,13 @@ fun ProfileImage(
 fun SignUpScreenPreview() {
     NoostakAndroidTheme {
         SignUpScreen(
+            signUpState = SignUpState(
+                name = "Preview Name",
+                profileImage = null
+            ),
+            onProfileEditBtnClick = {},
+            onNameChange = {},
             onSignUpClick = {},
-            onProfileEditClick = {},
-            onInputChange = {}
         )
     }
 }
