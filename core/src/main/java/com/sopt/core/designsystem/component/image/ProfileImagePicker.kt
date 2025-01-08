@@ -21,7 +21,7 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.extension.noRippleClickable
 
 @Composable
-fun GroupProfileImagePicker(
+fun ProfileImagePicker(
     selectedImageUri: String?,
     onCameraBtnClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -54,8 +54,8 @@ fun GroupProfileImagePicker(
 
 @Preview(showBackground = true)
 @Composable
-fun GroupProfileImagePickerPreview() {
+fun ProfileImagePickerPreview() {
     NoostakAndroidTheme {
-        GroupProfileImagePicker(selectedImageUri = null, onCameraBtnClick = {})
+        ProfileImagePicker(selectedImageUri = null, onCameraBtnClick = {})
     }
 }
