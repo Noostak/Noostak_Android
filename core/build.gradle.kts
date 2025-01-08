@@ -45,6 +45,7 @@ dependencies {
     implementation(libs.kotlin)
     implementation(libs.core.ktx)
     implementation(libs.material)
+    implementation(libs.activity.compose)
 
     // Test
     testImplementation(libs.junit)
@@ -58,4 +59,5 @@ dependencies {
     // Third Party
     implementation(libs.coil.compose)
     implementation(libs.lottie.compose)
+    implementation(libs.bundles.landscapist.glide)
 }
