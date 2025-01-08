@@ -3,11 +3,8 @@ package com.sopt.presentation.auth.login
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -91,34 +88,22 @@ private fun SocialLoginBottom(
         Text(
             text = stringResource(R.string.tv_login_description),
             color = NoostakTheme.colors.gray900,
-            style = NoostakTheme.typography.c3Regular
+            style = NoostakTheme.typography.c3Regular,
+            modifier = Modifier.padding(bottom = 8.dp)
         )
-        Spacer(modifier = Modifier.height(8.dp))
         LoginButton(
-            padding = PaddingValues(vertical = 13.dp),
-            onClick = onKakaoLoginClick,
-            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.btn_login_kakao),
+            onLoginBtnClick = onKakaoLoginClick,
+            modifier = Modifier.padding(bottom = 12.dp),
             containerColor = NoostakTheme.colors.yellow,
             contentColor = NoostakTheme.colors.black
-        ) {
-            Text(
-                text = stringResource(R.string.btn_login_kakao),
-                style = NoostakTheme.typography.b1SemiBold
-            )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
+        )
         LoginButton(
-            padding = PaddingValues(vertical = 13.dp),
-            onClick = onGoogleLoginClick,
-            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.btn_login_google),
+            onLoginBtnClick = onGoogleLoginClick,
             containerColor = NoostakTheme.colors.black,
             contentColor = NoostakTheme.colors.white
-        ) {
-            Text(
-                text = stringResource(R.string.btn_login_google),
-                style = NoostakTheme.typography.b1SemiBold
-            )
-        }
+        )
     }
 }
 
