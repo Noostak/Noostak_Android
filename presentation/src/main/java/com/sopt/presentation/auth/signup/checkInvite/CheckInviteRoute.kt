@@ -2,14 +2,10 @@ package com.sopt.presentation.auth.signup.checkInvite
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,10 +23,11 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.noRippleClickable
 import com.sopt.presentation.R
-import com.sopt.presentation.auth.component.AuthButton
 
 @Composable
 fun CheckInviteRoute(
@@ -76,33 +73,31 @@ fun CheckInviteScreen(
             color = NoostakTheme.colors.gray900,
             style = NoostakTheme.typography.t1SemiBold
         )
-        Spacer(modifier = Modifier.height(24.dp))
         Image(
             painter = painterResource(id = R.drawable.ic_launcher_background),
             contentDescription = stringResource(R.string.btn_invite_code),
             modifier = Modifier
                 .offset(y = offsetY.value.dp)
                 .size(265.dp)
+                .padding(top = 24.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            modifier = Modifier.clickable { onNoInViteTextClick() },
             text = stringResource(R.string.tv_invite_empty),
             color = NoostakTheme.colors.gray800,
             style = NoostakTheme.typography.c3Regular,
-            textDecoration = TextDecoration.Underline
+            textDecoration = TextDecoration.Underline,
+            modifier = Modifier
+                .noRippleClickable { onNoInViteTextClick() }
+                .padding(12.dp),
         )
-        Spacer(modifier = Modifier.height(12.dp))
-        AuthButton(
-            padding = PaddingValues(vertical = 15.dp),
-            onClick = onInputGroupCodeClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(R.string.btn_invite_code),
-                style = NoostakTheme.typography.b1SemiBold
-            )
-        }
+        NoostakBottomButton(
+            text = stringResource(R.string.btn_invite_code),
+            isEnabled = true,
+            onButtonClick = onInputGroupCodeClick,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+        )
     }
 }
 

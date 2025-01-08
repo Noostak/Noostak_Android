@@ -1,10 +1,8 @@
 package com.sopt.presentation.auth.signup.inputGroupCode
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -25,12 +23,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.textfield.OtpInputField
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
-import com.sopt.presentation.auth.component.AuthButton
-import com.sopt.presentation.auth.component.OtpInputField
 
 @Composable
 fun InputGroupCodeRoute(
@@ -59,7 +57,6 @@ fun InputGroupCodeScreen(
     onCheckGroupCodeClick: () -> Unit,
 ) {
     var groupCode by remember { mutableStateOf("") }
-    val isNextEnabled = groupCode.length == 6
 
     Scaffold(
         modifier = Modifier
@@ -95,17 +92,11 @@ fun InputGroupCodeScreen(
                 }
             )
             Spacer(modifier = Modifier.weight(1f))
-            AuthButton(
-                padding = PaddingValues(vertical = 15.dp),
-                onClick = onCheckGroupCodeClick,
-                isEnabled = isNextEnabled,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Text(
-                    text = stringResource(R.string.btn_submit),
-                    style = NoostakTheme.typography.t3Bold
-                )
-            }
+            NoostakBottomButton(
+                text = stringResource(R.string.btn_next),
+                isEnabled = groupCode.length == 6,
+                onButtonClick = onCheckGroupCodeClick
+            )
         }
     }
 }
