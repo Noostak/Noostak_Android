@@ -1,5 +1,10 @@
 package com.sopt.presentation.auth.signup
 
+import android.Manifest
+import android.os.Build
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,54 +33,105 @@ import com.sopt.core.designsystem.component.image.ProfileImagePicker
 import com.sopt.core.designsystem.component.textfield.NoostakTextField
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.launchImagePicker
 import com.sopt.core.extension.toast
 import com.sopt.core.type.TextFieldType
+import com.sopt.core.util.permission.rememberGalleryLauncher
+import com.sopt.core.util.permission.rememberPhotoPickerLauncher
 import com.sopt.presentation.R
+import timber.log.Timber
 
 @Composable
 fun SignUpRoute(
     authId: String,
     navigateToCheckInvite: (String) -> Unit,
-    signUpViewModel: SignUpViewModel = hiltViewModel(),
+    viewModel: SignUpViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val signUpState by signUpViewModel.state.collectAsStateWithLifecycle()
+    val signUpState by viewModel.signUpState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(key1 = authId) {
-        signUpViewModel.updateAuthId(authId)
+    var isGalleryPermission by remember { mutableStateOf(false) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        try {
+            if (isGranted) {
+                viewModel.updateGalleryPermissionState(true)
+            } else {
+                isGalleryPermission = false
+                context.toast(R.string.toast_permission_gallery)
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
-    LaunchedEffect(signUpViewModel.sideEffects, lifecycleOwner) {
-        signUpViewModel.sideEffects.flowWithLifecycle(lifecycle = lifecycleOwner.lifecycle)
+    val galleryLauncher = rememberGalleryLauncher { uri ->
+        viewModel.updateProfileImage(uri.toString())
+    }
+
+    val photoPickerLauncher = rememberPhotoPickerLauncher { uri ->
+        viewModel.updateProfileImage(uri.toString())
+    }
+
+    LaunchedEffect(lifecycleOwner) {
+        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
                     is SignUpSideEffect.NavigateToCheckInvite -> navigateToCheckInvite(sideEffect.name)
-                    is SignUpSideEffect.ShowToast -> context.toast(sideEffect.message)
+
+                    is SignUpSideEffect.ShowPermissionDeniedDialog ->
+                        isGalleryPermission =
+                            true
+
+                    is SignUpSideEffect.RequestImagePicker -> context.launchImagePicker(
+                        galleryLauncher,
+                        photoPickerLauncher
+                    )
                 }
             }
     }
 
     SignUpScreen(
         signUpState = signUpState,
-        onProfileEditBtnClick = { /* Handle profile edit */ },
-        onSignUpClick = signUpViewModel::navigateToCheckInvite,
-        onNameChange = signUpViewModel::updateName
+        onProfileSettingBtnClick = {
+            handleProfileBtnClick(viewModel, permissionLauncher)
+        },
+        onNameChange = { viewModel.onUserNameChanged(it) },
+        onSignUpClick = { viewModel.navigateToCheckInvite() }
     )
 }
 
+fun handleProfileBtnClick(
+    viewModel: SignUpViewModel,
+    permissionLauncher: ManagedActivityResultLauncher<String, Boolean>
+) {
+    val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        Manifest.permission.READ_MEDIA_IMAGES
+    } else {
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    }
+
+    if (viewModel.isGalleryPermissionGranted()) {
+        viewModel.requestGalleryPicker()
+    } else {
+        permissionLauncher.launch(permission)
+    }
+}
 
 @Composable
 fun SignUpScreen(
     signUpState: SignUpState,
-    onProfileEditBtnClick: () -> Unit,
+    onProfileSettingBtnClick: () -> Unit,
     onNameChange: (String) -> Unit,
     onSignUpClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(dimensionResource(R.dimen.horizontal_padding)),
+            .padding(dimensionResource(R.dimen.horizontal_padding))
     ) {
         Text(
             text = stringResource(R.string.tv_signup_profile),
@@ -81,8 +140,8 @@ fun SignUpScreen(
             modifier = Modifier.padding(top = 70.dp)
         )
         ProfileImagePicker(
-            selectedImageUri = signUpState.profileImage,
-            onCameraBtnClick = onProfileEditBtnClick,
+            selectedImageUri = signUpState.profileImageUri,
+            onCameraBtnClick = onProfileSettingBtnClick,
             modifier = Modifier
                 .padding(top = 46.dp)
                 .align(Alignment.CenterHorizontally)
@@ -90,15 +149,15 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.height(27.dp))
         NoostakTextField(
             textFieldType = TextFieldType.SIGNUP,
-            value = signUpState.name,
+            value = signUpState.userName,
             maxLength = 10,
-            onValueChange = { onNameChange(it) }
+            onValueChange = onNameChange
         )
         Spacer(modifier = Modifier.weight(1f))
         NoostakBottomButton(
             text = stringResource(R.string.btn_next),
-            isEnabled = signUpState.name.isNotEmpty(),
-            onButtonClick = onSignUpClick,
+            isEnabled = signUpState.userName.isNotEmpty(),
+            onButtonClick = onSignUpClick
         )
     }
 }
@@ -109,12 +168,12 @@ fun SignUpScreenPreview() {
     NoostakAndroidTheme {
         SignUpScreen(
             signUpState = SignUpState(
-                name = "Preview Name",
-                profileImage = null
+                userName = stringResource(R.string.app_name),
+                profileImageUri = null
             ),
-            onProfileEditBtnClick = {},
+            onProfileSettingBtnClick = {},
             onNameChange = {},
-            onSignUpClick = {},
+            onSignUpClick = {}
         )
     }
 }
