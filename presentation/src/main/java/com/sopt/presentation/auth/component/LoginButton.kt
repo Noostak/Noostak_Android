@@ -11,35 +11,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.noRippleClickable
 import com.sopt.presentation.R
 
 @Composable
 internal fun LoginButton(
-    padding: PaddingValues,
-    onClick: () -> Unit,
+    text: String,
+    style: TextStyle = NoostakTheme.typography.b1SemiBold,
+    onLoginBtnClick: () -> Unit,
     modifier: Modifier = Modifier,
     shape: Shape = RoundedCornerShape(8.dp),
     containerColor: Color = NoostakTheme.colors.yellow,
     contentColor: Color = NoostakTheme.colors.black,
     isEnabled: Boolean = true,
-    content: @Composable () -> Unit,
 ) {
     Button(
-        onClick = onClick,
+        onClick = onLoginBtnClick,
         enabled = isEnabled,
-        contentPadding = padding,
+        contentPadding = PaddingValues(vertical = 13.dp),
         shape = shape,
-        modifier = modifier,
+        modifier = modifier
+            .noRippleClickable(onClick = onLoginBtnClick)
+            .fillMaxWidth(),
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
             contentColor = contentColor
         )
     ) {
-        content()
+        Text(
+            text = text,
+            style = style
+        )
     }
 }
 
@@ -48,14 +55,9 @@ internal fun LoginButton(
 fun AuthButtonPreview() {
     NoostakAndroidTheme {
         LoginButton(
-            padding = PaddingValues(vertical = 13.dp),
-            onClick = { },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(
-                text = stringResource(R.string.btn_login_kakao),
-                style = NoostakTheme.typography.b1SemiBold
-            )
-        }
+            onLoginBtnClick = { },
+            modifier = Modifier.fillMaxWidth(),
+            text = stringResource(R.string.btn_login_kakao)
+        )
     }
 }
