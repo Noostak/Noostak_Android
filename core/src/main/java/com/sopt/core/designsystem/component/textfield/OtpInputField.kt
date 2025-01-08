@@ -1,4 +1,4 @@
-package com.sopt.presentation.auth.component
+package com.sopt.core.designsystem.component.textfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
