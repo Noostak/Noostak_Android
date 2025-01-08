@@ -62,11 +62,13 @@ fun NoostakTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .border(
-                    width = 1.dp, color = when {
+                    width = 1.dp,
+                    color = when {
                         isFocused -> focusedBorderColor // 포커스된 경우
                         value.isNotEmpty() -> unfocusedWithInputBorderColor // 텍스트가 입력되고 포커스 안된 경우
                         else -> unfocusedBorderColor // 포커스되지 않은 경우
-                    }, shape = shape
+                    },
+                    shape = shape
                 )
         ) {
             Row(
@@ -76,15 +78,17 @@ fun NoostakTextField(
                     value = value,
                     textStyle = textStyle,
                     onValueChange = { newValue ->
-                        if (newValue.replace(" ", "").length <= maxLength) onValueChange(
-                            newValue
-                        )
+                        if (newValue.replace(" ", "").length <= maxLength) {
+                            onValueChange(
+                                newValue
+                            )
+                        }
                     },
                     placeholder = {
                         Text(
                             text = stringResource(id = textFieldType.placeholder),
                             color = placeholderColor,
-                            style = textStyle,
+                            style = textStyle
                         )
                     },
                     modifier = Modifier
@@ -114,7 +118,7 @@ fun NoostakTextField(
                         modifier = Modifier
                             .padding(end = 12.dp)
                             .size(24.dp),
-                        onClick = { onValueChange("") },
+                        onClick = { onValueChange("") }
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_text_field_delete),
