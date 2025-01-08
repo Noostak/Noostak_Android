@@ -1,8 +1,7 @@
 package com.sopt.presentation.auth.signup
 
-import androidx.annotation.StringRes
-
-sealed class SignUpSideEffect {
-    data class NavigateToCheckInvite(val name: String) : SignUpSideEffect()
-    data class ShowToast(@StringRes val message: Int) : SignUpSideEffect()
+sealed interface SignUpSideEffect {
+    data class NavigateToCheckInvite(val name: String) : SignUpSideEffect
+    data object ShowPermissionDeniedDialog : SignUpSideEffect
+    data object RequestImagePicker : SignUpSideEffect
 }
