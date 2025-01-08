@@ -45,6 +45,7 @@ fun NoostakTextField(
     placeholderColor: Color = NoostakTheme.colors.gray600,
     textStyle: TextStyle = NoostakTheme.typography.b5Regular,
     shape: Shape = RoundedCornerShape(6.dp),
+    cursorColor: Color = NoostakTheme.colors.gray600,
     focusedBorderColor: Color = NoostakTheme.colors.gray900,
     unfocusedWithInputBorderColor: Color = NoostakTheme.colors.gray700,
     unfocusedBorderColor: Color = NoostakTheme.colors.gray500,
@@ -92,6 +93,7 @@ fun NoostakTextField(
                             isFocused = focusState.isFocused
                         },
                     colors = TextFieldDefaults.colors(
+                        cursorColor = cursorColor,
                         disabledContainerColor = Color.Transparent,
                         focusedContainerColor = Color.Transparent,
                         errorContainerColor = Color.Transparent,
