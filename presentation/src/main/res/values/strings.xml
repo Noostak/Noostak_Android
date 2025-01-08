@@ -50,7 +50,4 @@
     <string name="btn_group_create_success_code_send">그룹 코드 보내기</string>
     <string name="sb_group_create_success_code_copy">그룹 코드가 복사되었습니다</string>
 
-    <!-- Group Profile Image Picker -->
-    <string name="image_group_profile_image_picker_description">Add Profile Image By Camera Button</string>
-
 </resources>

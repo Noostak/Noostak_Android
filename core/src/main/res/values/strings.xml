@@ -21,6 +21,9 @@
     <!-- Noostak Text Field -->
     <string name="text_noostak_text_field_sign_up_example">예) 홍길동</string>
     <string name="text_noostak_text_field_count">%1$s/%2$s</string>
-    <string name="icon_noostak_text_field_descrition">Delete Group Profile Name</string>
+    <string name="icon_noostak_text_field_descrition">Delete Profile Name</string>
+
+    <!-- Profile Image Picker -->
+    <string name="image_profile_image_picker_description">Add Profile Image By Camera Button</string>
 
 </resources>
