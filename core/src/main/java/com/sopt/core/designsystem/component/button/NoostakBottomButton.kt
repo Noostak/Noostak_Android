@@ -38,7 +38,7 @@ fun NoostakBottomButton(
     Button(
         modifier = modifier
             .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.bottom_padding))
+            .padding(bottom = dimensionResource(id = R.dimen.bottom_padding))
             .run {
                 if (isEnabled) {
                     noRippleClickable(onClick = onButtonClick)
