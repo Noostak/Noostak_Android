@@ -13,12 +13,12 @@ class LoginViewModel @Inject constructor() : BaseViewModel<LoginSideEffect>() {
     val authId: StateFlow<String?> = _authId
 
     fun kakaoLogin() {
-        //TODO: 카카오 로그인
+        // TODO: 카카오 로그인
         navigateToHome()
     }
 
     fun googleLogin() {
-        //TODO: 구글 로그인
+        // TODO: 구글 로그인
         _authId.value = "google_access_token"
         navigateToSignup(_authId.value.orEmpty())
     }

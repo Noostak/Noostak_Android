@@ -50,7 +50,7 @@ fun OtpInputField(
                 repeat(otpCount) { index ->
                     CharView(
                         index = index,
-                        text = otpText,
+                        text = otpText
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                 }

@@ -28,7 +28,7 @@ import com.sopt.presentation.auth.component.LoginButton
 fun LoginRoute(
     navigateToHome: () -> Unit,
     navigateToSignUp: (String) -> Unit,
-    loginViewModel: LoginViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     LaunchedEffect(loginViewModel.sideEffects) {
         loginViewModel.sideEffects.collect { sideEffect ->

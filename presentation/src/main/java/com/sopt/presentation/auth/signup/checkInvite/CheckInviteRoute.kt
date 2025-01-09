@@ -34,7 +34,7 @@ fun CheckInviteRoute(
     name: String,
     navigateToGroup: () -> Unit,
     navigateToInputGroupCode: () -> Unit,
-    checkInviteViewModel: CheckInviteViewModel = hiltViewModel(),
+    checkInviteViewModel: CheckInviteViewModel = hiltViewModel()
 ) {
     LaunchedEffect(checkInviteViewModel.sideEffects) {
         checkInviteViewModel.sideEffects.collect { sideEffect ->
@@ -89,7 +89,7 @@ fun CheckInviteScreen(
             textDecoration = TextDecoration.Underline,
             modifier = Modifier
                 .noRippleClickable { onNoInViteTextClick() }
-                .padding(12.dp),
+                .padding(12.dp)
         )
         NoostakBottomButton(
             text = stringResource(R.string.btn_invite_code),

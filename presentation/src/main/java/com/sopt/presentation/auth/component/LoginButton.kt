@@ -28,7 +28,7 @@ internal fun LoginButton(
     shape: Shape = RoundedCornerShape(8.dp),
     containerColor: Color = NoostakTheme.colors.yellow,
     contentColor: Color = NoostakTheme.colors.black,
-    isEnabled: Boolean = true,
+    isEnabled: Boolean = true
 ) {
     Button(
         onClick = onLoginBtnClick,

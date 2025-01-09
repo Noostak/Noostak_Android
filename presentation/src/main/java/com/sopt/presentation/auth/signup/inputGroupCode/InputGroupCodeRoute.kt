@@ -34,7 +34,7 @@ import com.sopt.presentation.R
 fun InputGroupCodeRoute(
     navigateToGroup: () -> Unit,
     navigateUp: () -> Unit,
-    inputGroupCodeViewModel: InputGroupCodeViewModel = hiltViewModel(),
+    inputGroupCodeViewModel: InputGroupCodeViewModel = hiltViewModel()
 ) {
     LaunchedEffect(inputGroupCodeViewModel.sideEffects) {
         inputGroupCodeViewModel.sideEffects.collect { sideEffect ->
@@ -54,7 +54,7 @@ fun InputGroupCodeRoute(
 @Composable
 fun InputGroupCodeScreen(
     onBackButtonClick: () -> Unit,
-    onCheckGroupCodeClick: () -> Unit,
+    onCheckGroupCodeClick: () -> Unit
 ) {
     var groupCode by remember { mutableStateOf("") }
 
@@ -68,7 +68,7 @@ fun InputGroupCodeScreen(
                 isIconVisible = true,
                 onBackButtonClick = onBackButtonClick
             )
-        },
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -82,7 +82,7 @@ fun InputGroupCodeScreen(
                 text = stringResource(R.string.tv_input_code_description),
                 color = NoostakTheme.colors.gray900,
                 style = NoostakTheme.typography.t1SemiBold,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(24.dp))
             OtpInputField(
