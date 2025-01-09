@@ -31,12 +31,12 @@ import com.sopt.core.extension.noRippleClickable
 import com.sopt.domain.entity.ProgressEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.GroupDetailViewModel
-import timber.log.Timber
 
 @Composable
 fun ProgressScreen(
     groupId: Long,
-    progressEntities: List<ProgressEntity>
+    progressEntities: List<ProgressEntity>,
+    onItemClicked: (Long, Long, String) -> Unit
 ) {
     if (progressEntities.isEmpty()) {
         Text(
@@ -52,7 +52,8 @@ fun ProgressScreen(
             items(progressEntities, key = { it.appointmentId }) {
                 ProgressItem(
                     groupId = groupId,
-                    progressEntity = it
+                    progressEntity = it,
+                    onItemClicked = onItemClicked
                 )
             }
         }
@@ -62,12 +63,13 @@ fun ProgressScreen(
 @Composable
 fun ProgressItem(
     groupId: Long,
-    progressEntity: ProgressEntity
+    progressEntity: ProgressEntity,
+    onItemClicked: (Long, Long, String) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .noRippleClickable { Timber.d("Item Id: ${progressEntity.appointmentId}") }
+            .noRippleClickable { onItemClicked(groupId, progressEntity.appointmentId, progressEntity.appointmentName) }
             .border(
                 width = 1.dp,
                 shape = RoundedCornerShape(15.dp),
@@ -135,7 +137,8 @@ fun ProgressScreenPreview() {
         val groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
         ProgressScreen(
             groupId = 1,
-            progressEntities = groupDetailViewModel.mockGroupDetail.progressEntities
+            progressEntities = groupDetailViewModel.mockGroupDetail.progressEntities,
+            onItemClicked = { _, _, _ -> }
         )
     }
 }

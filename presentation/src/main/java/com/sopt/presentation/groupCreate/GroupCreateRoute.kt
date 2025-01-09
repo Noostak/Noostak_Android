@@ -42,8 +42,12 @@ import com.sopt.core.extension.launchImagePicker
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.rememberGalleryLauncher
 import com.sopt.core.util.permission.rememberPhotoPickerLauncher
+import com.sopt.core.extension.launchImagePicker
 import com.sopt.domain.entity.GroupProfileEntity
 import com.sopt.presentation.R
+import com.sopt.presentation.groupCreate.component.GroupProfileImagePicker
+import com.sopt.presentation.groupCreate.component.GroupProfileNameTextField
+import com.sopt.presentation.groupCreate.permission.ImagePickerLaunchers
 import timber.log.Timber
 
 @Composable
@@ -82,11 +86,11 @@ fun GroupCreateRoute(
         permissionLauncher.launch(permission)
     }
 
-    val galleryLauncher = rememberGalleryLauncher { uri ->
+    val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
         viewModel.onImageSelected(uri.toString())
     }
 
-    val photoPickerLauncher = rememberPhotoPickerLauncher { uri ->
+    val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
         viewModel.onImageSelected(uri.toString())
     }
 
@@ -173,10 +177,12 @@ fun GroupCreateScreen(
             NoostakTextField(
                 textFieldType = TextFieldType.GROUP,
                 value = groupProfileState.groupName,
+                placeholder = stringResource(R.string.tf_group_create_placeholder),
                 onValueChange = { onNameChange(it) }
             )
         }
         NoostakBottomButton(
+            modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.vertical_padding)),
             text = stringResource(R.string.btn_group_create_next),
             activateColor = NoostakTheme.colors.blue600,
             deactivateColor = NoostakTheme.colors.gray500,

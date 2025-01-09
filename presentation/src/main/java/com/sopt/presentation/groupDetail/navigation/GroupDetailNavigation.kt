@@ -6,9 +6,11 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
+import com.sopt.presentation.appointment.navigation.navigateAppointment
+import com.sopt.presentation.group.navigation.Group
 import com.sopt.presentation.groupDetail.GroupDetailRoute
-import com.sopt.presentation.groupDetail.screen.ConfirmedDetailRoute
-import com.sopt.presentation.groupDetail.screen.GroupMemberRoute
+import com.sopt.presentation.groupDetail.confirmedDetail.ConfirmedDetailRoute
+import com.sopt.presentation.groupDetail.groupMember.GroupMemberRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateGroupDetail(
@@ -17,7 +19,12 @@ fun NavController.navigateGroupDetail(
 ) {
     navigate(
         route = GroupDetail(groupId = groupId),
-        navOptions = navOptions
+        navOptions = navOptions ?: NavOptions.Builder()
+            .setPopUpTo(
+                route = Group,
+                inclusive = false
+            )
+            .build()
     )
 }
 
@@ -61,6 +68,13 @@ fun NavGraphBuilder.groupDetailNavGraph(
             },
             navigateToGroupMember = { groupId ->
                 navHostController.navigateGroupMember(groupId = groupId)
+            },
+            navigateToAppointment = { groupId, appointmentsId, appointmentName ->
+                navHostController.navigateAppointment(
+                    groupId = groupId,
+                    appointmentsId = appointmentsId,
+                    appointmentName = appointmentName
+                )
             }
         )
     }

@@ -38,6 +38,7 @@ import androidx.navigation.compose.NavHost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.util.NoRippleInteractionSource
+import com.sopt.presentation.appointment.navigation.appointmentNavGraph
 import com.sopt.presentation.calendar.navigation.calendarNavGraph
 import com.sopt.presentation.example.navigation.exampleNavGraph
 import com.sopt.presentation.group.navigation.groupNavGraph
@@ -142,6 +143,7 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navHostController = navigator.navController
                 )
+                appointmentNavGraph(navHostController = navigator.navController)
             }
         }
     }

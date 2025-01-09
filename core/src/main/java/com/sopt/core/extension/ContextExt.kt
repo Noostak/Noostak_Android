@@ -20,6 +20,10 @@ fun Context.longToast(@StringRes message: Int) {
     Toast.makeText(this, getString(message), Toast.LENGTH_SHORT).show()
 }
 
+fun Context.stringOf(@StringRes message: Int): String {
+    return getString(message)
+}
+
 fun Context.launchImagePicker(
     galleryLauncher: ActivityResultLauncher<String>,
     photoPickerLauncher: ActivityResultLauncher<PickVisualMediaRequest>
