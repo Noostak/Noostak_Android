@@ -66,6 +66,15 @@ class TimeTable {
     }
 
     @Composable
+    fun getEditableBackgroundColor(
+        cellType: CellType,
+        isSelected: Boolean
+    ): Color = when (cellType) {
+        CellType.Blank, CellType.DateHeader, CellType.TimeHeader -> Color.Transparent
+        CellType.Data -> if (isSelected) NoostakTheme.colors.blue400 else Color.Transparent
+    }
+
+    @Composable
     fun getColorByLevel(level: Int): Color =
         when (AvailabilityLevel.entries.firstOrNull { level in it.range }) {
             AvailabilityLevel.NONE -> Color.Transparent
@@ -88,8 +97,11 @@ class TimeTable {
         return when (cellType) {
             CellType.Blank -> "\n"
             CellType.DateHeader -> {
-                if (columnIndex == 0) ""
-                else formatDateTimeToCustomFormat(data.dates[columnIndex - 1])
+                if (columnIndex == 0) {
+                    ""
+                } else {
+                    formatDateTimeToCustomFormat(data.dates[columnIndex - 1])
+                }
             }
 
             CellType.TimeHeader -> "${startHour + (rowIndex - 1)}시"

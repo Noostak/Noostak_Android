@@ -19,13 +19,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.timetable.NoostakEditableTimeTable
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.domain.entity.PeriodEntity
 import com.sopt.domain.entity.TimeEntity
-import com.sopt.domain.entity.TimeTableEntity
 import com.sopt.presentation.R
 
 @Composable
@@ -60,6 +62,7 @@ fun AppointmentCheckRoute(
         groupId = groupId,
         appointmentsId = appointmentsId,
         appointmentName = appointmentName,
+        availablePeriods = appointmentCheckViewModel.mockAvailablePeriods,
         onBackButtonClick = appointmentCheckViewModel::navigateToGroupDetail,
         onConfirmButtonClick = appointmentCheckViewModel::navigateToAppointment
     )
@@ -70,6 +73,7 @@ fun AppointmentCheckScreen(
     groupId: Long,
     appointmentsId: Long,
     appointmentName: String,
+    availablePeriods: PeriodEntity,
     onBackButtonClick: (Long) -> Unit,
     onConfirmButtonClick: (Long, Long, String) -> Unit
 ) {
@@ -109,20 +113,16 @@ fun AppointmentCheckScreen(
             )
 
             // 타임테이블 (스크롤 가능)
-//            NoostakEditableTimeTable(
-//                data = data,
-//                modifier = Modifier
-//                    .constrainAs(timeTable) {
-//                        top.linkTo(title.bottom)
-//                        start.linkTo(parent.start)
-//                        end.linkTo(parent.end)
-//                        bottom.linkTo(button.top)
-//                        height = Dimension.fillToConstraints
-//                    }
-//            ) {
-//                selectedData = it
-//                Timber.d("Selected Data: $selectedData")
-//            }
+            NoostakEditableTimeTable(
+                availablePeriods = availablePeriods,
+                modifier = Modifier
+                    .constrainAs(timeTable) {
+                        top.linkTo(title.bottom)
+                        start.linkTo(parent.start)
+                        end.linkTo(parent.end)
+                        height = Dimension.fillToConstraints
+                    }
+            )
 
             // 버튼 (항상 하단 고정)
             NoostakBottomButton(
@@ -154,6 +154,7 @@ fun PreviewAppointmentConfirmScreen() {
             groupId = 1,
             appointmentsId = 1,
             appointmentName = "3차 회의",
+            availablePeriods = appointmentCheckViewModel.mockAvailablePeriods,
             onBackButtonClick = {},
             onConfirmButtonClick = { _, _, _ -> }
         )

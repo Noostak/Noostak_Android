@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -40,7 +39,8 @@ fun NoostakTimeTable(
     modifier: Modifier = Modifier
 ) {
     val days = availablePeriods.dates.size
-    val timeSlots = TimeTable().calculateTimeSlots(availablePeriods.startTime, availablePeriods.endTime)
+    val timeSlots =
+        TimeTable().calculateTimeSlots(availablePeriods.startTime, availablePeriods.endTime)
 
     LazyColumn(
         modifier = modifier
@@ -56,8 +56,15 @@ fun NoostakTimeTable(
                 // 열 반복
                 for (columnIndex in 0..days) {
                     val cellType = TimeTable().determineCellType(rowIndex, columnIndex)
-                    val text = TimeTable().getCellText(cellType, rowIndex, columnIndex, availablePeriods)
-                    val backgroundColor = TimeTable().getBackgroundColor(cellType, rowIndex, columnIndex, availablePeriods, availableTimes)
+                    val text =
+                        TimeTable().getCellText(cellType, rowIndex, columnIndex, availablePeriods)
+                    val backgroundColor = TimeTable().getBackgroundColor(
+                        cellType,
+                        rowIndex,
+                        columnIndex,
+                        availablePeriods,
+                        availableTimes
+                    )
                     val shape = when (rowIndex to columnIndex) {
                         0 to 0 -> RoundedCornerShape(topStart = 8.dp)
                         0 to days -> RoundedCornerShape(topEnd = 8.dp)
@@ -68,20 +75,25 @@ fun NoostakTimeTable(
 
                     Box(
                         modifier = when (cellType) {
-                            CellType.Blank -> Modifier
-                                .width(42.dp) // 고정 너비
-                                .height(36.dp) // 고정 높이
-                            CellType.TimeHeader -> Modifier
-                                .width(42.dp)
-                                .height(32.dp)
+                            CellType.Blank ->
+                                Modifier
+                                    .width(42.dp)
+                                    .height(36.dp)
 
-                            CellType.DateHeader -> Modifier
-                                .weight(1f) // 날짜 셀은 남은 공간 비율로 채움
-                                .height(36.dp)
+                            CellType.TimeHeader ->
+                                Modifier
+                                    .width(42.dp)
+                                    .height(32.dp)
 
-                            else -> Modifier
-                                .weight(1f) // 나머지 셀은 남은 공간 비율로 채움
-                                .height(32.dp)
+                            CellType.DateHeader ->
+                                Modifier
+                                    .weight(1f)
+                                    .height(36.dp)
+
+                            else ->
+                                Modifier
+                                    .weight(1f)
+                                    .height(32.dp)
                         }
                             .background(
                                 color = backgroundColor,
@@ -91,7 +103,6 @@ fun NoostakTimeTable(
                                 val borderWidth = 1.dp.toPx()
                                 val borderColor = Gray200
 
-                                // 위쪽 선 그리기
                                 if (rowIndex > 0) {
                                     drawLine(
                                         color = borderColor,
@@ -101,7 +112,6 @@ fun NoostakTimeTable(
                                     )
                                 }
 
-                                // 왼쪽 선 그리기
                                 if (columnIndex > 0) {
                                     drawLine(
                                         color = borderColor,

@@ -10,7 +10,6 @@ import com.sopt.domain.entity.RecommendationEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.sql.Time
 import javax.inject.Inject
 
 @HiltViewModel
@@ -152,7 +151,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
 
     val mockRecommendations =
         AppointmentEntity(
-            isSubmitted = true,
+            isSubmitted = false,
             priorities = listOf(
                 PriorityEntity(
                     priority = 1,
