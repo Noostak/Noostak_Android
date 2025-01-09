@@ -2,7 +2,6 @@ package com.sopt.core.designsystem.component.button
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -38,7 +37,6 @@ fun NoostakBottomButton(
     Button(
         modifier = modifier
             .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.bottom_padding))
             .run {
                 if (isEnabled) {
                     noRippleClickable(onClick = onButtonClick)

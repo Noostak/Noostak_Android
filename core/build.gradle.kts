@@ -42,6 +42,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":domain"))
+
     implementation(libs.kotlin)
     implementation(libs.core.ktx)
     implementation(libs.material)
@@ -58,4 +60,5 @@ dependencies {
     // Third Party
     implementation(libs.coil.compose)
     implementation(libs.lottie.compose)
+    implementation(libs.timber)
 }
