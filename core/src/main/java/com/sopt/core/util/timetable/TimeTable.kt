@@ -5,7 +5,9 @@ import androidx.compose.ui.graphics.Color
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.type.AvailabilityLevel
 import com.sopt.core.type.CellType
+import com.sopt.domain.entity.AvailableTimeEntity
 import com.sopt.domain.entity.PeriodEntity
+import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -13,7 +15,6 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 class TimeTable {
-    // 시간 차이를 계산 (24시간 형식 기준)
     fun calculateTimeSlots(startTime: String, endTime: String): Int {
         val startHour = extractHour(extractTime(startTime))
         val endHour = extractHour(extractTime(endTime))
@@ -91,7 +92,6 @@ class TimeTable {
         columnIndex: Int,
         data: PeriodEntity
     ): String {
-        // 셀 텍스트 결정 로직
         val startHour = extractHour(extractTime(data.startTime))
 
         return when (cellType) {
@@ -109,7 +109,31 @@ class TimeTable {
         }
     }
 
-    fun formatDateTimeToCustomFormat(dateTime: String): String {
+    fun getSelectedTimes(
+        selectedCells: List<Pair<Int, Int>>,
+        availablePeriods: PeriodEntity
+    ): List<AvailableTimeEntity> {
+        val selectedTimes = mutableListOf<AvailableTimeEntity>()
+        val selectedCellsByDate = selectedCells.groupBy { it.second }
+        selectedCellsByDate.forEach { (dateColumnIndex, cells) ->
+            val date = availablePeriods.dates.getOrNull(dateColumnIndex - 1) ?: return@forEach
+            val times = cells.map { (rowIndex, _) ->
+                val startHour = extractHour(extractTime(availablePeriods.startTime)) + (rowIndex - 1)
+                val endHour = startHour + 1
+                TimeEntity(
+                    memberStartTime = "${extractDate(date)}T${String.format("%02d", startHour)}:00:00",
+                    memberEndTime = "${extractDate(date)}T${String.format("%02d", endHour)}:00:00"
+                )
+            }
+            if (times.isNotEmpty()) {
+                selectedTimes.add(AvailableTimeEntity(date = date, times = times))
+            }
+        }
+
+        return selectedTimes
+    }
+
+    private fun formatDateTimeToCustomFormat(dateTime: String): String {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
         val parsedDate = LocalDateTime.parse(dateTime, formatter)
         val dayOfWeek = parsedDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN)
@@ -119,12 +143,9 @@ class TimeTable {
         return "$dayOfWeek\n$month/$day"
     }
 
-    // 공통적으로 사용하는 시간 추출 로직
     private fun extractTime(dateTime: String): String = dateTime.substringAfter('T')
 
-    // 공통적으로 사용하는 날짜 추출 로직
     private fun extractDate(dateTime: String): String = dateTime.substringBefore('T')
 
-    // 공통적으로 사용하는 시간만 숫자로 변환
     private fun extractHour(time: String): Int = time.substringBefore(':').toInt()
 }

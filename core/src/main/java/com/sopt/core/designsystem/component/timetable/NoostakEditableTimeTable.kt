@@ -29,12 +29,14 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.type.CellType
 import com.sopt.core.util.timetable.TimeTable
+import com.sopt.domain.entity.AvailableTimeEntity
 import com.sopt.domain.entity.PeriodEntity
 
 @Composable
 fun NoostakEditableTimeTable(
     availablePeriods: PeriodEntity,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onSelectedTimesChanged: (List<AvailableTimeEntity>) -> Unit
 ) {
     val days = availablePeriods.dates.size
     val timeSlots =
@@ -124,6 +126,12 @@ fun NoostakEditableTimeTable(
                                     } else {
                                         selectedCells.add(cell)
                                     }
+                                    onSelectedTimesChanged(
+                                        TimeTable().getSelectedTimes(
+                                            selectedCells,
+                                            availablePeriods
+                                        )
+                                    )
                                 }
                             },
                         contentAlignment = Alignment.Center
@@ -157,7 +165,8 @@ fun NoostakEditableTimeTable1Preview() {
         ) {
             NoostakEditableTimeTable(
                 availablePeriods = mockAvailablePeriods,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onSelectedTimesChanged = { }
             )
         }
     }

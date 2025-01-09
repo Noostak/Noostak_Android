@@ -29,6 +29,7 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.domain.entity.PeriodEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
+import timber.log.Timber
 
 @Composable
 fun AppointmentCheckRoute(
@@ -122,7 +123,9 @@ fun AppointmentCheckScreen(
                         end.linkTo(parent.end)
                         height = Dimension.fillToConstraints
                     }
-            )
+            ) {
+                Timber.d("selectedData: $it")
+            }
 
             // 버튼 (항상 하단 고정)
             NoostakBottomButton(
