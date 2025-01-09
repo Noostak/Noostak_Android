@@ -1,4 +1,4 @@
-package com.sopt.presentation.groupCreate.permission
+package com.sopt.core.util.permission
 
 import android.net.Uri
 import androidx.activity.compose.ManagedActivityResultLauncher
