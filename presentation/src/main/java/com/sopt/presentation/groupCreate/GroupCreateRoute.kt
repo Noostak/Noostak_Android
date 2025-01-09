@@ -40,14 +40,9 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
 import com.sopt.core.type.TextFieldType
-import com.sopt.core.util.permission.rememberGalleryLauncher
-import com.sopt.core.util.permission.rememberPhotoPickerLauncher
-import com.sopt.core.extension.launchImagePicker
+import com.sopt.core.util.permission.ImagePickerLaunchers
 import com.sopt.domain.entity.GroupProfileEntity
 import com.sopt.presentation.R
-import com.sopt.presentation.groupCreate.component.GroupProfileImagePicker
-import com.sopt.presentation.groupCreate.component.GroupProfileNameTextField
-import com.sopt.presentation.groupCreate.permission.ImagePickerLaunchers
 import timber.log.Timber
 
 @Composable
@@ -177,7 +172,6 @@ fun GroupCreateScreen(
             NoostakTextField(
                 textFieldType = TextFieldType.GROUP,
                 value = groupProfileState.groupName,
-                placeholder = stringResource(R.string.tf_group_create_placeholder),
                 onValueChange = { onNameChange(it) }
             )
         }
