@@ -20,9 +20,11 @@ import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.type.CellType
+import com.sopt.core.util.timetable.TimeTable
 import com.sopt.domain.entity.AvailableTimeEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity
+import java.sql.Time
 
 @Composable
 fun NoostakEditableTimeTable(
@@ -31,7 +33,7 @@ fun NoostakEditableTimeTable(
     onSelectionChange: (List<TimeEntity>) -> Unit
 ) {
     val days = data.timeEntity.size
-    val timeSlots = calculateTimeSlots(data.startTime, data.endTime)
+    val timeSlots = TimeTable().calculateTimeSlots(data.startTime, data.endTime)
     val selectedCells = remember { mutableStateListOf<Pair<Int, Int>>() } // Row, Column 저장
 
     LazyVerticalGrid(
@@ -45,11 +47,11 @@ fun NoostakEditableTimeTable(
     ) {
         items((days + 1) * (timeSlots + 1)) { index ->
             val (rowIndex, columnIndex) = index / (days + 1) to index % (days + 1)
-            val cellType = determineCellType(rowIndex, columnIndex)
+            val cellType = TimeTable().determineCellType(rowIndex, columnIndex)
             val isSelected = selectedCells.contains(rowIndex to columnIndex)
             val backgroundColor =
                 getEditableBackgroundColor(cellType, isSelected)
-            val text = getCellText(cellType, rowIndex, columnIndex, data)
+            val text = TimeTable().getCellText(cellType, rowIndex, columnIndex, data)
 
             NoostakEditableTimeTableBox(
                 index = index,

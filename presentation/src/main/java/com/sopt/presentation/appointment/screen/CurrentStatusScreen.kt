@@ -3,7 +3,6 @@ package com.sopt.presentation.appointment.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -72,7 +71,7 @@ fun CurrentStatusScreen(
             }
         }
     }
-    NoostakTimeTable(data = data, modifier = Modifier.fillMaxSize())
+    NoostakTimeTable(data = data, modifier = Modifier.fillMaxWidth())
 }
 
 @Preview(showBackground = true)
