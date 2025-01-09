@@ -36,8 +36,7 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
 import com.sopt.core.extension.toast
 import com.sopt.core.type.TextFieldType
-import com.sopt.core.util.permission.rememberGalleryLauncher
-import com.sopt.core.util.permission.rememberPhotoPickerLauncher
+import com.sopt.core.util.permission.ImagePickerLaunchers
 import com.sopt.presentation.R
 import timber.log.Timber
 
@@ -68,11 +67,11 @@ fun SignUpRoute(
         }
     }
 
-    val galleryLauncher = rememberGalleryLauncher { uri ->
+    val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
         viewModel.updateProfileImage(uri.toString())
     }
 
-    val photoPickerLauncher = rememberPhotoPickerLauncher { uri ->
+    val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
         viewModel.updateProfileImage(uri.toString())
     }
 
