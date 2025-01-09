@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.ui)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3.compose)
+    implementation(libs.constraintlayout.compose)
 
     // Kotlin
     implementation(libs.kotlinx.coroutines.android)

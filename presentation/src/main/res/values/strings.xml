@@ -38,6 +38,8 @@
     <string name="tv_input_code_description">초대를 받으셨다면,\n그룹코드를 입력해주세요.</string>
 
     <!-- 그룹 상세 -->
+    <string name="tab_group_detail_progress">진행 중</string>
+    <string name="tab_group_detail_confirmed">확정</string>
     <string name="fab_group_detail">약속 만들기</string>
     <string name="appbar_group_detail">그룹</string>
     <string name="tv_group_detail_member">그룹 멤버 %1$s</string>
@@ -56,6 +58,28 @@
     <string name="appbar_group_member">그룹 멤버</string>
     <string name="header_group_member_leader">방장</string>
     <string name="header_group_member_member">멤버</string>
+    <string name="placeholder_group_member">아직 그룹 멤버가 없어요\n멤버를 초대하고 그룹을 만들어보세요</string>
+
+    <!-- 약속 확정 -->
+    <string name="header_appointment_current_status">실시간 현황</string>
+    <string name="btn_appointment_modify">일정 수정</string>
+    <string name="header_appointment_available">가능한 친구 %1$s</string>
+    <string name="header_appointment_unavailable">불가능한 친구 %1$s</string>
+    <string name="btn_appointment_confirm">약속 확정하기</string>
+    <string name="title_appointment_check">가능한 시간을\n모두 선택해주세요</string>
+    <string name="btn_appointment_check">확인</string>
+    <string name="header_appointment_recommendation">추천 시간</string>
+    <string name="btn_appointment_total">전체보기</string>
+    <string name="title_appointment_confirm">이대로 약속을 확정 할까요?</string>
+    <string name="subtitle_appointment_confirm">한 번 확정된 약속은 수정이 어려워요!</string>
+    <string name="tv_appointment_confirm_info">약속 정보</string>
+    <string name="btn_appointment_confirm_complete">완료</string>
+    <string name="dialog_appointment_description">아직 일정을 등록하지 않았어요!\n일정을 등록하러 가볼까요?</string>
+    <string name="dialog_appointment_dismiss">나중에 등록하기</string>
+    <string name="dialog_appointment_confirm">가능일정 등록하기</string>
+    <string name="text_appointment_priority">Best%1$s</string>
+    <string name="tv_appointment_availableMembersCount">%1$s명</string>
+    <string name="tv_appointment_totalMembersCount">" / %1$s명"</string>
 
     <!-- Group -->
     <string name="fab_group_create">그룹추가</string>

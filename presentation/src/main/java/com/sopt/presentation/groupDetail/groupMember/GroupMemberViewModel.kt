@@ -1,4 +1,4 @@
-package com.sopt.presentation.groupDetail
+package com.sopt.presentation.groupDetail.groupMember
 
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.GroupLeaderEntity

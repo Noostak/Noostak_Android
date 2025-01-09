@@ -1,4 +1,4 @@
-package com.sopt.presentation.groupDetail.screen
+package com.sopt.presentation.groupDetail.groupMember
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,11 +39,9 @@ import coil.compose.AsyncImage
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.extension.showIf
 import com.sopt.domain.entity.GroupMembersEntity
 import com.sopt.presentation.R
-import com.sopt.presentation.groupDetail.GroupMemberSideEffect
-import com.sopt.presentation.groupDetail.GroupMemberViewModel
 
 @Composable
 fun GroupMemberRoute(
@@ -110,7 +107,7 @@ fun GroupMemberScreen(
                 }
             }
             Text(
-                modifier = Modifier.padding(top = 2.dp, bottom = 20.dp),
+                modifier = Modifier.padding(top = 2.dp),
                 text = stringResource(
                     R.string.tv_group_detail_member,
                     groupMembers.groupMembersCount
@@ -119,7 +116,6 @@ fun GroupMemberScreen(
                 style = NoostakTheme.typography.b2Regular
             )
             GroupMemberHeader(text = stringResource(R.string.header_group_member_leader))
-            Spacer(modifier = Modifier.height(14.dp))
             GroupMemberItem(
                 size = 72.dp,
                 profileImage = groupMembers.groupLeader.groupLeaderImage,
@@ -132,21 +128,25 @@ fun GroupMemberScreen(
                 color = NoostakTheme.colors.gray200
             )
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp, bottom = 14.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 GroupMemberHeader(text = stringResource(R.string.header_group_member_member))
-                Icon(
-                    modifier = Modifier.noRippleClickable { },
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_add),
-                    contentDescription = null,
-                    tint = NoostakTheme.colors.gray700
-                )
+                GroupMemberHeader(text = "(${groupMembers.groupMembers.size}/${groupMembers.groupMembersCount})")
             }
+            Text(
+                modifier = Modifier
+                    .showIf(groupMembers.groupMembers.isEmpty())
+                    .fillMaxWidth()
+                    .padding(top = 42.dp),
+                text = stringResource(R.string.placeholder_group_member),
+                color = NoostakTheme.colors.gray900,
+                style = NoostakTheme.typography.b2Regular,
+                textAlign = TextAlign.Center
+            )
             LazyVerticalGrid(
+                modifier = Modifier
+                    .showIf(groupMembers.groupMembers.isNotEmpty())
+                    .fillMaxSize(),
                 columns = GridCells.Fixed(5),
                 verticalArrangement = Arrangement.spacedBy(17.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
@@ -168,6 +168,7 @@ fun GroupMemberHeader(
     text: String
 ) {
     Text(
+        modifier = Modifier.padding(top = 20.dp, bottom = 14.dp),
         text = text,
         color = NoostakTheme.colors.gray700,
         style = NoostakTheme.typography.b4SemiBold

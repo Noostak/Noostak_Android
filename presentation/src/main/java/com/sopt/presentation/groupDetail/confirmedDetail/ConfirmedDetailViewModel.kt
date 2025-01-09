@@ -1,4 +1,4 @@
-package com.sopt.presentation.groupDetail
+package com.sopt.presentation.groupDetail.confirmedDetail
 
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.ConfirmedDetailEntity
@@ -12,7 +12,7 @@ class ConfirmedDetailViewModel @Inject constructor() : BaseViewModel<ConfirmedDe
     }
 
     val mockConfirmedDetail = ConfirmedDetailEntity(
-        appointName = "3차 회의",
+        appointmentName = "3차 회의",
         date = "2024-09-27",
         weekday = "금요일",
         startTime = "11:00",
