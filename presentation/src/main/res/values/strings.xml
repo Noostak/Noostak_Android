@@ -13,6 +13,30 @@
     <string name="btn_my_page">예제 화면으로 이동하기</string>
     <string name="btn_example_back">뒤로 돌아가기</string>
 
+    <!-- 버튼 -->
+    <string name="btn_next">다음</string>
+    <string name="btn_submit">확인</string>
+
+    <!-- 로그인 -->
+    <string name="tv_login_description">SNS 계정으로 빠르게 시작하기</string>
+    <string name="iv_login_description">로고</string>
+    <string name="btn_login_kakao">카카오로 로그인</string>
+    <string name="btn_login_google">Google로 로그인</string>
+
+    <!-- 회원가입 -->
+    <string name="tv_signup_profile">프로필 설정</string>
+    <string name="tv_signup_example_name">예) 홍길동</string>
+    <string name="hint_signup_name">이름을 입력해주세요</string>
+    <string name="tv_signup_count">%1$d / %2$d</string>
+    <string name="toast_permission_gallery">갤러리 권한이 필요합니다.</string>
+
+    <!-- 그룹 초대 입력 -->
+    <string name="iv_invite_description">그룹 초대 설명 이미지</string>
+    <string name="tv_invite_description">환영해요 %1$s님!\n그룹코드를 받으셨나요?</string>
+    <string name="tv_invite_empty">아니요, 초대받은 그룹이 없어요.</string>
+    <string name="btn_invite_code">그룹코드 입력하기</string>
+    <string name="tv_input_code_description">초대를 받으셨다면,\n그룹코드를 입력해주세요.</string>
+
     <!-- 그룹 상세 -->
     <string name="tab_group_detail_progress">진행 중</string>
     <string name="tab_group_detail_confirmed">확정</string>

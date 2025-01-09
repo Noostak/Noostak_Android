@@ -39,6 +39,10 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.presentation.appointment.navigation.appointmentNavGraph
+import com.sopt.presentation.auth.login.navigation.loginNavGraph
+import com.sopt.presentation.auth.signup.checkInvite.navigation.checkInviteNavGraph
+import com.sopt.presentation.auth.signup.inputGroupCode.navigation.inputGroupCodeNavGraph
+import com.sopt.presentation.auth.signup.navigation.signUpNavGraph
 import com.sopt.presentation.calendar.navigation.calendarNavGraph
 import com.sopt.presentation.example.navigation.exampleNavGraph
 import com.sopt.presentation.group.navigation.groupNavGraph
@@ -143,6 +147,10 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navHostController = navigator.navController
                 )
+                loginNavGraph(navHostController = navigator.navController)
+                signUpNavGraph(navHostController = navigator.navController)
+                checkInviteNavGraph(navHostController = navigator.navController)
+                inputGroupCodeNavGraph(navHostController = navigator.navController)
                 appointmentNavGraph(navHostController = navigator.navController)
             }
         }
