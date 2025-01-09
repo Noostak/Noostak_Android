@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -94,7 +95,7 @@ fun RecommendationItem(
     onItemClick: () -> Unit
 ) {
     var isLiked by remember { mutableStateOf(data.isLiked) }
-    var likes by remember { mutableStateOf(data.likes) }
+    var likes by remember { mutableIntStateOf(data.likes) }
 
     Column(
         modifier = Modifier

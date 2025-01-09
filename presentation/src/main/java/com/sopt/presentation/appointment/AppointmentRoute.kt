@@ -1,5 +1,6 @@
 package com.sopt.presentation.appointment
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -109,6 +110,13 @@ fun AppointmentScreen(
         showDialog = !recommendations.isSubmitted
     }
 
+    BackHandler {
+        when (selectedItemIndex) {
+            -1 -> onBackButtonClick() // 선택된 항목이 없으면 기본 뒤로 가기 동작
+            else -> selectedItemIndex = -1 // 선택된 항목이 있으면 해제
+        }
+    }
+
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
@@ -118,10 +126,9 @@ fun AppointmentScreen(
                 title = appointmentName,
                 isIconVisible = true,
                 onBackButtonClick = {
-                    if (selectedItemIndex == -1) {
-                        onBackButtonClick()
-                    } else {
-                        selectedItemIndex = -1
+                    when (selectedItemIndex) {
+                        -1 -> onBackButtonClick()
+                        else -> selectedItemIndex = -1
                     }
                 }
             )

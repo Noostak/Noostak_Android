@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.type.CellType
 import com.sopt.domain.entity.AvailableTimeEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity

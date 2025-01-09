@@ -2,7 +2,9 @@ package com.sopt.core.designsystem.component.timetable
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -13,12 +15,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.type.AvailabilityLevel
+import com.sopt.core.type.CellType
 import com.sopt.domain.entity.AvailableTimeEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity
@@ -36,13 +41,9 @@ fun NoostakTimeTable(
     val timeSlots = calculateTimeSlots(data.startTime, data.endTime)
 
     LazyVerticalGrid(
-        modifier = modifier
-            .border(
-                width = 1.dp,
-                color = NoostakTheme.colors.gray200,
-                shape = RoundedCornerShape(8.dp)
-            ),
-        columns = GridCells.Fixed(days + 1)
+        modifier = modifier,
+        columns = GridCells.Fixed(days + 1),
+        contentPadding = PaddingValues(0.dp)
     ) {
         items((days + 1) * (timeSlots + 1)) { index ->
             val (rowIndex, columnIndex) = index / (days + 1) to index % (days + 1)
@@ -126,7 +127,7 @@ fun NoostakTimeTableBox(
         modifier = Modifier
             .border(
                 width = 0.5.dp,
-                color = NoostakTheme.colors.gray200,
+                color = NoostakTheme.colors.gray100,
                 shape = shape
             )
             .background(
@@ -180,18 +181,6 @@ fun formatDateHeader(date: String): String {
     val day = "%02d".format(parsedDate.dayOfMonth)
 
     return "$dayOfWeek\n$month/$day"
-}
-
-enum class CellType {
-    Blank, DateHeader, TimeHeader, Data
-}
-
-enum class AvailabilityLevel(val range: IntRange) {
-    NONE(0..0),
-    FEW(1..20),
-    SOME(21..40),
-    MANY(41..60),
-    MOST(61..80)
 }
 
 @Preview(showBackground = true)
