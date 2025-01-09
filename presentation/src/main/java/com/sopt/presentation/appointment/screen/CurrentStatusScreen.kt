@@ -21,6 +21,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.timetable.NoostakTimeTable
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.NoRippleInteractionSource
+import com.sopt.domain.entity.PeriodEntity
 import com.sopt.domain.entity.TimeTableEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.AppointmentViewModel
@@ -28,7 +29,8 @@ import com.sopt.presentation.appointment.AppointmentViewModel
 @Composable
 fun CurrentStatusScreen(
     modifier: Modifier = Modifier,
-    data: TimeTableEntity
+    availablePeriods: PeriodEntity,
+    availableTimes: TimeTableEntity
 ) {
     Row(
         modifier = modifier
@@ -71,7 +73,11 @@ fun CurrentStatusScreen(
             }
         }
     }
-    NoostakTimeTable(data = data, modifier = Modifier.fillMaxWidth())
+    NoostakTimeTable(
+        availablePeriods = availablePeriods,
+        availableTimes = availableTimes,
+        modifier = Modifier.fillMaxWidth()
+    )
 }
 
 @Preview(showBackground = true)
@@ -79,6 +85,7 @@ fun CurrentStatusScreen(
 fun CurrentStatusScreenPreview() {
     val appointmentViewModel: AppointmentViewModel = hiltViewModel()
     CurrentStatusScreen(
-        data = appointmentViewModel.mockCurrentStatus
+        availablePeriods = appointmentViewModel.mockAvailablePeriods,
+        availableTimes = appointmentViewModel.mockAvailableTimes
     )
 }

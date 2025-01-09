@@ -27,40 +27,6 @@ class AppointmentCheckViewModel @Inject constructor() :
         emitSideEffect(AppointmentCheckSideEffect.NavigateToGroupDetail(groupId))
     }
 
-    val mockTimeTableEntity = TimeTableEntity(
-        startTime = "07:00",
-        endTime = "24:00",
-        timeEntity = listOf(
-            TimeEntity(
-                date = "2024-09-27",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-09-28",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-09-29",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-09-30",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-10-01",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-10-02",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-10-03",
-                times = null
-            )
-        )
-    )
 }
 
 sealed class AppointmentCheckSideEffect {

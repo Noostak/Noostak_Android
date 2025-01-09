@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -27,16 +28,19 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.type.CellType
 import com.sopt.core.util.timetable.TimeTable
 import com.sopt.domain.entity.AvailableTimeEntity
+import com.sopt.domain.entity.MemberAvailableTimeEntity
+import com.sopt.domain.entity.PeriodEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity
 
 @Composable
 fun NoostakTimeTable(
-    data: TimeTableEntity,
+    availablePeriods: PeriodEntity,
+    availableTimes: TimeTableEntity,
     modifier: Modifier = Modifier
 ) {
-    val days = data.timeEntity.size
-    val timeSlots = TimeTable().calculateTimeSlots(data.startTime, data.endTime)
+    val days = availablePeriods.dates.size
+    val timeSlots = TimeTable().calculateTimeSlots(availablePeriods.startTime, availablePeriods.endTime)
 
     LazyColumn(
         modifier = modifier
@@ -52,8 +56,8 @@ fun NoostakTimeTable(
                 // 열 반복
                 for (columnIndex in 0..days) {
                     val cellType = TimeTable().determineCellType(rowIndex, columnIndex)
-                    val backgroundColor = TimeTable().getBackgroundColor(cellType, rowIndex, columnIndex, data)
-                    val text = TimeTable().getCellText(cellType, rowIndex, columnIndex, data)
+                    val text = TimeTable().getCellText(cellType, rowIndex, columnIndex, availablePeriods)
+                    val backgroundColor = TimeTable().getBackgroundColor(cellType, rowIndex, columnIndex, availablePeriods, availableTimes)
                     val shape = when (rowIndex to columnIndex) {
                         0 to 0 -> RoundedCornerShape(topStart = 8.dp)
                         0 to days -> RoundedCornerShape(topEnd = 8.dp)
@@ -126,52 +130,105 @@ fun NoostakTimeTable(
 @Composable
 fun NoostakTimeTable1Preview() {
     NoostakAndroidTheme {
-        val data = TimeTableEntity(
-            startTime = "09:00",
-            endTime = "18:00",
-            timeEntity = listOf(
-                TimeEntity(
-                    date = "2024-09-27",
+        val mockAvailablePeriods = PeriodEntity(
+            dates = listOf("2024-09-05T10:00:00", "2024-09-06T10:00:00", "2024-09-07T10:00:00"),
+            startTime = "2024-09-05T10:00:00",
+            endTime = "2024-09-07T18:00:00"
+        )
+
+        val mockAvailableTimes = TimeTableEntity(
+            members = listOf(
+                MemberAvailableTimeEntity(
+                    memberId = 1,
+                    memberName = "권장순",
                     times = listOf(
                         AvailableTimeEntity(
-                            startTime = "09:00",
-                            endTime = "10:00",
-                            level = 20
+                            date = "2024-09-05T00:00:00",
+                            times = listOf(
+                                TimeEntity(
+                                    memberStartTime = "2024-09-05T11:00:00",
+                                    memberEndTime = "2024-09-05T12:00:00"
+                                ),
+                                TimeEntity(
+                                    memberStartTime = "2024-09-05T13:00:00",
+                                    memberEndTime = "2024-09-05T14:00:00"
+                                )
+                            )
                         ),
                         AvailableTimeEntity(
-                            startTime = "12:00",
-                            endTime = "13:00",
-                            level = 40
+                            date = "2024-09-06T00:00:00",
+                            times = listOf(
+                                TimeEntity(
+                                    memberStartTime = "2024-09-06T14:00:00",
+                                    memberEndTime = "2024-09-06T15:00:00"
+                                ),
+                                TimeEntity(
+                                    memberStartTime = "2024-09-06T16:00:00",
+                                    memberEndTime = "2024-09-06T17:00:00"
+                                )
+                            )
                         ),
                         AvailableTimeEntity(
-                            startTime = "15:00",
-                            endTime = "16:00",
-                            level = 60
-                        ),
-                        AvailableTimeEntity(
-                            startTime = "17:00",
-                            endTime = "18:00",
-                            level = 80
+                            date = "2024-09-07T00:00:00",
+                            times = listOf(
+                                TimeEntity(
+                                    memberStartTime = "2024-09-07T10:00:00",
+                                    memberEndTime = "2024-09-07T11:00:00"
+                                ),
+                                TimeEntity(
+                                    memberStartTime = "2024-09-07T12:00:00",
+                                    memberEndTime = "2024-09-07T13:00:00"
+                                )
+                            )
                         )
                     )
                 ),
-                TimeEntity(
-                    date = "2024-09-28",
+                MemberAvailableTimeEntity(
+                    memberId = 2,
+                    memberName = "김민수",
                     times = listOf(
                         AvailableTimeEntity(
-                            startTime = "11:00",
-                            endTime = "12:00",
-                            level = 20
+                            date = "2024-09-05T00:00:00",
+                            times = listOf(
+                                TimeEntity(
+                                    memberStartTime = "2024-09-05T10:00:00",
+                                    memberEndTime = "2024-09-05T11:00:00"
+                                ),
+                                TimeEntity(
+                                    memberStartTime = "2024-09-05T12:00:00",
+                                    memberEndTime = "2024-09-05T13:00:00"
+                                ),
+                                TimeEntity(
+                                    memberStartTime = "2024-09-05T13:00:00",
+                                    memberEndTime = "2024-09-05T14:00:00"
+                                )
+                            )
                         ),
                         AvailableTimeEntity(
-                            startTime = "14:00",
-                            endTime = "15:00",
-                            level = 40
+                            date = "2024-09-06T00:00:00",
+                            times = listOf(
+                                TimeEntity(
+                                    memberStartTime = "2024-09-06T14:00:00",
+                                    memberEndTime = "2024-09-06T15:00:00"
+                                ),
+                                TimeEntity(
+                                    memberStartTime = "2024-09-06T15:00:00",
+                                    memberEndTime = "2024-09-06T16:00:00"
+                                )
+                            )
                         ),
                         AvailableTimeEntity(
-                            startTime = "17:00",
-                            endTime = "18:00",
-                            level = 80
+                            date = "2024-09-07T00:00:00",
+                            times = listOf(
+                                TimeEntity(
+                                    memberStartTime = "2024-09-07T11:00:00",
+                                    memberEndTime = "2024-09-07T12:00:00"
+                                ),
+                                TimeEntity(
+                                    memberStartTime = "2024-09-07T12:00:00",
+                                    memberEndTime = "2024-09-07T13:00:00"
+                                )
+                            )
                         )
                     )
                 )
@@ -182,7 +239,11 @@ fun NoostakTimeTable1Preview() {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            NoostakTimeTable(data = data)
+            NoostakTimeTable(
+                availablePeriods = mockAvailablePeriods,
+                availableTimes = mockAvailableTimes,
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }
