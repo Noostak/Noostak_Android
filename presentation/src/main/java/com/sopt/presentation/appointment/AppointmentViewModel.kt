@@ -151,7 +151,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
 
     val mockRecommendations =
         AppointmentEntity(
-            isSubmitted = false,
+            isSubmitted = true,
             priorities = listOf(
                 PriorityEntity(
                     priority = 1,
