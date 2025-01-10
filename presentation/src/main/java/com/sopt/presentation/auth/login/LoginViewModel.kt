@@ -1,6 +1,12 @@
 package com.sopt.presentation.auth.login
 
+import android.content.Context
+import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
 import com.sopt.core.util.BaseViewModel
+import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,9 +18,46 @@ class LoginViewModel @Inject constructor() : BaseViewModel<LoginSideEffect>() {
     private val _authId = MutableStateFlow("")
     val authId: StateFlow<String> = _authId
 
-    fun kakaoLogin() {
-        // TODO: 카카오 로그인
-        navigateToHome()
+    fun kakaoLogin(context: Context) {
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+            UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
+                handleKakaoLoginResult(token, error) {
+                    UserApiClient.instance.loginWithKakaoAccount(
+                        context,
+                        callback = ::handleKakaoLoginResult
+                    )
+                }
+            }
+        } else {
+            UserApiClient.instance.loginWithKakaoAccount(
+                context,
+                callback = ::handleKakaoLoginResult
+            )
+        }
+    }
+
+    private fun handleKakaoLoginResult(
+        token: OAuthToken?,
+        error: Throwable?,
+        fallback: (() -> Unit)? = null
+    ) {
+        if (error != null) {
+            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+                emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_login_cancelled))
+            } else {
+                emitSideEffect(
+                    LoginSideEffect.ShowToast(
+                        R.string.toast_kakao_login_failed,
+                        error.localizedMessage
+                    )
+                )
+                fallback?.invoke()
+            }
+        } else if (token != null) {
+            _authId.value = token.accessToken
+            emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_kakao_login_success))
+            navigateToSignup(_authId.value)
+        }
     }
 
     fun googleLogin() {
