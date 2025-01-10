@@ -28,16 +28,14 @@ fun CalendarRoute(
 
     CalendarScreen(
         paddingValues = paddingValues,
-        onNavigateToCalendarInfoScreen = calendarViewModel::navigateToCalendarInfoScreen,
+        onNavigateToCalendarInfoScreen = calendarViewModel::navigateToCalendarInfoScreen
     )
-
 }
-
 
 @Composable
 fun CalendarScreen(
     paddingValues: PaddingValues = PaddingValues(),
-    onNavigateToCalendarInfoScreen: () -> Unit,
+    onNavigateToCalendarInfoScreen: () -> Unit
 ) {
     Column(
         modifier = androidx.compose.ui.Modifier

@@ -1,10 +1,9 @@
 package com.sopt.core.designsystem.component.chip
 
-import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakTheme
-
 
 @Composable
 fun NoostakCategoryChip2(

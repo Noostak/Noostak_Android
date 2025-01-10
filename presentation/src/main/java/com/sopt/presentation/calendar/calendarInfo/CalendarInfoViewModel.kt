@@ -9,8 +9,8 @@ import javax.inject.Inject
 class CalendarInfoViewModel @Inject constructor() : BaseViewModel<CalendarInfoSideEffect>() {
     val categories = immutableListOf("중요", "일정", "취미", "기타")
 
-    fun navigateToCalendarPeriod(appointmentName: String,category: String,time: Int) {
-        emitSideEffect(CalendarInfoSideEffect.NavigateToPeriod(appointmentName,category,time))
+    fun navigateToCalendarPeriod(appointmentName: String, category: String, time: Int) {
+        emitSideEffect(CalendarInfoSideEffect.NavigateToPeriod(appointmentName, category, time))
     }
 }
 

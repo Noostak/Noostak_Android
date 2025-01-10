@@ -88,7 +88,7 @@ fun NavGraphBuilder.calendarNavGraph(
             appointmentName = args.appointmentName,
             category = args.category,
             time = args.time,
-            navigateToTimePicker = { appointmentName, category, time , startDate, endDate, dates ->
+            navigateToTimePicker = { appointmentName, category, time, startDate, endDate, dates ->
                 navHostController.navigateCalendarTimePicker(
                     appointmentName = appointmentName,
                     category = category,

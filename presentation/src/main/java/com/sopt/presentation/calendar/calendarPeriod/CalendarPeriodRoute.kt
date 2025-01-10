@@ -3,7 +3,17 @@ package com.sopt.presentation.calendar.calendarPeriod
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,11 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.calendar.NoostakCalendar
+import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
+import com.sopt.core.designsystem.component.text.NoostakHeaderText
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
-import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
-import com.sopt.core.designsystem.component.text.NoostakHeaderText
 
 @Composable
 fun CalendarPeriodRoute(
@@ -68,7 +78,7 @@ fun CalendarPeriodScreen(
     category: String,
     time: Int,
     days: List<String>
-){
+) {
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
     var isSingleDateMode by remember { mutableStateOf(false) }
@@ -110,13 +120,16 @@ fun CalendarPeriodScreen(
                     text = stringResource(R.string.text_calendar_appointment_one_day),
                     style = typography.b2Regular,
                     textAlign = TextAlign.Start,
-                    color = colors.gray900,
+                    color = colors.gray900
                 )
-                //색 지정되면 switch로 변경할게요
+                // 색 지정되면 switch로 변경할게요
                 Image(
                     painter = painterResource(
-                        id = if (isSingleDateMode) R.drawable.ic_calendar_toggle_on
-                        else R.drawable.ic_calendar_toggle_off
+                        id = if (isSingleDateMode) {
+                            R.drawable.ic_calendar_toggle_on
+                        } else {
+                            R.drawable.ic_calendar_toggle_off
+                        }
                     ),
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds,
@@ -156,8 +169,6 @@ fun CalendarPeriodScreen(
                 activateColor = NoostakTheme.colors.gray900,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-
         }
     }
 }
-
