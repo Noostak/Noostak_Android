@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.ui)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3.compose)
+    implementation(libs.constraintlayout.compose)
 
     // Kotlin
     implementation(libs.kotlinx.coroutines.android)
@@ -84,6 +85,7 @@ dependencies {
     // Image Loading
     implementation(libs.coil.compose)
     implementation(libs.lottie.compose)
+    implementation(libs.bundles.landscapist.glide)
 
     // Logging
     implementation(libs.timber)

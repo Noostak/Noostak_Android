@@ -2,9 +2,7 @@ package com.sopt.presentation.groupDetail
 
 import android.content.Intent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -50,7 +48,6 @@ import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
-import com.sopt.core.extension.showIf
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.domain.entity.GroupDetailEntity
@@ -67,6 +64,7 @@ fun GroupDetailRoute(
     navigateUp: () -> Unit,
     navigateToConfirmedDetail: (Long, Long) -> Unit,
     navigateToGroupMember: (Long) -> Unit,
+    navigateToAppointment: (Long, Long, String) -> Unit,
     groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = groupDetailViewModel.sideEffects) {
@@ -80,6 +78,14 @@ fun GroupDetailRoute(
                 is GroupDetailSideEffect.NavigateToGroupMember -> {
                     navigateToGroupMember(sideEffect.groupId)
                 }
+
+                is GroupDetailSideEffect.NavigateToAppointment -> {
+                    navigateToAppointment(
+                        sideEffect.groupId,
+                        sideEffect.appointmentsId,
+                        sideEffect.appointmentName
+                    )
+                }
             }
         }
     }
@@ -90,7 +96,8 @@ fun GroupDetailRoute(
         data = groupDetailViewModel.mockGroupDetail,
         onBackButtonClick = groupDetailViewModel::navigateUp,
         onConfirmedClick = groupDetailViewModel::navigateToConfirmedDetail,
-        onGroupMemberClick = groupDetailViewModel::navigateToGroupMember
+        onGroupMemberClick = groupDetailViewModel::navigateToGroupMember,
+        onProgressClick = groupDetailViewModel::navigateToAppointment
     )
 }
 
@@ -101,7 +108,8 @@ fun GroupDetailScreen(
     data: GroupDetailEntity,
     onBackButtonClick: () -> Unit,
     onConfirmedClick: (Long, Long) -> Unit,
-    onGroupMemberClick: (Long) -> Unit
+    onGroupMemberClick: (Long) -> Unit,
+    onProgressClick: (Long, Long, String) -> Unit
 ) {
     val pagerState = rememberPagerState { tabs.size }
     val context = LocalContext.current
@@ -204,6 +212,7 @@ fun GroupDetailScreen(
                 tabs = tabs,
                 progressEntities = data.progressEntities,
                 confirmedEntities = data.confirmedEntities,
+                onProgressClick = onProgressClick,
                 onConfirmedClick = onConfirmedClick
             )
         }
@@ -217,6 +226,7 @@ fun CustomTabPager(
     tabs: List<String>,
     progressEntities: List<ProgressEntity>,
     confirmedEntities: List<ConfirmedEntity>,
+    onProgressClick: (Long, Long, String) -> Unit,
     onConfirmedClick: (Long, Long) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -255,22 +265,11 @@ fun CustomTabPager(
                     unselectedContentColor = NoostakTheme.colors.gray500,
                     interactionSource = NoRippleInteractionSource
                 ) {
-                    Box {
-                        Text(
-                            modifier = Modifier.padding(2.dp),
-                            text = title,
-                            style = NoostakTheme.typography.b1SemiBold
-                        )
-                        Box(
-                            modifier = Modifier
-                                .showIf(pagerState.currentPage == index)
-                                .align(Alignment.TopEnd)
-                                .offset(x = 8.dp, y = (-2).dp)
-                                .clip(CircleShape)
-                                .size(8.dp)
-                                .background(NoostakTheme.colors.red02)
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.padding(2.dp),
+                        text = title,
+                        style = NoostakTheme.typography.b1SemiBold
+                    )
                 }
             }
         }
@@ -284,7 +283,10 @@ fun CustomTabPager(
                 when (page) {
                     0 -> ProgressScreen(
                         groupId = groupId,
-                        progressEntities = progressEntities
+                        progressEntities = progressEntities,
+                        onItemClicked = { groupId, appointmentsId, appointmentName ->
+                            onProgressClick(groupId, appointmentsId, appointmentName)
+                        }
                     )
 
                     1 -> ConfirmedScreen(
@@ -311,7 +313,8 @@ fun GroupDetailRoutePreview() {
             data = groupDetailViewModel.mockGroupDetail,
             onBackButtonClick = {},
             onConfirmedClick = { _, _ -> },
-            onGroupMemberClick = {}
+            onGroupMemberClick = {},
+            onProgressClick = { _, _, _ -> }
         )
     }
 }

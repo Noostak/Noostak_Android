@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.button.BaseButton
-import com.sopt.core.designsystem.component.topappbar.BaseTopAppBar
+import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.extension.toast
 import com.sopt.core.state.UiState
@@ -109,7 +109,7 @@ fun ExampleScreen(
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
-        BaseTopAppBar(
+        NoostakTopAppBar(
             title = stringResource(R.string.appbar_example_title),
             modifier = Modifier.fillMaxWidth(),
             onBackButtonClick = { onBackButtonClick() }

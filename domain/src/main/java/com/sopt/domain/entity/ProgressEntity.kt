@@ -1,7 +1,7 @@
 package com.sopt.domain.entity
 
 data class ProgressEntity(
-    val appointmentId: Int,
+    val appointmentId: Long,
     val appointmentName: String,
     val date: String,
     val weekday: String,

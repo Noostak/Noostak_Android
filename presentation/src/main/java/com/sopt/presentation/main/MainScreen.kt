@@ -36,11 +36,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.sopt.core.designsystem.component.snackbar.BaseSnackBar
+import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.util.NoRippleInteractionSource
+import com.sopt.presentation.appointment.navigation.appointmentNavGraph
+import com.sopt.presentation.auth.login.navigation.loginNavGraph
+import com.sopt.presentation.auth.signup.checkInvite.navigation.checkInviteNavGraph
+import com.sopt.presentation.auth.signup.inputGroupCode.navigation.inputGroupCodeNavGraph
+import com.sopt.presentation.auth.signup.navigation.signUpNavGraph
 import com.sopt.presentation.calendar.navigation.calendarNavGraph
 import com.sopt.presentation.example.navigation.exampleNavGraph
 import com.sopt.presentation.group.navigation.groupNavGraph
+import com.sopt.presentation.groupCreate.groupCreateSuccess.navigation.groupCreateSuccessNavGraph
+import com.sopt.presentation.groupCreate.navigation.groupCreateNavGraph
 import com.sopt.presentation.groupDetail.navigation.groupDetailNavGraph
 import com.sopt.presentation.mypage.navigation.myPageNavGraph
 import kotlinx.coroutines.launch
@@ -92,11 +99,7 @@ fun MainScreen(
                 hostState = snackBarHostState,
                 modifier = Modifier.padding(bottom = 10.dp)
             ) { snackBarData ->
-                BaseSnackBar {
-                    Text(
-                        text = snackBarData.visuals.message
-                    )
-                }
+                NoostakSnackBar(message = snackBarData.visuals.message)
             }
         },
         bottomBar = {
@@ -133,15 +136,22 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navHostController = navigator.navController
                 )
-                groupNavGraph(
+                groupNavGraph(navHostController = navigator.navController)
+                groupCreateNavGraph(
                     paddingValues = paddingValues,
                     navHostController = navigator.navController
                 )
+                groupCreateSuccessNavGraph(navHostController = navigator.navController)
                 groupDetailNavGraph(navHostController = navigator.navController)
                 myPageNavGraph(
                     paddingValues = paddingValues,
                     navHostController = navigator.navController
                 )
+                loginNavGraph(navHostController = navigator.navController)
+                signUpNavGraph(navHostController = navigator.navController)
+                checkInviteNavGraph(navHostController = navigator.navController)
+                inputGroupCodeNavGraph(navHostController = navigator.navController)
+                appointmentNavGraph(navHostController = navigator.navController)
             }
         }
     }

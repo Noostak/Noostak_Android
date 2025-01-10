@@ -1,22 +1,14 @@
-package com.sopt.presentation.calendar
+package com.sopt.presentation.calendar.viewmodel
 
-import androidx.lifecycle.ViewModel
-import com.sopt.domain.entity.CalendarEntity
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.sopt.core.util.BaseViewModel
+import com.sopt.presentation.calendar.CalendarSideEffect
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class CalendarViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(CalendarEntity())
-    val uiState: StateFlow<CalendarEntity> = _uiState
+@HiltViewModel
+class CalendarViewModel @Inject constructor(): BaseViewModel<CalendarSideEffect>() {
 
-    fun updateTime(newTime: Int) {
-        _uiState.value = _uiState.value.copy(time = newTime)
-    }
-    fun updateAppointName(name: String) {
-        _uiState.value = _uiState.value.copy(appointName = name)
-    }
-
-    fun updateCategory(category: String) {
-        _uiState.value = _uiState.value.copy(category = category)
+    fun navigateToCalendarInfoScreen() {
+        emitSideEffect(CalendarSideEffect.NavigateToInfo)
     }
 }

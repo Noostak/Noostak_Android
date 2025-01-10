@@ -1,9 +1,10 @@
 package com.sopt.domain.entity
 
 data class CalendarEntity(
-    val appointName: String = "",
-    val startDate: String = "",
-    val endDate: String = "",
+    val appointmentName: String = "",
+    val startDate: String? = null,
+    val endDate: String? = null,
+    val dates: List<String>? = null,
     val startTime: String = "",
     val endTime: String = "",
     val category: String = "",

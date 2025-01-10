@@ -13,6 +13,7 @@ val White = Color(0xFFFFFFFF)
 val Red01 = Color(0xFF9C0303)
 val Red02 = Color(0xFFFF6868)
 val Pink = Color(0xFFFFCACA)
+val Yellow = Color(0xFFFBE506)
 
 // Gray Scale
 val Gray50 = Color(0xFFF8F8FA)
@@ -20,6 +21,7 @@ val Gray100 = Color(0xFFEFF1F3)
 val Gray200 = Color(0xFFE9E9EB)
 val Gray500 = Color(0xFFB1B1B1)
 val Gray600 = Color(0xFF999999)
+val Gray650 = Color(0xFF5D5D5D)
 val Gray700 = Color(0xFF808080)
 val Gray800 = Color(0xFF333333)
 val Gray900 = Color(0xFF222222)
@@ -48,11 +50,13 @@ class NoostakColors(
     red01: Color,
     red02: Color,
     pink: Color,
+    yellow: Color,
     gray50: Color,
     gray100: Color,
     gray200: Color,
     gray500: Color,
     gray600: Color,
+    gray650: Color,
     gray700: Color,
     gray800: Color,
     gray900: Color,
@@ -80,6 +84,8 @@ class NoostakColors(
         private set
     var pink by mutableStateOf(pink)
         private set
+    var yellow by mutableStateOf(yellow)
+        private set
     var gray50 by mutableStateOf(gray50)
         private set
     var gray100 by mutableStateOf(gray100)
@@ -89,6 +95,8 @@ class NoostakColors(
     var gray500 by mutableStateOf(gray500)
         private set
     var gray600 by mutableStateOf(gray600)
+        private set
+    var gray650 by mutableStateOf(gray650)
         private set
     var gray700 by mutableStateOf(gray700)
         private set
@@ -129,11 +137,13 @@ class NoostakColors(
         red01 = red01,
         red02 = red02,
         pink = pink,
+        yellow = yellow,
         gray50 = gray50,
         gray100 = gray100,
         gray200 = gray200,
         gray500 = gray500,
         gray600 = gray600,
+        gray650 = gray650,
         gray700 = gray700,
         gray800 = gray800,
         gray900 = gray900,
@@ -158,11 +168,13 @@ class NoostakColors(
         red01 = other.red01
         red02 = other.red02
         pink = other.pink
+        yellow = other.yellow
         gray50 = other.gray50
         gray100 = other.gray100
         gray200 = other.gray200
         gray500 = other.gray500
         gray600 = other.gray600
+        gray650 = other.gray650
         gray700 = other.gray700
         gray800 = other.gray800
         gray900 = other.gray900
@@ -189,11 +201,13 @@ fun noostakColors(
     red01: Color = Red01,
     red02: Color = Red02,
     pink: Color = Pink,
+    yellow: Color = Yellow,
     gray50: Color = Gray50,
     gray100: Color = Gray100,
     gray200: Color = Gray200,
     gray500: Color = Gray500,
     gray600: Color = Gray600,
+    gray650: Color = Gray650,
     gray700: Color = Gray700,
     gray800: Color = Gray800,
     gray900: Color = Gray900,
@@ -216,11 +230,13 @@ fun noostakColors(
     red01 = red01,
     red02 = red02,
     pink = pink,
+    yellow = yellow,
     gray50 = gray50,
     gray100 = gray100,
     gray200 = gray200,
     gray500 = gray500,
     gray600 = gray600,
+    gray650 = gray650,
     gray700 = gray700,
     gray800 = gray800,
     gray900 = gray900,

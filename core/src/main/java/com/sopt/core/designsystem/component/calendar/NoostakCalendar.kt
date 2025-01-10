@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,6 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sopt.core.R
+import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.designsystem.theme.NoostakTheme
 import java.time.LocalDate
 import java.time.YearMonth
@@ -22,7 +24,8 @@ fun NoostakCalendar(
     end: String,
     isSingleDate: Boolean,
     isRangeSelected: (String, String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    days: List<String>
 ) {
     val typography = NoostakTheme.typography
     val colors = NoostakTheme.colors
@@ -53,14 +56,11 @@ fun NoostakCalendar(
 
     Column(modifier = modifier) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_calendar_back),
+                painter = painterResource(id = R.drawable.ic_calendar_left),
                 contentDescription = null,
                 modifier = Modifier
                     .size(16.dp)
@@ -78,11 +78,11 @@ fun NoostakCalendar(
                 text = "$year 년 $month 월",
                 style = typography.b1SemiBold,
                 color = colors.gray900,
-                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(vertical = 13.dp, horizontal = 10.dp)
             )
             Spacer(modifier = Modifier.width(10.dp))
             Image(
-                painter = painterResource(id = R.drawable.ic_calendar_front),
+                painter = painterResource(id = R.drawable.ic_calendar_right),
                 contentDescription = null,
                 modifier = Modifier
                     .size(16.dp)
@@ -96,25 +96,20 @@ fun NoostakCalendar(
                     }
             )
         }
-
-        Spacer(modifier = Modifier.height(30.dp))
-
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().padding(top = 6.dp, bottom = 5.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            listOf("일", "월", "화", "수", "목", "금", "토").forEach { day ->
+            days.forEach { day ->
                 Text(
                     text = day,
                     style = typography.c2SemiBold,
                     textAlign = TextAlign.Center,
                     color = colors.gray600,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f).padding(vertical = 11.dp)
                 )
             }
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
         Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
             var day = 1
             for (week in 0..5) {
@@ -142,9 +137,7 @@ fun NoostakCalendar(
                         val isEnd = dateValue == endDate
 
                         Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(40.dp),
+                            modifier = Modifier.weight(1f),
                             contentAlignment = Alignment.Center
                         ) {
                             when {
@@ -154,7 +147,7 @@ fun NoostakCalendar(
                                             .size(40.dp)
                                             .background(
                                                 color = colors.blue300,
-                                                shape = androidx.compose.foundation.shape.CircleShape
+                                                shape = CircleShape
                                             )
                                     )
                                 }
@@ -192,7 +185,7 @@ fun NoostakCalendar(
                                         .size(40.dp)
                                         .background(
                                             color = colors.blue300,
-                                            shape = androidx.compose.foundation.shape.CircleShape
+                                            shape = CircleShape
                                         )
                                 )
                             }
@@ -202,7 +195,7 @@ fun NoostakCalendar(
                                 style = typography.c3Regular,
                                 textAlign = TextAlign.Center,
                                 color = colors.gray900,
-                                modifier = Modifier.clickable(enabled = dateText.isNotEmpty()) {
+                                modifier = Modifier.padding(vertical = 11.dp).clickable(enabled = dateText.isNotEmpty()) {
                                     if (isSingleDate) {
                                         if (dateValue in selectedDates) {
                                             selectedDates = selectedDates - dateValue
@@ -252,24 +245,15 @@ fun NoostakCalendar(
         }
 
         if (showMessage) {
-            Spacer(modifier = Modifier.height(1.dp))
             Box(
-                modifier = Modifier
-                    .width(195.dp)
-                    .height(42.dp)
-                    .align(Alignment.CenterHorizontally)
-                    .background(
-                        color = colors.pink,
-                        shape = androidx.compose.foundation.shape.RoundedCornerShape(30.dp)
-                    )
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "최대 7일까지 선택할 수 있어요",
-                    style = typography.c2SemiBold,
-                    color = colors.red01,
-                    textAlign = TextAlign.Center
+            ){
+                NoostakSnackBar(
+                    message = "최대 7일까지 선택할 수 있어요",
+                    textStyle = typography.c2SemiBold,
+                    textColor = colors.red01,
+                    backgroundColor = colors.pink
                 )
             }
         }

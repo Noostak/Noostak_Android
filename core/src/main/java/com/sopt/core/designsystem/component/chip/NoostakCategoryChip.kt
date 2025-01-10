@@ -3,7 +3,6 @@ package com.sopt.core.designsystem.component.chip
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.unit.dp
 import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakTheme
 

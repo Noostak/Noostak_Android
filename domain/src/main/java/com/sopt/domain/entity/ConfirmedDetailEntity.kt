@@ -1,7 +1,7 @@
 package com.sopt.domain.entity
 
 data class ConfirmedDetailEntity(
-    val appointName: String,
+    val appointmentName: String,
     val date: String,
     val weekday: String,
     val startTime: String,

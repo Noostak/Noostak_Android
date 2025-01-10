@@ -47,6 +47,9 @@ encrypted-datastore = "1.7.21-1.0.8-1.1.0-alpha01"
 coil = "2.7.0"
 lottie-compose = "6.4.1"
 
+# Landscapist
+landscapist = "2.3.6"
+
 # Kakao
 kakao = "2.20.1"
 
@@ -142,6 +145,12 @@ viewpager-indicator = { group = "com.tbuonomo", name = "dotsindicator", version.
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" } # AndroidX Activity 라이브러리
 process-phoenix = { group = "com.jakewharton", name = "process-phoenix", version.ref = "phoenix" } # Process Phoenix 라이브러리
 
+# landscapist
+landscapist-bom = { group = "com.github.skydoves", name = "landscapist-bom", version.ref = "landscapist" }
+landscapist-glide = { group = "com.github.skydoves", name = "landscapist-glide" }
+landscapist-placeholder = { group = "com.github.skydoves", name = "landscapist-placeholder" }
+landscapist-animation = { group = "com.github.skydoves", name = "landscapist-animation" }
+
 # Kakao
 kakao-all = { group = "com.kakao.sdk", name = "v2-all", version.ref = "kakao" } # Kakao SDK 라이브러리
 kakao-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao" } # Kakao 로그인 라이브러리
@@ -174,3 +183,4 @@ material = { group = "com.google.android.material", name = "material", version.r
 [bundles]
 retrofit = ["retrofit-core", "retrofit-kotlin-serialization", "okhttp-logging"]
 datastore = ["androidx-datastore-core", "androidx-datastore-preferences", "encrypted-datastore-preference-ksp", "encrypted-datastore-preference-ksp-annotations", "encrypted-datastore-preference-security"]
+landscapist-glide = ["landscapist-bom", "landscapist-glide", "landscapist-placeholder", "landscapist-animation"]

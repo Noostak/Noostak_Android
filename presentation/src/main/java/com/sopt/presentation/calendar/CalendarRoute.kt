@@ -4,37 +4,48 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.sopt.presentation.calendar.viewmodel.CalendarViewModel
 
 @Composable
 fun CalendarRoute(
     paddingValues: PaddingValues,
-    navigateToInfoScreen: () -> Unit
+    navigateToInfoScreen: () -> Unit,
+    calendarViewModel: CalendarViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(key1 = calendarViewModel.sideEffects) {
+        calendarViewModel.sideEffects.collect { sideEffect ->
+            when (sideEffect) {
+                CalendarSideEffect.NavigateToInfo -> navigateToInfoScreen()
+            }
+        }
+    }
+
     CalendarScreen(
         paddingValues = paddingValues,
-        onNavigateToInfoScreen = navigateToInfoScreen
+        onNavigateToCalendarInfoScreen = calendarViewModel::navigateToCalendarInfoScreen,
     )
+
 }
+
 
 @Composable
 fun CalendarScreen(
     paddingValues: PaddingValues = PaddingValues(),
-    onNavigateToInfoScreen: () -> Unit
+    onNavigateToCalendarInfoScreen: () -> Unit,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
+        modifier = androidx.compose.ui.Modifier
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Button(onClick = { onNavigateToInfoScreen() }) {
+        Button(onClick = { onNavigateToCalendarInfoScreen() }) {
             Text("InfoScreen ㄱㄱ")
         }
     }
