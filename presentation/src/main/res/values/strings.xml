@@ -98,4 +98,16 @@
     <string name="btn_group_create_success_code_send">그룹 코드 보내기</string>
     <string name="sb_group_create_success_code_copy">그룹 코드가 복사되었습니다</string>
 
+    <!-- 약속 만들기_약속 등록 확인 -->
+    <string name="appbar_appointment_submit">약속 만들기</string>
+    <string name="header_appointment_submit">이대로 약속을 등록할까요?</string>
+    <string name="subheader_appointment_submit">약속 정보 확인해주세요</string>
+    <string name="btn_appointment_submit">등록하기</string>
+    <string name="text_appointment_submit_info">약속 정보</string>
+    <string name="text_appointment_submit_name">약속 이름</string>
+    <string name="text_appointment_submit_time">약속 기한</string>
+    <string name="text_appointment_submit_category">약속 카테고리</string>
+    <string name="text_appointment_submit_duration">소요시간</string>
+    <string name="text_appointment_submit_hour">%1$s시간</string>
+
 </resources>
