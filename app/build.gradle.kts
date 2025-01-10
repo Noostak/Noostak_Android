@@ -1,4 +1,3 @@
-
 import java.util.Properties
 
 plugins {
@@ -30,6 +29,8 @@ android {
             useSupportLibrary = true
         }
         buildConfigField("String", "BASE_URL", properties["base.url"].toString())
+        buildConfigField("String", "KAKAO_API_KEY", properties["KAKAO_API_KEY"].toString())
+        manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = properties["KAKAO_NATIVE_APP_KEY"].toString()
     }
 
     buildTypes {
