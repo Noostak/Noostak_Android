@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -82,7 +83,7 @@ fun CalendarPeriodScreen(
             .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding)),
         topBar = {
             NoostakTopAppBar(
-                title = "약속 만들기",
+                title = stringResource(R.string.text_calendar_appointment),
                 isIconVisible = false
             )
         }
@@ -96,7 +97,7 @@ fun CalendarPeriodScreen(
 
             NoostakProgressBar(progressBar = listOf(false, true, false))
 
-            NoostakHeaderText(text = "약속을 생성할 기간을\n선택해주세요")
+            NoostakHeaderText(text = stringResource(R.string.text_calendar_appointment_choose))
 
             Row(
                 modifier = Modifier
@@ -106,7 +107,7 @@ fun CalendarPeriodScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "하루씩 설정하기",
+                    text = stringResource(R.string.text_calendar_appointment_one_day),
                     style = typography.b2Regular,
                     textAlign = TextAlign.Start,
                     color = colors.gray900,
@@ -148,7 +149,7 @@ fun CalendarPeriodScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             NoostakBottomButton(
-                text = "다음",
+                text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {},
                 isEnabled = startDate.isNotEmpty() && endDate.isNotEmpty(),
                 deactivateColor = NoostakTheme.colors.gray500,

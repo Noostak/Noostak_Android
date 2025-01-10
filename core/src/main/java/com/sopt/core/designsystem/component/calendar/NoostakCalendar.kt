@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sopt.core.R
@@ -250,7 +251,7 @@ fun NoostakCalendar(
                 contentAlignment = Alignment.Center
             ){
                 NoostakSnackBar(
-                    message = "최대 7일까지 선택할 수 있어요",
+                    message = stringResource(R.string.text_noostak_calendar_7days),
                     textStyle = typography.c2SemiBold,
                     textColor = colors.red01,
                     backgroundColor = colors.pink

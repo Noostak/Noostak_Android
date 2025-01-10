@@ -26,4 +26,6 @@
     <!-- Profile Image Picker -->
     <string name="image_profile_image_picker_description">Add Profile Image By Camera Button</string>
 
+    <!-- Noostak Calendar -->
+    <string name="text_noostak_calendar_7days">최대 7일까지 선택할 수 있어요</string>
 </resources>

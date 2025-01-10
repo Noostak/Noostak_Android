@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -70,7 +71,7 @@ fun CalendarInfoScreen(
             .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding)),
         topBar = {
             NoostakTopAppBar(
-                title = "약속 만들기",
+                title = stringResource(R.string.text_calendar_appointment),
                 isIconVisible = false
             )
         }
@@ -84,9 +85,9 @@ fun CalendarInfoScreen(
 
             NoostakProgressBar(progressBar = listOf(true, false, false))
 
-            NoostakHeaderText(text = "약속 정보를 입력해주세요")
+            NoostakHeaderText(text = stringResource(R.string.text_calendar_appointment_write))
 
-            NoostakSubHeaderText("약속 이름", Modifier.padding(top = 22.dp, bottom = 10.dp))
+            NoostakSubHeaderText(stringResource(R.string.text_calendar_appointment_name), Modifier.padding(top = 22.dp, bottom = 10.dp))
 
             NoostakTextField(
                 textFieldType = TextFieldType.CALENDAR,
@@ -102,7 +103,7 @@ fun CalendarInfoScreen(
                 maxLength = 20
             )
 
-            NoostakSubHeaderText("약속 카테고리", Modifier.padding(top = 32.dp))
+            NoostakSubHeaderText(stringResource(R.string.text_calendar_appointment_category), Modifier.padding(top = 32.dp))
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(11.dp),
@@ -131,7 +132,7 @@ fun CalendarInfoScreen(
                 }
             }
 
-            NoostakSubHeaderText("소요시간", Modifier.padding(top = 41.dp))
+            NoostakSubHeaderText(stringResource(R.string.text_calendar_appointment_time), Modifier.padding(top = 41.dp))
 
             Box(
                 modifier = Modifier
@@ -167,7 +168,7 @@ fun CalendarInfoScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             NoostakBottomButton(
-                text = "다음",
+                text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
                     val time = duration.toIntOrNull() ?: 0
                     onButtonClick(appointmentName, selectedCategory, time)
