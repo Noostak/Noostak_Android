@@ -29,6 +29,9 @@
     <string name="hint_signup_name">이름을 입력해주세요</string>
     <string name="tv_signup_count">%1$d / %2$d</string>
     <string name="toast_permission_gallery">갤러리 권한이 필요합니다.</string>
+    <string name="toast_kakao_login_success">카카오 로그인 성공</string>
+    <string name="toast_kakao_login_failed">카카오 로그인 실패: %s</string>
+    <string name="toast_login_cancelled">로그인이 취소되었습니다.</string>
 
     <!-- 그룹 초대 입력 -->
     <string name="iv_invite_description">그룹 초대 설명 이미지</string>
