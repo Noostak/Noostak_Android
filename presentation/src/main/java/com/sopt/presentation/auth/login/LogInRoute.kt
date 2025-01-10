@@ -13,6 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -21,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.toast
 import com.sopt.presentation.R
 import com.sopt.presentation.auth.component.LoginButton
 
@@ -30,17 +32,20 @@ fun LoginRoute(
     navigateToSignUp: (String) -> Unit,
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     LaunchedEffect(loginViewModel.sideEffects) {
         loginViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
                 is LoginSideEffect.NavigateToHome -> navigateToHome()
                 is LoginSideEffect.NavigateSignUp -> navigateToSignUp(sideEffect.authId)
+                is LoginSideEffect.ShowToast -> context.toast(sideEffect.message)
             }
         }
     }
 
     LoginScreen(
-        onKakaoLoginClick = loginViewModel::kakaoLogin,
+        onKakaoLoginClick = { loginViewModel.kakaoLogin(context) },
         onGoogleLoginClick = loginViewModel::googleLogin
     )
 }
