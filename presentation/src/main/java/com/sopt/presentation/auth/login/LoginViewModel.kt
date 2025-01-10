@@ -9,8 +9,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor() : BaseViewModel<LoginSideEffect>() {
 
-    private val _authId = MutableStateFlow<String?>(null)
-    val authId: StateFlow<String?> = _authId
+    private val _authId = MutableStateFlow("")
+    val authId: StateFlow<String> = _authId
 
     fun kakaoLogin() {
         // TODO: 카카오 로그인
@@ -20,7 +20,7 @@ class LoginViewModel @Inject constructor() : BaseViewModel<LoginSideEffect>() {
     fun googleLogin() {
         // TODO: 구글 로그인
         _authId.value = "google_access_token"
-        navigateToSignup(_authId.value.orEmpty())
+        navigateToSignup(_authId.value)
     }
 
     private fun navigateToSignup(authId: String) {
