@@ -1,8 +1,11 @@
 package com.sopt.presentation.auth.login
 
 import android.content.Context
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.auth.api.identity.SignInCredential
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -13,10 +16,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
+import javax.inject.Named
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : BaseViewModel<LoginSideEffect>() {
-
+class LoginViewModel @Inject constructor(
+    @Named("GoogleClientId") private val googleClientId: String
+) : BaseViewModel<LoginSideEffect>() {
     private val _authId = MutableStateFlow("")
     val authId: StateFlow<String> = _authId
     private lateinit var oneTapClient: SignInClient
@@ -60,10 +65,40 @@ class LoginViewModel @Inject constructor() : BaseViewModel<LoginSideEffect>() {
         }
     }
 
-    fun googleLogin() {
-        // TODO: 구글 로그인
-        _authId.value = "google_access_token"
-        navigateToSignup(_authId.value)
+    // Google Login
+    fun googleLogin(launcher: ActivityResultLauncher<IntentSenderRequest>) {
+        val signInRequest = com.google.android.gms.auth.api.identity.BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    .setServerClientId(googleClientId)
+                    .setFilterByAuthorizedAccounts(false)
+                    .build()
+            )
+            .build()
+
+        oneTapClient.beginSignIn(signInRequest)
+            .addOnSuccessListener { result ->
+                launcher.launch(IntentSenderRequest.Builder(result.pendingIntent).build())
+            }
+            .addOnFailureListener { exception ->
+                emitSideEffect(
+                    LoginSideEffect.ShowToast(
+                        R.string.toast_google_login_failed,
+                        exception.localizedMessage
+                    )
+                )
+            }
+    }
+
+    fun handleGoogleLoginResult(credential: SignInCredential) {
+        if (!credential.googleIdToken.isNullOrEmpty()) {
+            _authId.value = credential.googleIdToken.toString()
+            emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_google_login_success))
+            navigateToSignup(_authId.value)
+        } else {
+            emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_google_login_failed))
+        }
     }
 
     private fun navigateToSignup(authId: String) {
