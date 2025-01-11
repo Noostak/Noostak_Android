@@ -3,6 +3,7 @@ package com.sopt.presentation.auth.login
 import android.content.Context
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
+import androidx.annotation.StringRes
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.identity.SignInCredential
@@ -45,13 +46,10 @@ class LoginViewModel @Inject constructor(
 
     private fun handleKakaoLoginResult(token: OAuthToken?, error: Throwable?) {
         when {
-            error != null -> {
-                handleKakaoError(error)
-            }
-
+            error != null -> handleKakaoError(error)
             token != null -> {
                 _authId.value = token.accessToken
-                emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_kakao_login_success))
+                showToast(R.string.toast_kakao_login_success)
                 navigateToSignup(_authId.value)
             }
         }
@@ -59,9 +57,9 @@ class LoginViewModel @Inject constructor(
 
     private fun handleKakaoError(error: Throwable) {
         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_login_cancelled))
+            showToast(R.string.toast_login_cancelled)
         } else {
-            emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_kakao_login_failed))
+            showToast(R.string.toast_kakao_login_failed, error.localizedMessage)
         }
     }
 
@@ -82,22 +80,17 @@ class LoginViewModel @Inject constructor(
                 launcher.launch(IntentSenderRequest.Builder(result.pendingIntent).build())
             }
             .addOnFailureListener { exception ->
-                emitSideEffect(
-                    LoginSideEffect.ShowToast(
-                        R.string.toast_google_login_failed,
-                        exception.localizedMessage
-                    )
-                )
+                showToast(R.string.toast_google_login_failed, exception.localizedMessage)
             }
     }
 
     fun handleGoogleLoginResult(credential: SignInCredential) {
         if (!credential.googleIdToken.isNullOrEmpty()) {
             _authId.value = credential.googleIdToken.toString()
-            emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_google_login_success))
+            showToast(R.string.toast_google_login_success)
             navigateToSignup(_authId.value)
         } else {
-            emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_google_login_failed))
+            showToast(R.string.toast_google_login_failed)
         }
     }
 
@@ -107,5 +100,14 @@ class LoginViewModel @Inject constructor(
 
     private fun navigateToHome() {
         emitSideEffect(LoginSideEffect.NavigateToHome)
+    }
+
+    private fun showToast(@StringRes messageResId: Int, vararg formatArgs: String) {
+        emitSideEffect(
+            LoginSideEffect.ShowToast(
+                message = messageResId,
+                args = formatArgs.joinToString(separator = ", ")
+            )
+        )
     }
 }
