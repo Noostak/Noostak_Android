@@ -34,7 +34,7 @@ fun AppointmentSubmitCompleteRoute(
     groupId: Long,
     appointmentName: String,
     appointmentDate: String,
-    appointmentTime: String?,
+    appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int,
     navigateToGroupDetail: (Long) -> Unit,
@@ -66,7 +66,7 @@ fun AppointmentSubmitCompleteScreen(
     groupId: Long,
     appointmentName: String,
     appointmentDate: String,
-    appointmentTime: String?,
+    appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int,
     onConfirmButtonClick: (Long) -> Unit
@@ -110,7 +110,7 @@ fun AppointmentSubmitCompleteScreen(
 fun SubmittedAppointmentInfoBox(
     appointmentName: String,
     appointmentDate: String,
-    appointmentTime: String?,
+    appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int
 ) {

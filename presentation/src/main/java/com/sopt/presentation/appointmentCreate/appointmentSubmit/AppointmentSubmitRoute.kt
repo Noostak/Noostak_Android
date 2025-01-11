@@ -37,7 +37,7 @@ fun AppointmentSubmitRoute(
     groupId: Long,
     appointmentName: String,
     appointmentDate: String,
-    appointmentTime: String?,
+    appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int,
     navigateUp: () -> Unit,
@@ -142,7 +142,7 @@ fun AppointmentSubmitScreen(
 fun AppointmentInfoBox(
     appointmentName: String,
     appointmentDate: String,
-    appointmentTime: String?,
+    appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int
 ) {
