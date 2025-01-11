@@ -111,4 +111,8 @@ dependencies {
     // Kakao
     implementation(libs.kakao.all)
     implementation(libs.kakao.user)
+
+    // Google
+    implementation(libs.play.services.auth)
+    implementation(libs.google.id)
 }
