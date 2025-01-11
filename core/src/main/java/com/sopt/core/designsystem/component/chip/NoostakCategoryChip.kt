@@ -15,7 +15,7 @@ fun NoostakCategoryChip(
         text = text,
         textStyle = NoostakTheme.typography.c2SemiBold,
         textColor = NoostakTheme.colors.white,
-        backgroundColor = when(text) {
+        backgroundColor = when (text) {
             "중요" -> NoostakTheme.colors.orange
             "일정" -> NoostakTheme.colors.blue
             "취미" -> NoostakTheme.colors.purple

@@ -1,4 +1,4 @@
-package com.sopt.presentation.appointment.appointmentSubmit
+package com.sopt.presentation.appointmentCreate.appointmentSubmit
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -23,12 +24,12 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.extension.showIf
 import com.sopt.presentation.R
 
 @Composable
@@ -40,28 +41,48 @@ fun AppointmentSubmitRoute(
     appointmentCategory: String,
     appointmentDuration: Int,
     navigateUp: () -> Unit,
-    navigateToAppointmentSubmitConfirm: () -> Unit
+    navigateToAppointmentSubmitConfirm: (Long, String, String, String?, String, Int) -> Unit,
+    appointmentSubmitViewModel: AppointmentSubmitViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(key1 = appointmentSubmitViewModel.sideEffects) {
+        appointmentSubmitViewModel.sideEffects.collect { sideEffect ->
+            when (sideEffect) {
+                is AppointmentSubmitSideEffect.NavigateUp -> navigateUp()
+                is AppointmentSubmitSideEffect.NavigateToAppointmentSubmitConfirm -> {
+                    navigateToAppointmentSubmitConfirm(
+                        sideEffect.groupId,
+                        sideEffect.appointmentName,
+                        sideEffect.appointmentDate,
+                        sideEffect.appointmentTime,
+                        sideEffect.appointmentCategory,
+                        sideEffect.appointmentDuration
+                    )
+                }
+            }
+        }
+    }
     AppointmentSubmitScreen(
+        groupId = groupId,
         appointmentName = appointmentName,
         appointmentDate = appointmentDate,
         appointmentTime = appointmentTime,
         appointmentCategory = appointmentCategory,
         appointmentDuration = appointmentDuration,
-        onBackButtonClick = navigateUp,
-        onConfirmButtonClick = navigateToAppointmentSubmitConfirm
+        onBackButtonClick = appointmentSubmitViewModel::navigateUp,
+        onConfirmButtonClick = appointmentSubmitViewModel::navigateToAppointmentSubmitConfirm
     )
 }
 
 @Composable
 fun AppointmentSubmitScreen(
+    groupId: Long,
     appointmentName: String,
     appointmentDate: String,
-    appointmentTime: String?,
+    appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int,
     onBackButtonClick: () -> Unit,
-    onConfirmButtonClick: () -> Unit
+    onConfirmButtonClick: (Long, String, String, String?, String, Int) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -102,7 +123,16 @@ fun AppointmentSubmitScreen(
                 text = stringResource(R.string.btn_appointment_submit),
                 isEnabled = true,
                 activateColor = NoostakTheme.colors.gray900,
-                onButtonClick = onConfirmButtonClick
+                onButtonClick = {
+                    onConfirmButtonClick(
+                        groupId,
+                        appointmentName,
+                        appointmentDate,
+                        appointmentTime,
+                        appointmentCategory,
+                        appointmentDuration
+                    )
+                }
             )
         }
     }
@@ -215,13 +245,14 @@ fun AppointmentInfoRow(
 fun PreviewAppointmentSubmitScreen() {
     NoostakAndroidTheme {
         AppointmentSubmitScreen(
+            groupId = 1,
             appointmentName = "누스탁 3차 회의",
             appointmentDate = "9/12 ~ 9/17",
             appointmentTime = "10:00 ~ 18:00",
             appointmentCategory = "중요",
             appointmentDuration = 2,
             onBackButtonClick = {},
-            onConfirmButtonClick = {}
+            onConfirmButtonClick = { _, _, _, _, _, _ -> }
         )
     }
 }

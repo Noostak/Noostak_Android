@@ -1,4 +1,4 @@
-package com.sopt.presentation.appointment.appointmentSubmit
+package com.sopt.presentation.appointmentCreate.appointmentSubmitComplete
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -21,37 +22,54 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
+import com.sopt.presentation.appointmentCreate.appointmentSubmit.AppointmentInfoRow
 
 @Composable
 fun AppointmentSubmitCompleteRoute(
-    appointmentName: String,
-    appointmentDate: String,
-    appointmentTime: String?,
-    appointmentCategory: String,
-    appointmentDuration: Int
-) {
-    AppointmentSubmitCompleteScreen(
-        appointmentName = appointmentName,
-        appointmentDate = appointmentDate,
-        appointmentTime = appointmentTime,
-        appointmentCategory = appointmentCategory,
-        appointmentDuration = appointmentDuration,
-        onConfirmButtonClick = {  }
-    )
-}
-
-@Composable
-fun AppointmentSubmitCompleteScreen(
+    groupId: Long,
     appointmentName: String,
     appointmentDate: String,
     appointmentTime: String?,
     appointmentCategory: String,
     appointmentDuration: Int,
-    onConfirmButtonClick: () -> Unit
+    navigateToGroupDetail: (Long) -> Unit,
+    appointmentSubmitCompleteViewModel: AppointmentSubmitCompleteViewModel = hiltViewModel()
+) {
+    LaunchedEffect(key1 = appointmentSubmitCompleteViewModel.sideEffects) {
+        appointmentSubmitCompleteViewModel.sideEffects.collect { sideEffect ->
+            when (sideEffect) {
+                is AppointmentSubmitCompleteSideEffect.NavigateToGroupDetail -> {
+                    navigateToGroupDetail(sideEffect.groupId)
+                }
+            }
+        }
+    }
+
+    AppointmentSubmitCompleteScreen(
+        groupId = groupId,
+        appointmentName = appointmentName,
+        appointmentDate = appointmentDate,
+        appointmentTime = appointmentTime,
+        appointmentCategory = appointmentCategory,
+        appointmentDuration = appointmentDuration,
+        onConfirmButtonClick = appointmentSubmitCompleteViewModel::navigateToGroupDetail
+    )
+}
+
+@Composable
+fun AppointmentSubmitCompleteScreen(
+    groupId: Long,
+    appointmentName: String,
+    appointmentDate: String,
+    appointmentTime: String?,
+    appointmentCategory: String,
+    appointmentDuration: Int,
+    onConfirmButtonClick: (Long) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -83,7 +101,7 @@ fun AppointmentSubmitCompleteScreen(
             text = stringResource(R.string.btn_appointment_submit_complete),
             isEnabled = true,
             activateColor = NoostakTheme.colors.gray900,
-            onButtonClick = onConfirmButtonClick
+            onButtonClick = { onConfirmButtonClick(groupId) }
         )
     }
 }
@@ -137,6 +155,7 @@ fun SubmittedAppointmentInfoBox(
 fun PreviewAppointmentSubmitCompleteRoute() {
     NoostakAndroidTheme {
         AppointmentSubmitCompleteScreen(
+            groupId = 1,
             appointmentName = "누스탁 3차 회의",
             appointmentDate = "09/27 ~ 09/31",
             appointmentTime = "10:00 ~ 11:00",
