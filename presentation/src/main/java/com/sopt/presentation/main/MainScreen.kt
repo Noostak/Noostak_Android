@@ -7,7 +7,9 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -37,6 +39,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
+import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.presentation.appointment.navigation.appointmentNavGraph
 import com.sopt.presentation.appointmentCreate.navigation.appointmentCreateNavGraph
@@ -169,36 +172,43 @@ private fun MainBottomBar(
     AnimatedVisibility(
         visible = isVisible
     ) {
-        NavigationBar(
-            containerColor = White
-        ) {
-            tabs.forEach { itemType ->
-                NavigationBarItem(
-                    interactionSource = NoRippleInteractionSource,
-                    selected = currentTab == itemType,
-                    onClick = {
-                        onTabSelected(itemType)
-                    },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = (itemType.icon)),
-                            contentDescription = stringResource(id = itemType.contentDescription)
+        Column {
+            HorizontalDivider(
+                modifier = Modifier.fillMaxWidth(),
+                thickness = 1.dp,
+                color = NoostakTheme.colors.gray200
+            )
+            NavigationBar(
+                containerColor = White
+            ) {
+                tabs.forEach { itemType ->
+                    NavigationBarItem(
+                        interactionSource = NoRippleInteractionSource,
+                        selected = currentTab == itemType,
+                        onClick = {
+                            onTabSelected(itemType)
+                        },
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = (itemType.icon)),
+                                contentDescription = stringResource(id = itemType.contentDescription)
+                            )
+                        },
+                        label = {
+                            Text(
+                                text = stringResource(id = itemType.contentDescription),
+                                fontSize = 9.sp
+                            )
+                        },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedIconColor = Color.Black,
+                            selectedTextColor = Color.Black,
+                            unselectedIconColor = Color.Gray,
+                            unselectedTextColor = Color.Gray,
+                            indicatorColor = White
                         )
-                    },
-                    label = {
-                        Text(
-                            text = stringResource(id = itemType.contentDescription),
-                            fontSize = 9.sp
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = Color.Black,
-                        selectedTextColor = Color.Black,
-                        unselectedIconColor = Color.Gray,
-                        unselectedTextColor = Color.Gray,
-                        indicatorColor = White
                     )
-                )
+                }
             }
         }
     }
