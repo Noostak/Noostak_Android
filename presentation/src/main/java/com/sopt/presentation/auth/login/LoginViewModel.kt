@@ -18,45 +18,38 @@ class LoginViewModel @Inject constructor() : BaseViewModel<LoginSideEffect>() {
     private val _authId = MutableStateFlow("")
     val authId: StateFlow<String> = _authId
 
+    // Kakao Login
     fun kakaoLogin(context: Context) {
+        val loginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
+            handleKakaoLoginResult(token, error)
+        }
+
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-            UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
-                handleKakaoLoginResult(token, error) {
-                    UserApiClient.instance.loginWithKakaoAccount(
-                        context,
-                        callback = ::handleKakaoLoginResult
-                    )
-                }
-            }
+            UserApiClient.instance.loginWithKakaoTalk(context, callback = loginCallback)
         } else {
-            UserApiClient.instance.loginWithKakaoAccount(
-                context,
-                callback = ::handleKakaoLoginResult
-            )
+            UserApiClient.instance.loginWithKakaoAccount(context, callback = loginCallback)
         }
     }
 
-    private fun handleKakaoLoginResult(
-        token: OAuthToken?,
-        error: Throwable?,
-        fallback: (() -> Unit)? = null
-    ) {
-        if (error != null) {
-            if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-                emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_login_cancelled))
-            } else {
-                emitSideEffect(
-                    LoginSideEffect.ShowToast(
-                        R.string.toast_kakao_login_failed,
-                        error.localizedMessage
-                    )
-                )
-                fallback?.invoke()
+    private fun handleKakaoLoginResult(token: OAuthToken?, error: Throwable?) {
+        when {
+            error != null -> {
+                handleKakaoError(error)
             }
-        } else if (token != null) {
-            _authId.value = token.accessToken
-            emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_kakao_login_success))
-            navigateToSignup(_authId.value)
+
+            token != null -> {
+                _authId.value = token.accessToken
+                emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_kakao_login_success))
+                navigateToSignup(_authId.value)
+            }
+        }
+    }
+
+    private fun handleKakaoError(error: Throwable) {
+        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+            emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_login_cancelled))
+        } else {
+            emitSideEffect(LoginSideEffect.ShowToast(R.string.toast_kakao_login_failed))
         }
     }
 
