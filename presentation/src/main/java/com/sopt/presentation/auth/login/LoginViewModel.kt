@@ -1,6 +1,8 @@
 package com.sopt.presentation.auth.login
 
 import android.content.Context
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -17,6 +19,11 @@ class LoginViewModel @Inject constructor() : BaseViewModel<LoginSideEffect>() {
 
     private val _authId = MutableStateFlow("")
     val authId: StateFlow<String> = _authId
+    private lateinit var oneTapClient: SignInClient
+
+    fun initializeGoogleSignIn(context: Context) {
+        oneTapClient = Identity.getSignInClient(context)
+    }
 
     // Kakao Login
     fun kakaoLogin(context: Context) {
