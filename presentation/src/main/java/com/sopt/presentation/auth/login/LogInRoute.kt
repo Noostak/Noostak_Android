@@ -1,5 +1,8 @@
 package com.sopt.presentation.auth.login
 
+import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -20,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.android.gms.auth.api.identity.Identity
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.toast
@@ -34,6 +38,22 @@ fun LoginRoute(
 ) {
     val context = LocalContext.current
 
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK && result.data != null) {
+            val credential = Identity.getSignInClient(context)
+                .getSignInCredentialFromIntent(result.data)
+            loginViewModel.handleGoogleLoginResult(credential)
+        } else {
+            context.toast(R.string.toast_login_cancelled)
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        loginViewModel.initializeGoogleSignIn(context)
+    }
+
     LaunchedEffect(loginViewModel.sideEffects) {
         loginViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -46,7 +66,7 @@ fun LoginRoute(
 
     LoginScreen(
         onKakaoLoginClick = { loginViewModel.kakaoLogin(context) },
-        onGoogleLoginClick = loginViewModel::googleLogin
+        onGoogleLoginClick = { loginViewModel.googleLogin(launcher) }
     )
 }
 
