@@ -34,32 +34,17 @@ class LoginViewModel @Inject constructor(
     // Kakao Login
     fun kakaoLogin(context: Context) {
         val loginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-            handleKakaoLoginResult(token, error)
+            if (error != null) {
+                handleError(error, R.string.toast_kakao_login_failed)
+            } else if (token != null) {
+                handleSuccess(token.accessToken, R.string.toast_kakao_login_success)
+            }
         }
 
         if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             UserApiClient.instance.loginWithKakaoTalk(context, callback = loginCallback)
         } else {
             UserApiClient.instance.loginWithKakaoAccount(context, callback = loginCallback)
-        }
-    }
-
-    private fun handleKakaoLoginResult(token: OAuthToken?, error: Throwable?) {
-        when {
-            error != null -> handleKakaoError(error)
-            token != null -> {
-                _authId.value = token.accessToken
-                showToast(R.string.toast_kakao_login_success)
-                navigateToSignup(_authId.value)
-            }
-        }
-    }
-
-    private fun handleKakaoError(error: Throwable) {
-        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            showToast(R.string.toast_login_cancelled)
-        } else {
-            showToast(R.string.toast_kakao_login_failed, error.localizedMessage)
         }
     }
 
@@ -80,17 +65,29 @@ class LoginViewModel @Inject constructor(
                 launcher.launch(IntentSenderRequest.Builder(result.pendingIntent).build())
             }
             .addOnFailureListener { exception ->
-                showToast(R.string.toast_google_login_failed, exception.localizedMessage)
+                handleError(exception, R.string.toast_google_login_failed)
             }
     }
 
     fun handleGoogleLoginResult(credential: SignInCredential) {
         if (!credential.googleIdToken.isNullOrEmpty()) {
-            _authId.value = credential.googleIdToken.toString()
-            showToast(R.string.toast_google_login_success)
-            navigateToSignup(_authId.value)
+            handleSuccess(credential.googleIdToken.toString(), R.string.toast_google_login_success)
         } else {
             showToast(R.string.toast_google_login_failed)
+        }
+    }
+
+    private fun handleSuccess(authId: String, successMessageResId: Int) {
+        _authId.value = authId
+        showToast(successMessageResId)
+        navigateToSignup(authId)
+    }
+
+    private fun handleError(error: Throwable, @StringRes errorMessageResId: Int) {
+        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+            showToast(R.string.toast_login_cancelled)
+        } else {
+            showToast(errorMessageResId, error.localizedMessage.orEmpty())
         }
     }
 
