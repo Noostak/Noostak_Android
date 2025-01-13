@@ -80,6 +80,7 @@
     <string name="text_appointment_priority">Best%1$s</string>
     <string name="tv_appointment_availableMembersCount">%1$s명</string>
     <string name="tv_appointment_totalMembersCount">" / %1$s명"</string>
+    <string name="text_appointment_recommendations_blank">아직 추천 가능한 시간대가 없어요 :)</string>
 
     <!-- Group -->
     <string name="fab_group_create">그룹추가</string>

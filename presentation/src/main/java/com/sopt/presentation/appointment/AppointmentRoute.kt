@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
@@ -32,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -120,6 +120,7 @@ fun AppointmentScreen(
 
     Scaffold(
         modifier = Modifier
+            .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding(),
         topBar = {
@@ -185,20 +186,33 @@ fun AppointmentScreen(
                     )
                 }
             }
-            LazyRow(
-                modifier = Modifier.padding(bottom = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                itemsIndexed(recommendations.recommendationPriority) { index, recommendationPriority ->
-                    val option = recommendationPriority.options.firstOrNull()
-                    RecommendationHeaderItem(
-                        availableMembersCount = option?.availableMemberCount ?: 0,
-                        totalMembersCount = option?.totalMemberCount ?: 0,
-                        selectedItemIndex = selectedItemIndex,
-                        onHeaderItemClick = { selectedItemIndex = it },
-                        priority = index
-                    )
+
+            if (recommendations.recommendationPriority.isEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 27.dp, bottom = 41.dp),
+                    text = stringResource(R.string.text_appointment_recommendations_blank),
+                    color = NoostakTheme.colors.gray900,
+                    style = NoostakTheme.typography.b2Regular,
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                LazyRow(
+                    modifier = Modifier.padding(bottom = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    itemsIndexed(recommendations.recommendationPriority) { index, recommendationPriority ->
+                        val option = recommendationPriority.options.firstOrNull()
+                        RecommendationHeaderItem(
+                            availableMemberCount = option?.availableMemberCount ?: 0,
+                            totalMemberCount = option?.totalMemberCount ?: 0,
+                            selectedItemIndex = selectedItemIndex,
+                            onHeaderItemClick = { selectedItemIndex = it },
+                            priority = index
+                        )
+                    }
                 }
             }
             if (selectedItemIndex == -1) {
@@ -221,11 +235,11 @@ fun AppointmentScreen(
 
 @Composable
 fun RecommendationHeaderItem(
-    availableMembersCount: Int, // 가능한 멤버 수
-    totalMembersCount: Int, // 전체 멤버 수
-    selectedItemIndex: Int, // 현재 선택된 아이템 인덱스
+    availableMemberCount: Int,
+    totalMemberCount: Int,
+    selectedItemIndex: Int,
     onHeaderItemClick: (Int) -> Unit,
-    priority: Int // 현재 아이템의 인덱스
+    priority: Int
 ) {
     Column(
         modifier = Modifier
@@ -254,15 +268,15 @@ fun RecommendationHeaderItem(
             )
             .noRippleClickable {
                 if (priority == selectedItemIndex) {
-                    onHeaderItemClick(-1) // 이미 선택된 아이템을 다시 클릭하면 선택 해제
+                    onHeaderItemClick(-1)
                 } else {
-                    onHeaderItemClick(priority) // 선택되지 않은 아이템을 클릭하면 선택
+                    onHeaderItemClick(priority)
                 }
             }
     ) {
         Text(
             modifier = Modifier.padding(bottom = 6.dp),
-            text = stringResource(R.string.text_appointment_priority, priority+1),
+            text = stringResource(R.string.text_appointment_priority, priority + 1),
             color = when (selectedItemIndex) {
                 -1 -> NoostakTheme.colors.black
                 priority -> NoostakTheme.colors.blue700
@@ -284,7 +298,7 @@ fun RecommendationHeaderItem(
                     append(
                         stringResource(
                             R.string.tv_appointment_availableMembersCount,
-                            availableMembersCount
+                            availableMemberCount
                         )
                     )
                 }
@@ -300,7 +314,7 @@ fun RecommendationHeaderItem(
                     append(
                         stringResource(
                             R.string.tv_appointment_totalMembersCount,
-                            totalMembersCount
+                            totalMemberCount
                         )
                     )
                 }
@@ -323,7 +337,11 @@ fun AppointmentScreenPreview() {
             onSubmitButtonClick = { _, _, _ -> },
             onConfirmButtonClick = { _, _, _, _ -> },
             currentStatus = appointmentViewModel.mockCurrentStatus,
-            recommendations = appointmentViewModel.mockRecommendations
+            recommendations = AppointmentEntity(
+                isHost = true,
+                isSubmitted = false,
+                recommendationPriority = emptyList()
+            )
         )
     }
 }
