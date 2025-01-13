@@ -110,7 +110,7 @@ fun GroupMemberScreen(
                 modifier = Modifier.padding(top = 2.dp),
                 text = stringResource(
                     R.string.tv_group_detail_member,
-                    groupMembers.groupMembersCount
+                    groupMembers.groupMemberCount
                 ),
                 color = NoostakTheme.colors.gray800,
                 style = NoostakTheme.typography.b2Regular
@@ -131,7 +131,7 @@ fun GroupMemberScreen(
                 horizontalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 GroupMemberHeader(text = stringResource(R.string.header_group_member_member))
-                GroupMemberHeader(text = "(${groupMembers.groupMembers.size}/${groupMembers.groupMembersCount})")
+                GroupMemberHeader(text = "(${groupMembers.groupMembers.size}/50)")
             }
             Text(
                 modifier = Modifier

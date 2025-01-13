@@ -15,7 +15,7 @@ class GroupMemberViewModel @Inject constructor() : BaseViewModel<GroupMemberSide
 
     val mockGroupMembers = GroupMembersEntity(
         groupName = "누스탁",
-        groupMembersCount = 15,
+        groupMemberCount = 15,
         groupLeader = GroupLeaderEntity(
             groupLeaderName = "채영",
             groupLeaderImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
