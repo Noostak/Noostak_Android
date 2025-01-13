@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -40,6 +40,7 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
 import com.sopt.domain.entity.GroupMembersEntity
 import com.sopt.presentation.R
+import com.sopt.presentation.groupDetail.GroupDetailHeader
 
 @Composable
 fun GroupMemberRoute(
@@ -55,6 +56,7 @@ fun GroupMemberRoute(
         }
     }
     GroupMemberScreen(
+        groupId = groupId,
         groupMembers = groupMemberViewModel.mockGroupMembers,
         onBackButtonClick = groupMemberViewModel::navigateUp
     )
@@ -62,9 +64,11 @@ fun GroupMemberRoute(
 
 @Composable
 fun GroupMemberScreen(
+    groupId: Long,
     groupMembers: GroupMembersEntity,
     onBackButtonClick: () -> Unit
 ) {
+    val context = LocalContext.current
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
@@ -84,32 +88,11 @@ fun GroupMemberScreen(
                 .padding(innerPadding)
                 .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(7.14.dp))
-                            .size(40.dp),
-                        model = groupMembers.groupImage,
-                        contentDescription = null,
-                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                        error = painterResource(id = R.drawable.ic_launcher_background),
-                        contentScale = ContentScale.FillBounds
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = groupMembers.groupName,
-                        color = NoostakTheme.colors.gray900,
-                        style = NoostakTheme.typography.h1Bold
-                    )
-                }
-            }
+            GroupDetailHeader(
+                groupId = groupId,
+                groupImage = groupMembers.groupImage,
+                groupName = groupMembers.groupName
+            )
             Text(
                 modifier = Modifier.padding(top = 9.dp),
                 text = stringResource(
@@ -214,6 +197,7 @@ fun GroupMemberScreenPreview() {
     NoostakAndroidTheme {
         val groupMemberViewModel: GroupMemberViewModel = hiltViewModel()
         GroupMemberScreen(
+            groupId = 1,
             groupMembers = groupMemberViewModel.mockGroupMembers,
             onBackButtonClick = {}
         )

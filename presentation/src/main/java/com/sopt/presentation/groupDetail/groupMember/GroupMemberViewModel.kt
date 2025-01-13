@@ -57,6 +57,70 @@ class GroupMemberViewModel @Inject constructor() : BaseViewModel<GroupMemberSide
             GroupMemberEntity(
                 groupMemberName = "이가을",
                 groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
             )
         )
     )

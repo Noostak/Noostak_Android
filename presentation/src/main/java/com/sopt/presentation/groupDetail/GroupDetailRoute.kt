@@ -76,7 +76,11 @@ fun GroupDetailRoute(
             when (sideEffect) {
                 is GroupDetailSideEffect.NavigateUp -> navigateUp()
                 is GroupDetailSideEffect.NavigateToConfirmedDetail -> {
-                    navigateToConfirmedDetail(sideEffect.groupId, sideEffect.confirmedId, sideEffect.appointmentName)
+                    navigateToConfirmedDetail(
+                        sideEffect.groupId,
+                        sideEffect.confirmedId,
+                        sideEffect.appointmentName
+                    )
                 }
 
                 is GroupDetailSideEffect.NavigateToGroupMember -> {
@@ -116,7 +120,6 @@ fun GroupDetailScreen(
     onProgressClick: (Long, Long, String) -> Unit
 ) {
     val pagerState = rememberPagerState { tabs.size }
-    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier
@@ -146,51 +149,11 @@ fun GroupDetailScreen(
                 .padding(innerPadding)
                 .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    AsyncImage(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(7.14.dp))
-                            .size(40.dp),
-                        model = data.groupImage,
-                        contentDescription = null,
-                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                        error = painterResource(id = R.drawable.ic_launcher_background),
-                        contentScale = ContentScale.FillBounds
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = data.groupName,
-                        color = NoostakTheme.colors.gray900,
-                        style = NoostakTheme.typography.h1Bold
-                    )
-                }
-                Icon(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .noRippleClickable {
-                            val sendIntent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(
-                                    Intent.EXTRA_TEXT,
-                                    "공유하고자 하는 그룹 아이디: $groupId"
-                                )
-                                type = "text/plain"
-                            }
-                            val shareIntent = Intent.createChooser(sendIntent, null)
-                            ContextCompat.startActivity(context, shareIntent, null)
-                        },
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_share),
-                    contentDescription = null,
-                    tint = NoostakTheme.colors.gray700
-                )
-            }
+            GroupDetailHeader(
+                groupId = groupId,
+                groupImage = data.groupImage,
+                groupName = data.groupName
+            )
             Row(
                 modifier = Modifier
                     .padding(top = 9.dp)
@@ -307,6 +270,62 @@ fun CustomTabPager(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun GroupDetailHeader(
+    groupId: Long,
+    groupImage: String,
+    groupName: String
+) {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 21.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(7.14.dp))
+                    .size(40.dp),
+                model = groupImage,
+                contentDescription = null,
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                error = painterResource(id = R.drawable.ic_launcher_background),
+                contentScale = ContentScale.FillBounds
+            )
+            Text(
+                modifier = Modifier.padding(start = 8.dp),
+                text = groupName,
+                color = NoostakTheme.colors.gray900,
+                style = NoostakTheme.typography.h1Bold
+            )
+        }
+        Icon(
+            modifier = Modifier
+                .size(24.dp)
+                .noRippleClickable {
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            "공유하고자 하는 그룹 아이디: $groupId"
+                        )
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    ContextCompat.startActivity(context, shareIntent, null)
+                },
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_share),
+            contentDescription = null,
+            tint = NoostakTheme.colors.gray700
+        )
     }
 }
 
