@@ -84,7 +84,16 @@ fun ConfirmedDetailScreen(
         val date = calculateTime.extractDate(data.date)
         val startHour = calculateTime.extractHour(data.startTime)
         val endHour = calculateTime.extractHour(data.endTime)
-
+        val isAvailable = data.myIdentity.availability == "available"
+        val rearrangeList = RearrangeList()
+        val availableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
+            data.myIdentity,
+            data.availableMembers
+        )
+        val unavailableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
+            data.myIdentity,
+            data.unavailableMembers
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -138,10 +147,6 @@ fun ConfirmedDetailScreen(
                             data.availableMembersCount
                         )
                     )
-                    val availableMembers = RearrangeList().rearrangeMembersBasedOnAvailability(
-                        data.myIdentity,
-                        data.availableMembers
-                    )
                     FlowRow(
                         modifier = Modifier.padding(top = 10.dp),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -149,9 +154,9 @@ fun ConfirmedDetailScreen(
                     ) {
                         availableMembers.forEachIndexed { index, member ->
                             NoostakUserChip(
-                                text = if (data.myIdentity.availability == "available" && index == 0) "나" else member,
+                                text = if (isAvailable && index == 0) "나" else member,
                                 textColor = NoostakTheme.colors.black,
-                                backgroundColor = if (data.myIdentity.availability == "available" && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
+                                backgroundColor = if (isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
                                 borderColor = NoostakTheme.colors.blue200
                             )
                         }
@@ -164,10 +169,6 @@ fun ConfirmedDetailScreen(
                             data.unavailableMembersCount
                         )
                     )
-                    val unavailableMembers = RearrangeList().rearrangeMembersBasedOnAvailability(
-                        data.myIdentity,
-                        data.unavailableMembers
-                    )
                     FlowRow(
                         modifier = Modifier.padding(top = 10.dp),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -175,10 +176,10 @@ fun ConfirmedDetailScreen(
                     ) {
                         unavailableMembers.forEachIndexed { index, member ->
                             NoostakUserChip(
-                                text = if (data.myIdentity.availability == "unavailable" && index == 0) "나" else member,
+                                text = if (!isAvailable && index == 0) "나" else member,
                                 textColor = NoostakTheme.colors.gray800,
-                                backgroundColor = if (data.myIdentity.availability == "unavailable" && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
-                                borderColor = if (data.myIdentity.availability == "unavailable" && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
+                                backgroundColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
+                                borderColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
                             )
                         }
                     }

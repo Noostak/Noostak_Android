@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +30,9 @@ import com.sopt.core.designsystem.component.chip.NoostakUserChip
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.showIf
+import com.sopt.core.util.CalculateTime
+import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.AppointmentDetailEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
@@ -74,8 +79,23 @@ fun AppointmentConfirmScreen(
     onConfirmButtonClick: (Long) -> Unit,
     data: AppointmentDetailEntity
 ) {
+    val calculateTime = CalculateTime()
+    val date = calculateTime.extractDate(data.date)
+    val startHour = calculateTime.extractHour(data.startTime)
+    val endHour = calculateTime.extractHour(data.endTime)
+    val isAvailable = data.myIdentity.availability == "available"
+    val rearrangeList = RearrangeList()
+    val availableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
+        data.myIdentity,
+        data.availableMembers
+    )
+    val unavailableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
+        data.myIdentity,
+        data.unavailableMembers
+    )
     Scaffold(
         modifier = Modifier
+            .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding(),
         topBar = {
@@ -91,6 +111,7 @@ fun AppointmentConfirmScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(dimensionResource(id = R.dimen.horizontal_padding))
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 text = stringResource(R.string.title_appointment_confirm),
@@ -124,12 +145,12 @@ fun AppointmentConfirmScreen(
                         horizontalArrangement = Arrangement.spacedBy(13.dp)
                     ) {
                         Text(
-                            text = data.date,
+                            text = date,
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )
                         Text(
-                            text = "${data.startTime}~${data.endTime}",
+                            text = "${startHour}~${endHour}",
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )
@@ -153,11 +174,11 @@ fun AppointmentConfirmScreen(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        data.availableMembers.forEach { member ->
+                        availableMembers.forEachIndexed { index, member ->
                             NoostakUserChip(
                                 text = member,
                                 textColor = NoostakTheme.colors.black,
-                                backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
+                                backgroundColor = if (isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
                                 borderColor = NoostakTheme.colors.blue200
                             )
                         }
@@ -175,12 +196,12 @@ fun AppointmentConfirmScreen(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        data.unavailableMembers.forEach { member ->
+                        unavailableMembers.forEachIndexed { index, member ->
                             NoostakUserChip(
-                                text = member,
+                                text = if (!isAvailable && index == 0) "나" else member,
                                 textColor = NoostakTheme.colors.gray800,
-                                backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
-                                borderColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
+                                backgroundColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
+                                borderColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
                             )
                         }
                     }
@@ -188,6 +209,7 @@ fun AppointmentConfirmScreen(
             }
             Spacer(modifier = Modifier.weight(1f))
             NoostakBottomButton(
+                modifier = Modifier.showIf(data.isHost),
                 text = stringResource(R.string.btn_appointment_confirm_complete),
                 onButtonClick = { onConfirmButtonClick(groupId) },
                 isEnabled = true,
