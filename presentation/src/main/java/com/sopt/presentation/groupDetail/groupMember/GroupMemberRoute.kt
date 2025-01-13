@@ -68,7 +68,6 @@ fun GroupMemberScreen(
     groupMembers: GroupMembersEntity,
     onBackButtonClick: () -> Unit
 ) {
-    val context = LocalContext.current
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
