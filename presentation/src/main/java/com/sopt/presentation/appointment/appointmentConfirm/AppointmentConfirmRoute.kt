@@ -150,7 +150,7 @@ fun AppointmentConfirmScreen(
                             style = NoostakTheme.typography.b4SemiBold
                         )
                         Text(
-                            text = "${startHour}~${endHour}",
+                            text = "$startHour~$endHour",
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )

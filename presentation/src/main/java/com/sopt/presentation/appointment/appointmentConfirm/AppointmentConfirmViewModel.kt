@@ -22,7 +22,7 @@ class AppointmentConfirmViewModel @Inject constructor() :
         myIdentity = IdentityEntity(
             availability = "unavailable",
             position = 2,
-            name = "박영수",
+            name = "박영수"
         ),
         date = "2025-01-06T00:00:00",
         startTime = "2025-01-06T11:00:00",

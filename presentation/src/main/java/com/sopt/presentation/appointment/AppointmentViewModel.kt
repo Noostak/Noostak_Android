@@ -4,8 +4,8 @@ import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AppointmentEntity
 import com.sopt.domain.entity.AvailableTimeEntity
 import com.sopt.domain.entity.IdentityEntity
-import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.domain.entity.OptionEntity
+import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity
 import dagger.hilt.android.lifecycle.HiltViewModel

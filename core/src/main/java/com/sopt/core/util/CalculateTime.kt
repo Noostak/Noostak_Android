@@ -25,7 +25,7 @@ class CalculateTime {
         val day = parsedDateTime.dayOfMonth
         val dayOfWeek = parsedDateTime.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN)
 
-        return "${year}년 ${month}월 ${day}일 ${dayOfWeek}"
+        return "${year}년 ${month}월 ${day}일 $dayOfWeek"
     }
 
     private fun parseDateTime(dateTime: String): LocalDateTime {

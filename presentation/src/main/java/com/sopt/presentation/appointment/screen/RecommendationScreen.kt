@@ -42,8 +42,8 @@ import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.extension.showIf
 import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
-import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.domain.entity.OptionEntity
+import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.AppointmentViewModel
 
@@ -139,7 +139,7 @@ fun RecommendationItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "$date (${dayOfWeek}) $startHour - $endHour",
+                text = "$date ($dayOfWeek) $startHour - $endHour",
                 color = NoostakTheme.colors.black,
                 style = NoostakTheme.typography.t4Bold
             )

@@ -1,7 +1,6 @@
 package com.sopt.presentation.groupDetail.confirmedDetail
 
 import com.sopt.core.util.BaseViewModel
-import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.ConfirmedDetailEntity
 import com.sopt.domain.entity.IdentityEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,12 +31,9 @@ class ConfirmedDetailViewModel @Inject constructor() : BaseViewModel<ConfirmedDe
             "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
         ),
         unavailableMembersCount = 5,
-        unavailableMembers = listOf("류선재", "한강", "이영희", "박영수", "최영희", "정영수", "김태성",
-            "백인혁", "임솔", "박복순", "정말자", "임금", "이현주", "류근덕", "김송이", "왕서희", "김선정", "김소희",
-            "이자민", "박민서", "오연서", "이명진", "권장순", "문채영", "누스탁", "스케툭", "우주대스타", "동해물과", "백두산이","마르고닳도록",
-                    "하느님이보우하사","우리나라만세","만세", "가을하늘공활한데","이기상과","이맘으로충성을","다하여","괴로우나즐거우나","나라",
-            "사랑하세","무궁화삼천리","화려강산","대한사람","대한으로","길이보전하세","동해물과","백두산이","마르고닳도록","하느님이보우하사","우리나라만세",
-            "나우솝트", "불닭좋아", "족발먹고싶어", "아개졸려", "마이멜로디", "쿠로미", "산리오캐릭터")
+        unavailableMembers = listOf(
+            "류선재", "한강", "이영희", "박영수", "최영희", "정영수", "김태성", "백인혁", "임솔"
+        )
     )
 }
 
