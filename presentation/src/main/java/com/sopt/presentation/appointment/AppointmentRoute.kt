@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -189,15 +190,14 @@ fun AppointmentScreen(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                items(recommendations.priorities, key = { it.priority }) { priority ->
+                itemsIndexed(recommendations.recommendationPriority) { index, recommendationPriority ->
+                    val option = recommendationPriority.options.firstOrNull()
                     RecommendationHeaderItem(
-                        availableMembersCount = priority.availableMembersCount,
-                        totalMembersCount = priority.totalMembersCount,
+                        availableMembersCount = option?.availableMemberCount ?: 0,
+                        totalMembersCount = option?.totalMemberCount ?: 0,
                         selectedItemIndex = selectedItemIndex,
-                        onHeaderItemClick = { selectedIndex ->
-                            selectedItemIndex = selectedIndex
-                        },
-                        priority = priority.priority
+                        onHeaderItemClick = { selectedItemIndex = it },
+                        priority = index
                     )
                 }
             }
@@ -207,8 +207,9 @@ fun AppointmentScreen(
                 )
             } else {
                 RecommendationScreen(
+                    isHost = recommendations.isHost,
                     selectedItemIndex = selectedItemIndex,
-                    data = recommendations.priorities,
+                    data = recommendations.recommendationPriority,
                     onConfirmButtonClick = { optionId ->
                         onConfirmButtonClick(groupId, appointmentsId, optionId, appointmentName)
                     }
@@ -261,7 +262,7 @@ fun RecommendationHeaderItem(
     ) {
         Text(
             modifier = Modifier.padding(bottom = 6.dp),
-            text = stringResource(R.string.text_appointment_priority, priority),
+            text = stringResource(R.string.text_appointment_priority, priority+1),
             color = when (selectedItemIndex) {
                 -1 -> NoostakTheme.colors.black
                 priority -> NoostakTheme.colors.blue700
