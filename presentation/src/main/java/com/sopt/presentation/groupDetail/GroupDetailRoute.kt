@@ -62,7 +62,7 @@ import timber.log.Timber
 fun GroupDetailRoute(
     groupId: Long,
     navigateUp: () -> Unit,
-    navigateToConfirmedDetail: (Long, Long) -> Unit,
+    navigateToConfirmedDetail: (Long, Long, String) -> Unit,
     navigateToGroupMember: (Long) -> Unit,
     navigateToAppointment: (Long, Long, String) -> Unit,
     groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
@@ -72,7 +72,7 @@ fun GroupDetailRoute(
             when (sideEffect) {
                 is GroupDetailSideEffect.NavigateUp -> navigateUp()
                 is GroupDetailSideEffect.NavigateToConfirmedDetail -> {
-                    navigateToConfirmedDetail(sideEffect.groupId, sideEffect.confirmedId)
+                    navigateToConfirmedDetail(sideEffect.groupId, sideEffect.confirmedId, sideEffect.appointmentName)
                 }
 
                 is GroupDetailSideEffect.NavigateToGroupMember -> {
@@ -107,7 +107,7 @@ fun GroupDetailScreen(
     tabs: List<String>,
     data: GroupDetailEntity,
     onBackButtonClick: () -> Unit,
-    onConfirmedClick: (Long, Long) -> Unit,
+    onConfirmedClick: (Long, Long, String) -> Unit,
     onGroupMemberClick: (Long) -> Unit,
     onProgressClick: (Long, Long, String) -> Unit
 ) {
@@ -227,7 +227,7 @@ fun CustomTabPager(
     progressEntities: List<ProgressEntity>,
     confirmedEntities: List<ConfirmedEntity>,
     onProgressClick: (Long, Long, String) -> Unit,
-    onConfirmedClick: (Long, Long) -> Unit
+    onConfirmedClick: (Long, Long, String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     Column {
@@ -292,8 +292,8 @@ fun CustomTabPager(
                     1 -> ConfirmedScreen(
                         groupId = groupId,
                         confirmedEntities = confirmedEntities,
-                        onItemClicked = { groupId, confirmedId ->
-                            onConfirmedClick(groupId, confirmedId)
+                        onItemClicked = { groupId, confirmedId, appointmentName ->
+                            onConfirmedClick(groupId, confirmedId, appointmentName)
                         }
                     )
                 }
@@ -312,7 +312,7 @@ fun GroupDetailRoutePreview() {
             tabs = groupDetailViewModel.tabs,
             data = groupDetailViewModel.mockGroupDetail,
             onBackButtonClick = {},
-            onConfirmedClick = { _, _ -> },
+            onConfirmedClick = { _, _, _ -> },
             onGroupMemberClick = {},
             onProgressClick = { _, _, _ -> }
         )

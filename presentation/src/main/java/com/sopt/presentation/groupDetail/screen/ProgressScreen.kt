@@ -28,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.util.CalculateTime
 import com.sopt.domain.entity.ProgressEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.GroupDetailViewModel
@@ -66,6 +67,12 @@ fun ProgressItem(
     progressEntity: ProgressEntity,
     onItemClicked: (Long, Long, String) -> Unit
 ) {
+    val calculateTime = CalculateTime()
+    val startDate = calculateTime.extractDate(progressEntity.startDate)
+    val dayOfWeek = calculateTime.extractDayOfWeek(progressEntity.startDate)
+    val startHour = calculateTime.extractHour(progressEntity.startDate)
+    val endHour = calculateTime.extractHour(progressEntity.endDate)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -107,7 +114,7 @@ fun ProgressItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "${progressEntity.date} (${progressEntity.weekday}) ${progressEntity.startTime}~${progressEntity.endTime}",
+                text = "$startDate ($dayOfWeek) $startHour~$endHour",
                 color = NoostakTheme.colors.gray800,
                 style = NoostakTheme.typography.b5Regular
             )

@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.util.CalculateTime
 import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.GroupDetailViewModel
@@ -30,7 +31,7 @@ import com.sopt.presentation.groupDetail.GroupDetailViewModel
 fun ConfirmedScreen(
     groupId: Long,
     confirmedEntities: List<ConfirmedEntity>,
-    onItemClicked: (Long, Long) -> Unit
+    onItemClicked: (Long, Long, String) -> Unit
 ) {
     if (confirmedEntities.isEmpty()) {
         Text(
@@ -61,12 +62,13 @@ fun ConfirmedScreen(
 fun ConfirmedItem(
     groupId: Long,
     confirmedEntity: ConfirmedEntity,
-    onItemClicked: (Long, Long) -> Unit
+    onItemClicked: (Long, Long, String) -> Unit
 ) {
+    val calculateTime = CalculateTime()
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .noRippleClickable { onItemClicked(groupId, confirmedEntity.appointmentId) }
+            .noRippleClickable { onItemClicked(groupId, confirmedEntity.appointmentId, confirmedEntity.appointmentName) }
             .padding(
                 top = 15.dp,
                 bottom = 16.dp,
@@ -105,7 +107,7 @@ fun ConfirmedItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 1.dp),
-                    text = "${confirmedEntity.date} ${confirmedEntity.weekday}",
+                    text = calculateTime.extractFullDate(confirmedEntity.date),
                     color = NoostakTheme.colors.gray700,
                     style = NoostakTheme.typography.c3Regular,
                     textAlign = TextAlign.Start
@@ -123,7 +125,7 @@ fun CompleteScreenPreview() {
         ConfirmedScreen(
             groupId = 1,
             confirmedEntities = groupDetailViewModel.mockGroupDetail.confirmedEntities,
-            onItemClicked = { _, _ -> }
+            onItemClicked = { _, _, _ -> }
         )
     }
 }

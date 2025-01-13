@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +32,8 @@ import com.sopt.core.designsystem.component.chip.NoostakUserChip
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.util.CalculateTime
+import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.ConfirmedDetailEntity
 import com.sopt.presentation.R
 
@@ -37,6 +41,7 @@ import com.sopt.presentation.R
 fun ConfirmedDetailRoute(
     groupId: Long,
     confirmedId: Long,
+    appointmentName: String,
     navigateUp: () -> Unit,
     confirmedDetailViewModel: ConfirmedDetailViewModel = hiltViewModel()
 ) {
@@ -48,6 +53,7 @@ fun ConfirmedDetailRoute(
         }
     }
     ConfirmedDetailScreen(
+        appointmentName = appointmentName,
         data = confirmedDetailViewModel.mockConfirmedDetail,
         onBackButtonClick = confirmedDetailViewModel::navigateUp
     )
@@ -56,6 +62,7 @@ fun ConfirmedDetailRoute(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ConfirmedDetailScreen(
+    appointmentName: String,
     data: ConfirmedDetailEntity,
     onBackButtonClick: () -> Unit
 ) {
@@ -66,18 +73,24 @@ fun ConfirmedDetailScreen(
             .navigationBarsPadding(),
         topBar = {
             NoostakTopAppBar(
-                title = data.appointmentName,
+                title = appointmentName,
                 modifier = Modifier.fillMaxWidth(),
                 isIconVisible = true,
                 onBackButtonClick = { onBackButtonClick() }
             )
         }
     ) { innerPadding ->
+        val calculateTime = CalculateTime()
+        val date = calculateTime.extractDate(data.date)
+        val startHour = calculateTime.extractHour(data.startTime)
+        val endHour = calculateTime.extractHour(data.endTime)
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 modifier = Modifier.padding(top = 12.dp),
@@ -101,12 +114,12 @@ fun ConfirmedDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(13.dp)
                     ) {
                         Text(
-                            text = data.date,
+                            text = date,
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )
                         Text(
-                            text = "${data.startTime}~${data.endTime}",
+                            text = "${startHour}~${endHour}",
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )
@@ -125,16 +138,20 @@ fun ConfirmedDetailScreen(
                             data.availableMembersCount
                         )
                     )
+                    val availableMembers = RearrangeList().rearrangeMembersBasedOnAvailability(
+                        data.myIdentity,
+                        data.availableMembers
+                    )
                     FlowRow(
                         modifier = Modifier.padding(top = 10.dp),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        data.availableMembers.forEach { member ->
+                        availableMembers.forEachIndexed { index, member ->
                             NoostakUserChip(
-                                text = member,
+                                text = if (data.myIdentity.availability == "available" && index == 0) "나" else member,
                                 textColor = NoostakTheme.colors.black,
-                                backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
+                                backgroundColor = if (data.myIdentity.availability == "available" && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
                                 borderColor = NoostakTheme.colors.blue200
                             )
                         }
@@ -147,17 +164,21 @@ fun ConfirmedDetailScreen(
                             data.unavailableMembersCount
                         )
                     )
+                    val unavailableMembers = RearrangeList().rearrangeMembersBasedOnAvailability(
+                        data.myIdentity,
+                        data.unavailableMembers
+                    )
                     FlowRow(
                         modifier = Modifier.padding(top = 10.dp),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        data.unavailableMembers.forEach { member ->
+                        unavailableMembers.forEachIndexed { index, member ->
                             NoostakUserChip(
-                                text = member,
+                                text = if (data.myIdentity.availability == "unavailable" && index == 0) "나" else member,
                                 textColor = NoostakTheme.colors.gray800,
-                                backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
-                                borderColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
+                                backgroundColor = if (data.myIdentity.availability == "unavailable" && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
+                                borderColor = if (data.myIdentity.availability == "unavailable" && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
                             )
                         }
                     }
@@ -192,6 +213,7 @@ fun PreviewCompleteDetailScreen() {
     NoostakAndroidTheme {
         val confirmedDetailViewModel: ConfirmedDetailViewModel = hiltViewModel()
         ConfirmedDetailScreen(
+            appointmentName = "3차 회의",
             data = confirmedDetailViewModel.mockConfirmedDetail,
             onBackButtonClick = {}
         )
