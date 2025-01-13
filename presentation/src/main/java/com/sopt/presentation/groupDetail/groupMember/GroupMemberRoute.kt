@@ -1,6 +1,5 @@
 package com.sopt.presentation.groupDetail.groupMember
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +15,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -24,12 +24,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -94,12 +92,18 @@ fun GroupMemberScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_group_detail),
-                        contentDescription = null
+                    AsyncImage(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(71.4.dp))
+                            .size(40.dp),
+                        model = groupMembers.groupImage,
+                        contentDescription = null,
+                        placeholder = painterResource(id = R.drawable.ic_profile),
+                        error = painterResource(id = R.drawable.ic_profile),
+                        contentScale = ContentScale.FillBounds
                     )
                     Text(
-                        modifier = Modifier.padding(start = 3.dp),
+                        modifier = Modifier.padding(start = 8.dp),
                         text = groupMembers.groupName,
                         color = NoostakTheme.colors.gray900,
                         style = NoostakTheme.typography.h1Bold
@@ -107,7 +111,7 @@ fun GroupMemberScreen(
                 }
             }
             Text(
-                modifier = Modifier.padding(top = 2.dp),
+                modifier = Modifier.padding(top = 9.dp),
                 text = stringResource(
                     R.string.tv_group_detail_member,
                     groupMembers.groupMemberCount
