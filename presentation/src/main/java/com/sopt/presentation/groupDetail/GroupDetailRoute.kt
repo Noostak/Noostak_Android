@@ -18,6 +18,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -35,14 +36,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.sopt.core.designsystem.component.button.NoostakFloatingActionButton
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -131,7 +135,6 @@ fun GroupDetailScreen(
                 title = stringResource(R.string.fab_group_detail),
                 modifier = Modifier.offset(x = 0.dp, y = (-74).dp)
             ) {
-                // 약속 생성 페이지로 이동
                 Timber.d("약속 생성 페이지로 이동")
             }
         },
@@ -151,12 +154,18 @@ fun GroupDetailScreen(
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_group_detail),
-                        contentDescription = null
+                    AsyncImage(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(7.14.dp))
+                            .size(40.dp),
+                        model = data.groupImage,
+                        contentDescription = null,
+                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                        error = painterResource(id = R.drawable.ic_launcher_background),
+                        contentScale = ContentScale.FillBounds
                     )
                     Text(
-                        modifier = Modifier.padding(start = 3.dp),
+                        modifier = Modifier.padding(start = 8.dp),
                         text = data.groupName,
                         color = NoostakTheme.colors.gray900,
                         style = NoostakTheme.typography.h1Bold
@@ -166,7 +175,6 @@ fun GroupDetailScreen(
                     modifier = Modifier
                         .size(24.dp)
                         .noRippleClickable {
-                            // 공유 기능
                             val sendIntent = Intent().apply {
                                 action = Intent.ACTION_SEND
                                 putExtra(
@@ -185,7 +193,7 @@ fun GroupDetailScreen(
             }
             Row(
                 modifier = Modifier
-                    .padding(top = 2.dp)
+                    .padding(top = 9.dp)
                     .noRippleClickable { onGroupMemberClick(groupId) },
                 verticalAlignment = Alignment.CenterVertically
             ) {

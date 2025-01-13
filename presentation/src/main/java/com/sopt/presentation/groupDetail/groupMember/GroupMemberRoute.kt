@@ -94,12 +94,12 @@ fun GroupMemberScreen(
                 ) {
                     AsyncImage(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(71.4.dp))
+                            .clip(RoundedCornerShape(7.14.dp))
                             .size(40.dp),
                         model = groupMembers.groupImage,
                         contentDescription = null,
-                        placeholder = painterResource(id = R.drawable.ic_profile),
-                        error = painterResource(id = R.drawable.ic_profile),
+                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                        error = painterResource(id = R.drawable.ic_launcher_background),
                         contentScale = ContentScale.FillBounds
                     )
                     Text(

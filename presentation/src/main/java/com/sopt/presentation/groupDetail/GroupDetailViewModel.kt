@@ -51,6 +51,7 @@ class GroupDetailViewModel @Inject constructor(
     )
     val mockGroupDetail = GroupDetailEntity(
         groupName = "누스탁",
+        groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4",
         groupMembersCount = 10,
         progressEntities = listOf(
             ProgressEntity(
