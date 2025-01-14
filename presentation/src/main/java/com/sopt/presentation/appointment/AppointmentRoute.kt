@@ -175,7 +175,7 @@ fun AppointmentScreen(
                 Row(
                     modifier = Modifier
                         .showIf(selectedItemIndex == -1)
-                        .noRippleClickable { selectedItemIndex = 1 }
+                        .noRippleClickable { selectedItemIndex = 0 }
                 ) {
                     Text(
                         text = stringResource(R.string.btn_appointment_total),
