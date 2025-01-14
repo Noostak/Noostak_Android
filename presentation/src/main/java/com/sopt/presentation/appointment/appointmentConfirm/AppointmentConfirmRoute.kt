@@ -157,10 +157,7 @@ fun AppointmentConfirmScreen(
                     }
                 }
                 CompleteDetailInfo(text = stringResource(R.string.tv_complete_detail_category)) {
-                    NoostakCategoryChip(
-                        text = data.category,
-                        backgroundColor = NoostakTheme.colors.orange
-                    )
+                    NoostakCategoryChip(text = data.category)
                 }
                 Column {
                     CompleteDetailInfo(
