@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -52,6 +53,7 @@ import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.extension.stringOf
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.domain.entity.GroupDetailEntity
@@ -59,6 +61,7 @@ import com.sopt.domain.entity.ProgressEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.screen.ConfirmedScreen
 import com.sopt.presentation.groupDetail.screen.ProgressScreen
+import kotlinx.collections.immutable.immutableListOf
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -171,12 +174,13 @@ fun GroupDetailScreen(
                     contentDescription = null
                 )
             }
-            Spacer(modifier = Modifier.height(26.dp))
+            Spacer(modifier = Modifier.height(22.dp))
             Text(
                 text = stringResource(R.string.tv_group_detail_list),
                 color = NoostakTheme.colors.gray800,
                 style = NoostakTheme.typography.b1SemiBold
             )
+            Spacer(modifier = Modifier.height(9.dp))
             CustomTabPager(
                 groupId = groupId,
                 pagerState = pagerState,
@@ -246,9 +250,7 @@ fun CustomTabPager(
         }
         HorizontalPager(state = pagerState) { page ->
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 16.dp),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 when (page) {
@@ -332,12 +334,65 @@ fun GroupDetailHeader(
 @Preview(showBackground = true)
 @Composable
 fun GroupDetailRoutePreview() {
-    val groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
     NoostakAndroidTheme {
         GroupDetailScreen(
             groupId = 0,
-            tabs = groupDetailViewModel.tabs,
-            data = groupDetailViewModel.mockGroupDetail,
+            tabs = immutableListOf(
+                "진행 중", "확정"
+            ),
+            data = GroupDetailEntity(
+                groupName = "누스탁",
+                groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4",
+                groupMembersCount = 10,
+                progressEntities = listOf(
+                    ProgressEntity(
+                        appointmentId = 1,
+                        appointmentName = "1주차",
+                        startDate = "2025-01-06T11:00:00",
+                        endDate = "2025-01-06T14:00:00",
+                        participants = 3,
+                        maxParticipants = 5
+                    ),
+                    ProgressEntity(
+                        appointmentId = 2,
+                        appointmentName = "2주차",
+                        startDate = "2025-01-06T11:00:00",
+                        endDate = "2025-01-06T14:00:00",
+                        participants = 2,
+                        maxParticipants = 5
+                    ),
+                    ProgressEntity(
+                        appointmentId = 3,
+                        appointmentName = "3주차",
+                        startDate = "2025-01-06T11:00:00",
+                        endDate = "2025-01-06T14:00:00",
+                        participants = 5,
+                        maxParticipants = 5
+                    ),
+                    ProgressEntity(
+                        appointmentId = 4,
+                        appointmentName = "4주차",
+                        startDate = "2025-01-06T11:00:00",
+                        endDate = "2025-01-06T14:00:00",
+                        participants = 0,
+                        maxParticipants = 5
+                    )
+                ),
+                confirmedEntities = listOf(
+                    ConfirmedEntity(
+                        appointmentId = 1,
+                        appointmentName = "3차 회의",
+                        date = "2025-01-06T14:00:00",
+                        category = "기타"
+                    ),
+                    ConfirmedEntity(
+                        appointmentId = 2,
+                        appointmentName = "회의",
+                        date = "2025-01-06T14:00:00",
+                        category = "일정"
+                    )
+                )
+            ),
             onBackButtonClick = {},
             onConfirmedClick = { _, _, _ -> },
             onGroupMemberClick = {},

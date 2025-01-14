@@ -91,12 +91,14 @@ class GroupDetailViewModel @Inject constructor(
             ConfirmedEntity(
                 appointmentId = 1,
                 appointmentName = "3차 회의",
-                date = "2025-01-06T14:00:00"
+                date = "2025-01-06T14:00:00",
+                category = "기타"
             ),
             ConfirmedEntity(
                 appointmentId = 2,
                 appointmentName = "회의",
-                date = "2025-01-06T14:00:00"
+                date = "2025-01-06T14:00:00",
+                category = "일정"
             )
         )
     )

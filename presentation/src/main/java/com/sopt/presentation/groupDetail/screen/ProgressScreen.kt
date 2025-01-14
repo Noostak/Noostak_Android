@@ -41,13 +41,14 @@ fun ProgressScreen(
 ) {
     if (progressEntities.isEmpty()) {
         Text(
-            modifier = Modifier.padding(top = 103.dp),
+            modifier = Modifier.padding(top = 119.dp),
             text = stringResource(R.string.tv_group_detail_no_progress),
             color = NoostakTheme.colors.gray900,
             style = NoostakTheme.typography.b2Regular
         )
     } else {
         LazyColumn(
+            modifier = Modifier.padding(top = 16.dp),
             verticalArrangement = Arrangement.spacedBy(11.dp)
         ) {
             items(progressEntities, key = { it.appointmentId }) {

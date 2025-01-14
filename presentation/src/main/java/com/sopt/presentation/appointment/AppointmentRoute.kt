@@ -343,12 +343,6 @@ fun AppointmentScreenPreview() {
             availablePeriods = appointmentViewModel.mockAvailablePeriods,
             availableTimes = appointmentViewModel.mockAvailableTimes,
             recommendations = appointmentViewModel.mockRecommendations
-            currentStatus = appointmentViewModel.mockCurrentStatus,
-            recommendations = AppointmentEntity(
-                isHost = true,
-                isSubmitted = false,
-                recommendationPriority = emptyList()
-            )
         )
     }
 }
