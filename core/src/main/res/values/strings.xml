@@ -25,5 +25,9 @@
 
     <!-- Profile Image Picker -->
     <string name="image_profile_image_picker_description">Add Profile Image By Camera Button</string>
+    <string name="category_chip_important">중요</string>
+    <string name="category_chip_schedule">일정</string>
+    <string name="category_chip_hobby">취미</string>
+    <string name="category_chip_etc">기타</string>
 
 </resources>
