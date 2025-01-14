@@ -139,7 +139,13 @@ fun RecommendationItem(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "$date ($dayOfWeek) $startHour - $endHour",
+                text = stringResource(
+                    id = R.string.text_appointment_recommendation_date,
+                    date,
+                    dayOfWeek,
+                    startHour,
+                    endHour
+                ),
                 color = NoostakTheme.colors.black,
                 style = NoostakTheme.typography.t4Bold
             )
@@ -193,7 +199,7 @@ fun RecommendationItem(
         ) {
             availableMembers.forEachIndexed { index, member ->
                 NoostakUserChip(
-                    text = member,
+                    text = if (isAvailable && index == 0) stringResource(id = R.string.user_chip_me) else member,
                     textColor = NoostakTheme.colors.black,
                     backgroundColor = if (isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
                     borderColor = NoostakTheme.colors.blue200
@@ -216,7 +222,7 @@ fun RecommendationItem(
         ) {
             unavailableMembers.forEachIndexed { index, member ->
                 NoostakUserChip(
-                    text = member,
+                    text = if (!isAvailable && index == 0) stringResource(R.string.user_chip_me) else member,
                     textColor = NoostakTheme.colors.gray800,
                     backgroundColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
                     borderColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200

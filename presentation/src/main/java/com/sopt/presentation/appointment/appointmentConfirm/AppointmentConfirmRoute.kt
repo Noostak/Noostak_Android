@@ -59,8 +59,6 @@ fun AppointmentConfirmRoute(
     }
     AppointmentConfirmScreen(
         groupId = groupId,
-        appointmentsId = appointmentsId,
-        optionId = optionId,
         appointmentName = appointmentName,
         onBackButtonClick = appointmentConfirmViewModel::navigateUp,
         onConfirmButtonClick = appointmentConfirmViewModel::navigateToGroupDetail,
@@ -72,8 +70,6 @@ fun AppointmentConfirmRoute(
 @Composable
 fun AppointmentConfirmScreen(
     groupId: Long,
-    appointmentsId: Long,
-    optionId: Long,
     appointmentName: String,
     onBackButtonClick: () -> Unit,
     onConfirmButtonClick: (Long) -> Unit,
@@ -95,7 +91,6 @@ fun AppointmentConfirmScreen(
     )
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding(),
         topBar = {
@@ -150,7 +145,11 @@ fun AppointmentConfirmScreen(
                             style = NoostakTheme.typography.b4SemiBold
                         )
                         Text(
-                            text = "$startHour~$endHour",
+                            text = stringResource(
+                                R.string.text_appointment_confirm_hour,
+                                startHour,
+                                endHour
+                            ),
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )
@@ -173,7 +172,7 @@ fun AppointmentConfirmScreen(
                     ) {
                         availableMembers.forEachIndexed { index, member ->
                             NoostakUserChip(
-                                text = member,
+                                text = if (isAvailable && index == 0) stringResource(id = R.string.user_chip_me) else member,
                                 textColor = NoostakTheme.colors.black,
                                 backgroundColor = if (isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
                                 borderColor = NoostakTheme.colors.blue200
@@ -195,7 +194,7 @@ fun AppointmentConfirmScreen(
                     ) {
                         unavailableMembers.forEachIndexed { index, member ->
                             NoostakUserChip(
-                                text = if (!isAvailable && index == 0) "나" else member,
+                                text = if (!isAvailable && index == 0) stringResource(id = R.string.user_chip_me) else member,
                                 textColor = NoostakTheme.colors.gray800,
                                 backgroundColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
                                 borderColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
@@ -223,8 +222,6 @@ fun AppointmentConfirmScreenPreview() {
     NoostakAndroidTheme {
         AppointmentConfirmScreen(
             groupId = 1,
-            appointmentsId = 1,
-            optionId = 1,
             appointmentName = "약속 이름",
             onBackButtonClick = {},
             onConfirmButtonClick = {},

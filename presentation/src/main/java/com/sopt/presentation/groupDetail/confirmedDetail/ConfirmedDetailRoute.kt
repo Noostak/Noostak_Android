@@ -68,7 +68,6 @@ fun ConfirmedDetailScreen(
 ) {
     Scaffold(
         modifier = Modifier
-            .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding(),
         topBar = {
@@ -115,7 +114,7 @@ fun ConfirmedDetailScreen(
                         shape = RoundedCornerShape(20.dp),
                         color = NoostakTheme.colors.gray200
                     )
-                    .padding(16.dp),
+                    .padding(dimensionResource(id = R.dimen.default_padding)),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 CompleteDetailInfo(text = stringResource(R.string.tv_complete_detail_time)) {
@@ -128,7 +127,11 @@ fun ConfirmedDetailScreen(
                             style = NoostakTheme.typography.b4SemiBold
                         )
                         Text(
-                            text = "$startHour~$endHour",
+                            text = stringResource(
+                                R.string.text_complete_detail_hour,
+                                startHour,
+                                endHour
+                            ),
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )
@@ -151,7 +154,7 @@ fun ConfirmedDetailScreen(
                     ) {
                         availableMembers.forEachIndexed { index, member ->
                             NoostakUserChip(
-                                text = if (isAvailable && index == 0) "나" else member,
+                                text = if (isAvailable && index == 0) stringResource(id = R.string.user_chip_me) else member,
                                 textColor = NoostakTheme.colors.black,
                                 backgroundColor = if (isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
                                 borderColor = NoostakTheme.colors.blue200
@@ -173,7 +176,7 @@ fun ConfirmedDetailScreen(
                     ) {
                         unavailableMembers.forEachIndexed { index, member ->
                             NoostakUserChip(
-                                text = if (!isAvailable && index == 0) "나" else member,
+                                text = if (!isAvailable && index == 0) stringResource(id = R.string.user_chip_me) else member,
                                 textColor = NoostakTheme.colors.gray800,
                                 backgroundColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
                                 borderColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200

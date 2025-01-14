@@ -53,6 +53,7 @@
     <string name="tv_complete_detail_category">약속 유형</string>
     <string name="tv_complete_detail_available">가능한 친구 %1$s</string>
     <string name="tv_complete_detail_unavailable">불가능한 친구 %1$s</string>
+    <string name="text_complete_detail_hour">%1$s~%2$s</string>
 
     <!-- 그룹 멤버 -->
     <string name="appbar_group_member">그룹 멤버</string>
@@ -81,6 +82,8 @@
     <string name="tv_appointment_availableMembersCount">%1$s명</string>
     <string name="tv_appointment_totalMembersCount">" / %1$s명"</string>
     <string name="text_appointment_recommendations_blank">아직 추천 가능한 시간대가 없어요 :)</string>
+    <string name="text_appointment_confirm_hour">%1$s~%2$s</string>
+    <string name="text_appointment_recommendation_date">%1$s (%2$s) %3$s - %4$s</string>
 
     <!-- Group -->
     <string name="fab_group_create">그룹추가</string>
@@ -114,5 +117,8 @@
     <!-- 약속 만들기_약속 등록 완료 -->
     <string name="header_appointment_submit_complete">약속 등록이 완료되었습니다</string>
     <string name="btn_appointment_submit_complete">확인</string>
+
+    <!-- 유저 칩 -->
+    <string name="user_chip_me">나</string>
 
 </resources>
