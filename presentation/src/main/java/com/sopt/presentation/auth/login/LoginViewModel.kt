@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.annotation.StringRes
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.identity.SignInCredential
@@ -50,9 +51,9 @@ class LoginViewModel @Inject constructor(
 
     // Google Login
     fun googleLogin(launcher: ActivityResultLauncher<IntentSenderRequest>) {
-        val signInRequest = com.google.android.gms.auth.api.identity.BeginSignInRequest.builder()
+        val signInRequest = BeginSignInRequest.builder()
             .setGoogleIdTokenRequestOptions(
-                com.google.android.gms.auth.api.identity.BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                     .setSupported(true)
                     .setServerClientId(googleClientId)
                     .setFilterByAuthorizedAccounts(false)
