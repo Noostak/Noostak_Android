@@ -26,8 +26,8 @@ import com.sopt.core.designsystem.component.timetable.NoostakEditableTimeTable
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.domain.entity.PeriodEntity
 import com.sopt.domain.entity.TimeEntity
-import com.sopt.domain.entity.TimeTableEntity
 import com.sopt.presentation.R
 import timber.log.Timber
 
@@ -63,9 +63,9 @@ fun AppointmentCheckRoute(
         groupId = groupId,
         appointmentsId = appointmentsId,
         appointmentName = appointmentName,
+        availablePeriods = appointmentCheckViewModel.mockAvailablePeriods,
         onBackButtonClick = appointmentCheckViewModel::navigateToGroupDetail,
-        onConfirmButtonClick = appointmentCheckViewModel::navigateToAppointment,
-        data = appointmentCheckViewModel.mockTimeTableEntity
+        onConfirmButtonClick = appointmentCheckViewModel::navigateToAppointment
     )
 }
 
@@ -74,9 +74,9 @@ fun AppointmentCheckScreen(
     groupId: Long,
     appointmentsId: Long,
     appointmentName: String,
+    availablePeriods: PeriodEntity,
     onBackButtonClick: (Long) -> Unit,
-    onConfirmButtonClick: (Long, Long, String) -> Unit,
-    data: TimeTableEntity
+    onConfirmButtonClick: (Long, Long, String) -> Unit
 ) {
     var selectedData by remember { mutableStateOf(emptyList<TimeEntity>()) }
     Scaffold(
@@ -115,18 +115,16 @@ fun AppointmentCheckScreen(
 
             // 타임테이블 (스크롤 가능)
             NoostakEditableTimeTable(
-                data = data,
+                availablePeriods = availablePeriods,
                 modifier = Modifier
                     .constrainAs(timeTable) {
                         top.linkTo(title.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
-                        bottom.linkTo(button.top)
                         height = Dimension.fillToConstraints
                     }
             ) {
-                selectedData = it
-                Timber.d("Selected Data: $selectedData")
+                Timber.d("selectedData: $it")
             }
 
             // 버튼 (항상 하단 고정)
@@ -159,9 +157,9 @@ fun PreviewAppointmentConfirmScreen() {
             groupId = 1,
             appointmentsId = 1,
             appointmentName = "3차 회의",
+            availablePeriods = appointmentCheckViewModel.mockAvailablePeriods,
             onBackButtonClick = {},
-            onConfirmButtonClick = { _, _, _ -> },
-            data = appointmentCheckViewModel.mockTimeTableEntity
+            onConfirmButtonClick = { _, _, _ -> }
         )
     }
 }

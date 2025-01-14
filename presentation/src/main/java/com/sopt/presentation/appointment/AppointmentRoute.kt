@@ -42,6 +42,7 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.extension.showIf
 import com.sopt.domain.entity.AppointmentEntity
+import com.sopt.domain.entity.PeriodEntity
 import com.sopt.domain.entity.TimeTableEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
@@ -87,7 +88,8 @@ fun AppointmentRoute(
         onBackButtonClick = appointmentViewModel::navigateUp,
         onSubmitButtonClick = appointmentViewModel::navigateToAppointmentCheck,
         onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
-        currentStatus = appointmentViewModel.mockCurrentStatus,
+        availablePeriods = appointmentViewModel.mockAvailablePeriods,
+        availableTimes = appointmentViewModel.mockAvailableTimes,
         recommendations = appointmentViewModel.mockRecommendations
     )
 }
@@ -100,7 +102,8 @@ fun AppointmentScreen(
     onBackButtonClick: () -> Unit,
     onSubmitButtonClick: (Long, Long, String) -> Unit,
     onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
-    currentStatus: TimeTableEntity,
+    availablePeriods: PeriodEntity,
+    availableTimes: TimeTableEntity,
     recommendations: AppointmentEntity
 ) {
     var selectedItemIndex by remember { mutableIntStateOf(-1) }
@@ -203,7 +206,8 @@ fun AppointmentScreen(
             }
             if (selectedItemIndex == -1) {
                 CurrentStatusScreen(
-                    data = currentStatus
+                    availablePeriods = availablePeriods,
+                    availableTimes = availableTimes
                 )
             } else {
                 RecommendationScreen(
@@ -321,7 +325,8 @@ fun AppointmentScreenPreview() {
             onBackButtonClick = {},
             onSubmitButtonClick = { _, _, _ -> },
             onConfirmButtonClick = { _, _, _, _ -> },
-            currentStatus = appointmentViewModel.mockCurrentStatus,
+            availablePeriods = appointmentViewModel.mockAvailablePeriods,
+            availableTimes = appointmentViewModel.mockAvailableTimes,
             recommendations = appointmentViewModel.mockRecommendations
         )
     }
