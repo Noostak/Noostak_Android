@@ -105,7 +105,7 @@ class LoginViewModel @Inject constructor(
                 emitSideEffect(LoginSideEffect.NavigateToHome)
             } else {
                 emitSideEffect(LoginSideEffect.NavigateSignUp(authId))
-                saveIsAutoLogin(true)
+                userInfoRepository.saveIsAutoLogin(true)
             }
         }
     }
@@ -113,10 +113,10 @@ class LoginViewModel @Inject constructor(
     // TODO : 서버 연결 시 사용
     private fun saveUserInfo(response: UserEntity) {
         viewModelScope.launch {
-            saveAccessToken(response.accessToken ?: "")
-            saveRefreshToken(response.refreshToken ?: "")
-            saveUserId(response.userId ?: 0)
-            saveIsAutoLogin(response.accessToken.isNullOrBlank())
+            response.accessToken?.let { userInfoRepository.saveAccessToken(BEARER + it) }
+            response.refreshToken?.let { userInfoRepository.saveRefreshToken(BEARER + it) }
+            response.userId?.let { userInfoRepository.saveUserId(it) }
+            userInfoRepository.saveIsAutoLogin(!response.accessToken.isNullOrEmpty())
         }
     }
 
@@ -135,29 +135,5 @@ class LoginViewModel @Inject constructor(
                 args = formatArgs.joinToString(separator = ", ")
             )
         )
-    }
-
-    private fun saveAccessToken(accessToken: String) {
-        viewModelScope.launch {
-            userInfoRepository.saveAccessToken(BEARER + accessToken)
-        }
-    }
-
-    private fun saveRefreshToken(refreshToken: String) {
-        viewModelScope.launch {
-            userInfoRepository.saveRefreshToken(BEARER + refreshToken)
-        }
-    }
-
-    private fun saveUserId(userId: Int) {
-        viewModelScope.launch {
-            userInfoRepository.saveUserId(userId)
-        }
-    }
-
-    private fun saveIsAutoLogin(autoLogin: Boolean) {
-        viewModelScope.launch {
-            userInfoRepository.saveIsAutoLogin(autoLogin)
-        }
     }
 }
