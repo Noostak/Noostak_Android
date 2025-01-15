@@ -34,11 +34,13 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.image.ProfileImagePicker
 import com.sopt.core.designsystem.component.textfield.NoostakTextField
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
+import com.sopt.core.type.DialogType
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
 import com.sopt.domain.entity.GroupProfileEntity
@@ -56,6 +58,8 @@ fun GroupCreateRoute(
     val groupProfileState by viewModel.groupProfileState.collectAsStateWithLifecycle()
 
     var isGalleryPermission by remember { mutableStateOf(false) }
+
+    val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -95,9 +99,10 @@ fun GroupCreateRoute(
                 when (sideEffect) {
                     is GroupCreateSideEffect.NavigateToGroupCreateSuccess -> navigateToGroupCreateSuccess()
 
-                    is GroupCreateSideEffect.ShowPermissionDeniedDialog ->
-                        isGalleryPermission =
-                            true
+                    is GroupCreateSideEffect.ShowGalleryToast ->
+                        isGalleryPermission = true
+
+                    is GroupCreateSideEffect.ShowDialog -> viewModel.showDialog(true)
 
                     is GroupCreateSideEffect.RequestImagePicker -> context.launchImagePicker(
                         galleryLauncher,
@@ -114,6 +119,16 @@ fun GroupCreateRoute(
             Toast.LENGTH_SHORT
         ).show()
         isGalleryPermission = false
+    }
+
+    if (showDialog) {
+        NoostakDialog(
+            dialogType = DialogType.GROUP,
+            onClick = {
+                viewModel.navigateToGroupCreateSuccess()
+            },
+            onDismissRequest = { viewModel.showDialog(false) }
+        )
     }
 
     GroupCreateScreen(
@@ -172,7 +187,8 @@ fun GroupCreateScreen(
             NoostakTextField(
                 textFieldType = TextFieldType.GROUP,
                 value = groupProfileState.groupName,
-                onValueChange = { onNameChange(it) }
+                onValueChange = { onNameChange(it) },
+                lengthTextStyle = NoostakTheme.typography.c3Regular
             )
         }
         NoostakBottomButton(
