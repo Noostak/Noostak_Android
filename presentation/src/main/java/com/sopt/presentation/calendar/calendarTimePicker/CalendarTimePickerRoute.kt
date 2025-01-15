@@ -1,0 +1,222 @@
+package com.sopt.presentation.calendar.calendarTimePicker
+
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.checkbox.CircularCheckbox
+import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
+import com.sopt.core.designsystem.component.text.NoostakHeaderText
+import com.sopt.core.designsystem.component.text.NoostakSubHeaderText
+import com.sopt.core.designsystem.component.timepicker.NoostakTimePicker
+import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.noRippleClickable
+import com.sopt.presentation.R
+
+@Composable
+fun CalendarTimePickerRoute(
+    appointmentName: String,
+    category: String,
+    time: Int,
+    isSingleDateMode: Boolean,
+    dates: List<String>,
+    navigateToCheck: (String, String, Int, Boolean, List<String>, String) -> Unit,
+    calendarTimePickerViewModel: CalendarTimePickerViewModel = hiltViewModel()
+) {
+    LaunchedEffect(key1 = calendarTimePickerViewModel.sideEffects) {
+        calendarTimePickerViewModel.sideEffects.collect { sideEffect ->
+            when (sideEffect) {
+                is CalendarTimePickerSideEffect.NavigateToCheck -> {
+                    navigateToCheck(
+                        sideEffect.appointmentName,
+                        sideEffect.category,
+                        sideEffect.time,
+                        sideEffect.isSingleDateMode,
+                        sideEffect.dates,
+                        sideEffect.selectTime
+                    )
+                }
+            }
+        }
+    }
+
+    CalendarTimePickerScreen(
+        onButtonClick = calendarTimePickerViewModel::navigateToCalendarCheck,
+        appointmentName = appointmentName,
+        category = category,
+        time = time,
+        isSingleDateMode = isSingleDateMode,
+        dates = dates
+    )
+}
+
+@Composable
+fun CalendarTimePickerScreen(
+    onButtonClick: (String, String, Int, Boolean, List<String>, String) -> Unit,
+    appointmentName: String,
+    category: String,
+    time: Int,
+    isSingleDateMode: Boolean,
+    dates: List<String>
+) {
+
+    val typography = NoostakTheme.typography
+    val colors = NoostakTheme.colors
+    var isChecked by remember { mutableStateOf(false) }
+    var showPicker by remember { mutableStateOf(true) }
+
+    var selectedStartHour by remember { mutableStateOf<Int?>(0) }
+    var selectedStartMinute by remember { mutableStateOf<Int?>(0) }
+    var selectedEndHour by remember { mutableStateOf<Int?>(18) }
+    var selectedEndMinute by remember { mutableStateOf<Int?>(0) }
+
+    Scaffold(
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding(),
+        topBar = {
+            NoostakTopAppBar(
+                title = stringResource(R.string.text_calendar_appointment),
+                isIconVisible = false
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(dimensionResource(id = R.dimen.horizontal_padding))
+        ) {
+            Spacer(modifier = Modifier.height(18.dp))
+
+            NoostakProgressBar(progressBar = listOf(false, false, true))
+
+            NoostakHeaderText(text = stringResource(R.string.text_calendar_appointment_time_choose))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 18.dp)
+                    .height(54.dp)
+                    .border(
+                        width = 0.5.dp,
+                        color = colors.gray500,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .background(
+                        color = if (isChecked) colors.gray50 else colors.white,
+                        shape = RoundedCornerShape(10.dp)
+                    )
+                    .noRippleClickable {
+                        isChecked = !isChecked
+                        showPicker = !isChecked
+                    }
+                    .padding(horizontal = 12.dp, vertical = 15.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.text_calendar_appointment_time_select),
+                    modifier = Modifier.weight(1f),
+                    style = typography.b4SemiBold,
+                    color = colors.gray900
+                )
+                CircularCheckbox(
+                    isChecked = isChecked,
+                    onCheckedChange = {
+                        isChecked = it
+                        showPicker = !it
+                        if (isChecked) {
+                            selectedStartHour = null
+                            selectedStartMinute = null
+                            selectedEndHour = null
+                            selectedEndMinute = null
+                        }
+                    }
+
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 32.dp, bottom = 9.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                NoostakSubHeaderText(stringResource(R.string.text_calendar_appointment_time_check), modifier = Modifier.weight(1f))
+                Box(
+                    modifier = Modifier.size(24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        imageVector = ImageVector.vectorResource(
+                            id = if (isChecked) R.drawable.ic_calendar_off else R.drawable.ic_calendar_on
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
+
+            if (showPicker) {
+                NoostakTimePicker { startHour, startMinute, endHour, endMinute ->
+                    selectedStartHour = startHour
+                    selectedStartMinute = startMinute
+                    selectedEndHour = endHour
+                    selectedEndMinute = endMinute
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            NoostakBottomButton(
+                text = stringResource(R.string.text_calendar_appointment_next),
+                onButtonClick = {
+                    val selectTime = if (isChecked) null else "${selectedStartHour?.toString()?.padStart(2, '0')}:${selectedStartMinute?.toString()?.padStart(2, '0')} ~ ${selectedEndHour?.toString()?.padStart(2, '0')}:${selectedEndMinute?.toString()?.padStart(2, '0')}"
+                    onButtonClick(
+                        appointmentName,
+                        category,
+                        time,
+                        isSingleDateMode,
+                        dates,
+                        selectTime ?: "null"
+                    )
+                },
+                deactivateColor = NoostakTheme.colors.gray500,
+                activateColor = NoostakTheme.colors.gray900,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        }
+    }
+}
+
+
+
