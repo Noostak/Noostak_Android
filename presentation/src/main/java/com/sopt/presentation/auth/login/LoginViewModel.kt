@@ -62,15 +62,7 @@ class LoginViewModel @Inject constructor(
 
     // Google Login
     fun googleLogin(launcher: ActivityResultLauncher<IntentSenderRequest>) {
-        val signInRequest = BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    .setServerClientId(googleClientId)
-                    .setFilterByAuthorizedAccounts(false)
-                    .build()
-            )
-            .build()
+        val signInRequest = createGoogleSignInRequest()
 
         oneTapClient.beginSignIn(signInRequest)
             .addOnSuccessListener { result ->
@@ -79,6 +71,18 @@ class LoginViewModel @Inject constructor(
             .addOnFailureListener { exception ->
                 handleError(exception, R.string.toast_google_login_failed)
             }
+    }
+
+    private fun createGoogleSignInRequest(): BeginSignInRequest {
+        return BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    .setServerClientId(googleClientId)
+                    .setFilterByAuthorizedAccounts(false)
+                    .build()
+            )
+            .build()
     }
 
     fun handleGoogleLoginResult(credential: SignInCredential) {
