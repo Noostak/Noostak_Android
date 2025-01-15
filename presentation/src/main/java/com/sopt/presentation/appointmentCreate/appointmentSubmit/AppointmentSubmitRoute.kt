@@ -167,7 +167,7 @@ fun AppointmentInfoBox(
             style = NoostakTheme.typography.b4SemiBold
         )
         AppointmentInfoRow(
-            icon = R.drawable.ic_appointment_clock,
+            icon = R.drawable.ic_appointment_name,
             label = stringResource(R.string.text_appointment_submit_name),
             content = appointmentName
         )
