@@ -98,6 +98,18 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    // 기존 사용자 확인
+    private fun checkIsNewUser(authId: String) {
+        viewModelScope.launch {
+            if (userInfoRepository.getIsAutoLogin().first()) {
+                emitSideEffect(LoginSideEffect.NavigateToHome)
+            } else {
+                emitSideEffect(LoginSideEffect.NavigateSignUp(authId))
+                saveIsAutoLogin(true)
+            }
+        }
+    }
+
     // TODO : 서버 연결 시 사용
     private fun saveUserInfo(response: UserEntity) {
         viewModelScope.launch {
@@ -113,17 +125,6 @@ class LoginViewModel @Inject constructor(
             showToast(R.string.toast_login_cancelled)
         } else {
             showToast(errorMessageResId, error.localizedMessage.orEmpty())
-        }
-    }
-
-    private fun checkIsNewUser(authId: String) {
-        viewModelScope.launch {
-            if (userInfoRepository.getIsAutoLogin().first()) {
-                emitSideEffect(LoginSideEffect.NavigateToHome)
-            } else {
-                emitSideEffect(LoginSideEffect.NavigateSignUp(authId))
-                saveIsAutoLogin(true)
-            }
         }
     }
 
