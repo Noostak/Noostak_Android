@@ -49,7 +49,7 @@ class LoginViewModel @Inject constructor(
             when {
                 token != null -> {
                     showToast(R.string.toast_kakao_login_success)
-                    navigateToSignup(token.accessToken)
+                    postLogin(token.accessToken)
                 }
 
                 error != null -> handleError(error, R.string.toast_kakao_login_failed)
@@ -80,10 +80,17 @@ class LoginViewModel @Inject constructor(
 
     fun handleGoogleLoginResult(credential: SignInCredential) {
         if (!credential.googleIdToken.isNullOrEmpty()) {
-            navigateToSignup(credential.googleIdToken.toString())
+            postLogin(credential.googleIdToken.toString())
             showToast(R.string.toast_google_login_success)
         } else {
             showToast(R.string.toast_google_login_failed)
+        }
+    }
+
+    private fun postLogin(token: String) {
+        viewModelScope.launch {
+            // TODO : 서버 연결
+            navigateToSignup(token)
         }
     }
 
