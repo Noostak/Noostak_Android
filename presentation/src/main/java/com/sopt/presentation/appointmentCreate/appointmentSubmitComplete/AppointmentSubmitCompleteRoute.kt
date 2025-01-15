@@ -143,9 +143,13 @@ fun SubmittedAppointmentInfoBox(
             icon = R.drawable.ic_appointment_calendar,
             label = stringResource(R.string.text_appointment_submit_time),
             content = if (isConsecutive) {
-                "${appointmentDate.first()} ~ ${appointmentDate.last()}"
+                stringResource(
+                    R.string.text_appointment_submit_complete_date_consecutive,
+                    appointmentDate.first(),
+                    appointmentDate.last()
+                )
             } else {
-                appointmentDate.joinToString(", ")
+                appointmentDate.joinToString(stringResource(R.string.text_appointment_submit_complete_separator))
             },
             additionalContent = appointmentTime
         )
