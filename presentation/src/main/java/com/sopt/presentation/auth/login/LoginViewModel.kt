@@ -10,11 +10,14 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.identity.SignInCredential
 import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.common.Constants.BEARER
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.sopt.core.type.SocialType
 import com.sopt.core.util.BaseViewModel
+import com.sopt.domain.entity.UserEntity
+import com.sopt.domain.repository.UserInfoRepository
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,7 +26,8 @@ import javax.inject.Named
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    @Named("GoogleClientId") private val googleClientId: String
+    @Named("GoogleClientId") private val googleClientId: String,
+    private val userInfoRepository: UserInfoRepository
 ) : BaseViewModel<LoginSideEffect>() {
 
     private lateinit var oneTapClient: SignInClient
@@ -95,6 +99,18 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    // TODO : 서버 연결 시 사용
+    private fun saveUserInfo(response: UserEntity) {
+        viewModelScope.launch {
+            val isAutoLogin = response.accessToken != null
+
+            saveAccessToken(response.accessToken ?: "")
+            saveRefreshToken(response.refreshToken ?: "")
+            saveUserId(response.userId ?: 0)
+            saveIsAutoLogin(isAutoLogin)
+        }
+    }
+
     private fun handleError(error: Throwable, @StringRes errorMessageResId: Int) {
         if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
             showToast(R.string.toast_login_cancelled)
@@ -118,5 +134,29 @@ class LoginViewModel @Inject constructor(
                 args = formatArgs.joinToString(separator = ", ")
             )
         )
+    }
+
+    private fun saveAccessToken(accessToken: String) {
+        viewModelScope.launch {
+            userInfoRepository.saveAccessToken(BEARER + accessToken)
+        }
+    }
+
+    private fun saveRefreshToken(refreshToken: String) {
+        viewModelScope.launch {
+            userInfoRepository.saveRefreshToken(BEARER + refreshToken)
+        }
+    }
+
+    private fun saveUserId(userId: Int) {
+        viewModelScope.launch {
+            userInfoRepository.saveUserId(userId)
+        }
+    }
+
+    private fun saveIsAutoLogin(autoLogin: Boolean) {
+        viewModelScope.launch {
+            userInfoRepository.saveIsAutoLogin(autoLogin)
+        }
     }
 }
