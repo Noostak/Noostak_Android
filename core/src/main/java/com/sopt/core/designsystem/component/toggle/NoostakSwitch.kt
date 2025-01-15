@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 
-
 @Composable
 fun NoostakSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
     val backgroundColor = if (checked) NoostakTheme.colors.mint else NoostakTheme.colors.gray200
@@ -34,4 +33,3 @@ fun NoostakSwitch(checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
         )
     }
 }
-

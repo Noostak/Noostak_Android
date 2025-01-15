@@ -1,6 +1,5 @@
 package com.sopt.core.designsystem.component.checkbox
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

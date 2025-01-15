@@ -197,7 +197,6 @@ fun NoostakTimePicker(
             },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -294,6 +293,7 @@ fun NoostakTimePicker(
         }
     }
 }
+
 @Composable
 fun TimeDisplay(
     label: String,
@@ -331,5 +331,3 @@ fun TimeDisplay(
         )
     }
 }
-
-

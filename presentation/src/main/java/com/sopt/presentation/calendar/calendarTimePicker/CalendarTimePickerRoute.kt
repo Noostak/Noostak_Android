@@ -88,7 +88,6 @@ fun CalendarTimePickerScreen(
     isSingleDateMode: Boolean,
     dates: List<String>
 ) {
-
     val typography = NoostakTheme.typography
     val colors = NoostakTheme.colors
     var isChecked by remember { mutableStateOf(false) }
@@ -217,6 +216,3 @@ fun CalendarTimePickerScreen(
         }
     }
 }
-
-
-

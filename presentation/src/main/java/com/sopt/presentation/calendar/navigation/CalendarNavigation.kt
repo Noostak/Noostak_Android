@@ -67,7 +67,7 @@ fun NavController.navigateCalendarCheck(
     navOptions: NavOptions? = null
 ) {
     navigate(
-        route = CalendarCheck(appointmentName = appointmentName, category = category, time = time, isSingleDateMode = isSingleDateMode, dates = dates, selectTime=selectTime),
+        route = CalendarCheck(appointmentName = appointmentName, category = category, time = time, isSingleDateMode = isSingleDateMode, dates = dates, selectTime = selectTime),
         navOptions = navOptions
     )
 }
