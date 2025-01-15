@@ -35,7 +35,8 @@ import com.sopt.presentation.appointmentCreate.appointmentSubmit.AppointmentInfo
 fun AppointmentSubmitCompleteRoute(
     groupId: Long,
     appointmentName: String,
-    appointmentDate: String,
+    isConsecutive: Boolean,
+    appointmentDate: List<String>,
     appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int,
@@ -55,6 +56,7 @@ fun AppointmentSubmitCompleteRoute(
     AppointmentSubmitCompleteScreen(
         groupId = groupId,
         appointmentName = appointmentName,
+        isConsecutive = isConsecutive,
         appointmentDate = appointmentDate,
         appointmentTime = appointmentTime,
         appointmentCategory = appointmentCategory,
@@ -67,7 +69,8 @@ fun AppointmentSubmitCompleteRoute(
 fun AppointmentSubmitCompleteScreen(
     groupId: Long,
     appointmentName: String,
-    appointmentDate: String,
+    isConsecutive: Boolean,
+    appointmentDate: List<String>,
     appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int,
@@ -95,6 +98,7 @@ fun AppointmentSubmitCompleteScreen(
         Spacer(modifier = Modifier.height(56.dp))
         SubmittedAppointmentInfoBox(
             appointmentName = appointmentName,
+            isConsecutive = isConsecutive,
             appointmentDate = appointmentDate,
             appointmentTime = appointmentTime,
             appointmentCategory = appointmentCategory,
@@ -113,7 +117,8 @@ fun AppointmentSubmitCompleteScreen(
 @Composable
 fun SubmittedAppointmentInfoBox(
     appointmentName: String,
-    appointmentDate: String,
+    isConsecutive: Boolean,
+    appointmentDate: List<String>,
     appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int
@@ -137,7 +142,11 @@ fun SubmittedAppointmentInfoBox(
         AppointmentInfoRow(
             icon = R.drawable.ic_appointment_calendar,
             label = stringResource(R.string.text_appointment_submit_time),
-            content = appointmentDate,
+            content = if (isConsecutive) {
+                "${appointmentDate.first()} ~ ${appointmentDate.last()}"
+            } else {
+                appointmentDate.joinToString(", ")
+            },
             additionalContent = appointmentTime
         )
         AppointmentInfoRow(
@@ -161,7 +170,8 @@ fun PreviewAppointmentSubmitCompleteRoute() {
         AppointmentSubmitCompleteScreen(
             groupId = 1,
             appointmentName = "누스탁 3차 회의",
-            appointmentDate = "09/27 ~ 09/31",
+            isConsecutive = false,
+            appointmentDate = listOf("09/27", "09/28", "09/29", "09/30"),
             appointmentTime = "10:00 ~ 11:00",
             appointmentCategory = "기타",
             appointmentDuration = 2,

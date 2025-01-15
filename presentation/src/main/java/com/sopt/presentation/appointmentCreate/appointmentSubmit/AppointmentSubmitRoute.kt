@@ -38,12 +38,13 @@ import com.sopt.presentation.R
 fun AppointmentSubmitRoute(
     groupId: Long,
     appointmentName: String,
-    appointmentDate: String,
+    isConsecutive: Boolean,
+    appointmentDate: List<String>,
     appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int,
     navigateUp: () -> Unit,
-    navigateToAppointmentSubmitConfirm: (Long, String, String, String?, String, Int) -> Unit,
+    navigateToAppointmentSubmitConfirm: (Long, String, Boolean, List<String>, String?, String, Int) -> Unit,
     appointmentSubmitViewModel: AppointmentSubmitViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = appointmentSubmitViewModel.sideEffects) {
@@ -54,6 +55,7 @@ fun AppointmentSubmitRoute(
                     navigateToAppointmentSubmitConfirm(
                         sideEffect.groupId,
                         sideEffect.appointmentName,
+                        sideEffect.isConsecutive,
                         sideEffect.appointmentDate,
                         sideEffect.appointmentTime,
                         sideEffect.appointmentCategory,
@@ -66,6 +68,7 @@ fun AppointmentSubmitRoute(
     AppointmentSubmitScreen(
         groupId = groupId,
         appointmentName = appointmentName,
+        isConsecutive = isConsecutive,
         appointmentDate = appointmentDate,
         appointmentTime = appointmentTime,
         appointmentCategory = appointmentCategory,
@@ -79,12 +82,13 @@ fun AppointmentSubmitRoute(
 fun AppointmentSubmitScreen(
     groupId: Long,
     appointmentName: String,
-    appointmentDate: String,
+    isConsecutive: Boolean,
+    appointmentDate: List<String>,
     appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int,
     onBackButtonClick: () -> Unit,
-    onConfirmButtonClick: (Long, String, String, String?, String, Int) -> Unit
+    onConfirmButtonClick: (Long, String, Boolean, List<String>, String?, String, Int) -> Unit
 ) {
     Scaffold(
         modifier = Modifier
@@ -118,6 +122,7 @@ fun AppointmentSubmitScreen(
             )
             AppointmentInfoBox(
                 appointmentName = appointmentName,
+                isConsecutive = isConsecutive,
                 appointmentDate = appointmentDate,
                 appointmentTime = appointmentTime,
                 appointmentCategory = appointmentCategory,
@@ -132,6 +137,7 @@ fun AppointmentSubmitScreen(
                     onConfirmButtonClick(
                         groupId,
                         appointmentName,
+                        isConsecutive,
                         appointmentDate,
                         appointmentTime,
                         appointmentCategory,
@@ -146,7 +152,8 @@ fun AppointmentSubmitScreen(
 @Composable
 fun AppointmentInfoBox(
     appointmentName: String,
-    appointmentDate: String,
+    isConsecutive: Boolean,
+    appointmentDate: List<String>,
     appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int
@@ -174,7 +181,11 @@ fun AppointmentInfoBox(
         AppointmentInfoRow(
             icon = R.drawable.ic_appointment_calendar,
             label = stringResource(R.string.text_appointment_submit_time),
-            content = appointmentDate,
+            content = if (isConsecutive) {
+                "${appointmentDate.first()} ~ ${appointmentDate.last()}"
+            } else {
+                appointmentDate.joinToString(", ")
+            },
             additionalContent = appointmentTime
         )
         AppointmentInfoRow(
@@ -252,12 +263,13 @@ fun PreviewAppointmentSubmitScreen() {
         AppointmentSubmitScreen(
             groupId = 1,
             appointmentName = "누스탁 3차 회의",
-            appointmentDate = "9/12 ~ 9/17",
+            isConsecutive = false,
+            appointmentDate = listOf("09/27", "09/28", "09/29", "09/30"),
             appointmentTime = "10:00 ~ 18:00",
             appointmentCategory = "중요",
             appointmentDuration = 2,
             onBackButtonClick = {},
-            onConfirmButtonClick = { _, _, _, _, _, _ -> }
+            onConfirmButtonClick = { _, _, _, _, _, _, _ -> }
         )
     }
 }
