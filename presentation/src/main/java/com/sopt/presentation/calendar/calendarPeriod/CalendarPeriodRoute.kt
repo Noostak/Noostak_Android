@@ -1,8 +1,6 @@
 package com.sopt.presentation.calendar.calendarPeriod
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,9 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,6 +31,7 @@ import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.calendar.NoostakCalendar
 import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
 import com.sopt.core.designsystem.component.text.NoostakHeaderText
+import com.sopt.core.designsystem.component.toggle.NoostakSwitch
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
@@ -44,7 +41,7 @@ fun CalendarPeriodRoute(
     appointmentName: String,
     category: String,
     time: Int,
-    navigateToTimePicker: (String, String, Int, String, String, List<String>) -> Unit,
+    navigateToTimePicker: (String, String, Int, Boolean, List<String>) -> Unit,
     calendarPeriodViewModel: CalendarPeriodViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = calendarPeriodViewModel.sideEffects) {
@@ -55,8 +52,7 @@ fun CalendarPeriodRoute(
                         sideEffect.appointmentName,
                         sideEffect.category,
                         sideEffect.time,
-                        sideEffect.startDate,
-                        sideEffect.endDate,
+                        sideEffect.isSingleDateMode,
                         sideEffect.dates
                     )
                 }
@@ -65,6 +61,7 @@ fun CalendarPeriodRoute(
     }
 
     CalendarPeriodScreen(
+        onButtonClick = calendarPeriodViewModel::navigateToCalendarTimePicker,
         appointmentName = appointmentName,
         category = category,
         time = time,
@@ -74,6 +71,7 @@ fun CalendarPeriodRoute(
 
 @Composable
 fun CalendarPeriodScreen(
+    onButtonClick: (String, String, Int, Boolean, List<String>) -> Unit,
     appointmentName: String,
     category: String,
     time: Int,
@@ -81,6 +79,7 @@ fun CalendarPeriodScreen(
 ) {
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
+    var dates by remember { mutableStateOf(listOf<String>()) }
     var isSingleDateMode by remember { mutableStateOf(false) }
 
     val typography = NoostakTheme.typography
@@ -89,8 +88,7 @@ fun CalendarPeriodScreen(
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding)),
+            .navigationBarsPadding(),
         topBar = {
             NoostakTopAppBar(
                 title = stringResource(R.string.text_calendar_appointment),
@@ -102,6 +100,7 @@ fun CalendarPeriodScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(dimensionResource(id = R.dimen.horizontal_padding))
         ) {
             Spacer(modifier = Modifier.height(18.dp))
 
@@ -122,21 +121,9 @@ fun CalendarPeriodScreen(
                     textAlign = TextAlign.Start,
                     color = colors.gray900
                 )
-                // 색 지정되면 switch로 변경할게요
-                Image(
-                    painter = painterResource(
-                        id = if (isSingleDateMode) {
-                            R.drawable.ic_calendar_toggle_on
-                        } else {
-                            R.drawable.ic_calendar_toggle_off
-                        }
-                    ),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier
-                        .clickable {
-                            isSingleDateMode = !isSingleDateMode
-                        }
+                NoostakSwitch(
+                    checked = isSingleDateMode,
+                    onCheckedChange = { isSingleDateMode = it }
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -152,9 +139,18 @@ fun CalendarPeriodScreen(
                 start = startDate,
                 end = endDate,
                 isSingleDate = isSingleDateMode,
-                isRangeSelected = { start, end ->
-                    startDate = start
-                    endDate = end
+                isRangeSelected = { selectedDates ->
+                    if (isSingleDateMode) {
+                        dates = selectedDates
+                        startDate = ""
+                        endDate = ""
+                    } else {
+                        dates = selectedDates
+                        if (selectedDates.isNotEmpty()) {
+                            startDate = selectedDates.first()
+                            endDate = selectedDates.last()
+                        }
+                    }
                 },
                 days = days
             )
@@ -163,8 +159,10 @@ fun CalendarPeriodScreen(
 
             NoostakBottomButton(
                 text = stringResource(R.string.text_calendar_appointment_next),
-                onButtonClick = {},
-                isEnabled = startDate.isNotEmpty() && endDate.isNotEmpty(),
+                onButtonClick = {
+                    onButtonClick(appointmentName, category, time, isSingleDateMode, dates)
+                },
+                isEnabled = dates.isNotEmpty(),
                 deactivateColor = NoostakTheme.colors.gray500,
                 activateColor = NoostakTheme.colors.gray900,
                 modifier = Modifier.padding(bottom = 16.dp)

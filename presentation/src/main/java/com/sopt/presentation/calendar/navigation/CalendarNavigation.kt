@@ -10,6 +10,7 @@ import com.sopt.core.navigation.MainTabRoute
 import com.sopt.presentation.calendar.CalendarRoute
 import com.sopt.presentation.calendar.calendarInfo.CalendarInfoRoute
 import com.sopt.presentation.calendar.calendarPeriod.CalendarPeriodRoute
+import com.sopt.presentation.calendar.calendarTimePicker.CalendarTimePickerRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateCalendar(
@@ -46,13 +47,27 @@ fun NavController.navigateCalendarTimePicker(
     appointmentName: String,
     category: String,
     time: Int,
-    startDate: String,
-    endDate: String,
-    dates: List<String>,
+    isSingleDateMode: Boolean,
+    dates: List<String>?,
     navOptions: NavOptions? = null
 ) {
     navigate(
-        route = CalendarTimePicker(appointmentName = appointmentName, category = category, time = time, startDate = startDate, endDate = endDate, dates = dates),
+        route = CalendarTimePicker(appointmentName = appointmentName, category = category, time = time, isSingleDateMode = isSingleDateMode, dates = dates),
+        navOptions = navOptions
+    )
+}
+
+fun NavController.navigateCalendarCheck(
+    appointmentName: String,
+    category: String,
+    time: Int,
+    isSingleDateMode: Boolean,
+    dates: List<String>?,
+    selectTime: String,
+    navOptions: NavOptions? = null
+) {
+    navigate(
+        route = CalendarCheck(appointmentName = appointmentName, category = category, time = time, isSingleDateMode = isSingleDateMode, dates = dates, selectTime=selectTime),
         navOptions = navOptions
     )
 }
@@ -88,14 +103,34 @@ fun NavGraphBuilder.calendarNavGraph(
             appointmentName = args.appointmentName,
             category = args.category,
             time = args.time,
-            navigateToTimePicker = { appointmentName, category, time, startDate, endDate, dates ->
+            navigateToTimePicker = { appointmentName, category, time, isSingleDateMode, dates ->
                 navHostController.navigateCalendarTimePicker(
                     appointmentName = appointmentName,
                     category = category,
                     time = time,
-                    startDate = startDate,
-                    endDate = endDate,
+                    isSingleDateMode = isSingleDateMode,
                     dates = dates
+                )
+            }
+        )
+    }
+
+    composable<CalendarTimePicker> {
+        val args = it.toRoute<CalendarTimePicker>()
+        CalendarTimePickerRoute(
+            appointmentName = args.appointmentName,
+            category = args.category,
+            time = args.time,
+            isSingleDateMode = args.isSingleDateMode,
+            dates = args.dates ?: emptyList(),
+            navigateToCheck = { appointmentName, category, time, isSingleDateMode, dates, selectTime ->
+                navHostController.navigateCalendarCheck(
+                    appointmentName = appointmentName,
+                    category = category,
+                    time = time,
+                    isSingleDateMode = isSingleDateMode,
+                    dates = dates,
+                    selectTime = selectTime
                 )
             }
         )
@@ -120,7 +155,16 @@ data class CalendarTimePicker(
     val appointmentName: String,
     val category: String,
     val time: Int,
-    val startDate: String = "",
-    val endDate: String = "",
+    val isSingleDateMode: Boolean,
     val dates: List<String>? = null
+) : MainTabRoute
+
+@Serializable
+data class CalendarCheck(
+    val appointmentName: String,
+    val category: String,
+    val time: Int,
+    val isSingleDateMode: Boolean,
+    val dates: List<String>? = null,
+    val selectTime: String
 ) : MainTabRoute

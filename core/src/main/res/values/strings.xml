@@ -25,7 +25,16 @@
 
     <!-- Profile Image Picker -->
     <string name="image_profile_image_picker_description">Add Profile Image By Camera Button</string>
+    <string name="category_chip_important">중요</string>
+    <string name="category_chip_schedule">일정</string>
+    <string name="category_chip_hobby">취미</string>
+    <string name="category_chip_etc">기타</string>
 
     <!-- Noostak Calendar -->
     <string name="text_noostak_calendar_7days">최대 7일까지 선택할 수 있어요</string>
+
+    <!-- Noostak Time Picker -->
+    <string name="text_noostak_time_picker_start">약속 시작 시간</string>
+    <string name="text_noostak_time_picker_end">약속 종료 시간</string>
+    <string name="text_noostak_time_picker_wave">~</string>
 </resources>

@@ -9,8 +9,8 @@ import javax.inject.Inject
 class CalendarPeriodViewModel @Inject constructor() : BaseViewModel<CalendarPeriodSideEffect>() {
     val days = immutableListOf("일", "월", "화", "수", "목", "금", "토")
 
-    fun navigateToCalendarTimePicker(appointmentName: String, category: String, time: Int, startDate: String, endDate: String, dates: List<String>) {
-        emitSideEffect(CalendarPeriodSideEffect.NavigateToTimePicker(appointmentName, category, time, startDate, endDate, dates))
+    fun navigateToCalendarTimePicker(appointmentName: String, category: String, time: Int, isSingleDateMode: Boolean, dates: List<String>) {
+        emitSideEffect(CalendarPeriodSideEffect.NavigateToTimePicker(appointmentName, category, time, isSingleDateMode, dates))
     }
 }
 
@@ -19,8 +19,7 @@ sealed class CalendarPeriodSideEffect {
         val appointmentName: String,
         val category: String,
         val time: Int,
-        val startDate: String,
-        val endDate: String,
+        val isSingleDateMode: Boolean,
         val dates: List<String>
     ) : CalendarPeriodSideEffect()
 }

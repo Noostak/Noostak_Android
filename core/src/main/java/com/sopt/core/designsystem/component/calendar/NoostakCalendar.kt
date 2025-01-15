@@ -2,7 +2,6 @@ package com.sopt.core.designsystem.component.calendar
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import com.sopt.core.R
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.noRippleClickable
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -39,7 +39,8 @@ fun NoostakCalendar(
     start: String,
     end: String,
     isSingleDate: Boolean,
-    isRangeSelected: (String, String) -> Unit,
+   // isRangeSelected: (String, String) -> Unit,
+    isRangeSelected: (List<String>) -> Unit,
     modifier: Modifier = Modifier,
     days: List<String>
 ) {
@@ -63,6 +64,18 @@ fun NoostakCalendar(
         endDate = ""
     }
 
+    LaunchedEffect(selectedDates, startDate, endDate) {
+        if (isSingleDate) {
+            isRangeSelected(selectedDates)
+        } else if (startDate.isNotEmpty() && endDate.isNotEmpty()) {
+            val startLocalDate = LocalDate.parse(startDate)
+            val endLocalDate = LocalDate.parse(endDate)
+            val rangeDates = (0..endLocalDate.toEpochDay() - startLocalDate.toEpochDay())
+                .map { startLocalDate.plusDays(it).toString() }
+            isRangeSelected(rangeDates)
+        }
+    }
+
     LaunchedEffect(showMessage) {
         if (showMessage) {
             kotlinx.coroutines.delay(3000)
@@ -80,7 +93,7 @@ fun NoostakCalendar(
                 contentDescription = null,
                 modifier = Modifier
                     .size(16.dp)
-                    .clickable {
+                    .noRippleClickable {
                         if (month == 1) {
                             year -= 1
                             month = 12
@@ -91,7 +104,7 @@ fun NoostakCalendar(
             )
             Spacer(modifier = Modifier.width(10.dp))
             Text(
-                text = "$year 년 $month 월",
+                text = "${year}년 ${month}월",
                 style = typography.b1SemiBold,
                 color = colors.gray900,
                 modifier = Modifier.padding(vertical = 13.dp, horizontal = 10.dp)
@@ -102,7 +115,7 @@ fun NoostakCalendar(
                 contentDescription = null,
                 modifier = Modifier
                     .size(16.dp)
-                    .clickable {
+                    .noRippleClickable {
                         if (month == 12) {
                             year += 1
                             month = 1
@@ -211,7 +224,7 @@ fun NoostakCalendar(
                                 style = typography.c3Regular,
                                 textAlign = TextAlign.Center,
                                 color = colors.gray900,
-                                modifier = Modifier.padding(vertical = 11.dp).clickable(enabled = dateText.isNotEmpty()) {
+                                modifier = Modifier.padding(vertical = 11.dp).noRippleClickable {
                                     if (isSingleDate) {
                                         if (dateValue in selectedDates) {
                                             selectedDates = selectedDates - dateValue
@@ -250,7 +263,6 @@ fun NoostakCalendar(
                                                 }
                                             }
                                         }
-                                        isRangeSelected(startDate, endDate)
                                     }
                                 }
                             )

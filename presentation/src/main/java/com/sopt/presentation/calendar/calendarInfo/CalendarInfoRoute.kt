@@ -1,7 +1,6 @@
 package com.sopt.presentation.calendar.calendarInfo
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,6 +40,7 @@ import com.sopt.core.designsystem.component.text.NoostakSubHeaderText
 import com.sopt.core.designsystem.component.textfield.NoostakTextField
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.type.TextFieldType
 import com.sopt.presentation.R
 
@@ -83,8 +83,7 @@ fun CalendarInfoScreen(
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
-            .navigationBarsPadding()
-            .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding)),
+            .navigationBarsPadding(),
         topBar = {
             NoostakTopAppBar(
                 title = stringResource(R.string.text_calendar_appointment),
@@ -96,6 +95,7 @@ fun CalendarInfoScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .padding(dimensionResource(id = R.dimen.horizontal_padding))
         ) {
             Spacer(modifier = Modifier.height(18.dp))
 
@@ -133,7 +133,7 @@ fun CalendarInfoScreen(
                     Box(
                         modifier = Modifier
                             .background(Color.Transparent)
-                            .clickable { selectedCategory = category }
+                            .noRippleClickable { selectedCategory = category }
                     ) {
                         NoostakChip(
                             text = category,
@@ -179,7 +179,7 @@ fun CalendarInfoScreen(
                         modifier = Modifier.padding(end = 12.dp)
                     )
                 }
-            }
+            } // 이 부분 기획이 몇글자인지, 글씨 써지는 방식 등등,, 정해주면 수정할게요
 
             Spacer(modifier = Modifier.weight(1f))
 
