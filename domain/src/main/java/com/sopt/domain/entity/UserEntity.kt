@@ -6,5 +6,5 @@ data class UserEntity(
     val userId: Int?,
     val isAutoLogin: Boolean,
     val nickName: String,
-    val profileImage: String
+    val profileImage: String?
 )
