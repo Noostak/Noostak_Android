@@ -10,7 +10,6 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.identity.SignInCredential
 import com.kakao.sdk.auth.model.OAuthToken
-import com.kakao.sdk.common.Constants.BEARER
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
@@ -135,5 +134,9 @@ class LoginViewModel @Inject constructor(
                 args = formatArgs.joinToString(separator = ", ")
             )
         )
+    }
+
+    companion object {
+        private const val BEARER = "Bearer "
     }
 }
