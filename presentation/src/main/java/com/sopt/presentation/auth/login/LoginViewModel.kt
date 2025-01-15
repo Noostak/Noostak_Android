@@ -81,11 +81,13 @@ class LoginViewModel @Inject constructor(
     }
 
     fun handleGoogleLoginResult(credential: SignInCredential) {
-        if (!credential.googleIdToken.isNullOrEmpty()) {
-            postLogin(credential.googleIdToken.toString(), SocialType.GOOGLE)
-            showToast(R.string.toast_google_login_success)
-        } else {
-            showToast(R.string.toast_google_login_failed)
+        viewModelScope.launch {
+            if (!credential.googleIdToken.isNullOrEmpty()) {
+                postLogin(credential.googleIdToken.toString(), SocialType.GOOGLE)
+                showToast(R.string.toast_google_login_success)
+            } else {
+                showToast(R.string.toast_google_login_failed)
+            }
         }
     }
 
