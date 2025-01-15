@@ -102,12 +102,10 @@ class LoginViewModel @Inject constructor(
     // TODO : 서버 연결 시 사용
     private fun saveUserInfo(response: UserEntity) {
         viewModelScope.launch {
-            val isAutoLogin = response.accessToken != null
-
             saveAccessToken(response.accessToken ?: "")
             saveRefreshToken(response.refreshToken ?: "")
             saveUserId(response.userId ?: 0)
-            saveIsAutoLogin(isAutoLogin)
+            saveIsAutoLogin(response.accessToken.isNullOrBlank())
         }
     }
 
