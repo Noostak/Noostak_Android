@@ -20,6 +20,7 @@ import com.sopt.domain.entity.UserEntity
 import com.sopt.domain.repository.UserInfoRepository
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -95,7 +96,7 @@ class LoginViewModel @Inject constructor(
     private fun postLogin(token: String, socialType: SocialType) {
         viewModelScope.launch {
             // TODO : 서버 연결
-            navigateToSignup(token)
+            checkIsNewUser(token)
         }
     }
 
@@ -117,12 +118,15 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun navigateToSignup(authId: String) {
-        emitSideEffect(LoginSideEffect.NavigateSignUp(authId))
-    }
-
-    private fun navigateToHome() {
-        emitSideEffect(LoginSideEffect.NavigateToHome)
+    private fun checkIsNewUser(authId: String) {
+        viewModelScope.launch {
+            if (userInfoRepository.getIsAutoLogin().first()) {
+                emitSideEffect(LoginSideEffect.NavigateToHome)
+            } else {
+                emitSideEffect(LoginSideEffect.NavigateSignUp(authId))
+                saveIsAutoLogin(true)
+            }
+        }
     }
 
     private fun showToast(@StringRes messageResId: Int, vararg formatArgs: String) {
