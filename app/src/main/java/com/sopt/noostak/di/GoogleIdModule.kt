@@ -10,7 +10,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AuthModule {
+object GoogleIdModule {
     @Provides
     @Singleton
     @Named("GoogleClientId")
