@@ -25,15 +25,11 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun validateUserName(userName: String) {
-        viewModelScope.launch {
-            _signUpState.update { it.copy(isNameCheck = userName.length in 1..10) }
-        }
+        _signUpState.update { it.copy(isNameCheck = userName.length in 1..10) }
     }
 
     fun updateGalleryPermissionState(isGranted: Boolean) {
-        viewModelScope.launch {
-            _signUpState.update { it.copy(isPermissionGranted = isGranted) }
-        }
+        _signUpState.update { it.copy(isPermissionGranted = isGranted) }
     }
 
     fun requestGalleryPicker() {
@@ -49,7 +45,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun updateProfileImage(imageUri: String?) {
-        viewModelScope.launch {
+        executeInScope {
             _signUpState.update { it.copy(profileImageUri = imageUri) }
             imageUri?.let { userInfoRepository.saveProfileImage(it) }
         }
@@ -64,8 +60,12 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun saveUserNickName(nickName: String) {
-        viewModelScope.launch {
+        executeInScope {
             userInfoRepository.saveNickName(nickName)
         }
+    }
+
+    private fun executeInScope(block: suspend () -> Unit) {
+        viewModelScope.launch { block() }
     }
 }
