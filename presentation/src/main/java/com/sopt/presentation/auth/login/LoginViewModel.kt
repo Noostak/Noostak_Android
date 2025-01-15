@@ -13,6 +13,7 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.sopt.core.type.SocialType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,7 +50,7 @@ class LoginViewModel @Inject constructor(
             when {
                 token != null -> {
                     showToast(R.string.toast_kakao_login_success)
-                    postLogin(token.accessToken)
+                    postLogin(token.accessToken, SocialType.KAKAO)
                 }
 
                 error != null -> handleError(error, R.string.toast_kakao_login_failed)
@@ -80,14 +81,14 @@ class LoginViewModel @Inject constructor(
 
     fun handleGoogleLoginResult(credential: SignInCredential) {
         if (!credential.googleIdToken.isNullOrEmpty()) {
-            postLogin(credential.googleIdToken.toString())
+            postLogin(credential.googleIdToken.toString(), SocialType.GOOGLE)
             showToast(R.string.toast_google_login_success)
         } else {
             showToast(R.string.toast_google_login_failed)
         }
     }
 
-    private fun postLogin(token: String) {
+    private fun postLogin(token: String, socialType: SocialType) {
         viewModelScope.launch {
             // TODO : 서버 연결
             navigateToSignup(token)
