@@ -15,8 +15,6 @@ import com.kakao.sdk.user.UserApiClient
 import com.sopt.core.util.BaseViewModel
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -24,8 +22,7 @@ import javax.inject.Named
 class LoginViewModel @Inject constructor(
     @Named("GoogleClientId") private val googleClientId: String
 ) : BaseViewModel<LoginSideEffect>() {
-    private val _authId = MutableStateFlow("")
-    val authId: StateFlow<String> = _authId
+
     private lateinit var oneTapClient: SignInClient
 
     fun initializeGoogleSignIn(context: Context) {
@@ -79,7 +76,6 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun handleSuccess(authId: String, successMessageResId: Int) {
-        _authId.value = authId
         showToast(successMessageResId)
         navigateToSignup(authId)
     }
