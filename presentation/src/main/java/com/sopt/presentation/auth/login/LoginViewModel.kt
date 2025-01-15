@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.annotation.StringRes
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
@@ -15,6 +16,7 @@ import com.kakao.sdk.user.UserApiClient
 import com.sopt.core.util.BaseViewModel
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -31,18 +33,27 @@ class LoginViewModel @Inject constructor(
 
     // Kakao Login
     fun kakaoLogin(context: Context) {
-        val loginCallback: (OAuthToken?, Throwable?) -> Unit = { token, error ->
-            if (error != null) {
-                handleError(error, R.string.toast_kakao_login_failed)
-            } else if (token != null) {
-                handleSuccess(token.accessToken, R.string.toast_kakao_login_success)
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+            UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
+                handleKakaoLoginResult(token, error)
+            }
+        } else {
+            UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
+                handleKakaoLoginResult(token, error)
             }
         }
+    }
 
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-            UserApiClient.instance.loginWithKakaoTalk(context, callback = loginCallback)
-        } else {
-            UserApiClient.instance.loginWithKakaoAccount(context, callback = loginCallback)
+    private fun handleKakaoLoginResult(token: OAuthToken?, error: Throwable?) {
+        viewModelScope.launch {
+            when {
+                token != null -> {
+                    showToast(R.string.toast_kakao_login_success)
+                    navigateToSignup(token.accessToken)
+                }
+
+                error != null -> handleError(error, R.string.toast_kakao_login_failed)
+            }
         }
     }
 
@@ -69,15 +80,11 @@ class LoginViewModel @Inject constructor(
 
     fun handleGoogleLoginResult(credential: SignInCredential) {
         if (!credential.googleIdToken.isNullOrEmpty()) {
-            handleSuccess(credential.googleIdToken.toString(), R.string.toast_google_login_success)
+            navigateToSignup(credential.googleIdToken.toString())
+            showToast(R.string.toast_google_login_success)
         } else {
             showToast(R.string.toast_google_login_failed)
         }
-    }
-
-    private fun handleSuccess(authId: String, successMessageResId: Int) {
-        showToast(successMessageResId)
-        navigateToSignup(authId)
     }
 
     private fun handleError(error: Throwable, @StringRes errorMessageResId: Int) {
