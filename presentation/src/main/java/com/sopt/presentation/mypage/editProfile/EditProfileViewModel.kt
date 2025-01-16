@@ -83,6 +83,7 @@ class EditProfileViewModel @Inject constructor(
     fun updateProfileImage(imageUri: String?) {
         executeInScope {
             _userInfoState.update { it.copy(profileImage = imageUri) }
+            imageUri?.let { userInfoRepository.saveProfileImage(it) }
         }
     }
 
