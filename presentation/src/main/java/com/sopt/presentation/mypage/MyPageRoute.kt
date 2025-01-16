@@ -41,6 +41,7 @@ import com.sopt.presentation.mypage.component.MyPageProfileEditButton
 
 @Composable
 fun MyPageRoute(
+    navigateToEditProfile: () -> Unit,
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -52,6 +53,7 @@ fun MyPageRoute(
         viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
+                    is MyPageSideEffect.NavigateToEditProfile -> navigateToEditProfile()
                     is MyPageSideEffect.ShowDialog -> {
                         when (sideEffect.dialogType) {
                             DialogType.LOGOUT -> viewModel.showDialog(DialogType.LOGOUT, true)
@@ -88,9 +90,7 @@ fun MyPageRoute(
     }
 
     MyPageScreen(
-        onProfileEditBtnClick = {
-            // nav Profile 추가해야 함
-        },
+        onProfileEditBtnClick = { viewModel.navigateToEditProfile() },
         onPolicyBtnClick = {
             // browser intent 추가해야 함
         },

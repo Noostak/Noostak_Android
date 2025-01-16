@@ -16,6 +16,10 @@ class MyPageViewModel @Inject constructor() : BaseViewModel<MyPageSideEffect>() 
     private val _showWithdrawalDialog = MutableStateFlow(false)
     val showWithdrawalDialog: StateFlow<Boolean> get() = _showWithdrawalDialog
 
+    fun navigateToEditProfile() {
+        emitSideEffect(MyPageSideEffect.NavigateToEditProfile)
+    }
+
     fun showDialog(dialogType: DialogType, show: Boolean) {
         if (dialogType == DialogType.LOGOUT) {
             _showLogoutDialog.update { show }

@@ -31,7 +31,9 @@ fun NavGraphBuilder.myPageNavGraph(
     navHostController: NavHostController
 ) {
     composable<MyPage> {
-        MyPageRoute()
+        MyPageRoute(
+            navigateToEditProfile = { navHostController.navigateEditProfile() }
+        )
     }
 
     composable<EditProfile> {
