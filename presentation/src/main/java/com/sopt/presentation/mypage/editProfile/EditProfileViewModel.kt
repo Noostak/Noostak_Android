@@ -28,7 +28,7 @@ class EditProfileViewModel @Inject constructor(
     }
 
     private fun loadUserInfo() {
-        viewModelScope.launch {
+        executeInScope {
             loadNickName()
             loadProfileImage()
         }
@@ -57,16 +57,12 @@ class EditProfileViewModel @Inject constructor(
         validateNickName(nickName)
     }
 
-    private fun validateNickName(userName: String) {
-        viewModelScope.launch {
-            _editProfileState.update { it.copy(isNameCheck = userName.length in 1..10) }
-        }
+    private fun validateNickName(nickName: String) {
+        _editProfileState.update { it.copy(isNameCheck = nickName.length in 1..10) }
     }
 
     fun updateGalleryPermissionState(isGranted: Boolean) {
-        viewModelScope.launch {
-            _editProfileState.update { it.copy(isPermissionGranted = isGranted) }
-        }
+        _editProfileState.update { it.copy(isPermissionGranted = isGranted) }
     }
 
     fun requestGalleryPicker() {
@@ -78,8 +74,12 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun onImageSelected(imageUri: String?) {
-        viewModelScope.launch {
+        executeInScope {
             _userInfoState.update { it.copy(profileImage = imageUri) }
         }
+    }
+
+    private fun executeInScope(block: suspend () -> Unit) {
+        viewModelScope.launch { block() }
     }
 }
