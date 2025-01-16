@@ -18,6 +18,13 @@ class EditProfileViewModel @Inject constructor() : BaseViewModel<EditProfileSide
     private val _userInfoState = MutableStateFlow(UserEntity())
     val userInfoState: StateFlow<UserEntity> = _userInfoState
 
+    fun navigateUp() {
+        emitSideEffect(EditProfileSideEffect.NavigateUp)
+    }
+
+    fun navigateToMyPage() {
+        emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
+    }
 
     fun updateGalleryPermissionState(isGranted: Boolean) {
         viewModelScope.launch {
