@@ -1,14 +1,13 @@
 package com.sopt.presentation.auth.login
 
 import android.content.Context
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.IntentSenderRequest
 import androidx.annotation.StringRes
+import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
+import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.auth.api.identity.SignInCredential
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -29,12 +28,6 @@ class LoginViewModel @Inject constructor(
     @Named("GoogleClientId") private val googleClientId: String,
     private val userInfoRepository: UserInfoRepository
 ) : BaseViewModel<LoginSideEffect>() {
-
-    private lateinit var oneTapClient: SignInClient
-
-    fun initializeGoogleSignIn(context: Context) {
-        oneTapClient = Identity.getSignInClient(context)
-    }
 
     // Kakao Login
     fun kakaoLogin(context: Context) {
@@ -61,39 +54,44 @@ class LoginViewModel @Inject constructor(
     }
 
     // Google Login
-    fun googleLogin(launcher: ActivityResultLauncher<IntentSenderRequest>) {
-        val signInRequest = createGoogleSignInRequest()
+    fun googleLogin(context: Context) {
+        val credentialManager = CredentialManager.create(context)
 
-        oneTapClient.beginSignIn(signInRequest)
-            .addOnSuccessListener { result ->
-                launcher.launch(IntentSenderRequest.Builder(result.pendingIntent).build())
-            }
-            .addOnFailureListener { exception ->
-                handleError(exception, R.string.toast_google_login_failed)
-            }
-    }
-
-    private fun createGoogleSignInRequest(): BeginSignInRequest {
-        return BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    .setServerClientId(googleClientId)
-                    .setFilterByAuthorizedAccounts(false)
-                    .build()
-            )
+        val googleIdOption = GetGoogleIdOption.Builder()
+            .setFilterByAuthorizedAccounts(false)
+            .setServerClientId(googleClientId)
+            .setAutoSelectEnabled(true)
             .build()
-    }
 
-    fun handleGoogleLoginResult(credential: SignInCredential) {
+        val request = GetCredentialRequest.Builder()
+            .addCredentialOption(googleIdOption)
+            .build()
+
         viewModelScope.launch {
-            if (!credential.googleIdToken.isNullOrEmpty()) {
-                postLogin(credential.googleIdToken.toString(), SocialType.GOOGLE)
-                showToast(R.string.toast_google_login_success)
-            } else {
-                showToast(R.string.toast_google_login_failed)
+            runCatching {
+                val result = credentialManager.getCredential(context, request)
+                when (val data = result.credential) {
+                    is CustomCredential -> {
+                        if (data.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                            handleLoginSuccess(GoogleIdTokenCredential.createFrom(data.data).id)
+                        }
+                    }
+                }
+            }.onFailure { exception ->
+                handleLoginError(exception)
             }
         }
+    }
+
+    private fun handleLoginSuccess(token: String) {
+        showToast(R.string.toast_google_login_success)
+        viewModelScope.launch {
+            postLogin(token, SocialType.GOOGLE)
+        }
+    }
+
+    private fun handleLoginError(error: Throwable) {
+        showToast(R.string.toast_google_login_failed, error.localizedMessage.orEmpty())
     }
 
     private fun postLogin(token: String, socialType: SocialType) {
