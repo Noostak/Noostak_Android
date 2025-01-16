@@ -46,6 +46,7 @@ fun MyPageRoute(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
+    val userInfoState by viewModel.userInfoState.collectAsStateWithLifecycle()
     val showLogoutDialog by viewModel.showLogoutDialog.collectAsStateWithLifecycle()
     val showWithdrawalDialog by viewModel.showWithdrawalDialog.collectAsStateWithLifecycle()
 
@@ -90,6 +91,8 @@ fun MyPageRoute(
     }
 
     MyPageScreen(
+        nickName = userInfoState.nickName,
+        profileImage = userInfoState.profileImage,
         onProfileEditBtnClick = { viewModel.navigateToEditProfile() },
         onPolicyBtnClick = {
             // browser intent 추가해야 함
@@ -101,6 +104,8 @@ fun MyPageRoute(
 
 @Composable
 fun MyPageScreen(
+    nickName: String,
+    profileImage: String?,
     onProfileEditBtnClick: () -> Unit = {},
     onPolicyBtnClick: () -> Unit = {},
     onLogoutBtnClick: () -> Unit = {},
@@ -129,7 +134,7 @@ fun MyPageScreen(
                 )
             ) {
                 GlideImage(
-                    imageModel = { R.drawable.ic_profile },
+                    imageModel = { profileImage ?: R.drawable.ic_profile },
                     imageOptions = ImageOptions(
                         contentScale = ContentScale.Crop,
                         alignment = Alignment.Center
@@ -142,7 +147,7 @@ fun MyPageScreen(
                     previewPlaceholder = painterResource(id = R.drawable.ic_profile)
                 )
                 Text(
-                    text = "정해인",
+                    text = nickName,
                     color = NoostakTheme.colors.gray900,
                     style = NoostakTheme.typography.t4Bold
                 )
@@ -174,6 +179,9 @@ fun MyPageScreen(
 @Composable
 fun MyPageScreenPreview() {
     NoostakAndroidTheme {
-        MyPageScreen()
+        MyPageScreen(
+            nickName = "정해인",
+            profileImage = null
+        )
     }
 }
