@@ -49,6 +49,8 @@ import timber.log.Timber
 
 @Composable
 fun EditProfileRoute(
+    nickName: String,
+    profileImage: String?,
     navigateUp: () -> Unit,
     navigateToMyPage: () -> Unit,
     viewModel: EditProfileViewModel = hiltViewModel()
@@ -59,6 +61,10 @@ fun EditProfileRoute(
     val userInfoState by viewModel.userInfoState.collectAsStateWithLifecycle()
 
     var isGalleryPermission by remember { mutableStateOf(false) }
+
+    LaunchedEffect(nickName) {
+        viewModel.setInitialUserInfo(nickName, profileImage)
+    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
