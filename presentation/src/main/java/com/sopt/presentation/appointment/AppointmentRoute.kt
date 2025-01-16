@@ -23,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -41,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.dialog.AppointmentDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -54,9 +54,7 @@ import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
 import com.sopt.presentation.appointment.screen.RecommendationScreen
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun AppointmentRoute(
@@ -68,6 +66,7 @@ fun AppointmentRoute(
     navigateToAppointmentConfirm: (Long, Long, Long, String) -> Unit,
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
+    val showDialog by appointmentViewModel.showDialog.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = appointmentViewModel.sideEffects) {
         appointmentViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -88,15 +87,43 @@ fun AppointmentRoute(
                         sideEffect.appointmentName
                     )
                 }
+
+                is AppointmentSideEffect.ShowDialog -> {
+                    appointmentViewModel.showDialog(true)
+                }
             }
         }
     }
+
+    LaunchedEffect(key1 = Unit) {
+        appointmentViewModel.showDialog(!appointmentViewModel.mockRecommendations.isSubmitted)
+    }
+
+    if (showDialog) {
+        AppointmentDialog(
+            onDismissRequest = {
+                appointmentViewModel.showDialog(false)
+                appointmentViewModel.navigateUp()
+            },
+            onConfirmButtonClick = {
+                appointmentViewModel.showDialog(false)
+                appointmentViewModel.navigateToAppointmentCheck(
+                    groupId,
+                    appointmentsId,
+                    appointmentName
+                )
+            },
+            description = stringResource(R.string.dialog_appointment_description),
+            dismissText = stringResource(R.string.dialog_appointment_dismiss),
+            confirmButtonText = stringResource(R.string.dialog_appointment_confirm)
+        )
+    }
+
     AppointmentScreen(
         groupId = groupId,
         appointmentsId = appointmentsId,
         appointmentName = appointmentName,
         onBackButtonClick = appointmentViewModel::navigateUp,
-        onSubmitButtonClick = appointmentViewModel::navigateToAppointmentCheck,
         onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
         availablePeriods = appointmentViewModel.mockAvailablePeriods,
         availableTimes = appointmentViewModel.mockAvailableTimes,
@@ -110,7 +137,6 @@ fun AppointmentScreen(
     appointmentsId: Long,
     appointmentName: String,
     onBackButtonClick: () -> Unit,
-    onSubmitButtonClick: (Long, Long, String) -> Unit,
     onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
     availablePeriods: PeriodEntity,
     availableTimes: TimeTableEntity,
@@ -120,11 +146,6 @@ fun AppointmentScreen(
     val density = LocalDensity.current
     val coroutineScope = rememberCoroutineScope()
     var selectedItemIndex by remember { mutableIntStateOf(-1) }
-    var showDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(key1 = Unit) {
-        showDialog = !recommendations.isSubmitted
-    }
 
     BackHandler {
         when (selectedItemIndex) {
@@ -163,21 +184,6 @@ fun AppointmentScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
         ) {
-            if (showDialog) {
-                AppointmentDialog(
-                    onDismissRequest = {
-                        showDialog = false
-                        onBackButtonClick()
-                    },
-                    onConfirmButtonClick = {
-                        showDialog = false
-                        onSubmitButtonClick(groupId, appointmentsId, appointmentName)
-                    },
-                    description = stringResource(R.string.dialog_appointment_description),
-                    dismissText = stringResource(R.string.dialog_appointment_dismiss),
-                    confirmButtonText = stringResource(R.string.dialog_appointment_confirm)
-                )
-            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -378,7 +384,6 @@ fun AppointmentScreenPreview() {
             appointmentsId = 1,
             appointmentName = "3차 회의",
             onBackButtonClick = {},
-            onSubmitButtonClick = { _, _, _ -> },
             onConfirmButtonClick = { _, _, _, _ -> },
             availablePeriods = appointmentViewModel.mockAvailablePeriods,
             availableTimes = appointmentViewModel.mockAvailableTimes,

@@ -11,10 +11,16 @@ import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSideEffect>() {
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> get() = _showDialog
+
     fun navigateUp() {
         emitSideEffect(AppointmentSideEffect.NavigateUp)
     }
@@ -43,6 +49,10 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
                 appointmentName
             )
         )
+    }
+
+    fun showDialog(show: Boolean) {
+        _showDialog.update { show }
     }
 
     val mockAvailablePeriods = PeriodEntity(
