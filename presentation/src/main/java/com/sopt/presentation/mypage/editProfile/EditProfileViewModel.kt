@@ -80,7 +80,7 @@ class EditProfileViewModel @Inject constructor(
         }
     }
 
-    fun onImageSelected(imageUri: String?) {
+    fun updateProfileImage(imageUri: String?) {
         executeInScope {
             _userInfoState.update { it.copy(profileImage = imageUri) }
         }

@@ -85,11 +85,11 @@ fun EditProfileRoute(
     }
 
     val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
-        viewModel.onImageSelected(uri.toString())
+        viewModel.updateProfileImage(uri.toString())
     }
 
     val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
-        viewModel.onImageSelected(uri.toString())
+        viewModel.updateProfileImage(uri.toString())
     }
 
     LaunchedEffect(lifecycleOwner) {
