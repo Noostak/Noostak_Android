@@ -2,8 +2,8 @@ package com.sopt.presentation.auth.login
 
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.credentials.Credential
 import androidx.credentials.CredentialManager
-import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.viewModelScope
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -70,16 +70,19 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 val result = credentialManager.getCredential(context, request)
-                when (val data = result.credential) {
-                    is CustomCredential -> {
-                        if (data.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-                            handleLoginSuccess(GoogleIdTokenCredential.createFrom(data.data).id)
-                        }
-                    }
-                }
+                handleGoogleLoginResult(result.credential)
             }.onFailure { exception ->
                 handleLoginError(exception)
             }
+        }
+    }
+
+    private fun handleGoogleLoginResult(credential: Credential) {
+        if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
+            handleLoginSuccess(googleIdTokenCredential.id)
+        } else {
+            showToast(R.string.toast_google_login_failed)
         }
     }
 
