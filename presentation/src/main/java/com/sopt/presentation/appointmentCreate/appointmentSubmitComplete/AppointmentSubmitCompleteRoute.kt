@@ -91,11 +91,11 @@ fun AppointmentSubmitCompleteScreen(
             style = NoostakTheme.typography.h2Bold
         )
         Image(
-            modifier = Modifier.size(160.dp),
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_background),
+            modifier = Modifier.padding(end = 2.dp),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_appointment_submit_complete),
             contentDescription = null
         )
-        Spacer(modifier = Modifier.height(56.dp))
+        Spacer(modifier = Modifier.height(25.26.dp))
         SubmittedAppointmentInfoBox(
             appointmentName = appointmentName,
             isConsecutive = isConsecutive,
