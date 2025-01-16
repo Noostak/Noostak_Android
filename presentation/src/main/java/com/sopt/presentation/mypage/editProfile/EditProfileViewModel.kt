@@ -22,6 +22,10 @@ class EditProfileViewModel @Inject constructor(
     private val _userInfoState = MutableStateFlow(UserEntity())
     val userInfoState: StateFlow<UserEntity> = _userInfoState
 
+    fun setInitialUserInfo(nickName: String, profileImage: String?) {
+        _userInfoState.update { it.copy(nickName = nickName, profileImage = profileImage) }
+    }
+
     fun navigateUp() {
         emitSideEffect(EditProfileSideEffect.NavigateUp)
     }
