@@ -7,7 +7,6 @@ import com.sopt.domain.repository.UserInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,27 +21,6 @@ class EditProfileViewModel @Inject constructor(
 
     private val _userInfoState = MutableStateFlow(UserEntity())
     val userInfoState: StateFlow<UserEntity> = _userInfoState
-
-    init {
-        loadUserInfo()
-    }
-
-    private fun loadUserInfo() {
-        executeInScope {
-            loadNickName()
-            loadProfileImage()
-        }
-    }
-
-    private suspend fun loadNickName() {
-        val nickName = userInfoRepository.getNickName().first()
-        _userInfoState.update { it.copy(nickName = nickName) }
-    }
-
-    private suspend fun loadProfileImage() {
-        val profileImageUrl = userInfoRepository.getProfileImage().first()
-        _userInfoState.update { it.copy(profileImage = profileImageUrl) }
-    }
 
     fun navigateUp() {
         emitSideEffect(EditProfileSideEffect.NavigateUp)
