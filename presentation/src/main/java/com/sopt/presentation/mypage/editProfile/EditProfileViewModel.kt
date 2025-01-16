@@ -49,6 +49,7 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun navigateToMyPage() {
+        saveNickName(_userInfoState.value.nickName)
         emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
     }
 
@@ -59,6 +60,12 @@ class EditProfileViewModel @Inject constructor(
 
     private fun validateNickName(nickName: String) {
         _editProfileState.update { it.copy(isNameCheck = nickName.length in 1..10) }
+    }
+
+    private fun saveNickName(nickName: String) {
+        executeInScope {
+            userInfoRepository.saveNickName(nickName)
+        }
     }
 
     fun updateGalleryPermissionState(isGranted: Boolean) {
