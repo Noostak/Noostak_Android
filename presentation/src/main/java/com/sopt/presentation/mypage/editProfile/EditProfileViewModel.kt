@@ -46,7 +46,7 @@ class EditProfileViewModel @Inject constructor() : BaseViewModel<EditProfileSide
         }
     }
 
-    fun onUserNameChanged(nickName: String) {
+    fun onNickNameChanged(nickName: String) {
         _userInfoState.update { it.copy(nickName = nickName) }
         validateGroupName(nickName)
     }

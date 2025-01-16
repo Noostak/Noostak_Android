@@ -126,7 +126,7 @@ fun EditProfileRoute(
         editProfileState = editProfileState,
         onProfileCameraBtnClick = { viewModel.requestGalleryPicker() },
         onNameChange = { newName ->
-            viewModel.onUserNameChanged(newName)
+            viewModel.onNickNameChanged(newName)
         },
         onNextBtnClick = {
             viewModel.navigateToMyPage()
