@@ -44,11 +44,17 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             when {
                 token != null -> {
-                    showToast(R.string.toast_kakao_login_success)
-                    postLogin(token.accessToken, SocialType.KAKAO)
+                    handleLoginSuccess(
+                        token.accessToken,
+                        SocialType.KAKAO,
+                        R.string.toast_kakao_login_success
+                    )
                 }
 
-                error != null -> handleError(error, R.string.toast_kakao_login_failed)
+                error != null -> handleError(
+                    error,
+                    R.string.toast_kakao_login_failed
+                )
             }
         }
     }
@@ -72,7 +78,10 @@ class LoginViewModel @Inject constructor(
                 val result = credentialManager.getCredential(context, request)
                 handleGoogleLoginResult(result.credential)
             }.onFailure { exception ->
-                handleLoginError(exception)
+                handleError(
+                    exception,
+                    R.string.toast_google_login_failed
+                )
             }
         }
     }
@@ -80,21 +89,33 @@ class LoginViewModel @Inject constructor(
     private fun handleGoogleLoginResult(credential: Credential) {
         if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-            handleLoginSuccess(googleIdTokenCredential.id)
+            handleLoginSuccess(
+                googleIdTokenCredential.id,
+                SocialType.GOOGLE,
+                R.string.toast_google_login_success
+            )
         } else {
             showToast(R.string.toast_google_login_failed)
         }
     }
 
-    private fun handleLoginSuccess(token: String) {
-        showToast(R.string.toast_google_login_success)
+    private fun handleLoginSuccess(
+        token: String,
+        socialType: SocialType,
+        successToast: Int
+    ) {
+        showToast(successToast)
         viewModelScope.launch {
-            postLogin(token, SocialType.GOOGLE)
+            postLogin(token, socialType)
         }
     }
 
-    private fun handleLoginError(error: Throwable) {
-        showToast(R.string.toast_google_login_failed, error.localizedMessage.orEmpty())
+    private fun handleError(error: Throwable, @StringRes errorMessageResId: Int) {
+        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
+            showToast(R.string.toast_login_cancelled)
+        } else {
+            showToast(errorMessageResId, error.localizedMessage.orEmpty())
+        }
     }
 
     private fun postLogin(token: String, socialType: SocialType) {
@@ -123,14 +144,6 @@ class LoginViewModel @Inject constructor(
             response.refreshToken?.let { userInfoRepository.saveRefreshToken(BEARER + it) }
             response.userId?.let { userInfoRepository.saveUserId(it) }
             userInfoRepository.saveIsAutoLogin(!response.accessToken.isNullOrEmpty())
-        }
-    }
-
-    private fun handleError(error: Throwable, @StringRes errorMessageResId: Int) {
-        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            showToast(R.string.toast_login_cancelled)
-        } else {
-            showToast(errorMessageResId, error.localizedMessage.orEmpty())
         }
     }
 
