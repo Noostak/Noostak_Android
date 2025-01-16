@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.sopt.core.navigation.MainTabRoute
 import com.sopt.core.navigation.Route
 import com.sopt.presentation.mypage.MyPageRoute
@@ -19,10 +20,15 @@ fun NavController.navigateMyPage(navOptions: NavOptions? = null) {
 }
 
 fun NavController.navigateEditProfile(
+    nickName: String,
+    profileImage: String? = null,
     navOptions: NavOptions? = null
 ) {
     navigate(
-        route = EditProfile,
+        route = EditProfile(
+            nickName = nickName,
+            profileImage = profileImage.toString()
+        ),
         navOptions = navOptions
     )
 }
@@ -32,16 +38,22 @@ fun NavGraphBuilder.myPageNavGraph(
 ) {
     composable<MyPage> {
         MyPageRoute(
-            navigateToEditProfile = { navHostController.navigateEditProfile() }
+            navigateToEditProfile = { nickName, profileImage ->
+                navHostController.navigateEditProfile(
+                    nickName = nickName,
+                    profileImage = profileImage
+                )
+            }
         )
     }
 
     composable<EditProfile> {
+        val args = it.toRoute<EditProfile>()
         EditProfileRoute(
+            nickName = args.nickName,
+            profileImage = args.profileImage,
             navigateUp = navHostController::navigateUp,
-            navigateToMyPage = {
-                navHostController.navigateMyPage()
-            }
+            navigateToMyPage = { navHostController.navigate(MyPage) }
         )
     }
 }
@@ -50,4 +62,7 @@ fun NavGraphBuilder.myPageNavGraph(
 data object MyPage : MainTabRoute
 
 @Serializable
-data object EditProfile : Route
+data class EditProfile(
+    val nickName: String,
+    val profileImage: String
+) : Route
