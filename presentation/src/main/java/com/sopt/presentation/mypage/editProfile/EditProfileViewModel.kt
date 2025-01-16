@@ -52,6 +52,17 @@ class EditProfileViewModel @Inject constructor(
         emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
     }
 
+    fun onNickNameChanged(nickName: String) {
+        _userInfoState.update { it.copy(nickName = nickName) }
+        validateNickName(nickName)
+    }
+
+    private fun validateNickName(userName: String) {
+        viewModelScope.launch {
+            _editProfileState.update { it.copy(isNameCheck = userName.length in 1..10) }
+        }
+    }
+
     fun updateGalleryPermissionState(isGranted: Boolean) {
         viewModelScope.launch {
             _editProfileState.update { it.copy(isPermissionGranted = isGranted) }
@@ -69,17 +80,6 @@ class EditProfileViewModel @Inject constructor(
     fun onImageSelected(imageUri: String?) {
         viewModelScope.launch {
             _userInfoState.update { it.copy(profileImage = imageUri) }
-        }
-    }
-
-    fun onNickNameChanged(nickName: String) {
-        _userInfoState.update { it.copy(nickName = nickName) }
-        validateGroupName(nickName)
-    }
-
-    private fun validateGroupName(userName: String) {
-        viewModelScope.launch {
-            _editProfileState.update { it.copy(isNameCheck = userName.length in 1..10) }
         }
     }
 }
