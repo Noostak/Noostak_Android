@@ -48,7 +48,12 @@ class MyPageViewModel @Inject constructor(
     }
 
     fun navigateToEditProfile() {
-        emitSideEffect(MyPageSideEffect.NavigateToEditProfile)
+        emitSideEffect(
+            MyPageSideEffect.NavigateToEditProfile(
+                nickName = _userInfoState.value.nickName,
+                profileImage = _userInfoState.value.profileImage
+            )
+        )
     }
 
     fun showDialog(dialogType: DialogType, show: Boolean) {
