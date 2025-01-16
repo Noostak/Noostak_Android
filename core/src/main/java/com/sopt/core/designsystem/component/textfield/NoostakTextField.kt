@@ -148,7 +148,7 @@ fun NoostakTextField(
                 Text(
                     text = stringResource(R.string.text_noostak_text_field_sign_up_condition),
                     color = NoostakTheme.colors.red02,
-                    style = NoostakTheme.typography.c2SemiBold,
+                    style = NoostakTheme.typography.c3SemiBold,
                     modifier = modifier.padding(top = 6.dp),
                     maxLines = 1
                 )

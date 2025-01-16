@@ -23,7 +23,7 @@ fun NoostakCategoryChip(
 
     NoostakChip(
         text = text,
-        textStyle = NoostakTheme.typography.c2SemiBold,
+        textStyle = NoostakTheme.typography.c3SemiBold,
         textColor = NoostakTheme.colors.white,
         backgroundColor = resolvedBackgroundColor,
         borderColor = Color.Transparent,

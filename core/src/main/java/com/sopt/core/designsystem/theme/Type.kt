@@ -44,7 +44,7 @@ class NoostakTypography internal constructor(
     b4Regular: TextStyle,
     b5Regular: TextStyle,
     c1Bold: TextStyle,
-    c2SemiBold: TextStyle,
+    c3SemiBold: TextStyle,
     c3Regular: TextStyle,
     c4Regular: TextStyle
 ) {
@@ -86,7 +86,7 @@ class NoostakTypography internal constructor(
         private set
     var c1Bold: TextStyle by mutableStateOf(c1Bold)
         private set
-    var c2SemiBold: TextStyle by mutableStateOf(c2SemiBold)
+    var c3SemiBold: TextStyle by mutableStateOf(c3SemiBold)
         private set
     var c3Regular: TextStyle by mutableStateOf(c3Regular)
         private set
@@ -113,7 +113,7 @@ class NoostakTypography internal constructor(
         b4Regular: TextStyle = this.b4Regular,
         b5Regular: TextStyle = this.b5Regular,
         c1Bold: TextStyle = this.c1Bold,
-        c2SemiBold: TextStyle = this.c2SemiBold,
+        c3SemiBold: TextStyle = this.c3SemiBold,
         c3Regular: TextStyle = this.c3Regular,
         c4Regular: TextStyle = this.c4Regular
     ): NoostakTypography = NoostakTypography(
@@ -136,7 +136,7 @@ class NoostakTypography internal constructor(
         b4Regular = b4Regular,
         b5Regular = b5Regular,
         c1Bold = c1Bold,
-        c2SemiBold = c2SemiBold,
+        c3SemiBold = c3SemiBold,
         c3Regular = c3Regular,
         c4Regular = c4Regular
     )
@@ -161,7 +161,7 @@ class NoostakTypography internal constructor(
         b4Regular = other.b4Regular
         b5Regular = other.b5Regular
         c1Bold = other.c1Bold
-        c2SemiBold = other.c2SemiBold
+        c3SemiBold = other.c3SemiBold
         c3Regular = other.c3Regular
         c4Regular = other.c4Regular
     }
@@ -304,7 +304,7 @@ fun noostakTypography(): NoostakTypography {
             fontSize = 13.sp,
             lineHeight = 18.sp
         ),
-        c2SemiBold = noostakTextStyle(
+        c3SemiBold = noostakTextStyle(
             fontFamily = PretendardSemiBold,
             fontWeight = FontWeight.SemiBold,
             fontSize = 13.sp,

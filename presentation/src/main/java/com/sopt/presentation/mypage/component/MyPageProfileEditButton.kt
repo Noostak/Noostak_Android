@@ -28,7 +28,7 @@ fun MyPageProfileEditButton(text: String, onClick: () -> Unit) {
     ) {
         Text(
             text = text,
-            style = NoostakTheme.typography.c2SemiBold,
+            style = NoostakTheme.typography.c3SemiBold,
             color = NoostakTheme.colors.gray900
         )
     }
