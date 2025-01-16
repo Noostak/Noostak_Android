@@ -102,16 +102,16 @@ fun AppointmentRoute(
     if (showDialog) {
         AppointmentDialog(
             onDismissRequest = {
-                appointmentViewModel.showDialog(false)
-                appointmentViewModel.navigateUp()
+                appointmentViewModel.apply {
+                    showDialog(false)
+                    navigateUp()
+                }
             },
             onConfirmButtonClick = {
-                appointmentViewModel.showDialog(false)
-                appointmentViewModel.navigateToAppointmentCheck(
-                    groupId,
-                    appointmentsId,
-                    appointmentName
-                )
+                appointmentViewModel.apply {
+                    showDialog(false)
+                    navigateToAppointmentCheck(groupId, appointmentsId, appointmentName)
+                }
             },
             description = stringResource(R.string.dialog_appointment_description),
             dismissText = stringResource(R.string.dialog_appointment_dismiss),
