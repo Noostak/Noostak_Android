@@ -1,8 +1,7 @@
 package com.sopt.presentation.appointment.appointmentCheck
 
 import com.sopt.core.util.BaseViewModel
-import com.sopt.domain.entity.TimeEntity
-import com.sopt.domain.entity.TimeTableEntity
+import com.sopt.domain.entity.PeriodEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -27,39 +26,10 @@ class AppointmentCheckViewModel @Inject constructor() :
         emitSideEffect(AppointmentCheckSideEffect.NavigateToGroupDetail(groupId))
     }
 
-    val mockTimeTableEntity = TimeTableEntity(
-        startTime = "07:00",
-        endTime = "24:00",
-        timeEntity = listOf(
-            TimeEntity(
-                date = "2024-09-27",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-09-28",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-09-29",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-09-30",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-10-01",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-10-02",
-                times = null
-            ),
-            TimeEntity(
-                date = "2024-10-03",
-                times = null
-            )
-        )
+    val mockAvailablePeriods = PeriodEntity(
+        dates = listOf("2024-09-05T10:00:00", "2024-09-06T10:00:00", "2024-09-07T10:00:00"),
+        startTime = "2024-09-05T10:00:00",
+        endTime = "2024-09-05T18:00:00"
     )
 }
 
