@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.toast
@@ -36,6 +38,9 @@ fun LoginRoute(
 ) {
     val context = LocalContext.current
 
+    val showDialog by loginViewModel.showDialog.collectAsStateWithLifecycle()
+    val dialogDescription by loginViewModel.dialogDescription.collectAsStateWithLifecycle()
+
     LaunchedEffect(loginViewModel.sideEffects) {
         loginViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -44,6 +49,16 @@ fun LoginRoute(
                 is LoginSideEffect.ShowToast -> context.toast(sideEffect.message)
             }
         }
+    }
+
+    if (showDialog) {
+        LoginFailureDialog(
+            onRetryRequest = { loginViewModel.googleLogin(context) },
+            onDismissRequest = { loginViewModel.showFailLoginDialog(false) },
+            description = stringResource(R.string.dialog_login_description, dialogDescription),
+            retryText = stringResource(R.string.dialog_login_retry),
+            dismissText = stringResource(R.string.dialog_login_dismiss)
+        )
     }
 
     LoginScreen(
