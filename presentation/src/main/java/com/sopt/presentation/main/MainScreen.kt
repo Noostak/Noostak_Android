@@ -30,15 +30,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
+import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.presentation.appointment.navigation.appointmentNavGraph
@@ -179,7 +181,7 @@ private fun MainBottomBar(
                 color = NoostakTheme.colors.gray200
             )
             NavigationBar(
-                containerColor = White
+                containerColor = NoostakTheme.colors.white
             ) {
                 tabs.forEach { itemType ->
                     NavigationBarItem(
@@ -190,26 +192,45 @@ private fun MainBottomBar(
                         },
                         icon = {
                             Icon(
-                                painter = painterResource(id = (itemType.icon)),
-                                contentDescription = stringResource(id = itemType.contentDescription)
+                                imageVector = ImageVector.vectorResource(
+                                    id = if (currentTab == itemType) {
+                                        itemType.selectedIcon
+                                    } else {
+                                        itemType.unselectedIcon
+                                    }
+                                ),
+                                contentDescription = stringResource(id = itemType.contentDescription),
+                                tint = Color.Unspecified
                             )
                         },
                         label = {
                             Text(
                                 text = stringResource(id = itemType.contentDescription),
-                                fontSize = 9.sp
+                                style = NoostakTheme.typography.c4Regular
                             )
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = Color.Black,
-                            selectedTextColor = Color.Black,
-                            unselectedIconColor = Color.Gray,
-                            unselectedTextColor = Color.Gray,
-                            indicatorColor = White
+                            selectedTextColor = NoostakTheme.colors.gray900,
+                            unselectedTextColor = NoostakTheme.colors.gray500,
+                            indicatorColor = NoostakTheme.colors.white
                         )
                     )
                 }
             }
         }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun MainBottomBarPreview() {
+    NoostakAndroidTheme {
+        MainBottomBar(
+            isVisible = true,
+            tabs = MainTab.entries,
+            currentTab = MainTab.CALENDAR,
+            onTabSelected = {}
+        )
     }
 }
