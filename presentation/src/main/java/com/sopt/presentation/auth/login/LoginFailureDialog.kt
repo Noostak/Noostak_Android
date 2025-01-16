@@ -34,7 +34,7 @@ fun LoginFailureDialog(
 ) {
     BaseDialog(
         onDismissRequest = onDismissRequest,
-        radius = 20.dp,
+        radius = 20.dp
     ) {
         Column(
             modifier = Modifier
