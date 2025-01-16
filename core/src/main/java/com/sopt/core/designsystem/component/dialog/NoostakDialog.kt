@@ -59,7 +59,11 @@ fun NoostakDialog(
             ) {
                 Spacer(
                     modifier = Modifier.height(
-                        if (dialogType == DialogType.GROUP) 24.dp else 41.dp
+                        when (dialogType) {
+                            DialogType.GROUP -> 24.dp
+                            DialogType.LOGOUT -> 41.dp
+                            DialogType.WITHDRAWAL -> 30.dp
+                        }
                     )
                 )
                 Text(
@@ -69,7 +73,11 @@ fun NoostakDialog(
                 )
                 Spacer(
                     modifier = Modifier.height(
-                        if (dialogType == DialogType.GROUP) 20.dp else 36.dp
+                        when (dialogType) {
+                            DialogType.GROUP -> 20.dp
+                            DialogType.LOGOUT -> 36.dp
+                            DialogType.WITHDRAWAL -> 26.dp
+                        }
                     )
                 )
                 Box(
@@ -100,7 +108,7 @@ fun NoostakDialog(
                         Text(
                             text = stringResource(dialogType.dismissText),
                             textAlign = TextAlign.Center,
-                            style = NoostakTheme.typography.c2SemiBold
+                            style = NoostakTheme.typography.c3SemiBold
                         )
                     }
 
@@ -127,7 +135,7 @@ fun NoostakDialog(
                         Text(
                             text = stringResource(dialogType.confirmText),
                             textAlign = TextAlign.Center,
-                            style = NoostakTheme.typography.c2SemiBold,
+                            style = NoostakTheme.typography.c3SemiBold,
                             color = NoostakTheme.colors.blue
                         )
                     }
