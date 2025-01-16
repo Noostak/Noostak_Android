@@ -121,10 +121,22 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun handleError(error: Throwable, @StringRes errorMessageResId: Int) {
-        if (error is ClientError && error.reason == ClientErrorCause.Cancelled) {
-            showToast(R.string.toast_login_cancelled)
-        } else {
-            showToast(errorMessageResId, error.localizedMessage.orEmpty())
+        when {
+            // 카카오 로그인 취소
+            error is ClientError && error.reason == ClientErrorCause.Cancelled -> {
+                showToast(R.string.toast_login_cancelled)
+            }
+
+            // 구글 로그인 취소
+            error.message?.contains(CANCELLED, ignoreCase = true) == true -> {
+                showToast(R.string.toast_login_cancelled)
+            }
+
+            // 기타 에러
+            else -> {
+                val errorMessage = error.localizedMessage.orEmpty()
+                showToast(errorMessageResId, errorMessage)
+            }
         }
     }
 
@@ -168,6 +180,7 @@ class LoginViewModel @Inject constructor(
 
     companion object {
         private const val BEARER = "Bearer "
+        private const val CANCELLED = "CANCELLED"
         private const val KAKAO = "카카오톡"
         private const val GOOGLE = "구글"
     }
