@@ -18,7 +18,10 @@ import com.sopt.domain.entity.UserEntity
 import com.sopt.domain.repository.UserInfoRepository
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
@@ -28,6 +31,17 @@ class LoginViewModel @Inject constructor(
     @Named("GoogleClientId") private val googleClientId: String,
     private val userInfoRepository: UserInfoRepository
 ) : BaseViewModel<LoginSideEffect>() {
+
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> get() = _showDialog
+
+    private val _dialogDescription = MutableStateFlow("")
+    val dialogDescription: StateFlow<String> get() = _dialogDescription
+
+    fun showFailLoginDialog(show: Boolean, description: String = "") {
+        _showDialog.update { show }
+        _dialogDescription.update { description }
+    }
 
     // Kakao Login
     fun kakaoLogin(context: Context) {
@@ -43,18 +57,16 @@ class LoginViewModel @Inject constructor(
     private fun handleKakaoLoginResult(token: OAuthToken?, error: Throwable?) {
         viewModelScope.launch {
             when {
-                token != null -> {
-                    handleLoginSuccess(
-                        token.accessToken,
-                        SocialType.KAKAO,
-                        R.string.toast_kakao_login_success
-                    )
-                }
-
-                error != null -> handleError(
-                    error,
-                    R.string.toast_kakao_login_failed
+                token != null -> handleLoginSuccess(
+                    token.accessToken,
+                    SocialType.KAKAO,
+                    R.string.toast_kakao_login_success
                 )
+
+                error != null -> {
+                    handleError(error, R.string.toast_kakao_login_failed)
+                    showFailLoginDialog(true, description = KAKAO)
+                }
             }
         }
     }
@@ -78,10 +90,8 @@ class LoginViewModel @Inject constructor(
                 val result = credentialManager.getCredential(context, request)
                 handleGoogleLoginResult(result.credential)
             }.onFailure { exception ->
-                handleError(
-                    exception,
-                    R.string.toast_google_login_failed
-                )
+                handleError(exception, R.string.toast_google_login_failed)
+                showFailLoginDialog(true, description = GOOGLE)
             }
         }
     }
@@ -95,7 +105,7 @@ class LoginViewModel @Inject constructor(
                 R.string.toast_google_login_success
             )
         } else {
-            showToast(R.string.toast_google_login_failed)
+            showFailLoginDialog(true, description = GOOGLE)
         }
     }
 
@@ -158,5 +168,7 @@ class LoginViewModel @Inject constructor(
 
     companion object {
         private const val BEARER = "Bearer "
+        private const val KAKAO = "카카오톡"
+        private const val GOOGLE = "구글"
     }
 }
