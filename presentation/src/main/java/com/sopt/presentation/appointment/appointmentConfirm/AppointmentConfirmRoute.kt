@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
-import com.sopt.core.designsystem.component.chip.NoostakUserChip
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -36,6 +35,8 @@ import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.AppointmentDetailEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
+import com.sopt.presentation.groupDetail.confirmedDetail.AvailableUserChips
+import com.sopt.presentation.groupDetail.confirmedDetail.UnavailableUserChips
 
 @Composable
 fun AppointmentConfirmRoute(
@@ -79,7 +80,6 @@ fun AppointmentConfirmScreen(
     val date = calculateTime.extractDate(data.date)
     val startHour = calculateTime.extractHour(data.startTime)
     val endHour = calculateTime.extractHour(data.endTime)
-    val isAvailable = data.myIdentity.availability == "available"
     val rearrangeList = RearrangeList()
     val availableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
         data.myIdentity,
@@ -170,14 +170,10 @@ fun AppointmentConfirmScreen(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        availableMembers.forEachIndexed { index, member ->
-                            NoostakUserChip(
-                                text = if (isAvailable && index == 0) stringResource(id = R.string.user_chip_me) else member,
-                                textColor = NoostakTheme.colors.black,
-                                backgroundColor = if (isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
-                                borderColor = NoostakTheme.colors.blue200
-                            )
-                        }
+                        AvailableUserChips(
+                            members = availableMembers,
+                            myIdentity = data.myIdentity
+                        )
                     }
                 }
                 Column {
@@ -192,14 +188,10 @@ fun AppointmentConfirmScreen(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        unavailableMembers.forEachIndexed { index, member ->
-                            NoostakUserChip(
-                                text = if (!isAvailable && index == 0) stringResource(id = R.string.user_chip_me) else member,
-                                textColor = NoostakTheme.colors.gray800,
-                                backgroundColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
-                                borderColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
-                            )
-                        }
+                        UnavailableUserChips(
+                            members = unavailableMembers,
+                            myIdentity = data.myIdentity
+                        )
                     }
                 }
             }

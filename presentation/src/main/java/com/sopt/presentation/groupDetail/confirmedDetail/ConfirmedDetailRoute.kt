@@ -35,6 +35,7 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.ConfirmedDetailEntity
+import com.sopt.domain.entity.IdentityEntity
 import com.sopt.presentation.R
 
 @Composable
@@ -83,7 +84,6 @@ fun ConfirmedDetailScreen(
         val date = calculateTime.extractDate(data.date)
         val startHour = calculateTime.extractHour(data.startTime)
         val endHour = calculateTime.extractHour(data.endTime)
-        val isAvailable = data.myIdentity.availability == "available"
         val rearrangeList = RearrangeList()
         val availableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
             data.myIdentity,
@@ -152,14 +152,10 @@ fun ConfirmedDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        availableMembers.forEachIndexed { index, member ->
-                            NoostakUserChip(
-                                text = if (isAvailable && index == 0) stringResource(id = R.string.user_chip_me) else member,
-                                textColor = NoostakTheme.colors.black,
-                                backgroundColor = if (isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
-                                borderColor = NoostakTheme.colors.blue200
-                            )
-                        }
+                        AvailableUserChips(
+                            members = availableMembers,
+                            myIdentity = data.myIdentity
+                        )
                     }
                 }
                 Column {
@@ -174,14 +170,10 @@ fun ConfirmedDetailScreen(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        unavailableMembers.forEachIndexed { index, member ->
-                            NoostakUserChip(
-                                text = if (!isAvailable && index == 0) stringResource(id = R.string.user_chip_me) else member,
-                                textColor = NoostakTheme.colors.gray800,
-                                backgroundColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
-                                borderColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
-                            )
-                        }
+                        UnavailableUserChips(
+                            members = unavailableMembers,
+                            myIdentity = data.myIdentity
+                        )
                     }
                 }
             }
@@ -205,6 +197,38 @@ fun CompleteDetailInfo(
             style = NoostakTheme.typography.c3Regular
         )
         content()
+    }
+}
+
+@Composable
+fun AvailableUserChips(
+    members: List<String>,
+    myIdentity: IdentityEntity
+) {
+    members.forEachIndexed { index, member ->
+        val isMeAvailable = index == 0 && myIdentity.availability == "available"
+        NoostakUserChip(
+            text = if (isMeAvailable) stringResource(id = R.string.user_chip_me) else member,
+            textColor = NoostakTheme.colors.black,
+            backgroundColor = if (isMeAvailable) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
+            borderColor = NoostakTheme.colors.blue200
+        )
+    }
+}
+
+@Composable
+fun UnavailableUserChips(
+    members: List<String>,
+    myIdentity: IdentityEntity
+) {
+    members.forEachIndexed { index, member ->
+        val isMeUnavailable = index == 0 && myIdentity.availability == "unavailable"
+        NoostakUserChip(
+            text = if (isMeUnavailable) stringResource(R.string.user_chip_me) else member,
+            textColor = NoostakTheme.colors.gray800,
+            backgroundColor = if (isMeUnavailable) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
+            borderColor = if (isMeUnavailable) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
+        )
     }
 }
 
