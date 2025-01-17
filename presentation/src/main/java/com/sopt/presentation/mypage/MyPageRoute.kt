@@ -41,26 +41,26 @@ import com.sopt.presentation.mypage.component.MyPageProfileEditButton
 
 @Composable
 fun MyPageRoute(
-    viewModel: MyPageViewModel = hiltViewModel()
+    myPageViewModel: MyPageViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val showLogoutDialog by viewModel.showLogoutDialog.collectAsStateWithLifecycle()
-    val showWithdrawalDialog by viewModel.showWithdrawalDialog.collectAsStateWithLifecycle()
+    val showLogoutDialog by myPageViewModel.showLogoutDialog.collectAsStateWithLifecycle()
+    val showWithdrawalDialog by myPageViewModel.showWithdrawalDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
+        myPageViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
                     is MyPageSideEffect.ShowDialog -> {
                         when (sideEffect.dialogType) {
-                            DialogType.LOGOUT -> viewModel.showDialog(DialogType.LOGOUT, true)
-                            DialogType.WITHDRAWAL -> viewModel.showDialog(
+                            DialogType.LOGOUT -> myPageViewModel.showDialog(DialogType.LOGOUT, true)
+                            DialogType.WITHDRAWAL -> myPageViewModel.showDialog(
                                 DialogType.WITHDRAWAL,
                                 true
                             )
 
-                            DialogType.GROUP -> Unit
+                            else -> Unit
                         }
                     }
                 }
@@ -73,7 +73,7 @@ fun MyPageRoute(
             onClick = {
                 // 추가해야 함
             },
-            onDismissRequest = { viewModel.showDialog(DialogType.LOGOUT, false) }
+            onDismissRequest = { myPageViewModel.showDialog(DialogType.LOGOUT, false) }
         )
     }
 
@@ -83,7 +83,7 @@ fun MyPageRoute(
             onClick = {
                 // 추가해야 함
             },
-            onDismissRequest = { viewModel.showDialog(DialogType.WITHDRAWAL, false) }
+            onDismissRequest = { myPageViewModel.showDialog(DialogType.WITHDRAWAL, false) }
         )
     }
 
@@ -94,8 +94,8 @@ fun MyPageRoute(
         onPolicyBtnClick = {
             // browser intent 추가해야 함
         },
-        onLogoutBtnClick = { viewModel.triggerDialog(DialogType.LOGOUT) },
-        onWithdrawalBtnClick = { viewModel.triggerDialog(DialogType.WITHDRAWAL) }
+        onLogoutBtnClick = { myPageViewModel.triggerDialog(DialogType.LOGOUT) },
+        onWithdrawalBtnClick = { myPageViewModel.triggerDialog(DialogType.WITHDRAWAL) }
     )
 }
 

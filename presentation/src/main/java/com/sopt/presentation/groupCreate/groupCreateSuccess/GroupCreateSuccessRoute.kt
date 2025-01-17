@@ -53,7 +53,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun GroupCreateSuccessRoute(
-    viewModel: GroupCreateSuccessViewModel = hiltViewModel(),
+    groupCreateSuccessViewModel: GroupCreateSuccessViewModel = hiltViewModel(),
     navigateToGroupDetail: (Long) -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -82,7 +82,7 @@ fun GroupCreateSuccessRoute(
     }
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
+        groupCreateSuccessViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collectLatest { sideEffect ->
                 when (sideEffect) {
                     is GroupCreateSuccessSideEffect.NavigateToGroupDetail -> navigateToGroupDetail(
@@ -102,10 +102,10 @@ fun GroupCreateSuccessRoute(
         groupCode = groupCode,
         snackBarHostState = snackBarHostState,
         snackBarVisible = snackBarVisible,
-        onCloseBtnClick = viewModel::navigateToGroupDetail,
+        onCloseBtnClick = groupCreateSuccessViewModel::navigateToGroupDetail,
         onCopyBtnClick = {
             coroutineScope.launch {
-                viewModel.onCodeCopyBtnClick()
+                groupCreateSuccessViewModel.onCodeCopyBtnClick()
             }
         },
         onSendBtnClick = {
