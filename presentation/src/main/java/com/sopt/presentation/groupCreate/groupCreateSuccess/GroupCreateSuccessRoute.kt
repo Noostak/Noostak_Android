@@ -8,11 +8,9 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -175,12 +173,10 @@ fun GroupCreateSuccessScreen(
                     .weight(1f)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
+                    painter = painterResource(id = R.drawable.ic_group_create_success),
                     contentDescription = stringResource(R.string.image_group_create_success_description),
                     modifier = Modifier
-                        .padding(top = 56.dp)
-                        .size(108.dp)
-                        .aspectRatio(1f)
+                        .padding(top = 51.dp)
                         .align(Alignment.CenterHorizontally)
                 )
                 Text(
@@ -188,7 +184,7 @@ fun GroupCreateSuccessScreen(
                     color = NoostakTheme.colors.gray900,
                     style = NoostakTheme.typography.t1SemiBold,
                     modifier = Modifier
-                        .padding(top = 8.dp)
+                        .padding(top = 16.dp)
                         .align(Alignment.CenterHorizontally)
                 )
                 Text(
