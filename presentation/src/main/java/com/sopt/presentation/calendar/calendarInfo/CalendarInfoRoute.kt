@@ -33,7 +33,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
-import com.sopt.core.designsystem.component.chip.NoostakChip
+import com.sopt.core.designsystem.component.chip.NoostakCalendarChip
 import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
 import com.sopt.core.designsystem.component.text.NoostakHeaderText
 import com.sopt.core.designsystem.component.text.NoostakSubHeaderText
@@ -103,7 +103,10 @@ fun CalendarInfoScreen(
 
             NoostakHeaderText(text = stringResource(R.string.text_calendar_appointment_write))
 
-            NoostakSubHeaderText(stringResource(R.string.text_calendar_appointment_name), Modifier.padding(top = 22.dp, bottom = 10.dp))
+            NoostakSubHeaderText(
+                stringResource(R.string.text_calendar_appointment_name),
+                Modifier.padding(top = 22.dp, bottom = 10.dp)
+            )
 
             NoostakTextField(
                 textFieldType = TextFieldType.CALENDAR,
@@ -119,7 +122,10 @@ fun CalendarInfoScreen(
                 maxLength = 20
             )
 
-            NoostakSubHeaderText(stringResource(R.string.text_calendar_appointment_category), Modifier.padding(top = 32.dp))
+            NoostakSubHeaderText(
+                stringResource(R.string.text_calendar_appointment_category),
+                Modifier.padding(top = 32.dp)
+            )
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(11.dp),
@@ -135,7 +141,7 @@ fun CalendarInfoScreen(
                             .background(Color.Transparent)
                             .noRippleClickable { selectedCategory = category }
                     ) {
-                        NoostakChip(
+                        NoostakCalendarChip(
                             text = category,
                             textStyle = typography.b4SemiBold,
                             textColor = if (isSelected) Color.White else colors.gray900,
@@ -148,7 +154,10 @@ fun CalendarInfoScreen(
                 }
             }
 
-            NoostakSubHeaderText(stringResource(R.string.text_calendar_appointment_time), Modifier.padding(top = 41.dp))
+            NoostakSubHeaderText(
+                stringResource(R.string.text_calendar_appointment_time),
+                Modifier.padding(top = 41.dp)
+            )
 
             Box(
                 modifier = Modifier

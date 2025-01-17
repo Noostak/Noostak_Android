@@ -94,9 +94,7 @@ fun CalendarTimePickerScreen(
     var showPicker by remember { mutableStateOf(true) }
 
     var selectedStartHour by remember { mutableStateOf<Int?>(0) }
-    var selectedStartMinute by remember { mutableStateOf<Int?>(0) }
-    var selectedEndHour by remember { mutableStateOf<Int?>(18) }
-    var selectedEndMinute by remember { mutableStateOf<Int?>(0) }
+    var selectedEndHour by remember { mutableStateOf<Int?>(23) }
 
     Scaffold(
         modifier = Modifier
@@ -128,7 +126,7 @@ fun CalendarTimePickerScreen(
                     .height(54.dp)
                     .border(
                         width = 0.5.dp,
-                        color = colors.gray500,
+                        color = colors.gray200,
                         shape = RoundedCornerShape(10.dp)
                     )
                     .background(
@@ -155,9 +153,7 @@ fun CalendarTimePickerScreen(
                         showPicker = !it
                         if (isChecked) {
                             selectedStartHour = null
-                            selectedStartMinute = null
                             selectedEndHour = null
-                            selectedEndMinute = null
                         }
                     }
 
@@ -170,7 +166,10 @@ fun CalendarTimePickerScreen(
                     .padding(top = 32.dp, bottom = 9.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                NoostakSubHeaderText(stringResource(R.string.text_calendar_appointment_time_check), modifier = Modifier.weight(1f))
+                NoostakSubHeaderText(
+                    stringResource(R.string.text_calendar_appointment_time_check),
+                    modifier = Modifier.weight(1f)
+                )
                 Box(
                     modifier = Modifier.size(24.dp),
                     contentAlignment = Alignment.Center
@@ -186,11 +185,9 @@ fun CalendarTimePickerScreen(
             }
 
             if (showPicker) {
-                NoostakTimePicker { startHour, startMinute, endHour, endMinute ->
+                NoostakTimePicker(time) { startHour, endHour ->
                     selectedStartHour = startHour
-                    selectedStartMinute = startMinute
                     selectedEndHour = endHour
-                    selectedEndMinute = endMinute
                 }
             }
 
@@ -199,7 +196,9 @@ fun CalendarTimePickerScreen(
             NoostakBottomButton(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
-                    val selectTime = if (isChecked) null else "${selectedStartHour?.toString()?.padStart(2, '0')}:${selectedStartMinute?.toString()?.padStart(2, '0')} ~ ${selectedEndHour?.toString()?.padStart(2, '0')}:${selectedEndMinute?.toString()?.padStart(2, '0')}"
+                    val selectTime = if (isChecked) null else "${
+                        selectedStartHour?.toString()?.padStart(2, '0')
+                    }:00 ~ ${selectedEndHour?.toString()?.padStart(2, '0')}:00"
                     onButtonClick(
                         appointmentName,
                         category,
@@ -211,7 +210,6 @@ fun CalendarTimePickerScreen(
                 },
                 deactivateColor = NoostakTheme.colors.gray500,
                 activateColor = NoostakTheme.colors.gray900,
-                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
     }

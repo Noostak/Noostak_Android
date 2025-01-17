@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,8 +22,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sopt.core.R
@@ -89,7 +89,7 @@ fun NoostakCalendar(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource(id = R.drawable.ic_calendar_left),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_calendar_left),
                 contentDescription = null,
                 modifier = Modifier
                     .size(16.dp)
@@ -111,7 +111,7 @@ fun NoostakCalendar(
             )
             Spacer(modifier = Modifier.width(10.dp))
             Image(
-                painter = painterResource(id = R.drawable.ic_calendar_right),
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_calendar_right),
                 contentDescription = null,
                 modifier = Modifier
                     .size(16.dp)
@@ -126,7 +126,9 @@ fun NoostakCalendar(
             )
         }
         Row(
-            modifier = Modifier.fillMaxWidth().padding(top = 6.dp, bottom = 5.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 6.dp, bottom = 5.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             days.forEach { day ->
@@ -135,7 +137,9 @@ fun NoostakCalendar(
                     style = typography.c2SemiBold,
                     textAlign = TextAlign.Center,
                     color = colors.gray600,
-                    modifier = Modifier.weight(1f).padding(vertical = 11.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(vertical = 11.dp)
                 )
             }
         }
@@ -233,47 +237,53 @@ fun NoostakCalendar(
                                 style = typography.c3Regular,
                                 textAlign = TextAlign.Center,
                                 color = colors.gray900,
-                                modifier = Modifier.padding(vertical = 11.dp).noRippleClickable {
-                                    if (isSingleDate) {
-                                        if (dateValue in selectedDates) {
-                                            selectedDates = selectedDates - dateValue
-                                        } else {
-                                            if (selectedDates.size < 7) {
-                                                selectedDates = selectedDates + dateValue
+                                modifier = Modifier
+                                    .padding(vertical = 11.dp)
+                                    .noRippleClickable {
+                                        if (isSingleDate) {
+                                            if (dateValue in selectedDates) {
+                                                selectedDates = selectedDates - dateValue
                                             } else {
-                                                showMessage = true
-                                            }
-                                        }
-                                    } else {
-                                        val selectedDate = LocalDate.parse(dateValue)
-                                        if (startDate.isEmpty() || (startDate.isNotEmpty() && endDate.isNotEmpty())) {
-                                            startDate = dateValue
-                                            endDate = ""
-                                        } else {
-                                            val tempStart = LocalDate.parse(startDate)
-                                            val tempEnd = selectedDate
-                                            if (tempStart.isAfter(tempEnd)) {
-                                                if (tempStart.minusDays(6) > tempEnd) {
-                                                    startDate = tempStart.minusDays(6).toString()
-                                                    endDate = tempStart.toString()
-                                                    showMessage = true
+                                                if (selectedDates.size < 7) {
+                                                    selectedDates = selectedDates + dateValue
                                                 } else {
-                                                    endDate = tempStart.toString()
-                                                    startDate = tempEnd.toString()
+                                                    showMessage = true
                                                 }
+                                            }
+                                        } else {
+                                            val selectedDate = LocalDate.parse(dateValue)
+                                            if (startDate.isEmpty() || (startDate.isNotEmpty() && endDate.isNotEmpty())) {
+                                                startDate = dateValue
+                                                endDate = ""
                                             } else {
-                                                if (tempStart.plusDays(6) < tempEnd) {
-                                                    endDate = tempStart.plusDays(6).toString()
-                                                    startDate = tempStart.toString()
-                                                    showMessage = true
+                                                val tempStart = LocalDate.parse(startDate)
+                                                val tempEnd = selectedDate
+                                                if (tempStart.isAfter(tempEnd)) {
+                                                    if (tempStart.minusDays(6) > tempEnd) {
+                                                        startDate = tempStart
+                                                            .minusDays(6)
+                                                            .toString()
+                                                        endDate = tempStart.toString()
+                                                        showMessage = true
+                                                    } else {
+                                                        endDate = tempStart.toString()
+                                                        startDate = tempEnd.toString()
+                                                    }
                                                 } else {
-                                                    startDate = tempStart.toString()
-                                                    endDate = tempEnd.toString()
+                                                    if (tempStart.plusDays(6) < tempEnd) {
+                                                        endDate = tempStart
+                                                            .plusDays(6)
+                                                            .toString()
+                                                        startDate = tempStart.toString()
+                                                        showMessage = true
+                                                    } else {
+                                                        startDate = tempStart.toString()
+                                                        endDate = tempEnd.toString()
+                                                    }
                                                 }
                                             }
                                         }
                                     }
-                                }
                             )
                         }
                     }

@@ -52,7 +52,13 @@ fun NavController.navigateCalendarTimePicker(
     navOptions: NavOptions? = null
 ) {
     navigate(
-        route = CalendarTimePicker(appointmentName = appointmentName, category = category, time = time, isSingleDateMode = isSingleDateMode, dates = dates),
+        route = CalendarTimePicker(
+            appointmentName = appointmentName,
+            category = category,
+            time = time,
+            isSingleDateMode = isSingleDateMode,
+            dates = dates
+        ),
         navOptions = navOptions
     )
 }
@@ -67,7 +73,14 @@ fun NavController.navigateCalendarCheck(
     navOptions: NavOptions? = null
 ) {
     navigate(
-        route = CalendarCheck(appointmentName = appointmentName, category = category, time = time, isSingleDateMode = isSingleDateMode, dates = dates, selectTime = selectTime),
+        route = CalendarCheck(
+            appointmentName = appointmentName,
+            category = category,
+            time = time,
+            isSingleDateMode = isSingleDateMode,
+            dates = dates,
+            selectTime = selectTime
+        ),
         navOptions = navOptions
     )
 }

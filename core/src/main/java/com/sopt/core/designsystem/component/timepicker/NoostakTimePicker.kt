@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,9 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sopt.core.R
+import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.designsystem.theme.NoostakTheme.colors
 import com.sopt.core.extension.noRippleClickable
@@ -35,22 +39,27 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 @Composable
-fun Picker2(
+fun TimePicker(
     items: List<String>,
     state: PickerState = rememberPickerState(),
     modifier: Modifier = Modifier,
     startIndex: Int = 0,
     visibleItemsCount: Int = 3,
     cornerShape: RoundedCornerShape = RoundedCornerShape(0.dp),
-    isLeft: Boolean = true
 ) {
     val visibleItemsMiddle = visibleItemsCount / 2
     val listScrollCount = Integer.MAX_VALUE
     val listScrollMiddle = listScrollCount / 2
-    val listStartIndex = listScrollMiddle - listScrollMiddle % items.size - visibleItemsMiddle + startIndex
+    val listStartIndex =
+        listScrollMiddle - listScrollMiddle % items.size - visibleItemsMiddle + startIndex
+
     fun getItem(index: Int) = items[index % items.size]
     val listState = rememberLazyListState(initialFirstVisibleItemIndex = listStartIndex)
     val flingBehavior = rememberSnapFlingBehavior(lazyListState = listState)
+
+    LaunchedEffect(listStartIndex) {
+        listState.scrollToItem(listStartIndex)
+    }
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex }
@@ -60,24 +69,17 @@ fun Picker2(
     }
 
     Box(
-        modifier = modifier
-            .height(152.dp)
+        modifier = modifier.height(152.dp)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(32.dp))
-            Box(
-                modifier = Modifier
-                    .padding(
-                        start = if (isLeft) 10.5.dp else 0.dp,
-                        end = if (!isLeft) 10.5.dp else 0.dp
-                    )
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(NoostakTheme.colors.gray200)
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 10.5.dp, end = 10.5.dp),
+                thickness = 1.dp,
+                color = colors.gray200
             )
             Spacer(modifier = Modifier.height(19.dp))
             Box(
@@ -91,23 +93,17 @@ fun Picker2(
                     .padding(horizontal = 20.dp, vertical = 7.dp)
             )
             Spacer(modifier = Modifier.height(18.dp))
-            Box(
-                modifier = Modifier
-                    .padding(
-                        start = if (isLeft) 10.5.dp else 0.dp,
-                        end = if (!isLeft) 10.5.dp else 0.dp
-                    )
-                    .fillMaxWidth()
-                    .height(1.dp)
-                    .background(NoostakTheme.colors.gray200)
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 10.5.dp, end = 10.5.dp),
+                thickness = 1.dp,
+                color = colors.gray200
             )
         }
         LazyColumn(
             state = listState,
             flingBehavior = flingBehavior,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth()
         ) {
             items(listScrollCount) { index ->
                 PickerItem(
@@ -119,6 +115,7 @@ fun Picker2(
         }
     }
 }
+
 
 @Composable
 fun PickerItem(text: String, isFirstItem: Boolean, isSecondItem: Boolean) {
@@ -138,14 +135,24 @@ fun PickerItem(text: String, isFirstItem: Boolean, isSecondItem: Boolean) {
         isFirstItem -> Alignment.Top
         else -> Alignment.Bottom
     }
-
-    Text(
-        text = text,
-        style = style,
+    Row(
         modifier = Modifier
+            .fillMaxWidth()
             .height(height)
-            .wrapContentHeight(alignment)
-    )
+            .wrapContentHeight(alignment),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = text,
+            style = style,
+            modifier = Modifier.padding(start = 31.5.dp)
+        )
+        Text(
+            text = "00",
+            style = style,
+            modifier = Modifier.padding(end = 31.5.dp)
+        )
+    }
 }
 
 @Composable
@@ -157,31 +164,32 @@ class PickerState {
 
 @Composable
 fun NoostakTimePicker(
-    onTimeSelected: (startHour: Int, startMinute: Int, endHour: Int, endMinute: Int) -> Unit
+    time: Int,
+    onTimeSelected: (startHour: Int, endHour: Int) -> Unit
 ) {
     val typography = NoostakTheme.typography
     val colors = NoostakTheme.colors
 
     var selectedStartHour by remember { mutableStateOf(0) }
     var selectedStartMinute by remember { mutableStateOf(0) }
-    var selectedEndHour by remember { mutableStateOf(18) }
+    var selectedEndHour by remember { mutableStateOf(23) }
     var selectedEndMinute by remember { mutableStateOf(0) }
 
-    var isStartTimeEditing by remember { mutableStateOf(true) } // 시작 시간이 기본 활성화
-    var isEndTimeEditing by remember { mutableStateOf(false) }
+    var isStartTimeEditing by remember { mutableStateOf(true) }
 
     val values = remember { (0..23).map { it.toString() } }
-    val units = remember { (0..59).map { it.toString() } }
-    val valuesPickerState = rememberPickerState()
-    val unitsPickerState = rememberPickerState()
 
-    LaunchedEffect(isStartTimeEditing, isEndTimeEditing) {
-        if (isStartTimeEditing) {
-            valuesPickerState.selectedItem = selectedStartHour.toString()
-            unitsPickerState.selectedItem = selectedStartMinute.toString()
-        } else if (isEndTimeEditing) {
-            valuesPickerState.selectedItem = selectedEndHour.toString()
-            unitsPickerState.selectedItem = selectedEndMinute.toString()
+    val valuesPickerState = rememberPickerState()
+
+    var showSnackBar by remember { mutableStateOf(false) }
+
+    var message by remember { mutableStateOf("") }
+
+    LaunchedEffect(isStartTimeEditing) {
+        valuesPickerState.selectedItem = if (isStartTimeEditing) {
+            selectedStartHour.toString().padStart(2, '0')
+        } else {
+            selectedEndHour.toString().padStart(2, '0')
         }
     }
 
@@ -190,11 +198,7 @@ fun NoostakTimePicker(
             .fillMaxWidth()
             .height(301.dp)
             .background(colors.gray50, RoundedCornerShape(20.dp))
-            .padding(top = 27.dp)
-            .noRippleClickable {
-                isStartTimeEditing = false
-                isEndTimeEditing = false
-            },
+            .padding(top = 27.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -211,34 +215,31 @@ fun NoostakTimePicker(
                 isSelected = isStartTimeEditing,
                 onClick = {
                     isStartTimeEditing = true
-                    isEndTimeEditing = false
                 }
             )
-
             Text(
                 text = stringResource(R.string.text_noostak_time_picker_wave),
                 style = typography.h1Bold,
                 color = colors.gray700
             )
-
             TimeDisplay(
                 label = stringResource(R.string.text_noostak_time_picker_end),
                 hour = selectedEndHour,
                 minute = selectedEndMinute,
-                isSelected = isEndTimeEditing,
+                isSelected = !isStartTimeEditing,
                 onClick = {
                     isStartTimeEditing = false
-                    isEndTimeEditing = true
                 }
             )
         }
 
-        Box(
+        HorizontalDivider(
             modifier = Modifier
-                .padding(top = 9.dp, bottom = 30.dp, start = 33.5.dp, end = 33.5.dp)
                 .fillMaxWidth()
-                .height(3.dp)
-                .background(colors.gray100)
+                .padding(top = 9.dp, bottom = 30.dp, start = 33.5.dp, end = 33.5.dp)
+                .clip(CircleShape),
+            thickness = 3.dp,
+            color = colors.gray100
         )
 
         Row(
@@ -248,51 +249,71 @@ fun NoostakTimePicker(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Picker2(
+            TimePicker(
                 state = valuesPickerState,
                 items = values,
                 visibleItemsCount = 3,
+                startIndex = if (isStartTimeEditing) selectedStartHour else selectedEndHour,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 75.dp)
+                    .padding(start = 75.dp, end = 75.dp)
                     .fillMaxWidth(),
                 cornerShape = RoundedCornerShape(
                     topStart = 30.dp,
                     bottomStart = 30.dp,
-                    topEnd = 0.dp,
-                    bottomEnd = 0.dp
-                )
-            )
-            Picker2(
-                state = unitsPickerState,
-                items = units,
-                visibleItemsCount = 3,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(end = 75.dp)
-                    .fillMaxWidth(),
-                cornerShape = RoundedCornerShape(
-                    topStart = 0.dp,
-                    bottomStart = 0.dp,
                     topEnd = 30.dp,
                     bottomEnd = 30.dp
-                ),
-                isLeft = false
+                )
             )
         }
-
-        LaunchedEffect(valuesPickerState.selectedItem, unitsPickerState.selectedItem) {
+        LaunchedEffect(valuesPickerState.selectedItem) {
             if (isStartTimeEditing) {
                 selectedStartHour = valuesPickerState.selectedItem.toIntOrNull() ?: 0
-                selectedStartMinute = unitsPickerState.selectedItem.toIntOrNull() ?: 0
-            } else if (isEndTimeEditing) {
+            } else {
                 selectedEndHour = valuesPickerState.selectedItem.toIntOrNull() ?: 0
-                selectedEndMinute = unitsPickerState.selectedItem.toIntOrNull() ?: 0
             }
-            onTimeSelected(selectedStartHour, selectedStartMinute, selectedEndHour, selectedEndMinute)
+
+            val adjustedEndHour = if (selectedEndHour == 0) 24 else selectedEndHour
+            val duration = adjustedEndHour - selectedStartHour
+
+            when {
+                selectedEndHour == selectedStartHour -> {
+                    message = "시작 시간과 종료 시간이 같을 수 없습니다."
+                    showSnackBar = true
+                }
+
+                duration < time -> {
+                    if (0 < duration) {
+                        message = "${time}시간 이상 선택해주세요"
+                        showSnackBar = true
+                    }
+                }
+
+                else -> {
+                    showSnackBar = false
+                }
+            }
+
+            onTimeSelected(selectedStartHour, selectedEndHour)
+        }
+    }
+    if (showSnackBar) {
+        Box(
+            modifier = Modifier
+                .padding(top = 23.dp)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            NoostakSnackBar(
+                message = message,
+                textStyle = typography.c2SemiBold,
+                textColor = colors.red01,
+                backgroundColor = colors.pink
+            )
         }
     }
 }
+
 
 @Composable
 fun TimeDisplay(
@@ -305,18 +326,11 @@ fun TimeDisplay(
     val typography = NoostakTheme.typography
     val colors = NoostakTheme.colors
 
-    var isClicked by remember { mutableStateOf(isSelected) }
-
-    val textColor = when {
-        isSelected -> colors.blue600
-        isClicked -> colors.gray900
-        else -> colors.gray500
-    }
+    val textColor = if (isSelected) colors.blue600 else colors.gray900
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.noRippleClickable {
-            isClicked = true
             onClick()
         }
     ) {

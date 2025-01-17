@@ -1,8 +1,6 @@
 package com.sopt.presentation.calendar.calendarPeriod
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -127,25 +126,23 @@ fun CalendarPeriodScreen(
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Box(
+            HorizontalDivider(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(1.dp)
-                    .background(colors.gray200)
-                    .padding(bottom = 17.dp)
+                    .padding(bottom = 17.dp),
+                thickness = 1.dp,
+                color = colors.gray200
             )
-
             NoostakCalendar(
                 start = startDate,
                 end = endDate,
                 isSingleDate = isSingleDateMode,
                 isRangeSelected = { selectedDates ->
+                    dates = selectedDates
                     if (isSingleDateMode) {
-                        dates = selectedDates
                         startDate = ""
                         endDate = ""
                     } else {
-                        dates = selectedDates
                         if (selectedDates.isNotEmpty()) {
                             startDate = selectedDates.first()
                             endDate = selectedDates.last()
@@ -165,7 +162,6 @@ fun CalendarPeriodScreen(
                 isEnabled = dates.isNotEmpty(),
                 deactivateColor = NoostakTheme.colors.gray500,
                 activateColor = NoostakTheme.colors.gray900,
-                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
     }
