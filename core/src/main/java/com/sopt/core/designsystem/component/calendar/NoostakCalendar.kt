@@ -180,7 +180,17 @@ fun NoostakCalendar(
                                             )
                                     )
                                 }
-                                isRange && !isStart && !isEnd -> {
+                                isStart && endDate.isEmpty() -> {
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .background(
+                                                color = colors.blue300,
+                                                shape = CircleShape
+                                            )
+                                    )
+                                }
+                                isRange && !isStart && !isEnd && startDate.isNotEmpty() && endDate.isNotEmpty() -> {
                                     Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -188,7 +198,7 @@ fun NoostakCalendar(
                                             .background(colors.blue100)
                                     )
                                 }
-                                isStart -> {
+                                isStart && endDate.isNotEmpty() -> {
                                     Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -197,7 +207,7 @@ fun NoostakCalendar(
                                             .background(colors.blue100)
                                     )
                                 }
-                                isEnd -> {
+                                isEnd && startDate.isNotEmpty() -> {
                                     Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -207,7 +217,6 @@ fun NoostakCalendar(
                                     )
                                 }
                             }
-
                             if (isStart || isEnd) {
                                 Box(
                                     modifier = Modifier
@@ -244,8 +253,8 @@ fun NoostakCalendar(
                                             val tempStart = LocalDate.parse(startDate)
                                             val tempEnd = selectedDate
                                             if (tempStart.isAfter(tempEnd)) {
-                                                if (tempStart.minusDays(7) > tempEnd) {
-                                                    startDate = tempStart.minusDays(7).toString()
+                                                if (tempStart.minusDays(6) > tempEnd) {
+                                                    startDate = tempStart.minusDays(6).toString()
                                                     endDate = tempStart.toString()
                                                     showMessage = true
                                                 } else {
@@ -253,8 +262,8 @@ fun NoostakCalendar(
                                                     startDate = tempEnd.toString()
                                                 }
                                             } else {
-                                                if (tempStart.plusDays(7) < tempEnd) {
-                                                    endDate = tempStart.plusDays(7).toString()
+                                                if (tempStart.plusDays(6) < tempEnd) {
+                                                    endDate = tempStart.plusDays(6).toString()
                                                     startDate = tempStart.toString()
                                                     showMessage = true
                                                 } else {
@@ -274,7 +283,9 @@ fun NoostakCalendar(
 
         if (showMessage) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .padding(top = 23.dp)
+                    .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
                 NoostakSnackBar(
