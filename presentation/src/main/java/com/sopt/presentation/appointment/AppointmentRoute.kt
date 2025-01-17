@@ -11,8 +11,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -21,20 +23,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.dialog.AppointmentDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -47,6 +53,8 @@ import com.sopt.domain.entity.TimeTableEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
 import com.sopt.presentation.appointment.screen.RecommendationScreen
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun AppointmentRoute(
@@ -58,6 +66,7 @@ fun AppointmentRoute(
     navigateToAppointmentConfirm: (Long, Long, Long, String) -> Unit,
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
+    val showDialog by appointmentViewModel.showDialog.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = appointmentViewModel.sideEffects) {
         appointmentViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -78,15 +87,43 @@ fun AppointmentRoute(
                         sideEffect.appointmentName
                     )
                 }
+
+                is AppointmentSideEffect.ShowDialog -> {
+                    appointmentViewModel.showDialog(true)
+                }
             }
         }
     }
+
+    LaunchedEffect(key1 = Unit) {
+        appointmentViewModel.showDialog(!appointmentViewModel.mockRecommendations.isSubmitted)
+    }
+
+    if (showDialog) {
+        AppointmentDialog(
+            onDismissRequest = {
+                appointmentViewModel.apply {
+                    showDialog(false)
+                    navigateUp()
+                }
+            },
+            onConfirmButtonClick = {
+                appointmentViewModel.apply {
+                    showDialog(false)
+                    navigateToAppointmentCheck(groupId, appointmentsId, appointmentName)
+                }
+            },
+            description = stringResource(R.string.dialog_appointment_description),
+            dismissText = stringResource(R.string.dialog_appointment_dismiss),
+            confirmButtonText = stringResource(R.string.dialog_appointment_confirm)
+        )
+    }
+
     AppointmentScreen(
         groupId = groupId,
         appointmentsId = appointmentsId,
         appointmentName = appointmentName,
         onBackButtonClick = appointmentViewModel::navigateUp,
-        onSubmitButtonClick = appointmentViewModel::navigateToAppointmentCheck,
         onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
         availablePeriods = appointmentViewModel.mockAvailablePeriods,
         availableTimes = appointmentViewModel.mockAvailableTimes,
@@ -100,28 +137,29 @@ fun AppointmentScreen(
     appointmentsId: Long,
     appointmentName: String,
     onBackButtonClick: () -> Unit,
-    onSubmitButtonClick: (Long, Long, String) -> Unit,
     onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
     availablePeriods: PeriodEntity,
     availableTimes: TimeTableEntity,
     recommendations: AppointmentEntity
 ) {
+    val listState = rememberLazyListState()
+    val density = LocalDensity.current
+    val coroutineScope = rememberCoroutineScope()
     var selectedItemIndex by remember { mutableIntStateOf(-1) }
-    var showDialog by remember { mutableStateOf(false) }
-
-    LaunchedEffect(key1 = Unit) {
-        showDialog = !recommendations.isSubmitted
-    }
 
     BackHandler {
         when (selectedItemIndex) {
-            -1 -> onBackButtonClick() // 선택된 항목이 없으면 기본 뒤로 가기 동작
-            else -> selectedItemIndex = -1 // 선택된 항목이 있으면 해제
+            -1 -> onBackButtonClick()
+            else -> {
+                selectedItemIndex = -1
+                scrollToItem(listState, coroutineScope, density)
+            }
         }
     }
 
     Scaffold(
         modifier = Modifier
+            .fillMaxSize()
             .statusBarsPadding()
             .navigationBarsPadding(),
         topBar = {
@@ -131,7 +169,10 @@ fun AppointmentScreen(
                 onBackButtonClick = {
                     when (selectedItemIndex) {
                         -1 -> onBackButtonClick()
-                        else -> selectedItemIndex = -1
+                        else -> {
+                            selectedItemIndex = -1
+                            scrollToItem(listState, coroutineScope, density)
+                        }
                     }
                 }
             )
@@ -143,21 +184,6 @@ fun AppointmentScreen(
                 .padding(innerPadding)
                 .padding(horizontal = 16.dp)
         ) {
-            if (showDialog) {
-                AppointmentDialog(
-                    onDismissRequest = {
-                        showDialog = false
-                        onBackButtonClick()
-                    },
-                    onConfirmButtonClick = {
-                        showDialog = false
-                        onSubmitButtonClick(groupId, appointmentsId, appointmentName)
-                    },
-                    description = stringResource(R.string.dialog_appointment_description),
-                    dismissText = stringResource(R.string.dialog_appointment_dismiss),
-                    confirmButtonText = stringResource(R.string.dialog_appointment_confirm)
-                )
-            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -173,7 +199,7 @@ fun AppointmentScreen(
                 Row(
                     modifier = Modifier
                         .showIf(selectedItemIndex == -1)
-                        .noRippleClickable { selectedItemIndex = 1 }
+                        .noRippleClickable { selectedItemIndex = 0 }
                 ) {
                     Text(
                         text = stringResource(R.string.btn_appointment_total),
@@ -187,21 +213,37 @@ fun AppointmentScreen(
                     )
                 }
             }
-            LazyRow(
-                modifier = Modifier.padding(bottom = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                items(recommendations.priorities, key = { it.priority }) { priority ->
-                    RecommendationHeaderItem(
-                        availableMembersCount = priority.availableMembersCount,
-                        totalMembersCount = priority.totalMembersCount,
-                        selectedItemIndex = selectedItemIndex,
-                        onHeaderItemClick = { selectedIndex ->
-                            selectedItemIndex = selectedIndex
-                        },
-                        priority = priority.priority
-                    )
+
+            if (recommendations.recommendationPriority.isEmpty()) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 27.dp, bottom = 41.dp),
+                    text = stringResource(R.string.text_appointment_recommendations_blank),
+                    color = NoostakTheme.colors.gray900,
+                    style = NoostakTheme.typography.b2Regular,
+                    textAlign = TextAlign.Center
+                )
+            } else {
+                LazyRow(
+                    state = listState,
+                    modifier = Modifier.padding(bottom = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    itemsIndexed(recommendations.recommendationPriority) { index, recommendationPriority ->
+                        val option = recommendationPriority.options.firstOrNull()
+                        RecommendationHeaderItem(
+                            availableMemberCount = option?.availableMemberCount ?: 0,
+                            totalMemberCount = option?.totalMemberCount ?: 0,
+                            selectedItemIndex = selectedItemIndex,
+                            onHeaderItemClick = {
+                                selectedItemIndex = it
+                                scrollToItem(listState, coroutineScope, density, index)
+                            },
+                            priority = index
+                        )
+                    }
                 }
             }
             if (selectedItemIndex == -1) {
@@ -211,8 +253,9 @@ fun AppointmentScreen(
                 )
             } else {
                 RecommendationScreen(
+                    isHost = recommendations.isHost,
                     selectedItemIndex = selectedItemIndex,
-                    data = recommendations.priorities,
+                    data = recommendations.recommendationPriority,
                     onConfirmButtonClick = { optionId ->
                         onConfirmButtonClick(groupId, appointmentsId, optionId, appointmentName)
                     }
@@ -224,11 +267,11 @@ fun AppointmentScreen(
 
 @Composable
 fun RecommendationHeaderItem(
-    availableMembersCount: Int, // 가능한 멤버 수
-    totalMembersCount: Int, // 전체 멤버 수
-    selectedItemIndex: Int, // 현재 선택된 아이템 인덱스
+    availableMemberCount: Int,
+    totalMemberCount: Int,
+    selectedItemIndex: Int,
     onHeaderItemClick: (Int) -> Unit,
-    priority: Int // 현재 아이템의 인덱스
+    priority: Int
 ) {
     Column(
         modifier = Modifier
@@ -257,15 +300,15 @@ fun RecommendationHeaderItem(
             )
             .noRippleClickable {
                 if (priority == selectedItemIndex) {
-                    onHeaderItemClick(-1) // 이미 선택된 아이템을 다시 클릭하면 선택 해제
+                    onHeaderItemClick(-1)
                 } else {
-                    onHeaderItemClick(priority) // 선택되지 않은 아이템을 클릭하면 선택
+                    onHeaderItemClick(priority)
                 }
             }
     ) {
         Text(
             modifier = Modifier.padding(bottom = 6.dp),
-            text = stringResource(R.string.text_appointment_priority, priority),
+            text = stringResource(R.string.text_appointment_priority, priority + 1),
             color = when (selectedItemIndex) {
                 -1 -> NoostakTheme.colors.black
                 priority -> NoostakTheme.colors.blue700
@@ -287,7 +330,7 @@ fun RecommendationHeaderItem(
                     append(
                         stringResource(
                             R.string.tv_appointment_availableMembersCount,
-                            availableMembersCount
+                            availableMemberCount
                         )
                     )
                 }
@@ -303,13 +346,31 @@ fun RecommendationHeaderItem(
                     append(
                         stringResource(
                             R.string.tv_appointment_totalMembersCount,
-                            totalMembersCount
+                            totalMemberCount
                         )
                     )
                 }
             },
             style = NoostakTheme.typography.b4SemiBold
         )
+    }
+}
+
+fun scrollToItem(
+    listState: LazyListState,
+    coroutineScope: CoroutineScope,
+    density: Density,
+    index: Int = 0
+) {
+    coroutineScope.launch {
+        if (index == 0) {
+            listState.scrollToItem(index)
+        } else {
+            listState.animateScrollToItem(
+                index = index,
+                scrollOffset = with(density) { -30.dp.roundToPx() }
+            )
+        }
     }
 }
 
@@ -323,7 +384,6 @@ fun AppointmentScreenPreview() {
             appointmentsId = 1,
             appointmentName = "3차 회의",
             onBackButtonClick = {},
-            onSubmitButtonClick = { _, _, _ -> },
             onConfirmButtonClick = { _, _, _, _ -> },
             availablePeriods = appointmentViewModel.mockAvailablePeriods,
             availableTimes = appointmentViewModel.mockAvailableTimes,

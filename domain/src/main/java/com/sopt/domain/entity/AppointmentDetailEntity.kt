@@ -1,7 +1,8 @@
 package com.sopt.domain.entity
 
 data class AppointmentDetailEntity(
-    val appointmentName: String,
+    val isHost: Boolean,
+    val myIdentity: IdentityEntity,
     val date: String,
     val startTime: String,
     val endTime: String,
