@@ -81,9 +81,8 @@ fun ConfirmedDetailScreen(
         }
     ) { innerPadding ->
         val calculateTime = CalculateTime()
-        val date = calculateTime.extractDate(data.date)
-        val startHour = calculateTime.extractHour(data.startTime)
-        val endHour = calculateTime.extractHour(data.endTime)
+        val date = calculateTime.extractDateWithSlash(data.date)
+        val startHour = calculateTime.extractHourWithZero(data.startTime)
         val rearrangeList = RearrangeList()
         val availableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
             data.myIdentity,
@@ -127,11 +126,7 @@ fun ConfirmedDetailScreen(
                             style = NoostakTheme.typography.b4SemiBold
                         )
                         Text(
-                            text = stringResource(
-                                R.string.text_complete_detail_hour,
-                                startHour,
-                                endHour
-                            ),
+                            text = startHour,
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )

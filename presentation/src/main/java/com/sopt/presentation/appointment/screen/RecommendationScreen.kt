@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,6 +47,8 @@ import com.sopt.domain.entity.OptionEntity
 import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.AppointmentViewModel
+import com.sopt.presentation.groupDetail.confirmedDetail.AvailableUserChips
+import com.sopt.presentation.groupDetail.confirmedDetail.UnavailableUserChips
 
 @Composable
 fun RecommendationScreen(
@@ -102,11 +105,10 @@ fun RecommendationItem(
     var isLiked by remember { mutableStateOf(data.liked) }
     var likes by remember { mutableIntStateOf(data.likes) }
     val calculateTime = CalculateTime()
-    val date = calculateTime.extractDate(data.date)
-    val dayOfWeek = calculateTime.extractDayOfWeek(data.date)
-    val startHour = calculateTime.extractHour(data.startTime)
-    val endHour = calculateTime.extractHour(data.endTime)
-    val isAvailable = data.myIdentity.availability == "available"
+    val date = calculateTime.extractDateWithKorean(data.date)
+    val dayOfWeek = calculateTime.extractDayOfWeekWithBraces(data.date)
+    val startHour = calculateTime.extractHourWithZero(data.startTime)
+    val endHour = calculateTime.extractHourWithZero(data.endTime)
     val rearrangeList = RearrangeList()
     val availableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
         data.myIdentity,
@@ -135,20 +137,20 @@ fun RecommendationItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(
-                    id = R.string.text_appointment_recommendation_date,
-                    date,
-                    dayOfWeek,
-                    startHour,
-                    endHour
-                ),
+                text = "$date $dayOfWeek",
                 color = NoostakTheme.colors.black,
                 style = NoostakTheme.typography.t4Bold
             )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = stringResource(R.string.text_brace_between_hours, startHour, endHour),
+                color = NoostakTheme.colors.black,
+                style = NoostakTheme.typography.t4Bold
+            )
+            Spacer(modifier = Modifier.weight(1f))
             Row(
                 modifier = Modifier
                     .background(
@@ -197,14 +199,10 @@ fun RecommendationItem(
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            availableMembers.forEachIndexed { index, member ->
-                NoostakUserChip(
-                    text = if (isAvailable && index == 0) stringResource(id = R.string.user_chip_me) else member,
-                    textColor = NoostakTheme.colors.black,
-                    backgroundColor = if (isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
-                    borderColor = NoostakTheme.colors.blue200
-                )
-            }
+            AvailableUserChips(
+                members = availableMembers,
+                myIdentity = data.myIdentity
+            )
         }
         Text(
             modifier = Modifier.padding(top = 20.dp),
@@ -220,14 +218,10 @@ fun RecommendationItem(
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            unavailableMembers.forEachIndexed { index, member ->
-                NoostakUserChip(
-                    text = if (!isAvailable && index == 0) stringResource(R.string.user_chip_me) else member,
-                    textColor = NoostakTheme.colors.gray800,
-                    backgroundColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
-                    borderColor = if (!isAvailable && index == 0) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
-                )
-            }
+            UnavailableUserChips(
+                members = unavailableMembers,
+                myIdentity = data.myIdentity
+            )
         }
     }
 }

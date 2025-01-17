@@ -64,6 +64,10 @@ fun ConfirmedItem(
     onItemClicked: (Long, Long, String) -> Unit
 ) {
     val calculateTime = CalculateTime()
+    val date = calculateTime.extractDateWithKorean(confirmedEntity.date)
+    val dayOfWeek = calculateTime.extractDayOfWeekWithBraces(confirmedEntity.date)
+    val startHour = calculateTime.extractHourWithZero(confirmedEntity.startTime)
+    val endHour = calculateTime.extractHourWithZero(confirmedEntity.endTime)
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -98,7 +102,13 @@ fun ConfirmedItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 1.dp),
-                    text = calculateTime.extractFullDate(confirmedEntity.date),
+                    text = stringResource(
+                        R.string.text_group_detail_confirmed_date,
+                        date,
+                        dayOfWeek,
+                        startHour,
+                        endHour
+                    ),
                     color = NoostakTheme.colors.gray700,
                     style = NoostakTheme.typography.c3Regular,
                     textAlign = TextAlign.Start

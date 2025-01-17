@@ -56,6 +56,9 @@
     <string name="tv_group_detail_list">약속 리스트</string>
     <string name="tv_group_detail_no_progress">현재 진행 중인 약속이 없어요</string>
     <string name="tv_group_detail_no_complete">현재 확정된 약속이 없어요</string>
+    <string name="text_group_detail_progress_date">%1$s %2$s %3$s~%4$s</string>
+    <string name="text_group_detail_progress_participants">%1$s명/%2$s명</string>
+    <string name="text_group_detail_confirmed_date">%1$s %2$s %3$s ~ %4$s</string>
 
     <!-- 확정된 약속 정보 -->
     <string name="header_complete_detail">약속 정보</string>
@@ -63,7 +66,6 @@
     <string name="tv_complete_detail_category">약속 유형</string>
     <string name="tv_complete_detail_available">가능한 친구 %1$s</string>
     <string name="tv_complete_detail_unavailable">불가능한 친구 %1$s</string>
-    <string name="text_complete_detail_hour">%1$s~%2$s</string>
 
     <!-- 그룹 멤버 -->
     <string name="appbar_group_member">그룹 멤버</string>
@@ -92,8 +94,6 @@
     <string name="tv_appointment_availableMembersCount">%1$s명</string>
     <string name="tv_appointment_totalMembersCount">" / %1$s명"</string>
     <string name="text_appointment_recommendations_blank">현재 추천 가능한 시간이 없어요.</string>
-    <string name="text_appointment_confirm_hour">%1$s~%2$s</string>
-    <string name="text_appointment_recommendation_date">%1$s (%2$s) %3$s - %4$s</string>
 
     <!-- Group -->
     <string name="fab_group_create">그룹추가</string>
@@ -130,5 +130,8 @@
 
     <!-- 유저 칩 -->
     <string name="user_chip_me">나</string>
+
+    <!-- 날짜 형식 -->
+    <string name="text_brace_between_hours">%1$s ~ %2$s</string>
 
 </resources>

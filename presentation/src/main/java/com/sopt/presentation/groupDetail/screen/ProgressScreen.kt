@@ -69,15 +69,21 @@ fun ProgressItem(
     onItemClicked: (Long, Long, String) -> Unit
 ) {
     val calculateTime = CalculateTime()
-    val startDate = calculateTime.extractDate(progressEntity.startDate)
-    val dayOfWeek = calculateTime.extractDayOfWeek(progressEntity.startDate)
-    val startHour = calculateTime.extractHour(progressEntity.startDate)
-    val endHour = calculateTime.extractHour(progressEntity.endDate)
+    val startDate = calculateTime.extractFullDateWithSlash(progressEntity.startDate)
+    val dayOfWeek = calculateTime.extractDayOfWeekWithBraces(progressEntity.startDate)
+    val startHour = calculateTime.extractHourWithKorean(progressEntity.startDate)
+    val endHour = calculateTime.extractHourWithKorean(progressEntity.endDate)
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .noRippleClickable { onItemClicked(groupId, progressEntity.appointmentId, progressEntity.appointmentName) }
+            .noRippleClickable {
+                onItemClicked(
+                    groupId,
+                    progressEntity.appointmentId,
+                    progressEntity.appointmentName
+                )
+            }
             .border(
                 width = 1.dp,
                 shape = RoundedCornerShape(15.dp),
@@ -115,12 +121,22 @@ fun ProgressItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "$startDate ($dayOfWeek) $startHour~$endHour",
+                text = stringResource(
+                    R.string.text_group_detail_progress_date,
+                    startDate,
+                    dayOfWeek,
+                    startHour,
+                    endHour
+                ),
                 color = NoostakTheme.colors.gray800,
                 style = NoostakTheme.typography.b5Regular
             )
             Text(
-                text = "${progressEntity.participants}명/${progressEntity.maxParticipants}명",
+                text = stringResource(
+                    R.string.text_group_detail_progress_participants,
+                    progressEntity.participants,
+                    progressEntity.maxParticipants
+                ),
                 color = NoostakTheme.colors.gray700,
                 style = NoostakTheme.typography.b5Regular
             )

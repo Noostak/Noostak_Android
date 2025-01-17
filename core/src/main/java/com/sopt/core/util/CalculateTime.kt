@@ -6,26 +6,36 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 class CalculateTime {
-    fun extractDate(dateTime: String): String {
+    fun extractFullDateWithSlash(dateTime: String): String {
         return parseDateTime(dateTime).toLocalDate().format(DateTimeFormatter.ofPattern("MM/dd"))
+    }
+
+    fun extractDateWithSlash(dateTime: String): String {
+        return parseDateTime(dateTime).toLocalDate().format(DateTimeFormatter.ofPattern("M/d"))
+    }
+
+    fun extractFullDateWithKorean(dateTime: String): String {
+        return parseDateTime(dateTime).toLocalDate().format(DateTimeFormatter.ofPattern("MM월 dd일"))
+    }
+
+    fun extractDateWithKorean(dateTime: String): String {
+        return parseDateTime(dateTime).toLocalDate().format(DateTimeFormatter.ofPattern("M월 d일"))
     }
 
     fun extractDayOfWeek(dateTime: String): String {
         return parseDateTime(dateTime).dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN)
     }
 
-    fun extractHour(dateTime: String): String {
+    fun extractDayOfWeekWithBraces(dateTime: String): String {
+        return "(${parseDateTime(dateTime).dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN)})"
+    }
+
+    fun extractHourWithKorean(dateTime: String): String {
         return "${parseDateTime(dateTime).hour}시"
     }
 
-    fun extractFullDate(dateTime: String): String {
-        val parsedDateTime = parseDateTime(dateTime)
-        val year = parsedDateTime.year
-        val month = parsedDateTime.monthValue
-        val day = parsedDateTime.dayOfMonth
-        val dayOfWeek = parsedDateTime.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN)
-
-        return "${year}년 ${month}월 ${day}일 $dayOfWeek"
+    fun extractHourWithZero(dateTime: String): String {
+        return "${parseDateTime(dateTime).hour}:00"
     }
 
     private fun parseDateTime(dateTime: String): LocalDateTime {
