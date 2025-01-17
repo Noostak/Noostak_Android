@@ -1,7 +1,6 @@
 package com.sopt.core.designsystem.component.dialog
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -15,7 +14,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,6 +32,7 @@ import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.type.DialogType
+import com.sopt.core.util.NoRippleInteractionSource
 
 @Composable
 fun NoostakDialog(
@@ -60,31 +62,34 @@ fun NoostakDialog(
                 Spacer(
                     modifier = Modifier.height(
                         when (dialogType) {
-                            DialogType.GROUP -> 24.dp
                             DialogType.LOGOUT -> 41.dp
                             DialogType.WITHDRAWAL -> 30.dp
+                            else -> 24.dp
                         }
                     )
                 )
                 Text(
                     text = stringResource(dialogType.content),
                     textAlign = TextAlign.Center,
-                    style = if (dialogType == DialogType.GROUP) NoostakTheme.typography.c3Regular else NoostakTheme.typography.b4Regular
+                    style = if (dialogType == DialogType.LOGOUT || dialogType == DialogType.WITHDRAWAL) {
+                        NoostakTheme.typography.b4Regular
+                    } else {
+                        NoostakTheme.typography.c3Regular
+                    }
                 )
                 Spacer(
                     modifier = Modifier.height(
                         when (dialogType) {
-                            DialogType.GROUP -> 20.dp
                             DialogType.LOGOUT -> 36.dp
                             DialogType.WITHDRAWAL -> 26.dp
+                            else -> 20.dp
                         }
                     )
                 )
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                        .background(color = NoostakTheme.colors.gray200)
+                HorizontalDivider(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = NoostakTheme.colors.gray200,
+                    thickness = 1.dp
                 )
                 Row(
                     modifier = Modifier
@@ -102,8 +107,8 @@ fun NoostakDialog(
                             contentColor = NoostakTheme.colors.gray900,
                             disabledContainerColor = NoostakTheme.colors.white,
                             disabledContentColor = NoostakTheme.colors.gray900
-                        )
-
+                        ),
+                        interactionSource = NoRippleInteractionSource
                     ) {
                         Text(
                             text = stringResource(dialogType.dismissText),
@@ -112,11 +117,10 @@ fun NoostakDialog(
                         )
                     }
 
-                    Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(1.dp)
-                            .background(color = NoostakTheme.colors.gray200)
+                    VerticalDivider(
+                        modifier = Modifier.fillMaxHeight(),
+                        color = NoostakTheme.colors.gray200,
+                        thickness = 1.dp
                     )
 
                     Button(
@@ -130,7 +134,8 @@ fun NoostakDialog(
                             contentColor = NoostakTheme.colors.gray900,
                             disabledContainerColor = NoostakTheme.colors.white,
                             disabledContentColor = NoostakTheme.colors.gray900
-                        )
+                        ),
+                        interactionSource = NoRippleInteractionSource
                     ) {
                         Text(
                             text = stringResource(dialogType.confirmText),
@@ -149,6 +154,6 @@ fun NoostakDialog(
 @Composable
 fun NoostakDialogPreview() {
     NoostakAndroidTheme {
-        NoostakDialog(dialogType = DialogType.GROUP, onClick = {}, onDismissRequest = {})
+        NoostakDialog(dialogType = DialogType.LOGOUT, onClick = {}, onDismissRequest = {})
     }
 }
