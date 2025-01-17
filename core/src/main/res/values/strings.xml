@@ -38,5 +38,7 @@
     <string name="text_dialog_type_confirm_logout">로그아웃</string>
     <string name="text_dialog_type_withdrawal_content">회원 탈퇴 시 복구가 불가해요.\n정말 탈퇴하시겠어요?</string>
     <string name="text_dialog_type_confirm_withdrawal">탈퇴하기</string>
+    <string name="text_dialog_type_login_kakao_content">네트워크 문제로\n카카오톡 로그인을 연결하지 못했습니다.\n다시 시도하시겠습니까?</string>
+    <string name="text_dialog_type_login_google_content">네트워크 문제로\nGoogle 로그인을 연결하지 못했습니다.\n다시 시도하시겠습니까?</string>
 
 </resources>
