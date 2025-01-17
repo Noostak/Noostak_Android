@@ -53,6 +53,10 @@ landscapist = "2.3.6"
 # Kakao
 kakao = "2.20.1"
 
+# Google
+google-id = "1.1.1"
+play-services-auth = "21.1.0"
+
 viewpager-indicator = "5.0"
 
 # Hilt
@@ -154,6 +158,10 @@ landscapist-animation = { group = "com.github.skydoves", name = "landscapist-ani
 # Kakao
 kakao-all = { group = "com.kakao.sdk", name = "v2-all", version.ref = "kakao" } # Kakao SDK 라이브러리
 kakao-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao" } # Kakao 로그인 라이브러리
+
+# Google
+play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "play-services-auth" }
+google-id = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "google-id" }
 
 # Hilt
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" } # Hilt Android 라이브러리

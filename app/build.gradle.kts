@@ -1,4 +1,3 @@
-
 import java.util.Properties
 
 plugins {
@@ -30,6 +29,9 @@ android {
             useSupportLibrary = true
         }
         buildConfigField("String", "BASE_URL", properties["base.url"].toString())
+        buildConfigField("String", "KAKAO_API_KEY", properties["KAKAO_API_KEY"].toString())
+        buildConfigField("String", "GOOGLE_CLIENT_ID", properties["GOOGLE_CLIENT_ID"].toString())
+        manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = properties["KAKAO_NATIVE_APP_KEY"].toString()
     }
 
     buildTypes {
@@ -130,4 +132,8 @@ dependencies {
     // Kakao
     implementation(libs.kakao.all)
     implementation(libs.kakao.user)
+
+    // Google
+    implementation(libs.play.services.auth)
+    implementation(libs.google.id)
 }

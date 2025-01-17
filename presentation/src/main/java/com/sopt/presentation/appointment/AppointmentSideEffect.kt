@@ -14,4 +14,6 @@ sealed class AppointmentSideEffect {
         val optionId: Long,
         val appointmentName: String
     ) : AppointmentSideEffect()
+
+    data object ShowDialog : AppointmentSideEffect()
 }
