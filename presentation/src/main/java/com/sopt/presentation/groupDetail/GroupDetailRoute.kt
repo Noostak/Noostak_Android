@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -53,7 +52,6 @@ import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
-import com.sopt.core.extension.stringOf
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.domain.entity.GroupDetailEntity
@@ -61,7 +59,7 @@ import com.sopt.domain.entity.ProgressEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.screen.ConfirmedScreen
 import com.sopt.presentation.groupDetail.screen.ProgressScreen
-import kotlinx.collections.immutable.immutableListOf
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -337,9 +335,7 @@ fun GroupDetailRoutePreview() {
     NoostakAndroidTheme {
         GroupDetailScreen(
             groupId = 0,
-            tabs = immutableListOf(
-                "진행 중", "확정"
-            ),
+            tabs = persistentListOf("진행 중", "확정"),
             data = GroupDetailEntity(
                 groupName = "누스탁",
                 groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4",

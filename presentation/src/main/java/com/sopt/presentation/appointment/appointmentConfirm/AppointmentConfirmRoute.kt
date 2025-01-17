@@ -34,8 +34,8 @@ import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.AppointmentDetailEntity
 import com.sopt.presentation.R
-import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
 import com.sopt.presentation.groupDetail.confirmedDetail.AvailableUserChips
+import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
 import com.sopt.presentation.groupDetail.confirmedDetail.UnavailableUserChips
 
 @Composable
