@@ -6,10 +6,80 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
+import com.sopt.presentation.appointmentCreate.appointmentCreateInfo.AppointmentCreateInfoRoute
+import com.sopt.presentation.appointmentCreate.appointmentCreatePeriod.AppointmentCreatePeriodRoute
+import com.sopt.presentation.appointmentCreate.appointmentCreateTimePicker.AppointmentCreateTimePickerRoute
 import com.sopt.presentation.appointmentCreate.appointmentSubmit.AppointmentSubmitRoute
 import com.sopt.presentation.appointmentCreate.appointmentSubmitComplete.AppointmentSubmitCompleteRoute
 import com.sopt.presentation.groupDetail.navigation.navigateGroupDetail
 import kotlinx.serialization.Serializable
+
+fun NavController.navigateAppointmentCreateInfo(
+    groupId: Long,
+    navOptions: NavOptions? = null
+) {
+    navigate(
+        route = AppointmentCreateInfo(groupId = groupId),
+        navOptions = navOptions
+    )
+}
+
+fun NavController.navigateAppointmentCreatePeriod(
+    groupId: Long,
+    appointmentName: String,
+    appointmentCategory: String,
+    appointmentTime: Int,
+    navOptions: NavOptions? = null
+) {
+    navigate(
+        route = AppointmentCreatePeriod(groupId = groupId, appointmentName = appointmentName, appointmentCategory = appointmentCategory, appointmentTime = appointmentTime),
+        navOptions = navOptions
+    )
+}
+
+fun NavController.navigateAppointmentCreateTimePicker(
+    groupId: Long,
+    appointmentName: String,
+    appointmentCategory: String,
+    appointmentTime: Int,
+    isSingleDateMode: Boolean,
+    appointmentDate: List<String>?,
+    navOptions: NavOptions? = null
+) {
+    navigate(
+        route = AppointmentCreateTimePicker(
+            groupId = groupId,
+            appointmentName = appointmentName,
+            appointmentCategory = appointmentCategory,
+            appointmentTime = appointmentTime,
+            isSingleDateMode = isSingleDateMode,
+            appointmentDate = appointmentDate
+        ),
+        navOptions = navOptions
+    )
+}
+
+fun NavController.navigateCalendarCheck(
+    appointmentName: String,
+    appointmentCategory: String,
+    appointmentTime: Int,
+    isSingleDateMode: Boolean,
+    appointmentDate: List<String>?,
+    appointmentDuration: String,
+    navOptions: NavOptions? = null
+) {
+    navigate(
+        route = CalendarCheck(
+            appointmentName = appointmentName,
+            appointmentCategory = appointmentCategory,
+            appointmentTime = appointmentTime,
+            isSingleDateMode = isSingleDateMode,
+            appointmentDate = appointmentDate,
+            appointmentDuration = appointmentDuration
+        ),
+        navOptions = navOptions
+    )
+}
 
 fun NavController.navigateAppointmentSubmit(
     groupId: Long,
@@ -58,6 +128,64 @@ fun NavController.navigateAppointmentSubmitComplete(
 fun NavGraphBuilder.appointmentCreateNavGraph(
     navHostController: NavController
 ) {
+    composable<AppointmentCreateInfo> {
+        val args = it.toRoute<AppointmentCreateInfo>()
+        AppointmentCreateInfoRoute(
+            groupId = args.groupId,
+            navigateToPeriod = { groupId, appointmentName, category, time ->
+                navHostController.navigateAppointmentCreatePeriod(
+                    groupId = groupId,
+                    appointmentName = appointmentName,
+                    appointmentCategory = category,
+                    appointmentTime = time
+                )
+            }
+        )
+    }
+
+    composable<AppointmentCreatePeriod> {
+        val args = it.toRoute<AppointmentCreatePeriod>()
+        AppointmentCreatePeriodRoute(
+            groupId = args.groupId,
+            appointmentName = args.appointmentName,
+            appointmentCategory = args.appointmentCategory,
+            appointmentTime = args.appointmentTime,
+            navigateToTimePicker = { groupId, appointmentName, category, time, isSingleDateMode, dates ->
+                navHostController.navigateAppointmentCreateTimePicker(
+                    groupId = groupId,
+                    appointmentName = appointmentName,
+                    appointmentCategory = category,
+                    appointmentTime = time,
+                    isSingleDateMode = isSingleDateMode,
+                    appointmentDate = dates
+                )
+            }
+        )
+    }
+
+    composable<AppointmentCreateTimePicker> {
+        val args = it.toRoute<AppointmentCreateTimePicker>()
+        AppointmentCreateTimePickerRoute(
+            groupId = args.groupId,
+            appointmentName = args.appointmentName,
+            appointmentCategory = args.appointmentCategory,
+            appointmentTime = args.appointmentTime,
+            isSingleDateMode = args.isSingleDateMode,
+            appointmentDate = args.appointmentDate ?: emptyList(),
+            navigateToCheck = { groupId, appointmentName, category, time, isSingleDateMode, dates, selectTime ->
+                navHostController.navigateCalendarCheck(
+                    //  groupId = groupId,
+                    appointmentName = appointmentName,
+                    appointmentCategory = category,
+                    appointmentTime = time,
+                    isSingleDateMode = isSingleDateMode,
+                    appointmentDate = dates,
+                    appointmentDuration = selectTime
+                )
+            }
+        )
+    }
+
     composable<AppointmentSubmit> {
         val args = it.toRoute<AppointmentSubmit>() // 이전 화면에서 데이터 전달 받기
         AppointmentSubmitRoute(
@@ -96,6 +224,39 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
         )
     }
 }
+
+@Serializable
+data class AppointmentCreateInfo(
+    val groupId: Long
+) : Route
+
+@Serializable
+data class AppointmentCreatePeriod(
+    val groupId: Long,
+    val appointmentName: String,
+    val appointmentCategory: String,
+    val appointmentTime: Int
+) : Route
+
+@Serializable
+data class AppointmentCreateTimePicker(
+    val groupId: Long,
+    val appointmentName: String,
+    val appointmentCategory: String,
+    val appointmentTime: Int,
+    val isSingleDateMode: Boolean,
+    val appointmentDate: List<String>? = null
+) : Route
+
+@Serializable
+data class CalendarCheck(
+    val appointmentName: String,
+    val appointmentCategory: String,
+    val appointmentTime: Int,
+    val isSingleDateMode: Boolean,
+    val appointmentDate: List<String>? = null,
+    val appointmentDuration: String
+) : Route
 
 @Serializable
 data class AppointmentSubmit(

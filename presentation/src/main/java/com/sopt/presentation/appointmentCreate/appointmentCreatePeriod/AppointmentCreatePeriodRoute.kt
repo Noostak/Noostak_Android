@@ -1,4 +1,4 @@
-package com.sopt.presentation.calendar.calendarPeriod
+package com.sopt.presentation.appointmentCreate.appointmentCreatePeriod
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -36,18 +36,20 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
 
 @Composable
-fun CalendarPeriodRoute(
+fun AppointmentCreatePeriodRoute(
+    groupId: Long,
     appointmentName: String,
-    category: String,
-    time: Int,
-    navigateToTimePicker: (String, String, Int, Boolean, List<String>) -> Unit,
-    calendarPeriodViewModel: CalendarPeriodViewModel = hiltViewModel()
+    appointmentCategory: String,
+    appointmentTime: Int,
+    navigateToTimePicker: (Long, String, String, Int, Boolean, List<String>) -> Unit,
+    calendarPeriodViewModel: AppointmentCreatePeriodViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = calendarPeriodViewModel.sideEffects) {
         calendarPeriodViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
-                is CalendarPeriodSideEffect.NavigateToTimePicker -> {
+                is AppointmentCreatePeriodSideEffect.NavigateToTimePicker -> {
                     navigateToTimePicker(
+                        sideEffect.groupId,
                         sideEffect.appointmentName,
                         sideEffect.category,
                         sideEffect.time,
@@ -59,22 +61,24 @@ fun CalendarPeriodRoute(
         }
     }
 
-    CalendarPeriodScreen(
-        onButtonClick = calendarPeriodViewModel::navigateToCalendarTimePicker,
+    AppointmentCreatePeriodScreen(
+        onButtonClick = calendarPeriodViewModel::navigateToAppointmentCreateTimePicker,
         appointmentName = appointmentName,
-        category = category,
-        time = time,
-        days = calendarPeriodViewModel.days
+        category = appointmentCategory,
+        time = appointmentTime,
+        days = calendarPeriodViewModel.days,
+        groupId = groupId
     )
 }
 
 @Composable
-fun CalendarPeriodScreen(
-    onButtonClick: (String, String, Int, Boolean, List<String>) -> Unit,
+fun AppointmentCreatePeriodScreen(
+    onButtonClick: (Long, String, String, Int, Boolean, List<String>) -> Unit,
     appointmentName: String,
     category: String,
     time: Int,
-    days: List<String>
+    days: List<String>,
+    groupId: Long
 ) {
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
@@ -157,11 +161,11 @@ fun CalendarPeriodScreen(
             NoostakBottomButton(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
-                    onButtonClick(appointmentName, category, time, isSingleDateMode, dates)
+                    onButtonClick(groupId, appointmentName, category, time, isSingleDateMode, dates)
                 },
                 isEnabled = dates.isNotEmpty(),
                 deactivateColor = NoostakTheme.colors.gray500,
-                activateColor = NoostakTheme.colors.gray900,
+                activateColor = NoostakTheme.colors.gray900
             )
         }
     }

@@ -45,7 +45,7 @@ fun TimePicker(
     modifier: Modifier = Modifier,
     startIndex: Int = 0,
     visibleItemsCount: Int = 3,
-    cornerShape: RoundedCornerShape = RoundedCornerShape(0.dp),
+    cornerShape: RoundedCornerShape = RoundedCornerShape(0.dp)
 ) {
     val visibleItemsMiddle = visibleItemsCount / 2
     val listScrollCount = Integer.MAX_VALUE
@@ -115,7 +115,6 @@ fun TimePicker(
         }
     }
 }
-
 
 @Composable
 fun PickerItem(text: String, isFirstItem: Boolean, isSecondItem: Boolean) {
@@ -313,7 +312,6 @@ fun NoostakTimePicker(
         }
     }
 }
-
 
 @Composable
 fun TimeDisplay(

@@ -1,14 +1,15 @@
-package com.sopt.presentation.calendar.calendarTimePicker
+package com.sopt.presentation.appointmentCreate.appointmentCreateTimePicker
 
 import com.sopt.core.util.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarTimePickerViewModel @Inject constructor() :
-    BaseViewModel<CalendarTimePickerSideEffect>() {
+class AppointmentCreateTimePickerViewModel @Inject constructor() :
+    BaseViewModel<AppointmentCreateTimePickerSideEffect>() {
 
     fun navigateToCalendarCheck(
+        groupId: Long,
         appointmentName: String,
         category: String,
         time: Int,
@@ -17,7 +18,8 @@ class CalendarTimePickerViewModel @Inject constructor() :
         selectTime: String
     ) {
         emitSideEffect(
-            CalendarTimePickerSideEffect.NavigateToCheck(
+            AppointmentCreateTimePickerSideEffect.NavigateToCheck(
+                groupId = groupId,
                 appointmentName,
                 category,
                 time,
@@ -29,13 +31,14 @@ class CalendarTimePickerViewModel @Inject constructor() :
     }
 }
 
-sealed class CalendarTimePickerSideEffect {
+sealed class AppointmentCreateTimePickerSideEffect {
     data class NavigateToCheck(
+        val groupId: Long,
         val appointmentName: String,
         val category: String,
         val time: Int,
         val isSingleDateMode: Boolean,
         val dates: List<String>,
         val selectTime: String
-    ) : CalendarTimePickerSideEffect()
+    ) : AppointmentCreateTimePickerSideEffect()
 }

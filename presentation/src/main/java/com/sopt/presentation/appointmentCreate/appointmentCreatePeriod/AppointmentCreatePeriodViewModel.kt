@@ -1,4 +1,4 @@
-package com.sopt.presentation.calendar.calendarPeriod
+package com.sopt.presentation.appointmentCreate.appointmentCreatePeriod
 
 import android.content.Context
 import com.sopt.core.extension.stringOf
@@ -10,9 +10,9 @@ import okhttp3.internal.immutableListOf
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarPeriodViewModel @Inject constructor(
+class AppointmentCreatePeriodViewModel @Inject constructor(
     @ApplicationContext private val context: Context
-) : BaseViewModel<CalendarPeriodSideEffect>() {
+) : BaseViewModel<AppointmentCreatePeriodSideEffect>() {
     val days = immutableListOf(
         context.stringOf(R.string.text_calendar_appointment_mon),
         context.stringOf(R.string.text_calendar_appointment_tues),
@@ -23,7 +23,8 @@ class CalendarPeriodViewModel @Inject constructor(
         context.stringOf(R.string.text_calendar_appointment_sun)
     )
 
-    fun navigateToCalendarTimePicker(
+    fun navigateToAppointmentCreateTimePicker(
+        groupId: Long,
         appointmentName: String,
         category: String,
         time: Int,
@@ -31,7 +32,8 @@ class CalendarPeriodViewModel @Inject constructor(
         dates: List<String>
     ) {
         emitSideEffect(
-            CalendarPeriodSideEffect.NavigateToTimePicker(
+            AppointmentCreatePeriodSideEffect.NavigateToTimePicker(
+                groupId = groupId,
                 appointmentName,
                 category,
                 time,
@@ -42,12 +44,13 @@ class CalendarPeriodViewModel @Inject constructor(
     }
 }
 
-sealed class CalendarPeriodSideEffect {
+sealed class AppointmentCreatePeriodSideEffect {
     data class NavigateToTimePicker(
+        val groupId: Long,
         val appointmentName: String,
         val category: String,
         val time: Int,
         val isSingleDateMode: Boolean,
         val dates: List<String>
-    ) : CalendarPeriodSideEffect()
+    ) : AppointmentCreatePeriodSideEffect()
 }

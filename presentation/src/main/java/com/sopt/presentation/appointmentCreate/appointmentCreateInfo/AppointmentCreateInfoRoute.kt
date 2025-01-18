@@ -1,4 +1,4 @@
-package com.sopt.presentation.calendar.calendarInfo
+package com.sopt.presentation.appointmentCreate.appointmentCreateInfo
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -45,15 +45,17 @@ import com.sopt.core.type.TextFieldType
 import com.sopt.presentation.R
 
 @Composable
-fun CalendarInfoRoute(
-    navigateToPeriod: (String, String, Int) -> Unit,
-    calendarInfoViewModel: CalendarInfoViewModel = hiltViewModel()
+fun AppointmentCreateInfoRoute(
+    groupId: Long,
+    navigateToPeriod: (Long, String, String, Int) -> Unit,
+    calendarInfoViewModel: AppointmentCreateInfoViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = calendarInfoViewModel.sideEffects) {
         calendarInfoViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
-                is CalendarInfoSideEffect.NavigateToPeriod -> {
+                is AppointmentCreateInfoSideEffect.NavigateToPeriod -> {
                     navigateToPeriod(
+                        sideEffect.groupId,
                         sideEffect.appointmentName,
                         sideEffect.category,
                         sideEffect.time
@@ -62,15 +64,17 @@ fun CalendarInfoRoute(
             }
         }
     }
-    CalendarInfoScreen(
-        onButtonClick = calendarInfoViewModel::navigateToCalendarPeriod,
-        categories = calendarInfoViewModel.categories
+    AppointmentCreateInfoScreen(
+        onButtonClick = calendarInfoViewModel::navigateToAppointmentCreatePeriod,
+        categories = calendarInfoViewModel.categories,
+        groupId = groupId
     )
 }
 
 @Composable
-fun CalendarInfoScreen(
-    onButtonClick: (String, String, Int) -> Unit,
+fun AppointmentCreateInfoScreen(
+    groupId: Long,
+    onButtonClick: (Long, String, String, Int) -> Unit,
     categories: List<String>
 ) {
     var appointmentName by remember { mutableStateOf("") }
@@ -196,7 +200,7 @@ fun CalendarInfoScreen(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
                     val time = duration.toIntOrNull() ?: 0
-                    onButtonClick(appointmentName, selectedCategory, time)
+                    onButtonClick(groupId, appointmentName, selectedCategory, time)
                 },
                 isEnabled = appointmentName.isNotBlank() && selectedCategory.isNotBlank() && duration.isNotBlank(),
                 deactivateColor = NoostakTheme.colors.gray500,

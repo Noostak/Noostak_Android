@@ -56,7 +56,6 @@ import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.screen.ConfirmedScreen
 import com.sopt.presentation.groupDetail.screen.ProgressScreen
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun GroupDetailRoute(
@@ -65,6 +64,7 @@ fun GroupDetailRoute(
     navigateToConfirmedDetail: (Long, Long) -> Unit,
     navigateToGroupMember: (Long) -> Unit,
     navigateToAppointment: (Long, Long, String) -> Unit,
+    navigateToAppointmentCreate: (Long) -> Unit,
     groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = groupDetailViewModel.sideEffects) {
@@ -86,6 +86,10 @@ fun GroupDetailRoute(
                         sideEffect.appointmentName
                     )
                 }
+
+                is GroupDetailSideEffect.NavigateToAppointmentCreate -> {
+                    navigateToAppointmentCreate(sideEffect.groupId)
+                }
             }
         }
     }
@@ -97,7 +101,8 @@ fun GroupDetailRoute(
         onBackButtonClick = groupDetailViewModel::navigateUp,
         onConfirmedClick = groupDetailViewModel::navigateToConfirmedDetail,
         onGroupMemberClick = groupDetailViewModel::navigateToGroupMember,
-        onProgressClick = groupDetailViewModel::navigateToAppointment
+        onProgressClick = groupDetailViewModel::navigateToAppointment,
+        onAppointmentCreateClick = groupDetailViewModel::navigateToAppointmentCreate
     )
 }
 
@@ -109,7 +114,8 @@ fun GroupDetailScreen(
     onBackButtonClick: () -> Unit,
     onConfirmedClick: (Long, Long) -> Unit,
     onGroupMemberClick: (Long) -> Unit,
-    onProgressClick: (Long, Long, String) -> Unit
+    onProgressClick: (Long, Long, String) -> Unit,
+    onAppointmentCreateClick: (Long) -> Unit
 ) {
     val pagerState = rememberPagerState { tabs.size }
     val context = LocalContext.current
@@ -131,8 +137,7 @@ fun GroupDetailScreen(
                 title = stringResource(R.string.fab_group_detail),
                 modifier = Modifier.offset(x = 0.dp, y = (-74).dp)
             ) {
-                // 약속 생성 페이지로 이동
-                Timber.d("약속 생성 페이지로 이동")
+                onAppointmentCreateClick(groupId)
             }
         },
         floatingActionButtonPosition = FabPosition.End
@@ -314,7 +319,8 @@ fun GroupDetailRoutePreview() {
             onBackButtonClick = {},
             onConfirmedClick = { _, _ -> },
             onGroupMemberClick = {},
-            onProgressClick = { _, _, _ -> }
+            onProgressClick = { _, _, _ -> },
+            onAppointmentCreateClick = {}
         )
     }
 }

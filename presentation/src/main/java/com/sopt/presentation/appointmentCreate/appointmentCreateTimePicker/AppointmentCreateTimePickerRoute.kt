@@ -1,4 +1,4 @@
-package com.sopt.presentation.calendar.calendarTimePicker
+package com.sopt.presentation.appointmentCreate.appointmentCreateTimePicker
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -43,20 +43,22 @@ import com.sopt.core.extension.noRippleClickable
 import com.sopt.presentation.R
 
 @Composable
-fun CalendarTimePickerRoute(
+fun AppointmentCreateTimePickerRoute(
+    groupId: Long,
     appointmentName: String,
-    category: String,
-    time: Int,
+    appointmentCategory: String,
+    appointmentTime: Int,
     isSingleDateMode: Boolean,
-    dates: List<String>,
-    navigateToCheck: (String, String, Int, Boolean, List<String>, String) -> Unit,
-    calendarTimePickerViewModel: CalendarTimePickerViewModel = hiltViewModel()
+    appointmentDate: List<String>,
+    navigateToCheck: (Long, String, String, Int, Boolean, List<String>, String) -> Unit,
+    calendarTimePickerViewModel: AppointmentCreateTimePickerViewModel = hiltViewModel()
 ) {
     LaunchedEffect(key1 = calendarTimePickerViewModel.sideEffects) {
         calendarTimePickerViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
-                is CalendarTimePickerSideEffect.NavigateToCheck -> {
+                is AppointmentCreateTimePickerSideEffect.NavigateToCheck -> {
                     navigateToCheck(
+                        sideEffect.groupId,
                         sideEffect.appointmentName,
                         sideEffect.category,
                         sideEffect.time,
@@ -69,24 +71,26 @@ fun CalendarTimePickerRoute(
         }
     }
 
-    CalendarTimePickerScreen(
+    AppointmentCreateTimePickerScreen(
         onButtonClick = calendarTimePickerViewModel::navigateToCalendarCheck,
         appointmentName = appointmentName,
-        category = category,
-        time = time,
+        category = appointmentCategory,
+        time = appointmentTime,
         isSingleDateMode = isSingleDateMode,
-        dates = dates
+        dates = appointmentDate,
+        groupId = groupId
     )
 }
 
 @Composable
-fun CalendarTimePickerScreen(
-    onButtonClick: (String, String, Int, Boolean, List<String>, String) -> Unit,
+fun AppointmentCreateTimePickerScreen(
+    onButtonClick: (Long, String, String, Int, Boolean, List<String>, String) -> Unit,
     appointmentName: String,
     category: String,
     time: Int,
     isSingleDateMode: Boolean,
-    dates: List<String>
+    dates: List<String>,
+    groupId: Long
 ) {
     val typography = NoostakTheme.typography
     val colors = NoostakTheme.colors
@@ -196,10 +200,15 @@ fun CalendarTimePickerScreen(
             NoostakBottomButton(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
-                    val selectTime = if (isChecked) null else "${
+                    val selectTime = if (isChecked) {
+                        null
+                    } else {
+                        "${
                         selectedStartHour?.toString()?.padStart(2, '0')
-                    }:00 ~ ${selectedEndHour?.toString()?.padStart(2, '0')}:00"
+                        }:00 ~ ${selectedEndHour?.toString()?.padStart(2, '0')}:00"
+                    }
                     onButtonClick(
+                        groupId,
                         appointmentName,
                         category,
                         time,
@@ -209,7 +218,7 @@ fun CalendarTimePickerScreen(
                     )
                 },
                 deactivateColor = NoostakTheme.colors.gray500,
-                activateColor = NoostakTheme.colors.gray900,
+                activateColor = NoostakTheme.colors.gray900
             )
         }
     }
