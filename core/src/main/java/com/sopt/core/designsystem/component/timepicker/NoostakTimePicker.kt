@@ -31,7 +31,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sopt.core.R
-import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.designsystem.theme.NoostakTheme.colors
 import com.sopt.core.extension.noRippleClickable
@@ -163,7 +162,6 @@ class PickerState {
 
 @Composable
 fun NoostakTimePicker(
-    time: Int,
     onTimeSelected: (startHour: Int, endHour: Int) -> Unit
 ) {
     val typography = NoostakTheme.typography
@@ -179,10 +177,6 @@ fun NoostakTimePicker(
     val values = remember { (0..23).map { it.toString() } }
 
     val valuesPickerState = rememberPickerState()
-
-    var showSnackBar by remember { mutableStateOf(false) }
-
-    var message by remember { mutableStateOf("") }
 
     LaunchedEffect(isStartTimeEditing) {
         valuesPickerState.selectedItem = if (isStartTimeEditing) {
@@ -271,44 +265,7 @@ fun NoostakTimePicker(
             } else {
                 selectedEndHour = valuesPickerState.selectedItem.toIntOrNull() ?: 0
             }
-
-            val adjustedEndHour = if (selectedEndHour == 0) 24 else selectedEndHour
-            val duration = adjustedEndHour - selectedStartHour
-
-            when {
-                selectedEndHour == selectedStartHour -> {
-                    message = "시작 시간과 종료 시간이 같을 수 없습니다."
-                    showSnackBar = true
-                }
-
-                duration < time -> {
-                    if (0 < duration) {
-                        message = "${time}시간 이상 선택해주세요"
-                        showSnackBar = true
-                    }
-                }
-
-                else -> {
-                    showSnackBar = false
-                }
-            }
-
             onTimeSelected(selectedStartHour, selectedEndHour)
-        }
-    }
-    if (showSnackBar) {
-        Box(
-            modifier = Modifier
-                .padding(top = 23.dp)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
-        ) {
-            NoostakSnackBar(
-                message = message,
-                textStyle = typography.c2SemiBold,
-                textColor = colors.red01,
-                backgroundColor = colors.pink
-            )
         }
     }
 }

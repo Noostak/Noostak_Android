@@ -16,12 +16,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.checkbox.CircularCheckbox
 import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
+import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.designsystem.component.text.NoostakHeaderText
 import com.sopt.core.designsystem.component.text.NoostakSubHeaderText
 import com.sopt.core.designsystem.component.timepicker.NoostakTimePicker
@@ -41,6 +45,7 @@ import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.presentation.R
+import kotlinx.coroutines.launch
 
 @Composable
 fun AppointmentCreateTimePickerRoute(
@@ -61,13 +66,14 @@ fun AppointmentCreateTimePickerRoute(
                     navigateToCheck(
                         sideEffect.groupId,
                         sideEffect.appointmentName,
-                        sideEffect.category,
-                        sideEffect.time,
+                        sideEffect.appointmentCategory,
+                        sideEffect.appointmentDuration,
                         sideEffect.isSingleDateMode,
-                        sideEffect.dates,
-                        sideEffect.selectTime
+                        sideEffect.appointmentDate,
+                        sideEffect.appointmentTime
                     )
                 }
+
                 is AppointmentCreateTimePickerSideEffect.NavigateUp -> {
                     navigateUp()
                 }
@@ -79,10 +85,10 @@ fun AppointmentCreateTimePickerRoute(
         onBackButtonClick = calendarTimePickerViewModel::navigateUp,
         onButtonClick = calendarTimePickerViewModel::navigateToCalendarCheck,
         appointmentName = appointmentName,
-        category = appointmentCategory,
-        time = appointmentTime,
+        appointmentCategory = appointmentCategory,
+        appointmentDuration = appointmentTime,
         isSingleDateMode = isSingleDateMode,
-        dates = appointmentDate,
+        appointmentDate = appointmentDate,
         groupId = groupId
     )
 }
@@ -92,10 +98,10 @@ fun AppointmentCreateTimePickerScreen(
     onButtonClick: (Long, String, String, Int, Boolean, List<String>, String) -> Unit,
     onBackButtonClick: () -> Unit,
     appointmentName: String,
-    category: String,
-    time: Int,
+    appointmentCategory: String,
+    appointmentDuration: Int,
     isSingleDateMode: Boolean,
-    dates: List<String>,
+    appointmentDate: List<String>,
     groupId: Long
 ) {
     val typography = NoostakTheme.typography
@@ -105,6 +111,8 @@ fun AppointmentCreateTimePickerScreen(
 
     var selectedStartHour by remember { mutableStateOf<Int?>(0) }
     var selectedEndHour by remember { mutableStateOf<Int?>(23) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     Scaffold(
         modifier = Modifier
@@ -116,7 +124,21 @@ fun AppointmentCreateTimePickerScreen(
                 isIconVisible = true,
                 onBackButtonClick = { onBackButtonClick() }
             )
-        }
+        },
+        snackbarHost = {
+            SnackbarHost(
+                modifier = Modifier.padding(bottom = 96.dp),
+                hostState = snackbarHostState,
+                snackbar = { snackBarData ->
+                    NoostakSnackBar(
+                        message = snackBarData.visuals.message,
+                        textStyle = typography.c2SemiBold,
+                        textColor = colors.red01,
+                        backgroundColor = colors.pink
+                    )
+                }
+            )
+        },
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -167,7 +189,6 @@ fun AppointmentCreateTimePickerScreen(
                             selectedEndHour = null
                         }
                     }
-
                 )
             }
 
@@ -196,7 +217,7 @@ fun AppointmentCreateTimePickerScreen(
             }
 
             if (showPicker) {
-                NoostakTimePicker(time) { startHour, endHour ->
+                NoostakTimePicker { startHour, endHour ->
                     selectedStartHour = startHour
                     selectedEndHour = endHour
                 }
@@ -207,20 +228,37 @@ fun AppointmentCreateTimePickerScreen(
             NoostakBottomButton(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
+                    val adjustedEndHour = if (selectedEndHour == 0) 24 else selectedEndHour ?: 24
+                    val duration = adjustedEndHour - (selectedStartHour ?: 0)
+
+                    if (selectedStartHour == selectedEndHour) {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("24시간 이하로 선택해주세요")
+                        }
+                        return@NoostakBottomButton
+                    }
+
+                    if (duration < appointmentDuration) {
+                        scope.launch {
+                            snackbarHostState.showSnackbar("${appointmentDuration}시간 이상을 선택해주세요.")
+                        }
+                        return@NoostakBottomButton
+                    }
+
                     val selectTime = if (isChecked) {
                         null
                     } else {
                         "${
-                        selectedStartHour?.toString()?.padStart(2, '0')
-                        }:00 ~ ${selectedEndHour?.toString()?.padStart(2, '0')}:00"
+                            selectedStartHour?.toString()?.padStart(2, '0')
+                        }:00 ~ ${adjustedEndHour.toString().padStart(2, '0')}:00"
                     }
                     onButtonClick(
                         groupId,
                         appointmentName,
-                        category,
-                        time,
+                        appointmentCategory,
+                        appointmentDuration,
                         isSingleDateMode,
-                        dates,
+                        appointmentDate,
                         selectTime ?: "null"
                     )
                 },

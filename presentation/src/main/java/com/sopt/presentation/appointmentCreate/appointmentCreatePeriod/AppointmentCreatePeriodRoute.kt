@@ -52,10 +52,10 @@ fun AppointmentCreatePeriodRoute(
                     navigateToTimePicker(
                         sideEffect.groupId,
                         sideEffect.appointmentName,
-                        sideEffect.category,
-                        sideEffect.time,
+                        sideEffect.appointmentCategory,
+                        sideEffect.appointmentDuration,
                         sideEffect.isSingleDateMode,
-                        sideEffect.dates
+                        sideEffect.appointmentDate
                     )
                 }
                 is AppointmentCreatePeriodSideEffect.NavigateUp -> {
@@ -69,9 +69,9 @@ fun AppointmentCreatePeriodRoute(
         onBackButtonClick = calendarPeriodViewModel::navigateUp,
         onButtonClick = calendarPeriodViewModel::navigateToAppointmentCreateTimePicker,
         appointmentName = appointmentName,
-        category = appointmentCategory,
-        time = appointmentTime,
-        days = calendarPeriodViewModel.days,
+        appointmentCategory = appointmentCategory,
+        appointmentDuration = appointmentTime,
+        appointmentDate = calendarPeriodViewModel.days,
         groupId = groupId
     )
 }
@@ -81,18 +81,27 @@ fun AppointmentCreatePeriodScreen(
     onButtonClick: (Long, String, String, Int, Boolean, List<String>) -> Unit,
     onBackButtonClick: () -> Unit,
     appointmentName: String,
-    category: String,
-    time: Int,
-    days: List<String>,
+    appointmentCategory: String,
+    appointmentDuration: Int,
+    appointmentDate: List<String>,
     groupId: Long
 ) {
     var startDate by remember { mutableStateOf("") }
     var endDate by remember { mutableStateOf("") }
     var dates by remember { mutableStateOf(listOf<String>()) }
     var isSingleDateMode by remember { mutableStateOf(false) }
+    var isButtonEnabled by remember { mutableStateOf(false) }
 
     val typography = NoostakTheme.typography
     val colors = NoostakTheme.colors
+
+    LaunchedEffect(isSingleDateMode, dates) {
+        isButtonEnabled = if (isSingleDateMode) {
+            dates.size == 1
+        } else {
+            dates.isNotEmpty()
+        }
+    }
 
     Scaffold(
         modifier = Modifier
@@ -133,7 +142,12 @@ fun AppointmentCreatePeriodScreen(
                 )
                 NoostakSwitch(
                     checked = isSingleDateMode,
-                    onCheckedChange = { isSingleDateMode = it }
+                    onCheckedChange = {
+                        isSingleDateMode = it
+                        dates = emptyList()
+                        startDate = ""
+                        endDate = ""
+                    }
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -160,7 +174,7 @@ fun AppointmentCreatePeriodScreen(
                         }
                     }
                 },
-                days = days
+                days = appointmentDate
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -168,12 +182,13 @@ fun AppointmentCreatePeriodScreen(
             NoostakBottomButton(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
-                    onButtonClick(groupId, appointmentName, category, time, isSingleDateMode, dates)
+                    onButtonClick(groupId, appointmentName, appointmentCategory, appointmentDuration, isSingleDateMode, dates)
                 },
-                isEnabled = dates.isNotEmpty(),
+                isEnabled = isButtonEnabled,
                 deactivateColor = NoostakTheme.colors.gray500,
                 activateColor = NoostakTheme.colors.gray900
             )
         }
     }
 }
+

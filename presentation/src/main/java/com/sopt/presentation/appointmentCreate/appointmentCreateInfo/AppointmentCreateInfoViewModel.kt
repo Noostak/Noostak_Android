@@ -9,13 +9,13 @@ import javax.inject.Inject
 class AppointmentCreateInfoViewModel @Inject constructor() : BaseViewModel<AppointmentCreateInfoSideEffect>() {
     val categories = immutableListOf("중요", "일정", "취미", "기타")
 
-    fun navigateToAppointmentCreatePeriod(groupId: Long, appointmentName: String, category: String, time: Int) {
+    fun navigateToAppointmentCreatePeriod(groupId: Long, appointmentName: String, appointmentCategory: String, appointmentDuration: Int) {
         emitSideEffect(
             AppointmentCreateInfoSideEffect.NavigateToPeriod(
                 groupId = groupId,
                 appointmentName,
-                category,
-                time
+                appointmentCategory,
+                appointmentDuration
             )
         )
     }
@@ -29,8 +29,8 @@ sealed class AppointmentCreateInfoSideEffect {
     data class NavigateToPeriod(
         val groupId: Long,
         val appointmentName: String,
-        val category: String,
-        val time: Int
+        val appointmentCategory: String,
+        val appointmentDuration: Int
     ) : AppointmentCreateInfoSideEffect()
 
     data object NavigateUp : AppointmentCreateInfoSideEffect()

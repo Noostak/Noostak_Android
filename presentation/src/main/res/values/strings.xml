@@ -114,6 +114,7 @@
 
     <!-- Calendar -->
     <string name="text_calendar_appointment">약속 만들기</string>
+    <string name="text_calendar_appointment_duration">시간</string>
     <string name="text_calendar_appointment_write">약속 정보를 입력해주세요</string>
     <string name="text_calendar_appointment_name">약속 이름</string>
     <string name="text_calendar_appointment_category">약속 카테고리</string>
@@ -130,6 +131,8 @@
     <string name="text_calendar_appointment_next">다음</string>
     <string name="text_calendar_appointment_time_choose">시간대를 선택해주세요</string>
     <string name="text_calendar_appointment_time_check">시간대 설정</string>
+    <string name="text_calendar_appointment_time_check_btn">소요시간 이상으로 선택해주세요</string>
+    <string name="text_calendar_appointment_time_check_btn_limit">24시간 선택은 불가능합니다</string>
     <string name="text_calendar_appointment_time_select">시간대는 상관 없어요</string>
 
     <!-- 약속 만들기_약속 등록 확인 -->

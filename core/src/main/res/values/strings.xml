@@ -23,6 +23,9 @@
     <string name="text_noostak_text_field_count">%1$s/%2$s</string>
     <string name="icon_noostak_text_field_descrition">Delete Profile Name</string>
 
+    <!-- Time Text Field -->
+    <string name="text_time_text_field">최대 10시간까지 가능해요</string>
+
     <!-- Profile Image Picker -->
     <string name="image_profile_image_picker_description">Add Profile Image By Camera Button</string>
     <string name="category_chip_important">중요</string>

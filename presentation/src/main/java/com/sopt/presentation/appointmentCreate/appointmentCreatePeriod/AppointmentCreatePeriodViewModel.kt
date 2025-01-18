@@ -26,19 +26,19 @@ class AppointmentCreatePeriodViewModel @Inject constructor(
     fun navigateToAppointmentCreateTimePicker(
         groupId: Long,
         appointmentName: String,
-        category: String,
-        time: Int,
+        appointmentCategory: String,
+        appointmentDuration: Int,
         isSingleDateMode: Boolean,
-        dates: List<String>
+        appointmentDate: List<String>
     ) {
         emitSideEffect(
             AppointmentCreatePeriodSideEffect.NavigateToTimePicker(
                 groupId = groupId,
                 appointmentName,
-                category,
-                time,
+                appointmentCategory,
+                appointmentDuration,
                 isSingleDateMode,
-                dates
+                appointmentDate
             )
         )
     }
@@ -52,10 +52,10 @@ sealed class AppointmentCreatePeriodSideEffect {
     data class NavigateToTimePicker(
         val groupId: Long,
         val appointmentName: String,
-        val category: String,
-        val time: Int,
+        val appointmentCategory: String,
+        val appointmentDuration: Int,
         val isSingleDateMode: Boolean,
-        val dates: List<String>
+        val appointmentDate: List<String>
     ) : AppointmentCreatePeriodSideEffect()
 
     data object NavigateUp : AppointmentCreatePeriodSideEffect()

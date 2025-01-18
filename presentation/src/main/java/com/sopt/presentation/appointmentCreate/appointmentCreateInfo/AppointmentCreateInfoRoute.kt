@@ -12,10 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +26,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
@@ -38,6 +34,7 @@ import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
 import com.sopt.core.designsystem.component.text.NoostakHeaderText
 import com.sopt.core.designsystem.component.text.NoostakSubHeaderText
 import com.sopt.core.designsystem.component.textfield.NoostakTextField
+import com.sopt.core.designsystem.component.textfield.TimeTextField
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
@@ -58,8 +55,8 @@ fun AppointmentCreateInfoRoute(
                     navigateToPeriod(
                         sideEffect.groupId,
                         sideEffect.appointmentName,
-                        sideEffect.category,
-                        sideEffect.time
+                        sideEffect.appointmentCategory,
+                        sideEffect.appointmentDuration
                     )
                 }
                 is AppointmentCreateInfoSideEffect.NavigateUp -> {
@@ -84,8 +81,8 @@ fun AppointmentCreateInfoScreen(
     categories: List<String>
 ) {
     var appointmentName by remember { mutableStateOf("") }
-    var selectedCategory by remember { mutableStateOf("") }
-    var duration by remember { mutableStateOf("") }
+    var appointmentCategory by remember { mutableStateOf("") }
+    var appointmentDuration by remember { mutableStateOf("") }
 
     val typography = NoostakTheme.typography
     val colors = NoostakTheme.colors
@@ -146,11 +143,11 @@ fun AppointmentCreateInfoScreen(
                     .padding(top = 10.dp)
             ) {
                 categories.forEach { category ->
-                    val isSelected = selectedCategory == category
+                    val isSelected = appointmentCategory == category
                     Box(
                         modifier = Modifier
                             .background(Color.Transparent)
-                            .noRippleClickable { selectedCategory = category }
+                            .noRippleClickable { appointmentCategory = category }
                     ) {
                         NoostakCalendarChip(
                             text = category,
@@ -174,45 +171,41 @@ fun AppointmentCreateInfoScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 10.dp)
-                    .background(Color.White)
             ) {
-                Row(
+                TimeTextField(
+                    onValueChange = { newDuration ->
+                        appointmentDuration = newDuration
+                    }
+                )
+                Text(
+                    text = stringResource(R.string.text_calendar_appointment_duration),
+                    style = typography.b1SemiBold,
+                    color = colors.gray700,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(dimensionResource(id = R.dimen.vertical_padding)),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    BasicTextField(
-                        value = duration,
-                        onValueChange = { duration = it },
-                        modifier = Modifier.width(50.dp),
-                        textStyle = typography.b1SemiBold,
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "시간",
-                        style = typography.b1SemiBold,
-                        color = colors.gray700,
-                        modifier = Modifier.padding(end = 12.dp)
-                    )
-                }
-            } // 이 부분 기획이 몇글자인지, 글씨 써지는 방식 등등,, 정해주면 수정할게요
+                        .align(Alignment.TopEnd)
+                        .padding(end = 12.dp, top = 15.dp, bottom = 15.dp)
+                )
+            }
 
             Spacer(modifier = Modifier.weight(1f))
 
             NoostakBottomButton(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
-                    val time = duration.toIntOrNull() ?: 0
-                    onButtonClick(groupId, appointmentName, selectedCategory, time)
+                    val time = appointmentDuration.toIntOrNull() ?: 0
+                    onButtonClick(groupId, appointmentName, appointmentCategory, time)
                 },
-                isEnabled = appointmentName.isNotBlank() && selectedCategory.isNotBlank() && duration.isNotBlank(),
+                isEnabled = appointmentName.isNotBlank() &&
+                        appointmentCategory.isNotBlank() &&
+                        appointmentDuration.isNotBlank() &&
+                        (appointmentDuration.toIntOrNull()?.let { it in 1..10 } == true),
                 deactivateColor = NoostakTheme.colors.gray500,
                 activateColor = NoostakTheme.colors.gray900,
             )
         }
     }
 }
+
+
+
+
