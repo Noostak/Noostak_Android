@@ -19,6 +19,10 @@ class AppointmentCreateInfoViewModel @Inject constructor() : BaseViewModel<Appoi
             )
         )
     }
+
+    fun navigateUp() {
+        emitSideEffect(AppointmentCreateInfoSideEffect.NavigateUp)
+    }
 }
 
 sealed class AppointmentCreateInfoSideEffect {
@@ -28,4 +32,6 @@ sealed class AppointmentCreateInfoSideEffect {
         val category: String,
         val time: Int
     ) : AppointmentCreateInfoSideEffect()
+
+    data object NavigateUp : AppointmentCreateInfoSideEffect()
 }

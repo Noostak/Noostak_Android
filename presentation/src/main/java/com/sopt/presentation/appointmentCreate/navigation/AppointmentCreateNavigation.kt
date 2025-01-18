@@ -139,7 +139,8 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
                     appointmentCategory = category,
                     appointmentTime = time
                 )
-            }
+            },
+            navigateUp = navHostController::navigateUp
         )
     }
 
@@ -159,7 +160,8 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
                     isSingleDateMode = isSingleDateMode,
                     appointmentDate = dates
                 )
-            }
+            },
+            navigateUp = navHostController::navigateUp
         )
     }
 
@@ -173,7 +175,7 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
             isSingleDateMode = args.isSingleDateMode,
             appointmentDate = args.appointmentDate ?: emptyList(),
             navigateToCheck = { groupId, appointmentName, category, time, isSingleDateMode, dates, selectTime ->
-                navHostController.navigateCalendarCheck(
+                navHostController.navigateCalendarCheck( // 이부분에 AppointmentSubmit 연결
                     //  groupId = groupId,
                     appointmentName = appointmentName,
                     appointmentCategory = category,
@@ -182,7 +184,8 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
                     appointmentDate = dates,
                     appointmentDuration = selectTime
                 )
-            }
+            },
+            navigateUp = navHostController::navigateUp
         )
     }
 

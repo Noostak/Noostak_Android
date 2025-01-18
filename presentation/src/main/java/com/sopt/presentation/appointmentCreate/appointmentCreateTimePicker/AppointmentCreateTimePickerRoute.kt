@@ -50,6 +50,7 @@ fun AppointmentCreateTimePickerRoute(
     appointmentTime: Int,
     isSingleDateMode: Boolean,
     appointmentDate: List<String>,
+    navigateUp: () -> Unit,
     navigateToCheck: (Long, String, String, Int, Boolean, List<String>, String) -> Unit,
     calendarTimePickerViewModel: AppointmentCreateTimePickerViewModel = hiltViewModel()
 ) {
@@ -67,11 +68,15 @@ fun AppointmentCreateTimePickerRoute(
                         sideEffect.selectTime
                     )
                 }
+                is AppointmentCreateTimePickerSideEffect.NavigateUp -> {
+                    navigateUp()
+                }
             }
         }
     }
 
     AppointmentCreateTimePickerScreen(
+        onBackButtonClick = calendarTimePickerViewModel::navigateUp,
         onButtonClick = calendarTimePickerViewModel::navigateToCalendarCheck,
         appointmentName = appointmentName,
         category = appointmentCategory,
@@ -85,6 +90,7 @@ fun AppointmentCreateTimePickerRoute(
 @Composable
 fun AppointmentCreateTimePickerScreen(
     onButtonClick: (Long, String, String, Int, Boolean, List<String>, String) -> Unit,
+    onBackButtonClick: () -> Unit,
     appointmentName: String,
     category: String,
     time: Int,
@@ -107,7 +113,8 @@ fun AppointmentCreateTimePickerScreen(
         topBar = {
             NoostakTopAppBar(
                 title = stringResource(R.string.text_calendar_appointment),
-                isIconVisible = false
+                isIconVisible = true,
+                onBackButtonClick = { onBackButtonClick() }
             )
         }
     ) { innerPadding ->

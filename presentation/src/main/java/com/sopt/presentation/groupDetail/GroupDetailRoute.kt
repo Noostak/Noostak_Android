@@ -61,7 +61,6 @@ import com.sopt.presentation.groupDetail.screen.ConfirmedScreen
 import com.sopt.presentation.groupDetail.screen.ProgressScreen
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 @Composable
 fun GroupDetailRoute(
@@ -401,7 +400,7 @@ fun GroupDetailRoutePreview() {
                 )
             ),
             onBackButtonClick = {},
-            onConfirmedClick = { _, _ -> },
+            onConfirmedClick = { _, _, _ -> },
             onGroupMemberClick = {},
             onProgressClick = { _, _, _ -> },
             onAppointmentCreateClick = {}

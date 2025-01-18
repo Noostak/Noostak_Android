@@ -1,6 +1,7 @@
 package com.sopt.presentation.appointmentCreate.appointmentCreateTimePicker
 
 import com.sopt.core.util.BaseViewModel
+import com.sopt.presentation.appointmentCreate.appointmentCreatePeriod.AppointmentCreatePeriodSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -29,6 +30,10 @@ class AppointmentCreateTimePickerViewModel @Inject constructor() :
             )
         )
     }
+
+    fun navigateUp() {
+        emitSideEffect(AppointmentCreateTimePickerSideEffect.NavigateUp)
+    }
 }
 
 sealed class AppointmentCreateTimePickerSideEffect {
@@ -41,4 +46,5 @@ sealed class AppointmentCreateTimePickerSideEffect {
         val dates: List<String>,
         val selectTime: String
     ) : AppointmentCreateTimePickerSideEffect()
+    data object NavigateUp : AppointmentCreateTimePickerSideEffect()
 }

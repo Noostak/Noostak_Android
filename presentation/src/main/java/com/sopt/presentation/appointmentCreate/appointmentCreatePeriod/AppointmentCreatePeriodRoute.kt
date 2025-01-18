@@ -41,6 +41,7 @@ fun AppointmentCreatePeriodRoute(
     appointmentName: String,
     appointmentCategory: String,
     appointmentTime: Int,
+    navigateUp: () -> Unit,
     navigateToTimePicker: (Long, String, String, Int, Boolean, List<String>) -> Unit,
     calendarPeriodViewModel: AppointmentCreatePeriodViewModel = hiltViewModel()
 ) {
@@ -57,11 +58,15 @@ fun AppointmentCreatePeriodRoute(
                         sideEffect.dates
                     )
                 }
+                is AppointmentCreatePeriodSideEffect.NavigateUp -> {
+                    navigateUp()
+                }
             }
         }
     }
 
     AppointmentCreatePeriodScreen(
+        onBackButtonClick = calendarPeriodViewModel::navigateUp,
         onButtonClick = calendarPeriodViewModel::navigateToAppointmentCreateTimePicker,
         appointmentName = appointmentName,
         category = appointmentCategory,
@@ -74,6 +79,7 @@ fun AppointmentCreatePeriodRoute(
 @Composable
 fun AppointmentCreatePeriodScreen(
     onButtonClick: (Long, String, String, Int, Boolean, List<String>) -> Unit,
+    onBackButtonClick: () -> Unit,
     appointmentName: String,
     category: String,
     time: Int,
@@ -95,7 +101,8 @@ fun AppointmentCreatePeriodScreen(
         topBar = {
             NoostakTopAppBar(
                 title = stringResource(R.string.text_calendar_appointment),
-                isIconVisible = false
+                isIconVisible = true,
+                onBackButtonClick = { onBackButtonClick() }
             )
         }
     ) { innerPadding ->

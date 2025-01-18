@@ -47,6 +47,7 @@ import com.sopt.presentation.R
 @Composable
 fun AppointmentCreateInfoRoute(
     groupId: Long,
+    navigateUp: () -> Unit,
     navigateToPeriod: (Long, String, String, Int) -> Unit,
     calendarInfoViewModel: AppointmentCreateInfoViewModel = hiltViewModel()
 ) {
@@ -61,10 +62,14 @@ fun AppointmentCreateInfoRoute(
                         sideEffect.time
                     )
                 }
+                is AppointmentCreateInfoSideEffect.NavigateUp -> {
+                    navigateUp()
+                }
             }
         }
     }
     AppointmentCreateInfoScreen(
+        onBackButtonClick = calendarInfoViewModel::navigateUp,
         onButtonClick = calendarInfoViewModel::navigateToAppointmentCreatePeriod,
         categories = calendarInfoViewModel.categories,
         groupId = groupId
@@ -75,6 +80,7 @@ fun AppointmentCreateInfoRoute(
 fun AppointmentCreateInfoScreen(
     groupId: Long,
     onButtonClick: (Long, String, String, Int) -> Unit,
+    onBackButtonClick: () -> Unit,
     categories: List<String>
 ) {
     var appointmentName by remember { mutableStateOf("") }
@@ -91,7 +97,8 @@ fun AppointmentCreateInfoScreen(
         topBar = {
             NoostakTopAppBar(
                 title = stringResource(R.string.text_calendar_appointment),
-                isIconVisible = false
+                isIconVisible = true,
+                onBackButtonClick = { onBackButtonClick() }
             )
         }
     ) { innerPadding ->
@@ -205,7 +212,6 @@ fun AppointmentCreateInfoScreen(
                 isEnabled = appointmentName.isNotBlank() && selectedCategory.isNotBlank() && duration.isNotBlank(),
                 deactivateColor = NoostakTheme.colors.gray500,
                 activateColor = NoostakTheme.colors.gray900,
-                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
     }

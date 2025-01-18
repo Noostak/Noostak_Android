@@ -42,6 +42,10 @@ class AppointmentCreatePeriodViewModel @Inject constructor(
             )
         )
     }
+
+    fun navigateUp() {
+        emitSideEffect(AppointmentCreatePeriodSideEffect.NavigateUp)
+    }
 }
 
 sealed class AppointmentCreatePeriodSideEffect {
@@ -53,4 +57,6 @@ sealed class AppointmentCreatePeriodSideEffect {
         val isSingleDateMode: Boolean,
         val dates: List<String>
     ) : AppointmentCreatePeriodSideEffect()
+
+    data object NavigateUp : AppointmentCreatePeriodSideEffect()
 }
