@@ -21,8 +21,14 @@ class GroupDetailViewModel @Inject constructor(
         emitSideEffect(GroupDetailSideEffect.NavigateUp)
     }
 
-    fun navigateToConfirmedDetail(groupId: Long, confirmedId: Long) {
-        emitSideEffect(GroupDetailSideEffect.NavigateToConfirmedDetail(groupId, confirmedId))
+    fun navigateToConfirmedDetail(groupId: Long, confirmedId: Long, appointmentName: String) {
+        emitSideEffect(
+            GroupDetailSideEffect.NavigateToConfirmedDetail(
+                groupId,
+                confirmedId,
+                appointmentName
+            )
+        )
     }
 
     fun navigateToGroupMember(groupId: Long) {
@@ -49,45 +55,38 @@ class GroupDetailViewModel @Inject constructor(
     )
     val mockGroupDetail = GroupDetailEntity(
         groupName = "누스탁",
+        groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4",
         groupMembersCount = 10,
         progressEntities = listOf(
             ProgressEntity(
                 appointmentId = 1,
                 appointmentName = "1주차",
-                date = "2024-09-27",
-                weekday = "금",
-                startTime = "11:00",
-                endTime = "14:00",
+                startDate = "2025-01-06T11:00:00",
+                endDate = "2025-01-06T14:00:00",
                 participants = 3,
                 maxParticipants = 5
             ),
             ProgressEntity(
                 appointmentId = 2,
                 appointmentName = "2주차",
-                date = "2024-09-27",
-                weekday = "금",
-                startTime = "11:00",
-                endTime = "14:00",
+                startDate = "2025-01-06T11:00:00",
+                endDate = "2025-01-06T14:00:00",
                 participants = 2,
                 maxParticipants = 5
             ),
             ProgressEntity(
                 appointmentId = 3,
                 appointmentName = "3주차",
-                date = "2024-09-27",
-                weekday = "금",
-                startTime = "11:00",
-                endTime = "14:00",
+                startDate = "2025-01-06T11:00:00",
+                endDate = "2025-01-06T14:00:00",
                 participants = 5,
                 maxParticipants = 5
             ),
             ProgressEntity(
                 appointmentId = 4,
                 appointmentName = "4주차",
-                date = "2024-09-27",
-                weekday = "금",
-                startTime = "11:00",
-                endTime = "14:00",
+                startDate = "2025-01-06T11:00:00",
+                endDate = "2025-01-06T14:00:00",
                 participants = 0,
                 maxParticipants = 5
             )
@@ -96,14 +95,18 @@ class GroupDetailViewModel @Inject constructor(
             ConfirmedEntity(
                 appointmentId = 1,
                 appointmentName = "3차 회의",
-                date = "2024-09-27",
-                weekday = "금요일"
+                date = "2025-01-06T14:00:00",
+                startTime = "2025-01-06T14:00:00",
+                endTime = "2025-01-06T15:00:00",
+                category = "기타"
             ),
             ConfirmedEntity(
                 appointmentId = 2,
                 appointmentName = "회의",
-                date = "2024-09-27",
-                weekday = "금요일"
+                date = "2025-01-06T14:00:00",
+                startTime = "2025-01-06T14:00:00",
+                endTime = "2025-01-06T15:00:00",
+                category = "일정"
             )
         )
     )

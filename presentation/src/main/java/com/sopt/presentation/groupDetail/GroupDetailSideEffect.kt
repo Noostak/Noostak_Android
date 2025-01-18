@@ -2,7 +2,11 @@ package com.sopt.presentation.groupDetail
 
 sealed class GroupDetailSideEffect {
     data object NavigateUp : GroupDetailSideEffect()
-    data class NavigateToConfirmedDetail(val groupId: Long, val confirmedId: Long) :
+    data class NavigateToConfirmedDetail(
+        val groupId: Long,
+        val confirmedId: Long,
+        val appointmentName: String
+    ) :
         GroupDetailSideEffect()
 
     data class NavigateToGroupMember(val groupId: Long) : GroupDetailSideEffect()

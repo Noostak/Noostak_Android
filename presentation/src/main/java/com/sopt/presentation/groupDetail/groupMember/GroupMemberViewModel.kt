@@ -15,7 +15,8 @@ class GroupMemberViewModel @Inject constructor() : BaseViewModel<GroupMemberSide
 
     val mockGroupMembers = GroupMembersEntity(
         groupName = "누스탁",
-        groupMembersCount = 15,
+        groupMemberCount = 15,
+        groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4",
         groupLeader = GroupLeaderEntity(
             groupLeaderName = "채영",
             groupLeaderImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
@@ -40,6 +41,70 @@ class GroupMemberViewModel @Inject constructor() : BaseViewModel<GroupMemberSide
             GroupMemberEntity(
                 groupMemberName = "이가을",
                 groupMemberImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
+            ),
+            GroupMemberEntity(
+                groupMemberName = "이가을",
+                groupMemberImage = ""
             ),
             GroupMemberEntity(
                 groupMemberName = "이가을",
