@@ -179,18 +179,18 @@ fun NoostakCalendar(
                         }
 
                         val dateValue = "$year-${month.toString().padStart(2, '0')}-${
-                            dateText.padStart(
-                                2,
-                                '0'
-                            )
+                        dateText.padStart(
+                            2,
+                            '0'
+                        )
                         }"
 
                         val isSelected = dateValue in selectedDates
                         val isRange = !isSingleDate &&
-                                dateText.isNotEmpty() &&
-                                startDate.isNotEmpty() &&
-                                endDate.isNotEmpty() &&
-                                LocalDate.parse(dateValue) in LocalDate.parse(startDate)..LocalDate.parse(
+                            dateText.isNotEmpty() &&
+                            startDate.isNotEmpty() &&
+                            endDate.isNotEmpty() &&
+                            LocalDate.parse(dateValue) in LocalDate.parse(startDate)..LocalDate.parse(
                             endDate
                         )
 
@@ -333,7 +333,6 @@ fun NoostakCalendar(
                                         }
                                     }
                             )
-
                         }
                     }
                 }

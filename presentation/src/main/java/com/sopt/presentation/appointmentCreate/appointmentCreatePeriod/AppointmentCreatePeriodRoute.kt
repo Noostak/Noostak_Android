@@ -97,7 +97,7 @@ fun AppointmentCreatePeriodScreen(
 
     LaunchedEffect(isSingleDateMode, dates) {
         isButtonEnabled = if (isSingleDateMode) {
-            dates.size == 1
+            dates.size in 1..7
         } else {
             dates.isNotEmpty()
         }
@@ -191,4 +191,3 @@ fun AppointmentCreatePeriodScreen(
         }
     }
 }
-

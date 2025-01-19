@@ -6,7 +6,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sopt.core.navigation.MainTabRoute
-import com.sopt.presentation.appointmentCreate.navigation.navigateAppointmentCreateInfo
 import com.sopt.presentation.calendar.CalendarRoute
 import kotlinx.serialization.Serializable
 
@@ -25,10 +24,7 @@ fun NavGraphBuilder.calendarNavGraph(
 ) {
     composable<Calendar> {
         CalendarRoute(
-            paddingValues = paddingValues,
-            navigateToInfoScreen = {
-                navHostController.navigateAppointmentCreateInfo(groupId = 1)
-            }
+            paddingValues = paddingValues
         )
     }
 }

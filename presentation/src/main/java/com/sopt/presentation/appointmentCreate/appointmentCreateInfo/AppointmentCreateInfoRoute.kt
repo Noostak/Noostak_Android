@@ -33,7 +33,7 @@ import com.sopt.core.designsystem.component.chip.NoostakCalendarChip
 import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
 import com.sopt.core.designsystem.component.text.NoostakHeaderText
 import com.sopt.core.designsystem.component.text.NoostakSubHeaderText
-import com.sopt.core.designsystem.component.textfield.NoostakTextField
+import com.sopt.core.designsystem.component.textfield.AppointmentTextField
 import com.sopt.core.designsystem.component.textfield.TimeTextField
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -116,14 +116,14 @@ fun AppointmentCreateInfoScreen(
                 Modifier.padding(top = 22.dp, bottom = 10.dp)
             )
 
-            NoostakTextField(
+            AppointmentTextField(
                 textFieldType = TextFieldType.CALENDAR,
                 value = appointmentName,
                 textStyle = typography.b1SemiBold,
                 cursorColor = colors.gray500,
                 shape = RoundedCornerShape(10.dp),
-                focusedBorderColor = colors.blue600,
-                unfocusedBorderColor = colors.gray200,
+                focusedBorderColor = colors.blue300,
+                unfocusedBorderColor = colors.gray500,
                 onValueChange = { newValue ->
                     if (newValue.length <= 20) appointmentName = newValue
                 },
@@ -196,16 +196,12 @@ fun AppointmentCreateInfoScreen(
                     onButtonClick(groupId, appointmentName, appointmentCategory, time)
                 },
                 isEnabled = appointmentName.isNotBlank() &&
-                        appointmentCategory.isNotBlank() &&
-                        appointmentDuration.isNotBlank() &&
-                        (appointmentDuration.toIntOrNull()?.let { it in 1..10 } == true),
+                    appointmentCategory.isNotBlank() &&
+                    appointmentDuration.isNotBlank() &&
+                    (appointmentDuration.toIntOrNull()?.let { it in 1..10 } == true),
                 deactivateColor = NoostakTheme.colors.gray500,
-                activateColor = NoostakTheme.colors.gray900,
+                activateColor = NoostakTheme.colors.gray900
             )
         }
     }
 }
-
-
-
-

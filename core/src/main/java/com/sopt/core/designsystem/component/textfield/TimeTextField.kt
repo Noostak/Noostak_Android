@@ -28,6 +28,7 @@ fun TimeTextField(
 ) {
     var text by remember { mutableStateOf(TextFieldValue("")) }
     var isFocused by remember { mutableStateOf(false) }
+    val isTimeExceedLimit = (text.text.toIntOrNull() ?: 0) > 10
 
     Column(
         modifier = Modifier
@@ -49,7 +50,7 @@ fun TimeTextField(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(end = 54.dp)
+                .padding(end = 44.dp)
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused
                 }
@@ -59,12 +60,18 @@ fun TimeTextField(
                 .fillMaxWidth()
                 .padding(top = 15.dp),
             thickness = 2.dp,
-            color = if (isFocused) NoostakTheme.colors.blue600 else NoostakTheme.colors.gray200
+            color = if (isTimeExceedLimit) {
+                NoostakTheme.colors.red02
+            } else if (isFocused) {
+                NoostakTheme.colors.blue600
+            } else {
+                NoostakTheme.colors.gray200
+            }
         )
         Text(
             text = stringResource(R.string.text_time_text_field),
             style = NoostakTheme.typography.c2SemiBold,
-            color = NoostakTheme.colors.gray500,
+            color = if (isTimeExceedLimit) NoostakTheme.colors.red02 else NoostakTheme.colors.gray500,
             modifier = Modifier.padding(top = 10.dp)
         )
     }

@@ -138,7 +138,7 @@ fun AppointmentCreateTimePickerScreen(
                     )
                 }
             )
-        },
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -229,7 +229,13 @@ fun AppointmentCreateTimePickerScreen(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
                     val adjustedEndHour = if (selectedEndHour == 0) 24 else selectedEndHour ?: 24
-                    val duration = adjustedEndHour - (selectedStartHour ?: 0)
+                    val duration = selectedStartHour?.let { startHour ->
+                        if (startHour < adjustedEndHour) {
+                            adjustedEndHour - startHour
+                        } else {
+                            adjustedEndHour + 24 - startHour
+                        }
+                    } ?: 0
 
                     if (selectedStartHour == selectedEndHour) {
                         scope.launch {
@@ -249,7 +255,7 @@ fun AppointmentCreateTimePickerScreen(
                         null
                     } else {
                         "${
-                            selectedStartHour?.toString()?.padStart(2, '0')
+                        selectedStartHour?.toString()?.padStart(2, '0')
                         }:00 ~ ${adjustedEndHour.toString().padStart(2, '0')}:00"
                     }
                     onButtonClick(
