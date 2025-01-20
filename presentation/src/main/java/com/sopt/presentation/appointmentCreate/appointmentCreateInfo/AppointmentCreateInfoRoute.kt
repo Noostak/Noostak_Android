@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
@@ -33,9 +34,10 @@ import com.sopt.core.designsystem.component.chip.NoostakCalendarChip
 import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
 import com.sopt.core.designsystem.component.text.NoostakHeaderText
 import com.sopt.core.designsystem.component.text.NoostakSubHeaderText
-import com.sopt.core.designsystem.component.textfield.AppointmentTextField
+import com.sopt.core.designsystem.component.textfield.NoostakTextField
 import com.sopt.core.designsystem.component.textfield.TimeTextField
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.type.TextFieldType
@@ -59,6 +61,7 @@ fun AppointmentCreateInfoRoute(
                         sideEffect.appointmentDuration
                     )
                 }
+
                 is AppointmentCreateInfoSideEffect.NavigateUp -> {
                     navigateUp()
                 }
@@ -84,9 +87,6 @@ fun AppointmentCreateInfoScreen(
     var appointmentCategory by remember { mutableStateOf("") }
     var appointmentDuration by remember { mutableStateOf("") }
 
-    val typography = NoostakTheme.typography
-    val colors = NoostakTheme.colors
-
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
@@ -106,35 +106,29 @@ fun AppointmentCreateInfoScreen(
                 .padding(dimensionResource(id = R.dimen.horizontal_padding))
         ) {
             Spacer(modifier = Modifier.height(18.dp))
-
             NoostakProgressBar(progressBar = listOf(true, false, false))
-
             NoostakHeaderText(text = stringResource(R.string.text_calendar_appointment_write))
-
             NoostakSubHeaderText(
                 stringResource(R.string.text_calendar_appointment_name),
                 Modifier.padding(top = 22.dp, bottom = 10.dp)
             )
-
-            AppointmentTextField(
+            NoostakTextField(
                 textFieldType = TextFieldType.CALENDAR,
-                value = appointmentName,
-                textStyle = typography.b1SemiBold,
-                cursorColor = colors.gray500,
+                cursorColor = NoostakTheme.colors.gray500,
                 shape = RoundedCornerShape(10.dp),
-                focusedBorderColor = colors.blue300,
-                unfocusedBorderColor = colors.gray500,
-                onValueChange = { newValue ->
-                    if (newValue.length <= 20) appointmentName = newValue
-                },
-                maxLength = 20
+                focusedBorderColor = NoostakTheme.colors.blue600,
+                unfocusedBorderColor = NoostakTheme.colors.gray200,
+                maxLength = 20,
+                placeholderColor = NoostakTheme.colors.gray500,
+                textStyle = NoostakTheme.typography.b1SemiBold,
+                maxLengthColor = NoostakTheme.colors.gray500,
+                onValueChange = { appointmentName = it },
+                value = appointmentName
             )
-
             NoostakSubHeaderText(
                 stringResource(R.string.text_calendar_appointment_category),
                 Modifier.padding(top = 32.dp)
             )
-
             Row(
                 horizontalArrangement = Arrangement.spacedBy(11.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -151,22 +145,20 @@ fun AppointmentCreateInfoScreen(
                     ) {
                         NoostakCalendarChip(
                             text = category,
-                            textStyle = typography.b4SemiBold,
-                            textColor = if (isSelected) Color.White else colors.gray900,
-                            backgroundColor = if (isSelected) colors.black else Color.White,
-                            borderColor = if (isSelected) Color.Transparent else colors.gray200,
+                            textStyle = NoostakTheme.typography.b4SemiBold,
+                            textColor = if (isSelected) NoostakTheme.colors.white else NoostakTheme.colors.gray900,
+                            backgroundColor = if (isSelected) NoostakTheme.colors.black else NoostakTheme.colors.white,
+                            borderColor = if (isSelected) Color.Transparent else NoostakTheme.colors.gray200,
                             horizontalPaddingValues = 20.dp,
                             verticalPaddingValues = 8.dp
                         )
                     }
                 }
             }
-
             NoostakSubHeaderText(
                 stringResource(R.string.text_calendar_appointment_time),
                 Modifier.padding(top = 41.dp)
             )
-
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -179,16 +171,14 @@ fun AppointmentCreateInfoScreen(
                 )
                 Text(
                     text = stringResource(R.string.text_calendar_appointment_duration),
-                    style = typography.b1SemiBold,
-                    color = colors.gray700,
+                    style = NoostakTheme.typography.b1SemiBold,
+                    color = NoostakTheme.colors.gray700,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(end = 12.dp, top = 15.dp, bottom = 15.dp)
                 )
             }
-
             Spacer(modifier = Modifier.weight(1f))
-
             NoostakBottomButton(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
@@ -196,12 +186,25 @@ fun AppointmentCreateInfoScreen(
                     onButtonClick(groupId, appointmentName, appointmentCategory, time)
                 },
                 isEnabled = appointmentName.isNotBlank() &&
-                    appointmentCategory.isNotBlank() &&
-                    appointmentDuration.isNotBlank() &&
-                    (appointmentDuration.toIntOrNull()?.let { it in 1..10 } == true),
+                        appointmentCategory.isNotBlank() &&
+                        appointmentDuration.isNotBlank() &&
+                        (appointmentDuration.toIntOrNull()?.let { it in 1..10 } == true),
                 deactivateColor = NoostakTheme.colors.gray500,
                 activateColor = NoostakTheme.colors.gray900
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppointmentCreateInfoScreenPreview() {
+    NoostakAndroidTheme {
+        AppointmentCreateInfoScreen(
+            groupId = 0,
+            onButtonClick = { _, _, _, _ -> },
+            onBackButtonClick = { },
+            categories = listOf("중요", "일정", "취미", "기타")
+        )
     }
 }

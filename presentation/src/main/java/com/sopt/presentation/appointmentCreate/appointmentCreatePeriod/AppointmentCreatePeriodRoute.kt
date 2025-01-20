@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
@@ -32,6 +33,7 @@ import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
 import com.sopt.core.designsystem.component.text.NoostakHeaderText
 import com.sopt.core.designsystem.component.toggle.NoostakSwitch
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
 
@@ -58,6 +60,7 @@ fun AppointmentCreatePeriodRoute(
                         sideEffect.appointmentDate
                     )
                 }
+
                 is AppointmentCreatePeriodSideEffect.NavigateUp -> {
                     navigateUp()
                 }
@@ -122,11 +125,8 @@ fun AppointmentCreatePeriodScreen(
                 .padding(dimensionResource(id = R.dimen.horizontal_padding))
         ) {
             Spacer(modifier = Modifier.height(18.dp))
-
             NoostakProgressBar(progressBar = listOf(false, true, false))
-
             NoostakHeaderText(text = stringResource(R.string.text_calendar_appointment_choose))
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -176,18 +176,47 @@ fun AppointmentCreatePeriodScreen(
                 },
                 days = appointmentDate
             )
-
             Spacer(modifier = Modifier.weight(1f))
-
             NoostakBottomButton(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
-                    onButtonClick(groupId, appointmentName, appointmentCategory, appointmentDuration, isSingleDateMode, dates)
+                    onButtonClick(
+                        groupId,
+                        appointmentName,
+                        appointmentCategory,
+                        appointmentDuration,
+                        isSingleDateMode,
+                        dates
+                    )
                 },
                 isEnabled = isButtonEnabled,
                 deactivateColor = NoostakTheme.colors.gray500,
                 activateColor = NoostakTheme.colors.gray900
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppointmentCreatePeriodScreenPreview() {
+    NoostakAndroidTheme {
+        AppointmentCreatePeriodScreen(
+            onButtonClick = { _, _, _, _, _, _ -> },
+            onBackButtonClick = { },
+            appointmentName = "약속 이름",
+            appointmentCategory = "약속 카테고리",
+            appointmentDuration = 1,
+            appointmentDate = listOf(
+                "2022-10-01",
+                "2022-10-02",
+                "2022-10-03",
+                "2022-10-04",
+                "2022-10-05",
+                "2022-10-06",
+                "2022-10-07"
+            ),
+            groupId = 0
+        )
     }
 }

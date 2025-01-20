@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
@@ -42,6 +43,7 @@ import com.sopt.core.designsystem.component.text.NoostakHeaderText
 import com.sopt.core.designsystem.component.text.NoostakSubHeaderText
 import com.sopt.core.designsystem.component.timepicker.NoostakTimePicker
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.presentation.R
@@ -147,11 +149,8 @@ fun AppointmentCreateTimePickerScreen(
                 .padding(dimensionResource(id = R.dimen.horizontal_padding))
         ) {
             Spacer(modifier = Modifier.height(18.dp))
-
             NoostakProgressBar(progressBar = listOf(false, false, true))
-
             NoostakHeaderText(text = stringResource(R.string.text_calendar_appointment_time_choose))
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -191,7 +190,6 @@ fun AppointmentCreateTimePickerScreen(
                     }
                 )
             }
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -215,16 +213,13 @@ fun AppointmentCreateTimePickerScreen(
                     )
                 }
             }
-
             if (showPicker) {
                 NoostakTimePicker { startHour, endHour ->
                     selectedStartHour = startHour
                     selectedEndHour = endHour
                 }
             }
-
             Spacer(modifier = Modifier.weight(1f))
-
             NoostakBottomButton(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
@@ -272,5 +267,22 @@ fun AppointmentCreateTimePickerScreen(
                 activateColor = NoostakTheme.colors.gray900
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppointmentCreateTimePickerScreenPreview() {
+    NoostakAndroidTheme {
+        AppointmentCreateTimePickerScreen(
+            onButtonClick = { _, _, _, _, _, _, _ -> },
+            onBackButtonClick = { },
+            appointmentName = "약속 이름",
+            appointmentCategory = "약속 카테고리",
+            appointmentDuration = 1,
+            isSingleDateMode = false,
+            appointmentDate = emptyList(),
+            groupId = 0
+        )
     }
 }

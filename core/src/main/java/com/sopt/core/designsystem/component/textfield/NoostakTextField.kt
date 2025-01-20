@@ -50,6 +50,7 @@ fun NoostakTextField(
     unfocusedWithInputBorderColor: Color = NoostakTheme.colors.gray700,
     unfocusedBorderColor: Color = NoostakTheme.colors.gray500,
     maxLength: Int = 30,
+    maxLengthColor: Color = NoostakTheme.colors.gray800,
     modifier: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -148,7 +149,7 @@ fun NoostakTextField(
                     value.length,
                     maxLength
                 ),
-                color = NoostakTheme.colors.gray800,
+                color = maxLengthColor,
                 style = NoostakTheme.typography.b5Regular,
                 modifier = modifier.padding(top = 6.dp),
                 maxLines = 1
