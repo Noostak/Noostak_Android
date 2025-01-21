@@ -61,11 +61,9 @@ fun NoostakCalendar(
     var startDate by remember { mutableStateOf(start) }
     var endDate by remember { mutableStateOf(end) }
     var showMessage by remember { mutableStateOf(false) }
-
     val yearMonth = YearMonth.of(year, month)
     val totalDays = yearMonth.lengthOfMonth()
     val firstDay = LocalDate.of(year, month, 1).dayOfWeek.value % 7
-
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val message = stringResource(R.string.text_noostak_calendar_7days)
@@ -73,7 +71,7 @@ fun NoostakCalendar(
         coroutineScope.launch {
             showMessage = true
             val job = launch { snackBarHostState.showSnackbar(message = msg) }
-            delay(SNACK_BAR_DURATION)
+            delay(SNACK_BAR_DURATION) // 지속 시간 설정
             job.cancel()
             showMessage = false
         }
@@ -107,8 +105,7 @@ fun NoostakCalendar(
 
     LaunchedEffect(showMessage) {
         if (showMessage) {
-            kotlinx.coroutines.delay(3000)
-            showMessage = false
+            onShowSnackBar(message)
         }
     }
 
