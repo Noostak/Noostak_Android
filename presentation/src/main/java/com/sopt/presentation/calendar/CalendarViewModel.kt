@@ -1,7 +1,6 @@
-package com.sopt.presentation.calendar.viewmodel
+package com.sopt.presentation.calendar
 
 import com.sopt.core.util.BaseViewModel
-import com.sopt.presentation.calendar.CalendarSideEffect
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.sopt.presentation.calendar.viewmodel.CalendarViewModel
 
 @Composable
 fun CalendarRoute(

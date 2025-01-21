@@ -29,6 +29,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -84,37 +85,35 @@ fun AppointmentCreateTimePickerRoute(
     }
 
     AppointmentCreateTimePickerScreen(
-        onBackButtonClick = calendarTimePickerViewModel::navigateUp,
-        onButtonClick = calendarTimePickerViewModel::navigateToCalendarCheck,
+        groupId = groupId,
         appointmentName = appointmentName,
         appointmentCategory = appointmentCategory,
         appointmentDuration = appointmentTime,
         isSingleDateMode = isSingleDateMode,
         appointmentDate = appointmentDate,
-        groupId = groupId
+        onBackButtonClick = calendarTimePickerViewModel::navigateUp,
+        onButtonClick = calendarTimePickerViewModel::navigateToCalendarCheck
     )
 }
 
 @Composable
 fun AppointmentCreateTimePickerScreen(
-    onButtonClick: (Long, String, String, Int, Boolean, List<String>, String) -> Unit,
-    onBackButtonClick: () -> Unit,
+    groupId: Long,
     appointmentName: String,
     appointmentCategory: String,
     appointmentDuration: Int,
     isSingleDateMode: Boolean,
     appointmentDate: List<String>,
-    groupId: Long
+    onButtonClick: (Long, String, String, Int, Boolean, List<String>, String) -> Unit,
+    onBackButtonClick: () -> Unit
 ) {
-    val typography = NoostakTheme.typography
-    val colors = NoostakTheme.colors
+    val snackBarHostState = remember { SnackbarHostState() }
     var isChecked by remember { mutableStateOf(false) }
     var showPicker by remember { mutableStateOf(true) }
-
     var selectedStartHour by remember { mutableStateOf<Int?>(0) }
     var selectedEndHour by remember { mutableStateOf<Int?>(23) }
-    val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier
@@ -130,13 +129,13 @@ fun AppointmentCreateTimePickerScreen(
         snackbarHost = {
             SnackbarHost(
                 modifier = Modifier.padding(bottom = 96.dp),
-                hostState = snackbarHostState,
+                hostState = snackBarHostState,
                 snackbar = { snackBarData ->
                     NoostakSnackBar(
                         message = snackBarData.visuals.message,
-                        textStyle = typography.c2SemiBold,
-                        textColor = colors.red01,
-                        backgroundColor = colors.pink
+                        textStyle = NoostakTheme.typography.c2SemiBold,
+                        textColor = NoostakTheme.colors.red01,
+                        backgroundColor = NoostakTheme.colors.pink
                     )
                 }
             )
@@ -158,11 +157,11 @@ fun AppointmentCreateTimePickerScreen(
                     .height(54.dp)
                     .border(
                         width = 0.5.dp,
-                        color = colors.gray200,
+                        color = NoostakTheme.colors.gray500,
                         shape = RoundedCornerShape(10.dp)
                     )
                     .background(
-                        color = if (isChecked) colors.gray50 else colors.white,
+                        color = if (isChecked) NoostakTheme.colors.gray50 else NoostakTheme.colors.white,
                         shape = RoundedCornerShape(10.dp)
                     )
                     .noRippleClickable {
@@ -175,8 +174,8 @@ fun AppointmentCreateTimePickerScreen(
                 Text(
                     text = stringResource(R.string.text_calendar_appointment_time_select),
                     modifier = Modifier.weight(1f),
-                    style = typography.b4SemiBold,
-                    color = colors.gray900
+                    style = NoostakTheme.typography.b4SemiBold,
+                    color = NoostakTheme.colors.gray900
                 )
                 CircularCheckbox(
                     isChecked = isChecked,
@@ -225,23 +224,23 @@ fun AppointmentCreateTimePickerScreen(
                 onButtonClick = {
                     val adjustedEndHour = if (selectedEndHour == 0) 24 else selectedEndHour ?: 24
                     val duration = selectedStartHour?.let { startHour ->
-                        if (startHour < adjustedEndHour) {
+                        if (selectedStartHour == selectedEndHour) {
+                            0
+                        } else if (startHour < adjustedEndHour) {
                             adjustedEndHour - startHour
                         } else {
                             adjustedEndHour + 24 - startHour
                         }
-                    } ?: 0
-
-                    if (selectedStartHour == selectedEndHour) {
-                        scope.launch {
-                            snackbarHostState.showSnackbar("24시간 이하로 선택해주세요")
-                        }
-                        return@NoostakBottomButton
-                    }
+                    } ?: 24
 
                     if (duration < appointmentDuration) {
-                        scope.launch {
-                            snackbarHostState.showSnackbar("${appointmentDuration}시간 이상을 선택해주세요.")
+                        coroutineScope.launch {
+                            snackBarHostState.showSnackbar(
+                                context.getString(
+                                    R.string.sb_appointment_create_time_picker,
+                                    appointmentDuration
+                                )
+                            )
                         }
                         return@NoostakBottomButton
                     }
@@ -275,14 +274,14 @@ fun AppointmentCreateTimePickerScreen(
 fun AppointmentCreateTimePickerScreenPreview() {
     NoostakAndroidTheme {
         AppointmentCreateTimePickerScreen(
-            onButtonClick = { _, _, _, _, _, _, _ -> },
-            onBackButtonClick = { },
+            groupId = 0,
             appointmentName = "약속 이름",
             appointmentCategory = "약속 카테고리",
             appointmentDuration = 1,
             isSingleDateMode = false,
             appointmentDate = emptyList(),
-            groupId = 0
+            onButtonClick = { _, _, _, _, _, _, _ -> },
+            onBackButtonClick = { }
         )
     }
 }

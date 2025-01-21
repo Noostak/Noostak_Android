@@ -117,7 +117,7 @@ fun AppointmentCreateInfoScreen(
                 cursorColor = NoostakTheme.colors.gray500,
                 shape = RoundedCornerShape(10.dp),
                 focusedBorderColor = NoostakTheme.colors.blue600,
-                unfocusedBorderColor = NoostakTheme.colors.gray200,
+                unfocusedBorderColor = NoostakTheme.colors.gray500,
                 maxLength = 20,
                 placeholderColor = NoostakTheme.colors.gray500,
                 textStyle = NoostakTheme.typography.b1SemiBold,
@@ -185,10 +185,10 @@ fun AppointmentCreateInfoScreen(
                     val time = appointmentDuration.toIntOrNull() ?: 0
                     onButtonClick(groupId, appointmentName, appointmentCategory, time)
                 },
-                isEnabled = appointmentName.isNotBlank() &&
-                        appointmentCategory.isNotBlank() &&
-                        appointmentDuration.isNotBlank() &&
-                        (appointmentDuration.toIntOrNull()?.let { it in 1..10 } == true),
+                isEnabled = appointmentName.isNotBlank() && appointmentCategory.isNotBlank() && appointmentDuration.isNotBlank() && (
+                    appointmentDuration.toIntOrNull()
+                        ?.let { it in 1..10 } == true
+                    ),
                 deactivateColor = NoostakTheme.colors.gray500,
                 activateColor = NoostakTheme.colors.gray900
             )

@@ -45,5 +45,6 @@ sealed class AppointmentCreateTimePickerSideEffect {
         val appointmentDate: List<String>,
         val appointmentTime: String
     ) : AppointmentCreateTimePickerSideEffect()
+
     data object NavigateUp : AppointmentCreateTimePickerSideEffect()
 }

@@ -32,7 +32,12 @@ fun NavController.navigateAppointmentCreatePeriod(
     navOptions: NavOptions? = null
 ) {
     navigate(
-        route = AppointmentCreatePeriod(groupId = groupId, appointmentName = appointmentName, appointmentCategory = appointmentCategory, appointmentTime = appointmentTime),
+        route = AppointmentCreatePeriod(
+            groupId = groupId,
+            appointmentName = appointmentName,
+            appointmentCategory = appointmentCategory,
+            appointmentTime = appointmentTime
+        ),
         navOptions = navOptions
     )
 }
@@ -54,28 +59,6 @@ fun NavController.navigateAppointmentCreateTimePicker(
             appointmentTime = appointmentTime,
             isSingleDateMode = isSingleDateMode,
             appointmentDate = appointmentDate
-        ),
-        navOptions = navOptions
-    )
-}
-
-fun NavController.navigateCalendarCheck(
-    appointmentName: String,
-    appointmentCategory: String,
-    appointmentTime: Int,
-    isSingleDateMode: Boolean,
-    appointmentDate: List<String>?,
-    appointmentDuration: String,
-    navOptions: NavOptions? = null
-) {
-    navigate(
-        route = CalendarCheck(
-            appointmentName = appointmentName,
-            appointmentCategory = appointmentCategory,
-            appointmentTime = appointmentTime,
-            isSingleDateMode = isSingleDateMode,
-            appointmentDate = appointmentDate,
-            appointmentDuration = appointmentDuration
         ),
         navOptions = navOptions
     )
@@ -174,15 +157,14 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
             appointmentTime = args.appointmentTime,
             isSingleDateMode = args.isSingleDateMode,
             appointmentDate = args.appointmentDate ?: emptyList(),
-            navigateToCheck = { groupId, appointmentName, category, time, isSingleDateMode, dates, selectTime ->
-                navHostController.navigateCalendarCheck( // 이부분에 AppointmentSubmit 연결
-                    //  groupId = groupId,
+            navigateToCheck = { groupId, appointmentName, category, duration, isSingleDateMode, dates, time ->
+                navHostController.navigateAppointmentSubmit(
+                    groupId = groupId,
                     appointmentName = appointmentName,
-                    appointmentCategory = category,
+                    appointmentDate = dates.joinToString(","),
                     appointmentTime = time,
-                    isSingleDateMode = isSingleDateMode,
-                    appointmentDate = dates,
-                    appointmentDuration = selectTime
+                    appointmentCategory = category,
+                    appointmentDuration = duration
                 )
             },
             navigateUp = navHostController::navigateUp
@@ -249,16 +231,6 @@ data class AppointmentCreateTimePicker(
     val appointmentTime: Int,
     val isSingleDateMode: Boolean,
     val appointmentDate: List<String>? = null
-) : Route
-
-@Serializable
-data class CalendarCheck(
-    val appointmentName: String,
-    val appointmentCategory: String,
-    val appointmentTime: Int,
-    val isSingleDateMode: Boolean,
-    val appointmentDate: List<String>? = null,
-    val appointmentDuration: String
 ) : Route
 
 @Serializable

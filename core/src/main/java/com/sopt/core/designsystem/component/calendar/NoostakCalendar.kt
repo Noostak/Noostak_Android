@@ -32,10 +32,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.R
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
-import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.designsystem.theme.NoostakAndroidTheme
+import com.sopt.core.designsystem.theme.NoostakTheme.colors
+import com.sopt.core.designsystem.theme.NoostakTheme.typography
 import com.sopt.core.extension.noRippleClickable
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -50,9 +53,6 @@ fun NoostakCalendar(
     modifier: Modifier = Modifier,
     days: List<String>
 ) {
-    val typography = NoostakTheme.typography
-    val colors = NoostakTheme.colors
-
     var year by remember { mutableStateOf(LocalDate.now().year) }
     var month by remember { mutableStateOf(LocalDate.now().monthValue) }
     var selectedDates by remember { mutableStateOf<List<String>>(emptyList()) }
@@ -177,14 +177,12 @@ fun NoostakCalendar(
                             day > totalDays -> ""
                             else -> (day++).toString()
                         }
-
                         val dateValue = "$year-${month.toString().padStart(2, '0')}-${
                         dateText.padStart(
                             2,
                             '0'
                         )
                         }"
-
                         val isSelected = dateValue in selectedDates
                         val isRange = !isSingleDate &&
                             dateText.isNotEmpty() &&
@@ -193,7 +191,6 @@ fun NoostakCalendar(
                             LocalDate.parse(dateValue) in LocalDate.parse(startDate)..LocalDate.parse(
                             endDate
                         )
-
                         val isStart = dateValue == startDate
                         val isEnd = dateValue == endDate
 
@@ -363,5 +360,19 @@ fun NoostakCalendar(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NoostakCalendarPreview() {
+    NoostakAndroidTheme {
+        NoostakCalendar(
+            start = "",
+            end = "",
+            isSingleDate = true,
+            isRangeSelected = {},
+            days = listOf("일", "월", "화", "수", "목", "금", "토")
+        )
     }
 }

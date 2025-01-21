@@ -134,6 +134,7 @@
     <string name="text_calendar_appointment_time_check_btn">소요시간 이상으로 선택해주세요</string>
     <string name="text_calendar_appointment_time_check_btn_limit">24시간 선택은 불가능합니다</string>
     <string name="text_calendar_appointment_time_select">시간대는 상관 없어요</string>
+    <string name="sb_appointment_create_time_picker">%1$d시간 이상 선택해주세요</string>
 
     <!-- 약속 만들기_약속 등록 확인 -->
     <string name="appbar_appointment_submit">약속 만들기</string>

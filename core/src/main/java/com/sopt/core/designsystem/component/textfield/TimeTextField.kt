@@ -65,7 +65,7 @@ fun TimeTextField(
             } else if (isFocused) {
                 NoostakTheme.colors.blue600
             } else {
-                NoostakTheme.colors.gray200
+                NoostakTheme.colors.gray500
             }
         )
         Text(

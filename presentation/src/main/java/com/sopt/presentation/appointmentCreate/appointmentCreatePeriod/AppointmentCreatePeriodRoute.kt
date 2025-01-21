@@ -95,9 +95,6 @@ fun AppointmentCreatePeriodScreen(
     var isSingleDateMode by remember { mutableStateOf(false) }
     var isButtonEnabled by remember { mutableStateOf(false) }
 
-    val typography = NoostakTheme.typography
-    val colors = NoostakTheme.colors
-
     LaunchedEffect(isSingleDateMode, dates) {
         isButtonEnabled = if (isSingleDateMode) {
             dates.size in 1..7
@@ -122,7 +119,7 @@ fun AppointmentCreatePeriodScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(dimensionResource(id = R.dimen.horizontal_padding))
+                .padding(dimensionResource(id = R.dimen.default_padding))
         ) {
             Spacer(modifier = Modifier.height(18.dp))
             NoostakProgressBar(progressBar = listOf(false, true, false))
@@ -136,9 +133,9 @@ fun AppointmentCreatePeriodScreen(
             ) {
                 Text(
                     text = stringResource(R.string.text_calendar_appointment_one_day),
-                    style = typography.b2Regular,
+                    style = NoostakTheme.typography.b2Regular,
                     textAlign = TextAlign.Start,
-                    color = colors.gray900
+                    color = NoostakTheme.colors.gray900
                 )
                 NoostakSwitch(
                     checked = isSingleDateMode,
@@ -156,7 +153,7 @@ fun AppointmentCreatePeriodScreen(
                     .fillMaxWidth()
                     .padding(bottom = 17.dp),
                 thickness = 1.dp,
-                color = colors.gray200
+                color = NoostakTheme.colors.gray200
             )
             NoostakCalendar(
                 start = startDate,
@@ -207,15 +204,7 @@ fun AppointmentCreatePeriodScreenPreview() {
             appointmentName = "약속 이름",
             appointmentCategory = "약속 카테고리",
             appointmentDuration = 1,
-            appointmentDate = listOf(
-                "2022-10-01",
-                "2022-10-02",
-                "2022-10-03",
-                "2022-10-04",
-                "2022-10-05",
-                "2022-10-06",
-                "2022-10-07"
-            ),
+            appointmentDate = listOf("일", "월", "화", "수", "목", "금", "토"),
             groupId = 0
         )
     }
