@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -91,7 +90,6 @@ fun AppointmentSubmitCompleteScreen(
             style = NoostakTheme.typography.h2Bold
         )
         Image(
-            modifier = Modifier.padding(end = 2.dp),
             imageVector = ImageVector.vectorResource(id = R.drawable.ic_appointment_submit_complete),
             contentDescription = null
         )
@@ -175,7 +173,7 @@ fun PreviewAppointmentSubmitCompleteRoute() {
             groupId = 1,
             appointmentName = "누스탁 3차 회의",
             isConsecutive = false,
-            appointmentDate = listOf("09/27", "09/28", "09/29", "09/30"),
+            appointmentDate = listOf("9/27", "9/28", "9/29", "9/30"),
             appointmentTime = "10:00 ~ 11:00",
             appointmentCategory = "기타",
             appointmentDuration = 2,

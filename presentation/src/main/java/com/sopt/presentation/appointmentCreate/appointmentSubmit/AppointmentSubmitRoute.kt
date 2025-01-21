@@ -268,7 +268,7 @@ fun PreviewAppointmentSubmitScreen() {
             groupId = 1,
             appointmentName = "누스탁 3차 회의",
             isConsecutive = false,
-            appointmentDate = listOf("09/25", "09/26", "09/27", "09/28", "09/29", "09/30"),
+            appointmentDate = listOf("9/25", "9/26", "9/27", "9/28", "9/29", "09/30"),
             appointmentTime = "10:00 ~ 18:00",
             appointmentCategory = "중요",
             appointmentDuration = 2,
