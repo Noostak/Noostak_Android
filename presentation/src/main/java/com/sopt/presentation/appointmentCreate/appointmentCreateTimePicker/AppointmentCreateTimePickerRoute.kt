@@ -1,5 +1,8 @@
 package com.sopt.presentation.appointmentCreate.appointmentCreateTimePicker
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -40,6 +43,7 @@ import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.checkbox.CircularCheckbox
 import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
+import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.component.text.NoostakHeaderText
 import com.sopt.core.designsystem.component.text.NoostakSubHeaderText
 import com.sopt.core.designsystem.component.timepicker.NoostakTimePicker
@@ -48,6 +52,7 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.presentation.R
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -112,8 +117,27 @@ fun AppointmentCreateTimePickerScreen(
     var showPicker by remember { mutableStateOf(true) }
     var selectedStartHour by remember { mutableStateOf<Int?>(0) }
     var selectedEndHour by remember { mutableStateOf<Int?>(23) }
+    var showMessage by remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
+
+    val onShowSnackBar: (String) -> Unit = { msg ->
+        coroutineScope.launch {
+            showMessage = true
+            val job = launch { snackBarHostState.showSnackbar(message = msg) }
+            delay(SNACK_BAR_DURATION)
+            job.cancel()
+            showMessage = false
+        }
+    }
+
+    LaunchedEffect(showMessage) {
+        if (showMessage) {
+            coroutineScope.launch {
+                onShowSnackBar(context.getString(R.string.sb_appointment_create_time_picker, appointmentDuration))
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier
@@ -127,18 +151,24 @@ fun AppointmentCreateTimePickerScreen(
             )
         },
         snackbarHost = {
-            SnackbarHost(
-                modifier = Modifier.padding(bottom = 96.dp),
-                hostState = snackBarHostState,
-                snackbar = { snackBarData ->
-                    NoostakSnackBar(
-                        message = snackBarData.visuals.message,
-                        textStyle = NoostakTheme.typography.c2SemiBold,
-                        textColor = NoostakTheme.colors.red01,
-                        backgroundColor = NoostakTheme.colors.pink
-                    )
-                }
-            )
+            AnimatedVisibility(
+                visible = showMessage,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                SnackbarHost(
+                    modifier = Modifier.padding(bottom = 96.dp),
+                    hostState = snackBarHostState,
+                    snackbar = { snackBarData ->
+                        NoostakSnackBar(
+                            message = snackBarData.visuals.message,
+                            textStyle = NoostakTheme.typography.c2SemiBold,
+                            textColor = NoostakTheme.colors.red01,
+                            backgroundColor = NoostakTheme.colors.pink
+                        )
+                    }
+                )
+            }
         }
     ) { innerPadding ->
         Column(
@@ -234,14 +264,7 @@ fun AppointmentCreateTimePickerScreen(
                     } ?: 24
 
                     if (duration < appointmentDuration) {
-                        coroutineScope.launch {
-                            snackBarHostState.showSnackbar(
-                                context.getString(
-                                    R.string.sb_appointment_create_time_picker,
-                                    appointmentDuration
-                                )
-                            )
-                        }
+                        showMessage = true
                         return@NoostakBottomButton
                     }
 

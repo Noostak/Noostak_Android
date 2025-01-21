@@ -36,10 +36,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.R
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
+import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme.colors
 import com.sopt.core.designsystem.theme.NoostakTheme.typography
 import com.sopt.core.extension.noRippleClickable
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
@@ -67,14 +69,20 @@ fun NoostakCalendar(
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val message = stringResource(R.string.text_noostak_calendar_7days)
+    val onShowSnackBar: (String) -> Unit = { msg ->
+        coroutineScope.launch {
+            showMessage = true
+            val job = launch { snackBarHostState.showSnackbar(message = msg) }
+            delay(SNACK_BAR_DURATION)
+            job.cancel()
+            showMessage = false
+        }
+    }
 
     LaunchedEffect(showMessage) {
         if (showMessage) {
             coroutineScope.launch {
-                snackBarHostState.showSnackbar(
-                    message = message
-                )
-                showMessage = false
+                onShowSnackBar(message)
             }
         }
     }
