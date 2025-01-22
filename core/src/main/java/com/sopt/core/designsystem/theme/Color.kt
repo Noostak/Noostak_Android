@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 
 // Uncategorized
 val Black = Color(0xFF111111)
+val Black60 = Color(0x99111111)
 val White = Color(0xFFFFFFFF)
 val Red01 = Color(0xFF9C0303)
 val Red02 = Color(0xFFFF6868)
@@ -46,6 +47,7 @@ val Blue800 = Color(0xFF49567F)
 @Stable
 class NoostakColors(
     black: Color,
+    black60: Color,
     white: Color,
     red01: Color,
     red02: Color,
@@ -75,6 +77,8 @@ class NoostakColors(
     mint: Color
 ) {
     var black by mutableStateOf(black)
+        private set
+    var black60 by mutableStateOf(black60)
         private set
     var white by mutableStateOf(white)
         private set
@@ -133,6 +137,7 @@ class NoostakColors(
 
     fun copy(): NoostakColors = NoostakColors(
         black = black,
+        black60 = black60,
         white = white,
         red01 = red01,
         red02 = red02,
@@ -164,6 +169,7 @@ class NoostakColors(
 
     fun update(other: NoostakColors) {
         black = other.black
+        black60 = other.black60
         white = other.white
         red01 = other.red01
         red02 = other.red02
@@ -197,6 +203,7 @@ class NoostakColors(
 @Composable
 fun noostakColors(
     black: Color = Black,
+    black60: Color = Black60,
     white: Color = White,
     red01: Color = Red01,
     red02: Color = Red02,
@@ -226,6 +233,7 @@ fun noostakColors(
     mint: Color = Mint
 ) = NoostakColors(
     black = black,
+    black60 = black60,
     white = white,
     red01 = red01,
     red02 = red02,
