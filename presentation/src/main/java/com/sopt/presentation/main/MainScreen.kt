@@ -151,7 +151,10 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navHostController = navigator.navController
                 )
-                groupNavGraph(navHostController = navigator.navController)
+                groupNavGraph(
+                    paddingValues = paddingValues,
+                    navHostController = navigator.navController
+                )
                 groupCreateNavGraph(
                     paddingValues = paddingValues,
                     navHostController = navigator.navController
