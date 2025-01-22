@@ -153,7 +153,7 @@ fun GroupCreateSuccessScreen(
                             message = snackBarData.visuals.message,
                             textStyle = NoostakTheme.typography.c3Regular,
                             textColor = NoostakTheme.colors.white,
-                            backgroundColor = NoostakTheme.colors.gray900
+                            backgroundColor = NoostakTheme.colors.gray800
                         )
                     }
                 )
