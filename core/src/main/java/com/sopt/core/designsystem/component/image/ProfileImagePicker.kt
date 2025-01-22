@@ -26,7 +26,11 @@ fun ProfileImagePicker(
     onCameraBtnClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier) {
+    Box(
+        modifier = modifier.noRippleClickable {
+            onCameraBtnClick()
+        }
+    ) {
         GlideImage(
             imageModel = { selectedImageUri ?: R.drawable.ic_profile },
             imageOptions = ImageOptions(
@@ -45,9 +49,6 @@ fun ProfileImagePicker(
             modifier = Modifier
                 .size(35.dp)
                 .align(Alignment.BottomEnd)
-                .noRippleClickable {
-                    onCameraBtnClick()
-                }
         )
     }
 }
