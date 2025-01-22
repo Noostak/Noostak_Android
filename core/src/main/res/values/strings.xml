@@ -18,6 +18,9 @@
     <!-- Calendar Info -->
     <string name="tf_calendar_info_placeholder">이름을 입력해주세요</string>
 
+    <!-- Edit Profile -->
+    <string name="tf_edit_profile_placeholder">이름을 입력해주세요</string>
+
     <!-- Noostak Text Field -->
     <string name="text_noostak_text_field_sign_up_condition">띄어쓰기 없이 한글, 영문, 숫자만 가능해요.</string>
     <string name="text_noostak_text_field_count">%1$s/%2$s</string>
