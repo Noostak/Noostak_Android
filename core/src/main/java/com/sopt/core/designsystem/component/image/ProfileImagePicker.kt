@@ -28,7 +28,7 @@ fun ProfileImagePicker(
 ) {
     Box(modifier = modifier) {
         GlideImage(
-            imageModel = { selectedImageUri ?: R.drawable.ic_profile },
+            imageModel = { selectedImageUri?.takeIf { it.isNotBlank() } ?: R.drawable.ic_profile },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center

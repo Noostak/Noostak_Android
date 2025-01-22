@@ -138,7 +138,7 @@ fun MyPageScreen(
                 )
             ) {
                 GlideImage(
-                    imageModel = { profileImage ?: R.drawable.ic_profile },
+                    imageModel = { profileImage?.takeIf { it.isNotBlank() } ?: R.drawable.ic_profile },
                     imageOptions = ImageOptions(
                         contentScale = ContentScale.Crop,
                         alignment = Alignment.Center
