@@ -134,4 +134,12 @@
     <!-- 날짜 형식 -->
     <string name="text_brace_between_hours">%1$s ~ %2$s</string>
 
+    <!-- My Page -->
+    <string name="icon_my_page_item_arrow_description">Icon Arrow On MyPage</string>
+    <string name="appbar_mu_page_title">내 정보</string>
+    <string name="btn_my_page_profile_edit">프로필 수정</string>
+    <string name="text_my_page_item_policy">약관 및 정책</string>
+    <string name="text_my_page_item_logout">로그아웃</string>
+    <string name="text_my_page_item_withdrawal">탈퇴하기</string>
+
 </resources>
