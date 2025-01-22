@@ -51,22 +51,22 @@ import timber.log.Timber
 fun GroupCreateRoute(
     paddingValues: PaddingValues,
     navigateToGroupCreateSuccess: () -> Unit,
-    viewModel: GroupCreateViewModel = hiltViewModel()
+    groupCreateViewModel: GroupCreateViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val groupProfileState by viewModel.groupProfileState.collectAsStateWithLifecycle()
+    val groupProfileState by groupCreateViewModel.groupProfileState.collectAsStateWithLifecycle()
 
     var isGalleryPermission by remember { mutableStateOf(false) }
 
-    val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
+    val showDialog by groupCreateViewModel.showDialog.collectAsStateWithLifecycle()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         try {
             if (isGranted) {
-                viewModel.updateGalleryPermissionState(true)
+                groupCreateViewModel.updateGalleryPermissionState(true)
             } else {
                 isGalleryPermission = true
             }
@@ -86,15 +86,15 @@ fun GroupCreateRoute(
     }
 
     val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
-        viewModel.onImageSelected(uri.toString())
+        groupCreateViewModel.onImageSelected(uri.toString())
     }
 
     val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
-        viewModel.onImageSelected(uri.toString())
+        groupCreateViewModel.onImageSelected(uri.toString())
     }
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
+        groupCreateViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
                     is GroupCreateSideEffect.NavigateToGroupCreateSuccess -> navigateToGroupCreateSuccess()
@@ -102,7 +102,7 @@ fun GroupCreateRoute(
                     is GroupCreateSideEffect.ShowGalleryToast ->
                         isGalleryPermission = true
 
-                    is GroupCreateSideEffect.ShowDialog -> viewModel.showDialog(true)
+                    is GroupCreateSideEffect.ShowDialog -> groupCreateViewModel.showDialog(true)
 
                     is GroupCreateSideEffect.RequestImagePicker -> context.launchImagePicker(
                         galleryLauncher,
@@ -125,21 +125,21 @@ fun GroupCreateRoute(
         NoostakDialog(
             dialogType = DialogType.GROUP,
             onClick = {
-                viewModel.navigateToGroupCreateSuccess()
+                groupCreateViewModel.navigateToGroupCreateSuccess()
             },
-            onDismissRequest = { viewModel.showDialog(false) }
+            onDismissRequest = { groupCreateViewModel.showDialog(false) }
         )
     }
 
     GroupCreateScreen(
         paddingValues = paddingValues,
         groupProfileState = groupProfileState,
-        onProfileCameraBtnClick = { viewModel.requestGalleryPicker() },
+        onProfileCameraBtnClick = { groupCreateViewModel.requestGalleryPicker() },
         onNameChange = { newName ->
-            viewModel.onGroupNameChanged(newName)
+            groupCreateViewModel.onGroupNameChanged(newName)
         },
         onNextBtnClick = { nickname, imageUri ->
-            viewModel.navigateToGroupCreateSuccess()
+            groupCreateViewModel.navigateToGroupCreateSuccess()
         }
     )
 }

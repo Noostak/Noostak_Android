@@ -1,6 +1,5 @@
 package com.sopt.presentation.groupDetail.groupMember
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,12 +23,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -42,6 +39,7 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
 import com.sopt.domain.entity.GroupMembersEntity
 import com.sopt.presentation.R
+import com.sopt.presentation.groupDetail.GroupDetailHeader
 
 @Composable
 fun GroupMemberRoute(
@@ -57,6 +55,7 @@ fun GroupMemberRoute(
         }
     }
     GroupMemberScreen(
+        groupId = groupId,
         groupMembers = groupMemberViewModel.mockGroupMembers,
         onBackButtonClick = groupMemberViewModel::navigateUp
     )
@@ -64,6 +63,7 @@ fun GroupMemberRoute(
 
 @Composable
 fun GroupMemberScreen(
+    groupId: Long,
     groupMembers: GroupMembersEntity,
     onBackButtonClick: () -> Unit
 ) {
@@ -86,31 +86,16 @@ fun GroupMemberScreen(
                 .padding(innerPadding)
                 .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_group_detail),
-                        contentDescription = null
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 3.dp),
-                        text = groupMembers.groupName,
-                        color = NoostakTheme.colors.gray900,
-                        style = NoostakTheme.typography.h1Bold
-                    )
-                }
-            }
+            GroupDetailHeader(
+                groupId = groupId,
+                groupImage = groupMembers.groupImage,
+                groupName = groupMembers.groupName
+            )
             Text(
-                modifier = Modifier.padding(top = 2.dp),
+                modifier = Modifier.padding(top = 9.dp),
                 text = stringResource(
                     R.string.tv_group_detail_member,
-                    groupMembers.groupMembersCount
+                    groupMembers.groupMemberCount
                 ),
                 color = NoostakTheme.colors.gray800,
                 style = NoostakTheme.typography.b2Regular
@@ -131,7 +116,7 @@ fun GroupMemberScreen(
                 horizontalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 GroupMemberHeader(text = stringResource(R.string.header_group_member_member))
-                GroupMemberHeader(text = "(${groupMembers.groupMembers.size}/${groupMembers.groupMembersCount})")
+                GroupMemberHeader(text = "(${groupMembers.groupMembers.size}/50)")
             }
             Text(
                 modifier = Modifier
@@ -198,7 +183,7 @@ fun GroupMemberItem(
         Text(
             text = name,
             color = NoostakTheme.colors.gray900,
-            style = NoostakTheme.typography.c2SemiBold,
+            style = NoostakTheme.typography.c3SemiBold,
             textAlign = TextAlign.Center
         )
     }
@@ -210,6 +195,7 @@ fun GroupMemberScreenPreview() {
     NoostakAndroidTheme {
         val groupMemberViewModel: GroupMemberViewModel = hiltViewModel()
         GroupMemberScreen(
+            groupId = 1,
             groupMembers = groupMemberViewModel.mockGroupMembers,
             onBackButtonClick = {}
         )

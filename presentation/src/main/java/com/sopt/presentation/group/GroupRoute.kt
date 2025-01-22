@@ -39,20 +39,20 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun GroupRoute(
-    viewModel: GroupViewModel = hiltViewModel(),
+    groupViewModel: GroupViewModel = hiltViewModel(),
     navigateToGroupDetail: (Long) -> Unit,
     navigateToGroupCreate: () -> Unit,
     navigateToGroupEnter: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    val groupItems = viewModel.groupItems
+    val groupItems = groupViewModel.groupItems
 
     val isEmpty = groupItems.isEmpty()
 
-    val showDialog by viewModel.showDialog.collectAsStateWithLifecycle()
+    val showDialog by groupViewModel.showDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
+        groupViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collectLatest { sideEffect ->
                 when (sideEffect) {
                     is GroupSideEffect.NavigateToGroupDetail -> navigateToGroupDetail(sideEffect.groupId)
@@ -64,10 +64,10 @@ fun GroupRoute(
 
     if (showDialog) {
         GroupFloatingActionDialog(
-            onClick = { viewModel.showFloatingActionButtonDialog(false) },
-            onDismissRequest = { viewModel.showFloatingActionButtonDialog(false) },
-            onCreateGroupClick = viewModel::navigateToGroupCreate,
-            onEnterGroupClick = viewModel::navigateToGroupEnter
+            onClick = { groupViewModel.showFloatingActionButtonDialog(false) },
+            onDismissRequest = { groupViewModel.showFloatingActionButtonDialog(false) },
+            onCreateGroupClick = groupViewModel::navigateToGroupCreate,
+            onEnterGroupClick = groupViewModel::navigateToGroupEnter
         )
     }
 
@@ -80,9 +80,9 @@ fun GroupRoute(
 
         else -> GroupScreen(
             groupItems = groupItems,
-            isFabClicked = viewModel.showDialog,
-            onItemClick = viewModel::navigateToGroupDetail,
-            onFabClick = { viewModel.showFloatingActionButtonDialog(true) }
+            isFabClicked = groupViewModel.showDialog,
+            onItemClick = groupViewModel::navigateToGroupDetail,
+            onFabClick = { groupViewModel.showFloatingActionButtonDialog(true) }
         )
     }
 }

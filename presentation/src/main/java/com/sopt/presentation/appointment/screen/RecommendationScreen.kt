@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,22 +36,27 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
-import com.sopt.core.designsystem.component.chip.NoostakUserChip
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
-import com.sopt.domain.entity.PriorityEntity
-import com.sopt.domain.entity.RecommendationEntity
+import com.sopt.core.extension.showIf
+import com.sopt.core.util.CalculateTime
+import com.sopt.core.util.RearrangeList
+import com.sopt.domain.entity.OptionEntity
+import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.AppointmentViewModel
+import com.sopt.presentation.groupDetail.confirmedDetail.AvailableUserChips
+import com.sopt.presentation.groupDetail.confirmedDetail.UnavailableUserChips
 
 @Composable
 fun RecommendationScreen(
+    isHost: Boolean,
     selectedItemIndex: Int,
-    data: List<PriorityEntity>,
+    data: List<RecommendationPriorityEntity>,
     onConfirmButtonClick: (Long) -> Unit
 ) {
-    val filteredData = data.find { it.priority == selectedItemIndex }?.recommendations.orEmpty()
+    val filteredData = data[selectedItemIndex].options
     var selectedItemId by remember { mutableStateOf<Long?>(null) }
 
     // filteredData가 변경될 때마다 초기화
@@ -77,6 +83,7 @@ fun RecommendationScreen(
             }
         }
         NoostakBottomButton(
+            modifier = Modifier.showIf(isHost),
             text = stringResource(R.string.btn_appointment_confirm),
             onButtonClick = { selectedItemId?.let { onConfirmButtonClick(it) } },
             isEnabled = selectedItemId != null,
@@ -90,12 +97,26 @@ fun RecommendationScreen(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun RecommendationItem(
-    data: RecommendationEntity,
+    data: OptionEntity,
     isSelected: Boolean,
     onItemClick: () -> Unit
 ) {
-    var isLiked by remember { mutableStateOf(data.isLiked) }
+    var isLiked by remember { mutableStateOf(data.liked) }
     var likes by remember { mutableIntStateOf(data.likes) }
+    val calculateTime = CalculateTime()
+    val date = calculateTime.extractDateWithKorean(data.date)
+    val dayOfWeek = calculateTime.extractDayOfWeekWithBraces(data.date)
+    val startHour = calculateTime.extractHourWithZero(data.startTime)
+    val endHour = calculateTime.extractHourWithZero(data.endTime)
+    val rearrangeList = RearrangeList()
+    val availableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
+        data.myIdentity,
+        data.availableMembers
+    )
+    val unavailableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
+        data.myIdentity,
+        data.unavailableMembers
+    )
 
     Column(
         modifier = Modifier
@@ -115,14 +136,20 @@ fun RecommendationItem(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "${data.date} (일) ${data.startTime} - ${data.endTime}",
+                text = "$date $dayOfWeek",
                 color = NoostakTheme.colors.black,
                 style = NoostakTheme.typography.t4Bold
             )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = stringResource(R.string.text_brace_between_hours, startHour, endHour),
+                color = NoostakTheme.colors.black,
+                style = NoostakTheme.typography.t4Bold
+            )
+            Spacer(modifier = Modifier.weight(1f))
             Row(
                 modifier = Modifier
                     .background(
@@ -154,54 +181,46 @@ fun RecommendationItem(
                     modifier = Modifier.padding(start = 2.dp),
                     text = likes.toString(),
                     color = if (isLiked) NoostakTheme.colors.black else NoostakTheme.colors.gray600,
-                    style = NoostakTheme.typography.c2SemiBold
+                    style = NoostakTheme.typography.c3SemiBold
                 )
             }
         }
         Text(
             text = stringResource(
                 R.string.header_appointment_available,
-                data.availableMembersCount
+                data.availableMemberCount
             ),
             color = NoostakTheme.colors.black,
-            style = NoostakTheme.typography.c2SemiBold
+            style = NoostakTheme.typography.c3SemiBold
         )
         FlowRow(
             modifier = Modifier.padding(top = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            data.availableMembers.forEach { member ->
-                NoostakUserChip(
-                    text = member,
-                    textColor = NoostakTheme.colors.black,
-                    backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
-                    borderColor = NoostakTheme.colors.blue200
-                )
-            }
+            AvailableUserChips(
+                members = availableMembers,
+                myIdentity = data.myIdentity
+            )
         }
         Text(
             modifier = Modifier.padding(top = 20.dp),
             text = stringResource(
                 R.string.header_appointment_unavailable,
-                data.unavailableMembersCount
+                data.unavailableMemberCount
             ),
             color = NoostakTheme.colors.black,
-            style = NoostakTheme.typography.c2SemiBold
+            style = NoostakTheme.typography.c3SemiBold
         )
         FlowRow(
             modifier = Modifier.padding(top = 10.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            data.unavailableMembers.forEach { member ->
-                NoostakUserChip(
-                    text = member,
-                    textColor = NoostakTheme.colors.gray800,
-                    backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
-                    borderColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
-                )
-            }
+            UnavailableUserChips(
+                members = unavailableMembers,
+                myIdentity = data.myIdentity
+            )
         }
     }
 }
@@ -212,8 +231,9 @@ fun RecommendationScreenPreview() {
     NoostakAndroidTheme {
         val appointmentViewModel: AppointmentViewModel = hiltViewModel()
         RecommendationScreen(
+            isHost = true,
             selectedItemIndex = 1,
-            data = appointmentViewModel.mockRecommendations.priorities,
+            data = appointmentViewModel.mockRecommendations.recommendationPriority,
             onConfirmButtonClick = {}
         )
     }

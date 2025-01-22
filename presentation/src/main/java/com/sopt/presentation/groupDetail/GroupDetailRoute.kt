@@ -18,6 +18,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -35,14 +36,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.sopt.core.designsystem.component.button.NoostakFloatingActionButton
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -55,6 +59,7 @@ import com.sopt.domain.entity.ProgressEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.screen.ConfirmedScreen
 import com.sopt.presentation.groupDetail.screen.ProgressScreen
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -62,7 +67,7 @@ import timber.log.Timber
 fun GroupDetailRoute(
     groupId: Long,
     navigateUp: () -> Unit,
-    navigateToConfirmedDetail: (Long, Long) -> Unit,
+    navigateToConfirmedDetail: (Long, Long, String) -> Unit,
     navigateToGroupMember: (Long) -> Unit,
     navigateToAppointment: (Long, Long, String) -> Unit,
     groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
@@ -72,7 +77,11 @@ fun GroupDetailRoute(
             when (sideEffect) {
                 is GroupDetailSideEffect.NavigateUp -> navigateUp()
                 is GroupDetailSideEffect.NavigateToConfirmedDetail -> {
-                    navigateToConfirmedDetail(sideEffect.groupId, sideEffect.confirmedId)
+                    navigateToConfirmedDetail(
+                        sideEffect.groupId,
+                        sideEffect.confirmedId,
+                        sideEffect.appointmentName
+                    )
                 }
 
                 is GroupDetailSideEffect.NavigateToGroupMember -> {
@@ -107,12 +116,11 @@ fun GroupDetailScreen(
     tabs: List<String>,
     data: GroupDetailEntity,
     onBackButtonClick: () -> Unit,
-    onConfirmedClick: (Long, Long) -> Unit,
+    onConfirmedClick: (Long, Long, String) -> Unit,
     onGroupMemberClick: (Long) -> Unit,
     onProgressClick: (Long, Long, String) -> Unit
 ) {
     val pagerState = rememberPagerState { tabs.size }
-    val context = LocalContext.current
 
     Scaffold(
         modifier = Modifier
@@ -131,7 +139,6 @@ fun GroupDetailScreen(
                 title = stringResource(R.string.fab_group_detail),
                 modifier = Modifier.offset(x = 0.dp, y = (-74).dp)
             ) {
-                // 약속 생성 페이지로 이동
                 Timber.d("약속 생성 페이지로 이동")
             }
         },
@@ -143,49 +150,14 @@ fun GroupDetailScreen(
                 .padding(innerPadding)
                 .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_group_detail),
-                        contentDescription = null
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 3.dp),
-                        text = data.groupName,
-                        color = NoostakTheme.colors.gray900,
-                        style = NoostakTheme.typography.h1Bold
-                    )
-                }
-                Icon(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .noRippleClickable {
-                            // 공유 기능
-                            val sendIntent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(
-                                    Intent.EXTRA_TEXT,
-                                    "공유하고자 하는 그룹 아이디: $groupId"
-                                )
-                                type = "text/plain"
-                            }
-                            val shareIntent = Intent.createChooser(sendIntent, null)
-                            ContextCompat.startActivity(context, shareIntent, null)
-                        },
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_share),
-                    contentDescription = null,
-                    tint = NoostakTheme.colors.gray700
-                )
-            }
+            GroupDetailHeader(
+                groupId = groupId,
+                groupImage = data.groupImage,
+                groupName = data.groupName
+            )
             Row(
                 modifier = Modifier
-                    .padding(top = 2.dp)
+                    .padding(top = 9.dp)
                     .noRippleClickable { onGroupMemberClick(groupId) },
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -200,12 +172,13 @@ fun GroupDetailScreen(
                     contentDescription = null
                 )
             }
-            Spacer(modifier = Modifier.height(26.dp))
+            Spacer(modifier = Modifier.height(22.dp))
             Text(
                 text = stringResource(R.string.tv_group_detail_list),
                 color = NoostakTheme.colors.gray800,
                 style = NoostakTheme.typography.b1SemiBold
             )
+            Spacer(modifier = Modifier.height(9.dp))
             CustomTabPager(
                 groupId = groupId,
                 pagerState = pagerState,
@@ -227,7 +200,7 @@ fun CustomTabPager(
     progressEntities: List<ProgressEntity>,
     confirmedEntities: List<ConfirmedEntity>,
     onProgressClick: (Long, Long, String) -> Unit,
-    onConfirmedClick: (Long, Long) -> Unit
+    onConfirmedClick: (Long, Long, String) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
     Column {
@@ -275,9 +248,7 @@ fun CustomTabPager(
         }
         HorizontalPager(state = pagerState) { page ->
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 16.dp),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 when (page) {
@@ -292,8 +263,8 @@ fun CustomTabPager(
                     1 -> ConfirmedScreen(
                         groupId = groupId,
                         confirmedEntities = confirmedEntities,
-                        onItemClicked = { groupId, confirmedId ->
-                            onConfirmedClick(groupId, confirmedId)
+                        onItemClicked = { groupId, confirmedId, appointmentName ->
+                            onConfirmedClick(groupId, confirmedId, appointmentName)
                         }
                     )
                 }
@@ -302,17 +273,128 @@ fun CustomTabPager(
     }
 }
 
+@Composable
+fun GroupDetailHeader(
+    groupId: Long,
+    groupImage: String,
+    groupName: String
+) {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 21.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Top
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(7.14.dp))
+                    .size(40.dp),
+                model = groupImage,
+                contentDescription = null,
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                error = painterResource(id = R.drawable.ic_launcher_background),
+                contentScale = ContentScale.FillBounds
+            )
+            Text(
+                modifier = Modifier.padding(start = 8.dp),
+                text = groupName,
+                color = NoostakTheme.colors.gray900,
+                style = NoostakTheme.typography.h1Bold
+            )
+        }
+        Icon(
+            modifier = Modifier
+                .size(24.dp)
+                .noRippleClickable {
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(
+                            Intent.EXTRA_TEXT,
+                            "공유하고자 하는 그룹 아이디: $groupId"
+                        )
+                        type = "text/plain"
+                    }
+                    val shareIntent = Intent.createChooser(sendIntent, null)
+                    ContextCompat.startActivity(context, shareIntent, null)
+                },
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_share),
+            contentDescription = null,
+            tint = NoostakTheme.colors.gray700
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun GroupDetailRoutePreview() {
-    val groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
     NoostakAndroidTheme {
         GroupDetailScreen(
             groupId = 0,
-            tabs = groupDetailViewModel.tabs,
-            data = groupDetailViewModel.mockGroupDetail,
+            tabs = persistentListOf("진행 중", "확정"),
+            data = GroupDetailEntity(
+                groupName = "누스탁",
+                groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4",
+                groupMembersCount = 10,
+                progressEntities = listOf(
+                    ProgressEntity(
+                        appointmentId = 1,
+                        appointmentName = "1주차",
+                        startDate = "2025-01-06T11:00:00",
+                        endDate = "2025-01-06T14:00:00",
+                        participants = 3,
+                        maxParticipants = 5
+                    ),
+                    ProgressEntity(
+                        appointmentId = 2,
+                        appointmentName = "2주차",
+                        startDate = "2025-01-06T11:00:00",
+                        endDate = "2025-01-06T14:00:00",
+                        participants = 2,
+                        maxParticipants = 5
+                    ),
+                    ProgressEntity(
+                        appointmentId = 3,
+                        appointmentName = "3주차",
+                        startDate = "2025-01-06T11:00:00",
+                        endDate = "2025-01-06T14:00:00",
+                        participants = 5,
+                        maxParticipants = 5
+                    ),
+                    ProgressEntity(
+                        appointmentId = 4,
+                        appointmentName = "4주차",
+                        startDate = "2025-01-06T11:00:00",
+                        endDate = "2025-01-06T14:00:00",
+                        participants = 0,
+                        maxParticipants = 5
+                    )
+                ),
+                confirmedEntities = listOf(
+                    ConfirmedEntity(
+                        appointmentId = 1,
+                        appointmentName = "3차 회의",
+                        date = "2025-01-06T14:00:00",
+                        startTime = "2025-01-06T14:00:00",
+                        endTime = "2025-01-06T15:00:00",
+                        category = "기타"
+                    ),
+                    ConfirmedEntity(
+                        appointmentId = 2,
+                        appointmentName = "회의",
+                        date = "2025-01-06T14:00:00",
+                        startTime = "2025-01-06T14:00:00",
+                        endTime = "2025-01-06T15:00:00",
+                        category = "일정"
+                    )
+                )
+            ),
             onBackButtonClick = {},
-            onConfirmedClick = { _, _ -> },
+            onConfirmedClick = { _, _, _ -> },
             onGroupMemberClick = {},
             onProgressClick = { _, _, _ -> }
         )

@@ -4,5 +4,7 @@ data class ConfirmedEntity(
     val appointmentId: Long,
     val appointmentName: String,
     val date: String,
-    val weekday: String
+    val startTime: String,
+    val endTime: String,
+    val category: String
 )

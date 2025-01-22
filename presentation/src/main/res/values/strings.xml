@@ -56,6 +56,9 @@
     <string name="tv_group_detail_list">약속 리스트</string>
     <string name="tv_group_detail_no_progress">현재 진행 중인 약속이 없어요</string>
     <string name="tv_group_detail_no_complete">현재 확정된 약속이 없어요</string>
+    <string name="text_group_detail_progress_date">%1$s %2$s %3$s~%4$s</string>
+    <string name="text_group_detail_progress_participants">%1$s명/%2$s명</string>
+    <string name="text_group_detail_confirmed_date">%1$s %2$s %3$s ~ %4$s</string>
 
     <!-- 확정된 약속 정보 -->
     <string name="header_complete_detail">약속 정보</string>
@@ -90,6 +93,7 @@
     <string name="text_appointment_priority">Best%1$s</string>
     <string name="tv_appointment_availableMembersCount">%1$s명</string>
     <string name="tv_appointment_totalMembersCount">" / %1$s명"</string>
+    <string name="text_appointment_recommendations_blank">현재 추천 가능한 시간이 없어요.</string>
 
     <!-- Group -->
     <string name="fab_group_create">그룹추가</string>
@@ -123,6 +127,12 @@
     <!-- 약속 만들기_약속 등록 완료 -->
     <string name="header_appointment_submit_complete">약속 등록이 완료되었습니다</string>
     <string name="btn_appointment_submit_complete">확인</string>
+
+    <!-- 유저 칩 -->
+    <string name="user_chip_me">나</string>
+
+    <!-- 날짜 형식 -->
+    <string name="text_brace_between_hours">%1$s ~ %2$s</string>
 
     <!-- My Page -->
     <string name="icon_my_page_item_arrow_description">Icon Arrow On MyPage</string>

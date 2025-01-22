@@ -36,6 +36,7 @@ import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.type.TextFieldType
+import com.sopt.core.util.NoRippleInteractionSource
 
 @Composable
 fun NoostakTextField(
@@ -129,7 +130,8 @@ fun NoostakTextField(
                         modifier = Modifier
                             .padding(end = 12.dp)
                             .size(24.dp),
-                        onClick = { onValueChange("") }
+                        onClick = { onValueChange("") },
+                        interactionSource = NoRippleInteractionSource
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_text_field_delete),
@@ -148,7 +150,7 @@ fun NoostakTextField(
                 Text(
                     text = stringResource(R.string.text_noostak_text_field_sign_up_condition),
                     color = NoostakTheme.colors.red02,
-                    style = NoostakTheme.typography.c2SemiBold,
+                    style = NoostakTheme.typography.c3SemiBold,
                     modifier = modifier.padding(top = 6.dp),
                     maxLines = 1
                 )

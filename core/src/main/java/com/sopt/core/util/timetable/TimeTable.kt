@@ -5,14 +5,11 @@ import androidx.compose.ui.graphics.Color
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.type.AvailabilityLevel
 import com.sopt.core.type.CellType
+import com.sopt.core.util.CalculateTime
 import com.sopt.domain.entity.AvailableTimeEntity
 import com.sopt.domain.entity.PeriodEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
-import java.util.Locale
 
 class TimeTable {
     fun calculateTimeSlots(startTime: String, endTime: String): Int {
@@ -118,7 +115,8 @@ class TimeTable {
         selectedCellsByDate.forEach { (dateColumnIndex, cells) ->
             val date = availablePeriods.dates.getOrNull(dateColumnIndex - 1) ?: return@forEach
             val times = cells.map { (rowIndex, _) ->
-                val startHour = extractHour(extractTime(availablePeriods.startTime)) + (rowIndex - 1)
+                val startHour =
+                    extractHour(extractTime(availablePeriods.startTime)) + (rowIndex - 1)
                 val endHour = startHour + 1
                 TimeEntity(
                     memberStartTime = "${extractDate(date)}T${String.format("%02d", startHour)}:00:00",
@@ -134,13 +132,9 @@ class TimeTable {
     }
 
     private fun formatDateTimeToCustomFormat(dateTime: String): String {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
-        val parsedDate = LocalDateTime.parse(dateTime, formatter)
-        val dayOfWeek = parsedDate.dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREAN)
-        val month = "%02d".format(parsedDate.monthValue)
-        val day = "%02d".format(parsedDate.dayOfMonth)
-
-        return "$dayOfWeek\n$month/$day"
+        val dayOfWeek = CalculateTime().extractDayOfWeek(dateTime)
+        val date = CalculateTime().extractDateWithSlash(dateTime)
+        return "$dayOfWeek\n$date"
     }
 
     private fun extractTime(dateTime: String): String = dateTime.substringAfter('T')

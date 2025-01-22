@@ -14,6 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.util.NoRippleInteractionSource
 
 @Composable
 fun MyPageProfileEditButton(text: String, onClick: () -> Unit) {
@@ -24,11 +25,12 @@ fun MyPageProfileEditButton(text: String, onClick: () -> Unit) {
         onClick = onClick,
         shape = RoundedCornerShape(6.dp),
         contentPadding = PaddingValues(vertical = 10.dp),
-        border = BorderStroke(1.dp, NoostakTheme.colors.gray200)
+        border = BorderStroke(1.dp, NoostakTheme.colors.gray200),
+        interactionSource = NoRippleInteractionSource
     ) {
         Text(
             text = text,
-            style = NoostakTheme.typography.c2SemiBold,
+            style = NoostakTheme.typography.c3SemiBold,
             color = NoostakTheme.colors.gray900
         )
     }

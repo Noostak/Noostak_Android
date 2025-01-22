@@ -41,33 +41,26 @@ import com.sopt.presentation.mypage.component.MyPageProfileEditButton
 
 @Composable
 fun MyPageRoute(
-    navigateToEditProfile: (String, String?) -> Unit,
-    viewModel: MyPageViewModel = hiltViewModel()
+    myPageViewModel: MyPageViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val userInfoState by viewModel.userInfoState.collectAsStateWithLifecycle()
-    val showLogoutDialog by viewModel.showLogoutDialog.collectAsStateWithLifecycle()
-    val showWithdrawalDialog by viewModel.showWithdrawalDialog.collectAsStateWithLifecycle()
+    val showLogoutDialog by myPageViewModel.showLogoutDialog.collectAsStateWithLifecycle()
+    val showWithdrawalDialog by myPageViewModel.showWithdrawalDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
+        myPageViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
-                    is MyPageSideEffect.NavigateToEditProfile -> navigateToEditProfile(
-                        sideEffect.nickName,
-                        sideEffect.profileImage
-                    )
-
                     is MyPageSideEffect.ShowDialog -> {
                         when (sideEffect.dialogType) {
-                            DialogType.LOGOUT -> viewModel.showDialog(DialogType.LOGOUT, true)
-                            DialogType.WITHDRAWAL -> viewModel.showDialog(
+                            DialogType.LOGOUT -> myPageViewModel.showDialog(DialogType.LOGOUT, true)
+                            DialogType.WITHDRAWAL -> myPageViewModel.showDialog(
                                 DialogType.WITHDRAWAL,
                                 true
                             )
 
-                            DialogType.GROUP -> Unit
+                            else -> Unit
                         }
                     }
                 }
@@ -80,7 +73,7 @@ fun MyPageRoute(
             onClick = {
                 // 추가해야 함
             },
-            onDismissRequest = { viewModel.showDialog(DialogType.LOGOUT, false) }
+            onDismissRequest = { myPageViewModel.showDialog(DialogType.LOGOUT, false) }
         )
     }
 
@@ -90,26 +83,24 @@ fun MyPageRoute(
             onClick = {
                 // 추가해야 함
             },
-            onDismissRequest = { viewModel.showDialog(DialogType.WITHDRAWAL, false) }
+            onDismissRequest = { myPageViewModel.showDialog(DialogType.WITHDRAWAL, false) }
         )
     }
 
     MyPageScreen(
-        nickName = userInfoState.nickName,
-        profileImage = userInfoState.profileImage,
-        onProfileEditBtnClick = { viewModel.navigateToEditProfile() },
+        onProfileEditBtnClick = {
+            // nav Profile 추가해야 함
+        },
         onPolicyBtnClick = {
             // browser intent 추가해야 함
         },
-        onLogoutBtnClick = { viewModel.triggerDialog(DialogType.LOGOUT) },
-        onWithdrawalBtnClick = { viewModel.triggerDialog(DialogType.WITHDRAWAL) }
+        onLogoutBtnClick = { myPageViewModel.triggerDialog(DialogType.LOGOUT) },
+        onWithdrawalBtnClick = { myPageViewModel.triggerDialog(DialogType.WITHDRAWAL) }
     )
 }
 
 @Composable
 fun MyPageScreen(
-    nickName: String,
-    profileImage: String?,
     onProfileEditBtnClick: () -> Unit = {},
     onPolicyBtnClick: () -> Unit = {},
     onLogoutBtnClick: () -> Unit = {},
@@ -138,7 +129,7 @@ fun MyPageScreen(
                 )
             ) {
                 GlideImage(
-                    imageModel = { profileImage ?: R.drawable.ic_profile },
+                    imageModel = { R.drawable.ic_profile },
                     imageOptions = ImageOptions(
                         contentScale = ContentScale.Crop,
                         alignment = Alignment.Center
@@ -151,7 +142,7 @@ fun MyPageScreen(
                     previewPlaceholder = painterResource(id = R.drawable.ic_profile)
                 )
                 Text(
-                    text = nickName,
+                    text = "정해인",
                     color = NoostakTheme.colors.gray900,
                     style = NoostakTheme.typography.t4Bold
                 )
@@ -183,9 +174,6 @@ fun MyPageScreen(
 @Composable
 fun MyPageScreenPreview() {
     NoostakAndroidTheme {
-        MyPageScreen(
-            nickName = "정해인",
-            profileImage = null
-        )
+        MyPageScreen()
     }
 }

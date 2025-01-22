@@ -71,7 +71,7 @@ fun LoginFailureDialog(
                     text = dismissText,
                     color = NoostakTheme.colors.gray900,
                     textAlign = TextAlign.Center,
-                    style = NoostakTheme.typography.c2SemiBold
+                    style = NoostakTheme.typography.c3SemiBold
                 )
                 VerticalDivider(
                     modifier = Modifier
@@ -86,7 +86,7 @@ fun LoginFailureDialog(
                     text = retryText,
                     color = NoostakTheme.colors.blue,
                     textAlign = TextAlign.Center,
-                    style = NoostakTheme.typography.c2SemiBold
+                    style = NoostakTheme.typography.c3SemiBold
                 )
             }
         }

@@ -18,6 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.util.NoRippleInteractionSource
 
 @Composable
 fun MyPageItem(text: String, onClick: () -> Unit) {
@@ -39,11 +40,13 @@ fun MyPageItem(text: String, onClick: () -> Unit) {
         Spacer(modifier = Modifier.weight(1f))
         IconButton(
             onClick = onClick,
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier.size(48.dp),
+            interactionSource = NoRippleInteractionSource
         ) {
             Icon(
                 painter = painterResource(id = com.sopt.presentation.R.drawable.ic_mypage_arrow),
-                contentDescription = stringResource(com.sopt.presentation.R.string.icon_my_page_item_arrow_description)
+                contentDescription = stringResource(com.sopt.presentation.R.string.icon_my_page_item_arrow_description),
+                tint = NoostakTheme.colors.gray800
             )
         }
     }

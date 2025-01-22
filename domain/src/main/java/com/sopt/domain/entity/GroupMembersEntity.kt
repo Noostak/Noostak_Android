@@ -2,7 +2,8 @@ package com.sopt.domain.entity
 
 data class GroupMembersEntity(
     val groupName: String,
-    val groupMembersCount: Int,
+    val groupMemberCount: Int,
+    val groupImage: String,
     val groupLeader: GroupLeaderEntity,
     val groupMembers: List<GroupMemberEntity>
 )
