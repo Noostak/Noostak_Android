@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,13 +26,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
-import com.sopt.core.designsystem.component.chip.NoostakUserChip
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.showIf
+import com.sopt.core.util.CalculateTime
+import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.AppointmentDetailEntity
 import com.sopt.presentation.R
+import com.sopt.presentation.groupDetail.confirmedDetail.AvailableUserChips
 import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
+import com.sopt.presentation.groupDetail.confirmedDetail.UnavailableUserChips
 
 @Composable
 fun AppointmentConfirmRoute(
@@ -54,8 +60,6 @@ fun AppointmentConfirmRoute(
     }
     AppointmentConfirmScreen(
         groupId = groupId,
-        appointmentsId = appointmentsId,
-        optionId = optionId,
         appointmentName = appointmentName,
         onBackButtonClick = appointmentConfirmViewModel::navigateUp,
         onConfirmButtonClick = appointmentConfirmViewModel::navigateToGroupDetail,
@@ -67,13 +71,24 @@ fun AppointmentConfirmRoute(
 @Composable
 fun AppointmentConfirmScreen(
     groupId: Long,
-    appointmentsId: Long,
-    optionId: Long,
     appointmentName: String,
     onBackButtonClick: () -> Unit,
     onConfirmButtonClick: (Long) -> Unit,
     data: AppointmentDetailEntity
 ) {
+    val calculateTime = CalculateTime()
+    val date = calculateTime.extractDateWithKorean(data.date)
+    val dayOfWeek = calculateTime.extractDayOfWeekWithBraces(data.date)
+    val startHour = calculateTime.extractHourWithZero(data.startTime)
+    val rearrangeList = RearrangeList()
+    val availableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
+        data.myIdentity,
+        data.availableMembers
+    )
+    val unavailableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
+        data.myIdentity,
+        data.unavailableMembers
+    )
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
@@ -91,6 +106,7 @@ fun AppointmentConfirmScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(dimensionResource(id = R.dimen.horizontal_padding))
+                .verticalScroll(rememberScrollState())
         ) {
             Text(
                 text = stringResource(R.string.title_appointment_confirm),
@@ -124,12 +140,12 @@ fun AppointmentConfirmScreen(
                         horizontalArrangement = Arrangement.spacedBy(13.dp)
                     ) {
                         Text(
-                            text = data.date,
+                            text = "$date $dayOfWeek",
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )
                         Text(
-                            text = "${data.startTime}~${data.endTime}",
+                            text = startHour,
                             color = NoostakTheme.colors.black,
                             style = NoostakTheme.typography.b4SemiBold
                         )
@@ -150,14 +166,10 @@ fun AppointmentConfirmScreen(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        data.availableMembers.forEach { member ->
-                            NoostakUserChip(
-                                text = member,
-                                textColor = NoostakTheme.colors.black,
-                                backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
-                                borderColor = NoostakTheme.colors.blue200
-                            )
-                        }
+                        AvailableUserChips(
+                            members = availableMembers,
+                            myIdentity = data.myIdentity
+                        )
                     }
                 }
                 Column {
@@ -172,19 +184,16 @@ fun AppointmentConfirmScreen(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
-                        data.unavailableMembers.forEach { member ->
-                            NoostakUserChip(
-                                text = member,
-                                textColor = NoostakTheme.colors.gray800,
-                                backgroundColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
-                                borderColor = if (member == "나") NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
-                            )
-                        }
+                        UnavailableUserChips(
+                            members = unavailableMembers,
+                            myIdentity = data.myIdentity
+                        )
                     }
                 }
             }
             Spacer(modifier = Modifier.weight(1f))
             NoostakBottomButton(
+                modifier = Modifier.showIf(data.isHost),
                 text = stringResource(R.string.btn_appointment_confirm_complete),
                 onButtonClick = { onConfirmButtonClick(groupId) },
                 isEnabled = true,
@@ -201,8 +210,6 @@ fun AppointmentConfirmScreenPreview() {
     NoostakAndroidTheme {
         AppointmentConfirmScreen(
             groupId = 1,
-            appointmentsId = 1,
-            optionId = 1,
             appointmentName = "약속 이름",
             onBackButtonClick = {},
             onConfirmButtonClick = {},

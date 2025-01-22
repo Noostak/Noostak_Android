@@ -28,6 +28,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.util.CalculateTime
 import com.sopt.domain.entity.ProgressEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.GroupDetailViewModel
@@ -40,13 +41,14 @@ fun ProgressScreen(
 ) {
     if (progressEntities.isEmpty()) {
         Text(
-            modifier = Modifier.padding(top = 103.dp),
+            modifier = Modifier.padding(top = 119.dp),
             text = stringResource(R.string.tv_group_detail_no_progress),
             color = NoostakTheme.colors.gray900,
             style = NoostakTheme.typography.b2Regular
         )
     } else {
         LazyColumn(
+            modifier = Modifier.padding(top = 16.dp),
             verticalArrangement = Arrangement.spacedBy(11.dp)
         ) {
             items(progressEntities, key = { it.appointmentId }) {
@@ -66,10 +68,22 @@ fun ProgressItem(
     progressEntity: ProgressEntity,
     onItemClicked: (Long, Long, String) -> Unit
 ) {
+    val calculateTime = CalculateTime()
+    val startDate = calculateTime.extractFullDateWithSlash(progressEntity.startDate)
+    val dayOfWeek = calculateTime.extractDayOfWeekWithBraces(progressEntity.startDate)
+    val startHour = calculateTime.extractHourWithKorean(progressEntity.startDate)
+    val endHour = calculateTime.extractHourWithKorean(progressEntity.endDate)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .noRippleClickable { onItemClicked(groupId, progressEntity.appointmentId, progressEntity.appointmentName) }
+            .noRippleClickable {
+                onItemClicked(
+                    groupId,
+                    progressEntity.appointmentId,
+                    progressEntity.appointmentName
+                )
+            }
             .border(
                 width = 1.dp,
                 shape = RoundedCornerShape(15.dp),
@@ -107,12 +121,22 @@ fun ProgressItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "${progressEntity.date} (${progressEntity.weekday}) ${progressEntity.startTime}~${progressEntity.endTime}",
+                text = stringResource(
+                    R.string.text_group_detail_progress_date,
+                    startDate,
+                    dayOfWeek,
+                    startHour,
+                    endHour
+                ),
                 color = NoostakTheme.colors.gray800,
                 style = NoostakTheme.typography.b5Regular
             )
             Text(
-                text = "${progressEntity.participants}명/${progressEntity.maxParticipants}명",
+                text = stringResource(
+                    R.string.text_group_detail_progress_participants,
+                    progressEntity.participants,
+                    progressEntity.maxParticipants
+                ),
                 color = NoostakTheme.colors.gray700,
                 style = NoostakTheme.typography.b5Regular
             )

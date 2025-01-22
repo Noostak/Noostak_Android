@@ -31,12 +31,14 @@ fun NavController.navigateGroupDetail(
 fun NavController.navigateConfirmedDetail(
     groupId: Long,
     confirmedId: Long,
+    appointmentName: String,
     navOptions: NavOptions? = null
 ) {
     navigate(
         route = ConfirmedDetail(
             groupId = groupId,
-            confirmedId = confirmedId
+            confirmedId = confirmedId,
+            appointmentName = appointmentName
         ),
         navOptions = navOptions
     )
@@ -60,10 +62,11 @@ fun NavGraphBuilder.groupDetailNavGraph(
         GroupDetailRoute(
             groupId = args.groupId,
             navigateUp = navHostController::navigateUp,
-            navigateToConfirmedDetail = { groupId, confirmedId ->
+            navigateToConfirmedDetail = { groupId, confirmedId, appointmentName ->
                 navHostController.navigateConfirmedDetail(
                     groupId = groupId,
-                    confirmedId = confirmedId
+                    confirmedId = confirmedId,
+                    appointmentName = appointmentName
                 )
             },
             navigateToGroupMember = { groupId ->
@@ -84,6 +87,7 @@ fun NavGraphBuilder.groupDetailNavGraph(
         ConfirmedDetailRoute(
             groupId = args.groupId,
             confirmedId = args.confirmedId,
+            appointmentName = args.appointmentName,
             navigateUp = navHostController::navigateUp
         )
     }
@@ -105,7 +109,8 @@ data class GroupDetail(
 @Serializable
 data class ConfirmedDetail(
     val groupId: Long,
-    val confirmedId: Long
+    val confirmedId: Long,
+    val appointmentName: String
 ) : Route
 
 @Serializable
