@@ -190,7 +190,7 @@ fun EditProfileScreen(
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 NoostakTextField(
-                    textFieldType = TextFieldType.SIGNUP,
+                    textFieldType = TextFieldType.EDITPROFILE,
                     value = userInfoState.nickName,
                     onValueChange = { onNameChange(it) },
                     maxLength = 10,
