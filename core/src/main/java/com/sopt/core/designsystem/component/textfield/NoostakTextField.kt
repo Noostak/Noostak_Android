@@ -51,6 +51,7 @@ fun NoostakTextField(
     focusedBorderColor: Color = NoostakTheme.colors.blue600,
     unfocusedWithInputBorderColor: Color = NoostakTheme.colors.gray700,
     unfocusedBorderColor: Color = NoostakTheme.colors.gray500,
+    errorBorderColor: Color = NoostakTheme.colors.red02,
     maxLength: Int = 30,
     modifier: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
@@ -61,6 +62,7 @@ fun NoostakTextField(
     var hasInvalidInput by remember { mutableStateOf(false) }
 
     val validInputRegex = "^[a-zA-Z0-9가-힣]*$".toRegex()
+    val isEmptyError = textFieldType == TextFieldType.EDITPROFILE && value.isBlank()
 
     Column {
         Box(
@@ -69,7 +71,8 @@ fun NoostakTextField(
                 .border(
                     width = 1.dp,
                     color = when {
-                        hasInvalidInput -> NoostakTheme.colors.red02
+                        isEmptyError -> errorBorderColor
+                        hasInvalidInput -> errorBorderColor
                         isFocused -> focusedBorderColor // 포커스된 경우
                         value.isNotEmpty() -> unfocusedWithInputBorderColor // 텍스트가 입력되고 포커스 안된 경우
                         else -> unfocusedBorderColor // 포커스되지 않은 경우
@@ -84,7 +87,7 @@ fun NoostakTextField(
                     value = value,
                     textStyle = textStyle,
                     onValueChange = { newValue ->
-                        if (textFieldType != TextFieldType.SIGNUP) {
+                        if (textFieldType != TextFieldType.SIGNUP && textFieldType != TextFieldType.EDITPROFILE) {
                             if (newValue.replace(" ", "").length <= maxLength) {
                                 onValueChange(newValue)
                             }
@@ -148,12 +151,34 @@ fun NoostakTextField(
         ) {
             if (textFieldType == TextFieldType.SIGNUP && hasInvalidInput) {
                 Text(
-                    text = stringResource(R.string.text_noostak_text_field_sign_up_condition),
+                    text = stringResource(R.string.text_noostak_text_field_condition),
                     color = NoostakTheme.colors.red02,
                     style = NoostakTheme.typography.c3SemiBold,
                     modifier = modifier.padding(top = 6.dp),
                     maxLines = 1
                 )
+            }
+
+            if (textFieldType == TextFieldType.EDITPROFILE) {
+                when {
+                    value.isBlank() ->
+                        Text(
+                            text = stringResource(R.string.text_noostak_text_field_edit_profile_empty),
+                            color = NoostakTheme.colors.red02,
+                            style = NoostakTheme.typography.c3SemiBold,
+                            modifier = modifier.padding(top = 6.dp),
+                            maxLines = 1
+                        )
+
+                    hasInvalidInput ->
+                        Text(
+                            text = stringResource(R.string.text_noostak_text_field_condition),
+                            color = NoostakTheme.colors.red02,
+                            style = NoostakTheme.typography.c3SemiBold,
+                            modifier = modifier.padding(top = 6.dp),
+                            maxLines = 1
+                        )
+                }
             }
 
             Spacer(modifier = Modifier.weight(1f))
