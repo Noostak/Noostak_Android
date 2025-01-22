@@ -22,8 +22,14 @@ class EditProfileViewModel @Inject constructor(
     private val _userInfoState = MutableStateFlow(UserEntity())
     val userInfoState: StateFlow<UserEntity> = _userInfoState
 
+    private var initialNickName: String? = null
+    private var initialProfileImage: String? = null
+
     fun setInitialUserInfo(nickName: String, profileImage: String?) {
+        initialNickName = nickName
+        initialProfileImage = profileImage
         _userInfoState.update { it.copy(nickName = nickName, profileImage = profileImage) }
+        validateChanges()
     }
 
     fun navigateUp() {
@@ -37,11 +43,20 @@ class EditProfileViewModel @Inject constructor(
 
     fun onNickNameChanged(nickName: String) {
         _userInfoState.update { it.copy(nickName = nickName) }
-        validateNickName(nickName)
+        validateChanges()
     }
 
-    private fun validateNickName(nickName: String) {
-        _editProfileState.update { it.copy(isNameCheck = nickName.length in 1..10) }
+    private fun validateChanges() {
+        val currentState = _userInfoState.value
+        val isNameValid = validateNickName(currentState.nickName)
+        val isChanged =
+            currentState.nickName != initialNickName || currentState.profileImage != initialProfileImage
+
+        _editProfileState.update { it.copy(isNameCheck = isNameValid && isChanged) }
+    }
+
+    private fun validateNickName(nickName: String?): Boolean {
+        return !nickName.isNullOrBlank() && nickName.length in 1..10 && nickName.all { it.isLetterOrDigit() }
     }
 
     private fun saveNickName(nickName: String) {
@@ -66,6 +81,7 @@ class EditProfileViewModel @Inject constructor(
         executeInScope {
             _userInfoState.update { it.copy(profileImage = imageUri) }
             imageUri?.let { userInfoRepository.saveProfileImage(it) }
+            validateChanges()
         }
     }
 
