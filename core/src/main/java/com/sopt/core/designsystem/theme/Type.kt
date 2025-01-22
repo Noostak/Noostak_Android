@@ -30,6 +30,7 @@ class NoostakTypography internal constructor(
     h1SemiBold: TextStyle,
     h2Bold: TextStyle,
     h3SemiBold: TextStyle,
+    h322SemiBold: TextStyle,
     h4Bold: TextStyle,
     h4SemiBold: TextStyle,
     h5Bold: TextStyle,
@@ -57,6 +58,8 @@ class NoostakTypography internal constructor(
     var h2Bold: TextStyle by mutableStateOf(h2Bold)
         private set
     var h3SemiBold: TextStyle by mutableStateOf(h3SemiBold)
+        private set
+    var h322SemiBold: TextStyle by mutableStateOf(h322SemiBold)
         private set
     var h4Bold: TextStyle by mutableStateOf(h4Bold)
         private set
@@ -99,6 +102,7 @@ class NoostakTypography internal constructor(
         h1SemiBold: TextStyle = this.h1SemiBold,
         h2Bold: TextStyle = this.h2Bold,
         h3SemiBold: TextStyle = this.h3SemiBold,
+        h322SemiBold: TextStyle = this.h322SemiBold,
         h4Bold: TextStyle = this.h4Bold,
         h4SemiBold: TextStyle = this.h4SemiBold,
         h5Bold: TextStyle = this.h5Bold,
@@ -122,6 +126,7 @@ class NoostakTypography internal constructor(
         h1SemiBold = h1SemiBold,
         h2Bold = h2Bold,
         h3SemiBold = h3SemiBold,
+        h322SemiBold = h322SemiBold,
         h4Bold = h4Bold,
         h4SemiBold = h4SemiBold,
         h5Bold = h5Bold,
@@ -147,6 +152,7 @@ class NoostakTypography internal constructor(
         h1SemiBold = other.h1SemiBold
         h2Bold = other.h2Bold
         h3SemiBold = other.h3SemiBold
+        h322SemiBold = other.h322SemiBold
         h4Bold = other.h4Bold
         h4SemiBold = other.h4SemiBold
         h5Bold = other.h5Bold
@@ -218,6 +224,12 @@ fun noostakTypography(): NoostakTypography {
             fontWeight = FontWeight.SemiBold,
             fontSize = 24.sp,
             lineHeight = 34.sp
+        ),
+        h322SemiBold = noostakTextStyle(
+            fontFamily = PretendardSemiBold,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 22.sp,
+            lineHeight = 33.sp
         ),
         h4Bold = noostakTextStyle(
             fontFamily = PretendardBold,

@@ -221,7 +221,6 @@ private fun MainBottomBar(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun MainBottomBarPreview() {
