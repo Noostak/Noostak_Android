@@ -14,7 +14,8 @@ import kotlinx.serialization.Serializable
 fun NavController.navigateAppointmentSubmit(
     groupId: Long,
     appointmentName: String,
-    appointmentDate: String,
+    isConsecutive: Boolean,
+    appointmentDate: List<String>,
     appointmentTime: String?,
     appointmentCategory: String,
     appointmentDuration: Int,
@@ -24,6 +25,7 @@ fun NavController.navigateAppointmentSubmit(
         route = AppointmentSubmit(
             groupId = groupId,
             appointmentName = appointmentName,
+            isConsecutive = isConsecutive,
             appointmentDate = appointmentDate,
             appointmentTime = appointmentTime,
             appointmentCategory = appointmentCategory,
@@ -36,7 +38,8 @@ fun NavController.navigateAppointmentSubmit(
 fun NavController.navigateAppointmentSubmitComplete(
     groupId: Long,
     appointmentName: String,
-    appointmentDate: String,
+    isConsecutive: Boolean,
+    appointmentDate: List<String>,
     appointmentTime: String?,
     appointmentCategory: String,
     appointmentDuration: Int,
@@ -46,6 +49,7 @@ fun NavController.navigateAppointmentSubmitComplete(
         route = AppointmentSubmitComplete(
             groupId = groupId,
             appointmentName = appointmentName,
+            isConsecutive = isConsecutive,
             appointmentDate = appointmentDate,
             appointmentTime = appointmentTime,
             appointmentCategory = appointmentCategory,
@@ -63,15 +67,17 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
         AppointmentSubmitRoute(
             groupId = args.groupId,
             appointmentName = args.appointmentName,
+            isConsecutive = args.isConsecutive,
             appointmentDate = args.appointmentDate,
             appointmentTime = args.appointmentTime,
             appointmentCategory = args.appointmentCategory,
             appointmentDuration = args.appointmentDuration,
             navigateUp = navHostController::navigateUp,
-            navigateToAppointmentSubmitConfirm = { groupId, appointmentName, appointmentDate, appointmentTime, appointmentCategory, appointmentDuration ->
+            navigateToAppointmentSubmitConfirm = { groupId, appointmentName, isConsecutive, appointmentDate, appointmentTime, appointmentCategory, appointmentDuration ->
                 navHostController.navigateAppointmentSubmitComplete(
                     groupId = groupId,
                     appointmentName = appointmentName,
+                    isConsecutive = isConsecutive,
                     appointmentDate = appointmentDate,
                     appointmentTime = appointmentTime,
                     appointmentCategory = appointmentCategory,
@@ -86,6 +92,7 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
         AppointmentSubmitCompleteRoute(
             groupId = args.groupId,
             appointmentName = args.appointmentName,
+            isConsecutive = args.isConsecutive,
             appointmentDate = args.appointmentDate,
             appointmentTime = args.appointmentTime,
             appointmentCategory = args.appointmentCategory,
@@ -101,7 +108,8 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
 data class AppointmentSubmit(
     val groupId: Long,
     val appointmentName: String,
-    val appointmentDate: String,
+    val isConsecutive: Boolean,
+    val appointmentDate: List<String>,
     val appointmentTime: String?,
     val appointmentCategory: String,
     val appointmentDuration: Int
@@ -111,7 +119,8 @@ data class AppointmentSubmit(
 data class AppointmentSubmitComplete(
     val groupId: Long,
     val appointmentName: String,
-    val appointmentDate: String,
+    val isConsecutive: Boolean,
+    val appointmentDate: List<String>,
     val appointmentTime: String?,
     val appointmentCategory: String,
     val appointmentDuration: Int
