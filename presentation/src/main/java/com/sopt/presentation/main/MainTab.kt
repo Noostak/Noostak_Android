@@ -11,22 +11,26 @@ import com.sopt.presentation.group.navigation.Group
 import com.sopt.presentation.mypage.navigation.MyPage
 
 enum class MainTab(
-    @DrawableRes val icon: Int,
+    @DrawableRes val selectedIcon: Int,
+    @DrawableRes val unselectedIcon: Int,
     @StringRes val contentDescription: Int,
     val route: MainTabRoute
 ) {
     CALENDAR(
-        icon = R.drawable.ic_android_black_24dp,
+        selectedIcon = R.drawable.ic_bnv_calendar_on,
+        unselectedIcon = R.drawable.ic_bnv_calendar_off,
         contentDescription = R.string.bottom_nav_calendar,
         route = Calendar
     ),
     APPOINTMENT(
-        icon = R.drawable.ic_android_black_24dp,
+        selectedIcon = R.drawable.ic_bnv_group_on,
+        unselectedIcon = R.drawable.ic_bnv_group_off,
         contentDescription = R.string.bottom_nav_group,
         route = Group
     ),
     MY_PAGE(
-        icon = R.drawable.ic_android_black_24dp,
+        selectedIcon = R.drawable.ic_bnv_mypage_on,
+        unselectedIcon = R.drawable.ic_bnv_mypage_off,
         contentDescription = R.string.bottom_nav_my_page,
         route = MyPage
     );

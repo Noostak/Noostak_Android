@@ -14,7 +14,8 @@ class AppointmentSubmitViewModel @Inject constructor() :
     fun navigateToAppointmentSubmitConfirm(
         groupId: Long,
         appointmentName: String,
-        appointmentDate: String,
+        isConsecutive: Boolean,
+        appointmentDate: List<String>,
         appointmentTime: String?,
         appointmentCategory: String,
         appointmentDuration: Int
@@ -23,6 +24,7 @@ class AppointmentSubmitViewModel @Inject constructor() :
             AppointmentSubmitSideEffect.NavigateToAppointmentSubmitConfirm(
                 groupId = groupId,
                 appointmentName = appointmentName,
+                isConsecutive = isConsecutive,
                 appointmentDate = appointmentDate,
                 appointmentTime = appointmentTime,
                 appointmentCategory = appointmentCategory,
@@ -37,7 +39,8 @@ sealed class AppointmentSubmitSideEffect {
     data class NavigateToAppointmentSubmitConfirm(
         val groupId: Long,
         val appointmentName: String,
-        val appointmentDate: String,
+        val isConsecutive: Boolean,
+        val appointmentDate: List<String>,
         val appointmentTime: String?,
         val appointmentCategory: String,
         val appointmentDuration: Int

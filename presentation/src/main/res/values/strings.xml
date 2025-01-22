@@ -123,10 +123,14 @@
     <string name="text_appointment_submit_category">약속 카테고리</string>
     <string name="text_appointment_submit_duration">소요시간</string>
     <string name="text_appointment_submit_hour">%1$s시간</string>
+    <string name="text_appointment_submit_date_consecutive">%1$s ~ %2$s</string>
+    <string name="text_appointment_submit_date_separator">", "</string>
 
     <!-- 약속 만들기_약속 등록 완료 -->
     <string name="header_appointment_submit_complete">약속 등록이 완료되었습니다</string>
     <string name="btn_appointment_submit_complete">확인</string>
+    <string name="text_appointment_submit_complete_date_consecutive">%1$s ~ %2$s</string>
+    <string name="text_appointment_submit_complete_separator">", "</string>
 
     <!-- 유저 칩 -->
     <string name="user_chip_me">나</string>

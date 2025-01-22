@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -35,7 +34,8 @@ import com.sopt.presentation.appointmentCreate.appointmentSubmit.AppointmentInfo
 fun AppointmentSubmitCompleteRoute(
     groupId: Long,
     appointmentName: String,
-    appointmentDate: String,
+    isConsecutive: Boolean,
+    appointmentDate: List<String>,
     appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int,
@@ -55,6 +55,7 @@ fun AppointmentSubmitCompleteRoute(
     AppointmentSubmitCompleteScreen(
         groupId = groupId,
         appointmentName = appointmentName,
+        isConsecutive = isConsecutive,
         appointmentDate = appointmentDate,
         appointmentTime = appointmentTime,
         appointmentCategory = appointmentCategory,
@@ -67,7 +68,8 @@ fun AppointmentSubmitCompleteRoute(
 fun AppointmentSubmitCompleteScreen(
     groupId: Long,
     appointmentName: String,
-    appointmentDate: String,
+    isConsecutive: Boolean,
+    appointmentDate: List<String>,
     appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int,
@@ -88,13 +90,13 @@ fun AppointmentSubmitCompleteScreen(
             style = NoostakTheme.typography.h2Bold
         )
         Image(
-            modifier = Modifier.size(160.dp),
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_launcher_background),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_appointment_submit_complete),
             contentDescription = null
         )
-        Spacer(modifier = Modifier.height(56.dp))
+        Spacer(modifier = Modifier.height(25.26.dp))
         SubmittedAppointmentInfoBox(
             appointmentName = appointmentName,
+            isConsecutive = isConsecutive,
             appointmentDate = appointmentDate,
             appointmentTime = appointmentTime,
             appointmentCategory = appointmentCategory,
@@ -113,7 +115,8 @@ fun AppointmentSubmitCompleteScreen(
 @Composable
 fun SubmittedAppointmentInfoBox(
     appointmentName: String,
-    appointmentDate: String,
+    isConsecutive: Boolean,
+    appointmentDate: List<String>,
     appointmentTime: String? = null,
     appointmentCategory: String,
     appointmentDuration: Int
@@ -137,7 +140,15 @@ fun SubmittedAppointmentInfoBox(
         AppointmentInfoRow(
             icon = R.drawable.ic_appointment_calendar,
             label = stringResource(R.string.text_appointment_submit_time),
-            content = appointmentDate,
+            content = if (isConsecutive) {
+                stringResource(
+                    R.string.text_appointment_submit_complete_date_consecutive,
+                    appointmentDate.first(),
+                    appointmentDate.last()
+                )
+            } else {
+                appointmentDate.joinToString(stringResource(R.string.text_appointment_submit_complete_separator))
+            },
             additionalContent = appointmentTime
         )
         AppointmentInfoRow(
@@ -161,7 +172,8 @@ fun PreviewAppointmentSubmitCompleteRoute() {
         AppointmentSubmitCompleteScreen(
             groupId = 1,
             appointmentName = "누스탁 3차 회의",
-            appointmentDate = "09/27 ~ 09/31",
+            isConsecutive = false,
+            appointmentDate = listOf("9/27", "9/28", "9/29", "9/30"),
             appointmentTime = "10:00 ~ 11:00",
             appointmentCategory = "기타",
             appointmentDuration = 2,
