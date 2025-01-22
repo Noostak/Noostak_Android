@@ -5,6 +5,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -179,7 +181,9 @@ private fun MainBottomBar(
     onTabSelected: (MainTab) -> Unit
 ) {
     AnimatedVisibility(
-        visible = isVisible
+        visible = isVisible,
+        enter = EnterTransition.None,
+        exit = ExitTransition.None
     ) {
         Column {
             HorizontalDivider(
