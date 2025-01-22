@@ -5,15 +5,18 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -27,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
@@ -42,7 +46,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.util.NoRippleInteractionSource
+import com.sopt.core.extension.noRippleClickable
 import com.sopt.presentation.appointment.navigation.appointmentNavGraph
 import com.sopt.presentation.appointmentCreate.navigation.appointmentCreateNavGraph
 import com.sopt.presentation.auth.login.navigation.loginNavGraph
@@ -100,6 +104,9 @@ fun MainScreen(
     }
 
     Scaffold(
+        modifier = Modifier
+            .navigationBarsPadding()
+            .statusBarsPadding(),
         snackbarHost = {
             SnackbarHost(
                 hostState = snackBarHostState,
@@ -180,41 +187,46 @@ private fun MainBottomBar(
                 thickness = 1.dp,
                 color = NoostakTheme.colors.gray200
             )
-            NavigationBar(
-                containerColor = NoostakTheme.colors.white
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(NoostakTheme.colors.white)
+                    .padding(vertical = 4.5.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                tabs.forEach { itemType ->
-                    NavigationBarItem(
-                        interactionSource = NoRippleInteractionSource,
-                        selected = currentTab == itemType,
-                        onClick = {
-                            onTabSelected(itemType)
-                        },
-                        icon = {
+                tabs.forEach { tab ->
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .noRippleClickable { onTabSelected(tab) },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
+                        ) {
                             Icon(
                                 imageVector = ImageVector.vectorResource(
-                                    id = if (currentTab == itemType) {
-                                        itemType.selectedIcon
-                                    } else {
-                                        itemType.unselectedIcon
-                                    }
+                                    id = if (currentTab == tab) tab.selectedIcon else tab.unselectedIcon
                                 ),
-                                contentDescription = stringResource(id = itemType.contentDescription),
+                                contentDescription = stringResource(id = tab.contentDescription),
                                 tint = Color.Unspecified
                             )
-                        },
-                        label = {
                             Text(
-                                text = stringResource(id = itemType.contentDescription),
-                                style = NoostakTheme.typography.c4Regular
+                                text = stringResource(id = tab.contentDescription),
+                                style = if (currentTab == tab) {
+                                    NoostakTheme.typography.c4Regular.copy(
+                                        color = NoostakTheme.colors.gray900
+                                    )
+                                } else {
+                                    NoostakTheme.typography.c4Regular.copy(
+                                        color = NoostakTheme.colors.gray500
+                                    )
+                                }
                             )
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedTextColor = NoostakTheme.colors.gray900,
-                            unselectedTextColor = NoostakTheme.colors.gray500,
-                            indicatorColor = NoostakTheme.colors.white
-                        )
-                    )
+                        }
+                    }
                 }
             }
         }
