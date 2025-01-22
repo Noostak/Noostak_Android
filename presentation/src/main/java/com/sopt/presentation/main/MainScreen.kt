@@ -5,8 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +36,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,6 +48,7 @@ import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.presentation.R
 import com.sopt.presentation.appointment.navigation.appointmentNavGraph
 import com.sopt.presentation.appointmentCreate.navigation.appointmentCreateNavGraph
 import com.sopt.presentation.auth.login.navigation.loginNavGraph
@@ -195,7 +195,7 @@ private fun MainBottomBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(NoostakTheme.colors.white)
-                    .padding(vertical = 4.5.dp),
+                    .padding(vertical = dimensionResource(R.dimen.bnv_vertical_padding)),
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalAlignment = Alignment.CenterVertically
             ) {
