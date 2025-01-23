@@ -17,6 +17,14 @@
     <string name="btn_next">다음</string>
     <string name="btn_submit">확인</string>
 
+    <!--온보딩-->
+    <string name="tv_onboarding_subtitle_1">그룹 만들기</string>
+    <string name="tv_onboarding_subtitle_2">약속 만들기</string>
+    <string name="tv_onboarding_subtitle_3">Best 추천 시간</string>
+    <string name="tv_onboarding_title_1">손쉽게 그룹을 만들고\n그룹코드를 공유해요!</string>
+    <string name="tv_onboarding_title_2">원하는 시간대를 선택해\n약속을 만들어요!</string>
+    <string name="tv_onboarding_title_3">그룹원들의 가능 시간으로\n약속 시간을 확정해요!</string>
+
     <!-- 로그인 -->
     <string name="tv_login_description">SNS 계정으로 빠르게 시작하기</string>
     <string name="iv_login_description">로고</string>
