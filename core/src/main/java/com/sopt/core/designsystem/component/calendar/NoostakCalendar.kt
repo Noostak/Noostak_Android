@@ -1,8 +1,5 @@
 package com.sopt.core.designsystem.component.calendar
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,8 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -25,25 +20,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.R
-import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
-import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme.colors
 import com.sopt.core.designsystem.theme.NoostakTheme.typography
 import com.sopt.core.extension.noRippleClickable
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.YearMonth
 
@@ -54,36 +43,20 @@ fun NoostakCalendar(
     isSingleDate: Boolean,
     isRangeSelected: (List<String>) -> Unit,
     modifier: Modifier = Modifier,
-    days: List<String>
+    days: List<String>,
+    onShowMessageChange: (Boolean) -> Unit
 ) {
     var year by remember { mutableIntStateOf(LocalDate.now().year) }
     var month by remember { mutableIntStateOf(LocalDate.now().monthValue) }
     var selectedDates by remember { mutableStateOf<List<String>>(emptyList()) }
     var startDate by remember { mutableStateOf(start) }
     var endDate by remember { mutableStateOf(end) }
-    var showMessage by remember { mutableStateOf(false) }
     val yearMonth = YearMonth.of(year, month)
     val totalDays = yearMonth.lengthOfMonth()
     val firstDay = LocalDate.of(year, month, 1).dayOfWeek.value % 7
-    val snackBarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
-    val message = stringResource(R.string.text_noostak_calendar_7days)
-    val onShowSnackBar: (String) -> Unit = { msg ->
-        coroutineScope.launch {
-            showMessage = true
-            val job = launch { snackBarHostState.showSnackbar(message = msg) }
-            delay(SNACK_BAR_DURATION)
-            job.cancel()
-            showMessage = false
-        }
-    }
 
-    LaunchedEffect(showMessage) {
-        if (showMessage) {
-            coroutineScope.launch {
-                onShowSnackBar(message)
-            }
-        }
+    val onShowSnackBar: () -> Unit = {
+        onShowMessageChange(true)
     }
 
     LaunchedEffect(isSingleDate) {
@@ -287,7 +260,7 @@ fun NoostakCalendar(
                                                 if (selectedDates.size < 7) {
                                                     selectedDates = selectedDates + dateValue
                                                 } else {
-                                                    showMessage = true
+                                                    onShowSnackBar()
                                                 }
                                             }
                                         } else {
@@ -306,7 +279,7 @@ fun NoostakCalendar(
                                                     if (LocalDate.parse(startDate).isAfter(selectedDate)) {
                                                         if (LocalDate.parse(startDate).minusDays(6) > selectedDate) {
                                                             endDate = ""
-                                                            showMessage = true
+                                                            onShowSnackBar()
                                                         } else {
                                                             endDate = startDate
                                                             startDate = selectedDate.toString()
@@ -314,7 +287,7 @@ fun NoostakCalendar(
                                                     } else {
                                                         if (LocalDate.parse(startDate).plusDays(6) < selectedDate) {
                                                             endDate = ""
-                                                            showMessage = true
+                                                            onShowSnackBar()
                                                         } else {
                                                             endDate = selectedDate.toString()
                                                         }
@@ -329,31 +302,6 @@ fun NoostakCalendar(
                 }
             }
         }
-
-        AnimatedVisibility(
-            visible = showMessage,
-            enter = slideInVertically(initialOffsetY = { it }),
-            exit = slideOutVertically(targetOffsetY = { it })
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 23.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                SnackbarHost(
-                    hostState = snackBarHostState,
-                    snackbar = { snackBarData ->
-                        NoostakSnackBar(
-                            message = snackBarData.visuals.message,
-                            textStyle = typography.c3SemiBold,
-                            textColor = colors.red01,
-                            backgroundColor = colors.pink
-                        )
-                    }
-                )
-            }
-        }
     }
 }
 
@@ -366,7 +314,8 @@ fun NoostakCalendarPreview() {
             end = "",
             isSingleDate = true,
             isRangeSelected = {},
-            days = listOf("일", "월", "화", "수", "목", "금", "토")
+            days = listOf("일", "월", "화", "수", "목", "금", "토"),
+            onShowMessageChange = {}
         )
     }
 }

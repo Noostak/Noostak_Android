@@ -44,9 +44,6 @@
     <string name="text_dialog_type_login_kakao_content">네트워크 문제로\n카카오톡 로그인을 연결하지 못했습니다.\n다시 시도하시겠습니까?</string>
     <string name="text_dialog_type_login_google_content">네트워크 문제로\nGoogle 로그인을 연결하지 못했습니다.\n다시 시도하시겠습니까?</string>
 
-    <!-- Noostak Calendar -->
-    <string name="text_noostak_calendar_7days">최대 7일까지 선택할 수 있어요</string>
-
     <!-- Noostak Time Picker -->
     <string name="text_noostak_time_picker_start">약속 시작 시간</string>
     <string name="text_noostak_time_picker_end">약속 종료 시간</string>

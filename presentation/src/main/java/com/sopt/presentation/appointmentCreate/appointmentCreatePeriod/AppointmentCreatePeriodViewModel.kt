@@ -46,6 +46,10 @@ class AppointmentCreatePeriodViewModel @Inject constructor(
     fun navigateUp() {
         emitSideEffect(AppointmentCreatePeriodSideEffect.NavigateUp)
     }
+
+    fun showSnackBar() {
+        emitSideEffect(AppointmentCreatePeriodSideEffect.ShowSnackBar(R.string.text_calendar_appointment_7days))
+    }
 }
 
 sealed class AppointmentCreatePeriodSideEffect {
@@ -59,4 +63,5 @@ sealed class AppointmentCreatePeriodSideEffect {
     ) : AppointmentCreatePeriodSideEffect()
 
     data object NavigateUp : AppointmentCreatePeriodSideEffect()
+    data class ShowSnackBar(val message: Int) : AppointmentCreatePeriodSideEffect()
 }

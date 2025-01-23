@@ -1,5 +1,8 @@
 package com.sopt.presentation.appointmentCreate.appointmentCreatePeriod
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,15 +15,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -30,12 +38,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.calendar.NoostakCalendar
 import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
+import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
+import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.component.text.NoostakHeaderText
 import com.sopt.core.designsystem.component.toggle.NoostakSwitch
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun AppointmentCreatePeriodRoute(
@@ -47,6 +59,21 @@ fun AppointmentCreatePeriodRoute(
     navigateToTimePicker: (Long, String, String, Int, Boolean, List<String>) -> Unit,
     calendarPeriodViewModel: AppointmentCreatePeriodViewModel = hiltViewModel()
 ) {
+    val snackBarHostState = remember { SnackbarHostState() }
+    var snackBarVisible = remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val onShowSnackBar: (String) -> Unit = { msg ->
+        coroutineScope.launch {
+            snackBarVisible.value = true
+            val job = launch { snackBarHostState.showSnackbar(message = msg) }
+            delay(SNACK_BAR_DURATION)
+            job.cancel()
+            snackBarVisible.value = false
+        }
+    }
+
     LaunchedEffect(key1 = calendarPeriodViewModel.sideEffects) {
         calendarPeriodViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -60,6 +87,12 @@ fun AppointmentCreatePeriodRoute(
                         sideEffect.appointmentDate
                     )
                 }
+                
+                is AppointmentCreatePeriodSideEffect.ShowSnackBar -> onShowSnackBar(
+                    context.getString(
+                        sideEffect.message
+                    )
+                )
 
                 is AppointmentCreatePeriodSideEffect.NavigateUp -> {
                     navigateUp()
@@ -69,6 +102,13 @@ fun AppointmentCreatePeriodRoute(
     }
 
     AppointmentCreatePeriodScreen(
+        snackBarHostState = snackBarHostState,
+        snackBarVisible = snackBarVisible,
+        showSnackBar = {
+            coroutineScope.launch {
+                calendarPeriodViewModel.showSnackBar()
+            }
+        },
         onBackButtonClick = calendarPeriodViewModel::navigateUp,
         onButtonClick = calendarPeriodViewModel::navigateToAppointmentCreateTimePicker,
         appointmentName = appointmentName,
@@ -81,6 +121,9 @@ fun AppointmentCreatePeriodRoute(
 
 @Composable
 fun AppointmentCreatePeriodScreen(
+    snackBarHostState: SnackbarHostState,
+    snackBarVisible: MutableState<Boolean>,
+    showSnackBar: () -> Unit,
     onButtonClick: (Long, String, String, Int, Boolean, List<String>) -> Unit,
     onBackButtonClick: () -> Unit,
     appointmentName: String,
@@ -113,6 +156,26 @@ fun AppointmentCreatePeriodScreen(
                 isIconVisible = true,
                 onBackButtonClick = { onBackButtonClick() }
             )
+        },
+        snackbarHost = {
+            AnimatedVisibility(
+                visible = snackBarVisible.value,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                SnackbarHost(
+                    modifier = Modifier.padding(bottom = 96.dp),
+                    hostState = snackBarHostState,
+                    snackbar = { snackBarData ->
+                        NoostakSnackBar(
+                            message = snackBarData.visuals.message,
+                            textStyle = NoostakTheme.typography.c3SemiBold,
+                            textColor = NoostakTheme.colors.red01,
+                            backgroundColor = NoostakTheme.colors.pink
+                        )
+                    }
+                )
+            }
         }
     ) { innerPadding ->
         Column(
@@ -171,7 +234,8 @@ fun AppointmentCreatePeriodScreen(
                         }
                     }
                 },
-                days = appointmentDate
+                days = appointmentDate,
+                onShowMessageChange = { showSnackBar() }
             )
             Spacer(modifier = Modifier.weight(1f))
             NoostakBottomButton(
@@ -198,7 +262,14 @@ fun AppointmentCreatePeriodScreen(
 @Composable
 fun AppointmentCreatePeriodScreenPreview() {
     NoostakAndroidTheme {
+        val snackBarHostState = remember { SnackbarHostState() }
+        val snackBarVisible = remember { mutableStateOf(false) }
         AppointmentCreatePeriodScreen(
+            snackBarHostState = snackBarHostState,
+            snackBarVisible = snackBarVisible,
+            showSnackBar = {
+                snackBarVisible.value = true
+            },
             onButtonClick = { _, _, _, _, _, _ -> },
             onBackButtonClick = { },
             appointmentName = "약속 이름",
