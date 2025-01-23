@@ -24,9 +24,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.toast
+import com.sopt.core.type.DialogType
 import com.sopt.presentation.R
 import com.sopt.presentation.auth.component.LoginButton
 
@@ -37,9 +39,7 @@ fun LoginRoute(
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-
     val showDialog by loginViewModel.showDialog.collectAsStateWithLifecycle()
-    val dialogDescription by loginViewModel.dialogDescription.collectAsStateWithLifecycle()
 
     LaunchedEffect(loginViewModel.sideEffects) {
         loginViewModel.sideEffects.collect { sideEffect ->
@@ -47,18 +47,29 @@ fun LoginRoute(
                 is LoginSideEffect.NavigateToHome -> navigateToHome()
                 is LoginSideEffect.NavigateSignUp -> navigateToSignUp(sideEffect.authId)
                 is LoginSideEffect.ShowToast -> context.toast(sideEffect.message)
+                is LoginSideEffect.ShowDialog -> loginViewModel.showDialog(
+                    sideEffect.dialogType,
+                    true
+                )
             }
         }
     }
 
-    if (showDialog) {
-        LoginFailureDialog(
-            onRetryRequest = { loginViewModel.googleLogin(context) },
-            onDismissRequest = { loginViewModel.showFailLoginDialog(false) },
-            description = stringResource(R.string.dialog_login_description, dialogDescription),
-            retryText = stringResource(R.string.dialog_login_retry),
-            dismissText = stringResource(R.string.dialog_login_dismiss)
-        )
+    showDialog.let { (dialogType, isVisible) ->
+        if (isVisible) {
+            NoostakDialog(
+                dialogType = dialogType,
+                onClick = {
+                    loginViewModel.showDialog(dialogType, false)
+                    when (dialogType) {
+                        DialogType.LOGIN_KAKAO -> loginViewModel.kakaoLogin(context)
+                        DialogType.LOGIN_GOOGLE -> loginViewModel.googleLogin(context)
+                        else -> Unit
+                    }
+                },
+                onDismissRequest = { loginViewModel.showDialog(dialogType, false) }
+            )
+        }
     }
 
     LoginScreen(
