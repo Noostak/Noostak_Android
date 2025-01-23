@@ -53,7 +53,10 @@ fun NavGraphBuilder.myPageNavGraph(
             nickname = args.nickname,
             profileImage = args.profileImage,
             navigateUp = navHostController::navigateUp,
-            navigateToMyPage = { navHostController.navigate(MyPage) }
+            navigateToMyPage = {
+                navHostController.popBackStack()
+                navHostController.navigateMyPage()
+            }
         )
     }
 }
