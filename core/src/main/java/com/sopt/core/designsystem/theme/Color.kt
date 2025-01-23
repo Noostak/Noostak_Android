@@ -28,7 +28,6 @@ val Gray700 = Color(0xFF808080)
 val Gray800 = Color(0xFF333333)
 val Gray900 = Color(0xFF222222)
 
-
 // Chip Color
 val Blue = Color(0xFF3E8EFF)
 val Purple = Color(0xFF8D78D8)

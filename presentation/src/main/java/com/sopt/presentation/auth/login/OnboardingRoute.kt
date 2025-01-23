@@ -34,16 +34,16 @@ import com.sopt.presentation.R
 @Composable
 fun OnboardingRoute(
     authId: String,
-    navigateToSignUp: (String) -> Unit,
+    navigateToSignUp: (String) -> Unit
 ) {
     OnboardingScreen(
-        onNextButtonClick = { navigateToSignUp(authId) },
+        onNextButtonClick = { navigateToSignUp(authId) }
     )
 }
 
 @Composable
 fun OnboardingScreen(
-    onNextButtonClick: () -> Unit,
+    onNextButtonClick: () -> Unit
 ) {
     val pages = listOf(
         BoardingPage(
@@ -73,7 +73,7 @@ fun OnboardingScreen(
         verticalArrangement = Arrangement.Top
     ) {
         HorizontalPager(
-            state = pagerState,
+            state = pagerState
         ) { page ->
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -85,7 +85,7 @@ fun OnboardingScreen(
                         .fillMaxWidth(),
                     imageVector = ImageVector.vectorResource(id = pages[page].imageRes),
                     contentDescription = null,
-                    contentScale = ContentScale.FillWidth,
+                    contentScale = ContentScale.FillWidth
                 )
                 Text(
                     modifier = Modifier
@@ -127,7 +127,7 @@ fun OnboardingScreen(
         NoostakBottomButton(
             modifier = Modifier.padding(
                 horizontal = dimensionResource(id = R.dimen.horizontal_padding),
-                vertical = dimensionResource(id = R.dimen.vertical_padding),
+                vertical = dimensionResource(id = R.dimen.vertical_padding)
             ),
             text = stringResource(R.string.btn_group_create_next),
             activateColor = NoostakTheme.colors.blue600,
@@ -148,7 +148,7 @@ data class BoardingPage(
 fun BoardingScreenPreview() {
     NoostakAndroidTheme {
         OnboardingScreen(
-            onNextButtonClick = {},
+            onNextButtonClick = {}
         )
     }
 }
