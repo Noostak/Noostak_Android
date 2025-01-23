@@ -15,6 +15,7 @@ val Red01 = Color(0xFF9C0303)
 val Red02 = Color(0xFFFF6868)
 val Pink = Color(0xFFFFCACA)
 val Yellow = Color(0xFFFBE506)
+val DotColor = Color(0xFFD9D9D9)
 
 // Gray Scale
 val Gray50 = Color(0xFFF8F8FA)
@@ -26,6 +27,7 @@ val Gray650 = Color(0xFF5D5D5D)
 val Gray700 = Color(0xFF808080)
 val Gray800 = Color(0xFF333333)
 val Gray900 = Color(0xFF222222)
+
 
 // Chip Color
 val Blue = Color(0xFF3E8EFF)
@@ -53,6 +55,7 @@ class NoostakColors(
     red02: Color,
     pink: Color,
     yellow: Color,
+    dotColor: Color,
     gray50: Color,
     gray100: Color,
     gray200: Color,
@@ -89,6 +92,8 @@ class NoostakColors(
     var pink by mutableStateOf(pink)
         private set
     var yellow by mutableStateOf(yellow)
+        private set
+    var dotColor by mutableStateOf(dotColor)
         private set
     var gray50 by mutableStateOf(gray50)
         private set
@@ -143,6 +148,7 @@ class NoostakColors(
         red02 = red02,
         pink = pink,
         yellow = yellow,
+        dotColor = dotColor,
         gray50 = gray50,
         gray100 = gray100,
         gray200 = gray200,
@@ -175,6 +181,7 @@ class NoostakColors(
         red02 = other.red02
         pink = other.pink
         yellow = other.yellow
+        dotColor = other.dotColor
         gray50 = other.gray50
         gray100 = other.gray100
         gray200 = other.gray200
@@ -209,6 +216,7 @@ fun noostakColors(
     red02: Color = Red02,
     pink: Color = Pink,
     yellow: Color = Yellow,
+    dotColor: Color = DotColor,
     gray50: Color = Gray50,
     gray100: Color = Gray100,
     gray200: Color = Gray200,
@@ -239,6 +247,7 @@ fun noostakColors(
     red02 = red02,
     pink = pink,
     yellow = yellow,
+    dotColor = dotColor,
     gray50 = gray50,
     gray100 = gray100,
     gray200 = gray200,
