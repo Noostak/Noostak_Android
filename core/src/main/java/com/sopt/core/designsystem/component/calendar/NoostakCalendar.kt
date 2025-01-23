@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -55,8 +56,8 @@ fun NoostakCalendar(
     modifier: Modifier = Modifier,
     days: List<String>
 ) {
-    var year by remember { mutableStateOf(LocalDate.now().year) }
-    var month by remember { mutableStateOf(LocalDate.now().monthValue) }
+    var year by remember { mutableIntStateOf(LocalDate.now().year) }
+    var month by remember { mutableIntStateOf(LocalDate.now().monthValue) }
     var selectedDates by remember { mutableStateOf<List<String>>(emptyList()) }
     var startDate by remember { mutableStateOf(start) }
     var endDate by remember { mutableStateOf(end) }
@@ -71,7 +72,7 @@ fun NoostakCalendar(
         coroutineScope.launch {
             showMessage = true
             val job = launch { snackBarHostState.showSnackbar(message = msg) }
-            delay(SNACK_BAR_DURATION) // 지속 시간 설정
+            delay(SNACK_BAR_DURATION)
             job.cancel()
             showMessage = false
         }
@@ -100,12 +101,6 @@ fun NoostakCalendar(
             val rangeDates = (0..endLocalDate.toEpochDay() - startLocalDate.toEpochDay())
                 .map { startLocalDate.plusDays(it).toString() }
             isRangeSelected(rangeDates)
-        }
-    }
-
-    LaunchedEffect(showMessage) {
-        if (showMessage) {
-            onShowSnackBar(message)
         }
     }
 
@@ -296,38 +291,32 @@ fun NoostakCalendar(
                                                 }
                                             }
                                         } else {
-                                            if (dateValue == startDate) {
+                                            if (dateValue == startDate || dateValue == endDate) {
                                                 startDate = ""
                                                 endDate = ""
-                                            } else if (dateValue == endDate) {
-                                                startDate = dateValue
-                                                endDate = ""
+                                                selectedDates = emptyList()
+                                                isRangeSelected(emptyList())
                                             } else {
                                                 val selectedDate = LocalDate.parse(dateValue)
                                                 if (startDate.isEmpty() || (startDate.isNotEmpty() && endDate.isNotEmpty())) {
                                                     startDate = dateValue
                                                     endDate = ""
+                                                    isRangeSelected(emptyList())
                                                 } else {
-                                                    val tempStart = LocalDate.parse(startDate)
-                                                    val tempEnd = selectedDate
-                                                    if (tempStart.isAfter(tempEnd)) {
-                                                        if (tempStart.minusDays(6) > tempEnd) {
-                                                            startDate = ""
+                                                    if (LocalDate.parse(startDate).isAfter(selectedDate)) {
+                                                        if (LocalDate.parse(startDate).minusDays(6) > selectedDate) {
                                                             endDate = ""
-                                                            startDate = tempStart.toString()
                                                             showMessage = true
                                                         } else {
-                                                            endDate = tempStart.toString()
-                                                            startDate = tempEnd.toString()
+                                                            endDate = startDate
+                                                            startDate = selectedDate.toString()
                                                         }
                                                     } else {
-                                                        if (tempStart.plusDays(6) < tempEnd) {
+                                                        if (LocalDate.parse(startDate).plusDays(6) < selectedDate) {
                                                             endDate = ""
-                                                            startDate = tempStart.toString()
                                                             showMessage = true
                                                         } else {
-                                                            startDate = tempStart.toString()
-                                                            endDate = tempEnd.toString()
+                                                            endDate = selectedDate.toString()
                                                         }
                                                     }
                                                 }

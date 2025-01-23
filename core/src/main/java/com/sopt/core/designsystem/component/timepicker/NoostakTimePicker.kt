@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -121,13 +122,15 @@ fun PickerItem(text: String, isFirstItem: Boolean, isSecondItem: Boolean) {
         isSecondItem -> NoostakTheme.typography.h3SemiBold
         else -> NoostakTheme.typography.h4SemiBold.copy(color = colors.gray500)
     }
-
+    val modifier = when {
+        isSecondItem -> 20.dp
+        else -> 30.dp
+    }
     val height = when {
         isSecondItem -> 48.dp
         isFirstItem -> 52.dp
         else -> 52.dp
     }
-
     val alignment = when {
         isSecondItem -> Alignment.CenterVertically
         isFirstItem -> Alignment.Top
@@ -143,12 +146,12 @@ fun PickerItem(text: String, isFirstItem: Boolean, isSecondItem: Boolean) {
         Text(
             text = text,
             style = style,
-            modifier = Modifier.padding(start = 31.5.dp)
+            modifier = Modifier.padding(start = modifier)
         )
         Text(
             text = "00",
             style = style,
-            modifier = Modifier.padding(end = 31.5.dp)
+            modifier = Modifier.padding(end = modifier)
         )
     }
 }
@@ -167,10 +170,10 @@ fun NoostakTimePicker(
     val typography = NoostakTheme.typography
     val colors = NoostakTheme.colors
 
-    var selectedStartHour by remember { mutableStateOf(0) }
-    var selectedStartMinute by remember { mutableStateOf(0) }
-    var selectedEndHour by remember { mutableStateOf(23) }
-    var selectedEndMinute by remember { mutableStateOf(0) }
+    var selectedStartHour by remember { mutableIntStateOf(0) }
+    val selectedStartMinute by remember { mutableIntStateOf(0) }
+    var selectedEndHour by remember { mutableIntStateOf(23) }
+    val selectedEndMinute by remember { mutableIntStateOf(0) }
 
     var isStartTimeEditing by remember { mutableStateOf(true) }
 
@@ -229,7 +232,7 @@ fun NoostakTimePicker(
         HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 9.dp, bottom = 30.dp, start = 33.5.dp, end = 33.5.dp)
+                .padding(top = 9.dp, bottom = 30.dp, start = 33.5.dp, end = 33.5.dp) //디자인 소수점 변경 후 변경
                 .clip(CircleShape),
             thickness = 3.dp,
             color = colors.gray100
@@ -251,12 +254,7 @@ fun NoostakTimePicker(
                     .weight(1f)
                     .padding(start = 75.dp, end = 75.dp)
                     .fillMaxWidth(),
-                cornerShape = RoundedCornerShape(
-                    topStart = 30.dp,
-                    bottomStart = 30.dp,
-                    topEnd = 30.dp,
-                    bottomEnd = 30.dp
-                )
+                cornerShape = RoundedCornerShape(30.dp)
             )
         }
         LaunchedEffect(valuesPickerState.selectedItem) {
