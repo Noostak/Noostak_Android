@@ -1,6 +1,7 @@
 package com.sopt.presentation.mypage
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -41,6 +42,7 @@ import com.sopt.presentation.mypage.component.MyPageProfileEditButton
 
 @Composable
 fun MyPageRoute(
+    paddingValues: PaddingValues,
     myPageViewModel: MyPageViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -88,6 +90,7 @@ fun MyPageRoute(
     }
 
     MyPageScreen(
+        paddingValues = paddingValues,
         onProfileEditBtnClick = {
             // nav Profile 추가해야 함
         },
@@ -101,6 +104,7 @@ fun MyPageRoute(
 
 @Composable
 fun MyPageScreen(
+    paddingValues: PaddingValues = PaddingValues(),
     onProfileEditBtnClick: () -> Unit = {},
     onPolicyBtnClick: () -> Unit = {},
     onLogoutBtnClick: () -> Unit = {},
@@ -109,7 +113,8 @@ fun MyPageScreen(
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .padding(paddingValues),
         topBar = {
             NoostakTopAppBar(
                 title = stringResource(com.sopt.presentation.R.string.appbar_mu_page_title),
