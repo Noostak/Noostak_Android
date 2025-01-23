@@ -9,4 +9,6 @@ sealed interface MyPageSideEffect {
     ) : MyPageSideEffect
 
     data class ShowDialog(val dialogType: DialogType) : MyPageSideEffect
+
+    data object NavigateToLogin : MyPageSideEffect
 }
