@@ -38,6 +38,7 @@ class EditProfileViewModel @Inject constructor(
 
     fun navigateToMyPage() {
         saveNickname(_userInfoState.value.nickname)
+        saveProfileImage(_userInfoState.value.profileImage)
         emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
     }
 
@@ -65,6 +66,12 @@ class EditProfileViewModel @Inject constructor(
         }
     }
 
+    private fun saveProfileImage(imageUri: String?) {
+        executeInScope {
+            imageUri?.let { userInfoRepository.saveProfileImage(it) }
+        }
+    }
+
     fun updateGalleryPermissionState(isGranted: Boolean) {
         _editProfileState.update { it.copy(isPermissionGranted = isGranted) }
     }
@@ -80,7 +87,6 @@ class EditProfileViewModel @Inject constructor(
     fun updateProfileImage(imageUri: String?) {
         executeInScope {
             _userInfoState.update { it.copy(profileImage = imageUri) }
-            imageUri?.let { userInfoRepository.saveProfileImage(it) }
             validateChanges()
         }
     }
