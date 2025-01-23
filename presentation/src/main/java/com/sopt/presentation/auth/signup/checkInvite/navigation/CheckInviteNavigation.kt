@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
+import com.sopt.presentation.auth.login.navigation.Login
 import com.sopt.presentation.auth.signup.checkInvite.CheckInviteRoute
 import com.sopt.presentation.auth.signup.inputGroupCode.navigation.navigateInputGroupCode
 import com.sopt.presentation.group.navigation.navigateGroup
@@ -17,7 +18,9 @@ fun NavController.navigateCheckInvite(
 ) {
     navigate(
         route = CheckInvite(name = name),
-        navOptions = navOptions
+        navOptions = navOptions ?: NavOptions.Builder()
+            .setPopUpTo(Login, inclusive = false)
+            .build()
     )
 }
 
