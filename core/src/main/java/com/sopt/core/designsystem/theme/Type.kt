@@ -30,6 +30,7 @@ class NoostakTypography internal constructor(
     h1SemiBold: TextStyle,
     h2Bold: TextStyle,
     h3SemiBold: TextStyle,
+    h322SemiBold: TextStyle,
     h4Bold: TextStyle,
     h4SemiBold: TextStyle,
     h5Bold: TextStyle,
@@ -44,7 +45,7 @@ class NoostakTypography internal constructor(
     b4Regular: TextStyle,
     b5Regular: TextStyle,
     c1Bold: TextStyle,
-    c2SemiBold: TextStyle,
+    c3SemiBold: TextStyle,
     c3Regular: TextStyle,
     c4Regular: TextStyle
 ) {
@@ -57,6 +58,8 @@ class NoostakTypography internal constructor(
     var h2Bold: TextStyle by mutableStateOf(h2Bold)
         private set
     var h3SemiBold: TextStyle by mutableStateOf(h3SemiBold)
+        private set
+    var h322SemiBold: TextStyle by mutableStateOf(h322SemiBold)
         private set
     var h4Bold: TextStyle by mutableStateOf(h4Bold)
         private set
@@ -86,7 +89,7 @@ class NoostakTypography internal constructor(
         private set
     var c1Bold: TextStyle by mutableStateOf(c1Bold)
         private set
-    var c2SemiBold: TextStyle by mutableStateOf(c2SemiBold)
+    var c3SemiBold: TextStyle by mutableStateOf(c3SemiBold)
         private set
     var c3Regular: TextStyle by mutableStateOf(c3Regular)
         private set
@@ -99,6 +102,7 @@ class NoostakTypography internal constructor(
         h1SemiBold: TextStyle = this.h1SemiBold,
         h2Bold: TextStyle = this.h2Bold,
         h3SemiBold: TextStyle = this.h3SemiBold,
+        h322SemiBold: TextStyle = this.h322SemiBold,
         h4Bold: TextStyle = this.h4Bold,
         h4SemiBold: TextStyle = this.h4SemiBold,
         h5Bold: TextStyle = this.h5Bold,
@@ -113,7 +117,7 @@ class NoostakTypography internal constructor(
         b4Regular: TextStyle = this.b4Regular,
         b5Regular: TextStyle = this.b5Regular,
         c1Bold: TextStyle = this.c1Bold,
-        c2SemiBold: TextStyle = this.c2SemiBold,
+        c3SemiBold: TextStyle = this.c3SemiBold,
         c3Regular: TextStyle = this.c3Regular,
         c4Regular: TextStyle = this.c4Regular
     ): NoostakTypography = NoostakTypography(
@@ -122,6 +126,7 @@ class NoostakTypography internal constructor(
         h1SemiBold = h1SemiBold,
         h2Bold = h2Bold,
         h3SemiBold = h3SemiBold,
+        h322SemiBold = h322SemiBold,
         h4Bold = h4Bold,
         h4SemiBold = h4SemiBold,
         h5Bold = h5Bold,
@@ -136,7 +141,7 @@ class NoostakTypography internal constructor(
         b4Regular = b4Regular,
         b5Regular = b5Regular,
         c1Bold = c1Bold,
-        c2SemiBold = c2SemiBold,
+        c3SemiBold = c3SemiBold,
         c3Regular = c3Regular,
         c4Regular = c4Regular
     )
@@ -147,6 +152,7 @@ class NoostakTypography internal constructor(
         h1SemiBold = other.h1SemiBold
         h2Bold = other.h2Bold
         h3SemiBold = other.h3SemiBold
+        h322SemiBold = other.h322SemiBold
         h4Bold = other.h4Bold
         h4SemiBold = other.h4SemiBold
         h5Bold = other.h5Bold
@@ -161,7 +167,7 @@ class NoostakTypography internal constructor(
         b4Regular = other.b4Regular
         b5Regular = other.b5Regular
         c1Bold = other.c1Bold
-        c2SemiBold = other.c2SemiBold
+        c3SemiBold = other.c3SemiBold
         c3Regular = other.c3Regular
         c4Regular = other.c4Regular
     }
@@ -218,6 +224,12 @@ fun noostakTypography(): NoostakTypography {
             fontWeight = FontWeight.SemiBold,
             fontSize = 24.sp,
             lineHeight = 34.sp
+        ),
+        h322SemiBold = noostakTextStyle(
+            fontFamily = PretendardSemiBold,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 22.sp,
+            lineHeight = 33.sp
         ),
         h4Bold = noostakTextStyle(
             fontFamily = PretendardBold,
@@ -304,7 +316,7 @@ fun noostakTypography(): NoostakTypography {
             fontSize = 13.sp,
             lineHeight = 18.sp
         ),
-        c2SemiBold = noostakTextStyle(
+        c3SemiBold = noostakTextStyle(
             fontFamily = PretendardSemiBold,
             fontWeight = FontWeight.SemiBold,
             fontSize = 13.sp,

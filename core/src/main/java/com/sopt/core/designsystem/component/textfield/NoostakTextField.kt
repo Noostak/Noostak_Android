@@ -1,10 +1,10 @@
 package com.sopt.core.designsystem.component.textfield
 
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,6 +36,7 @@ import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.type.TextFieldType
+import com.sopt.core.util.NoRippleInteractionSource
 
 @Composable
 fun NoostakTextField(
@@ -44,9 +45,10 @@ fun NoostakTextField(
     onValueChange: (String) -> Unit = { _ -> },
     placeholderColor: Color = NoostakTheme.colors.gray600,
     textStyle: TextStyle = NoostakTheme.typography.b5Regular,
+    lengthTextStyle: TextStyle = NoostakTheme.typography.b5Regular,
     shape: Shape = RoundedCornerShape(6.dp),
     cursorColor: Color = NoostakTheme.colors.gray600,
-    focusedBorderColor: Color = NoostakTheme.colors.gray900,
+    focusedBorderColor: Color = NoostakTheme.colors.blue600,
     unfocusedWithInputBorderColor: Color = NoostakTheme.colors.gray700,
     unfocusedBorderColor: Color = NoostakTheme.colors.gray500,
     maxLength: Int = 30,
@@ -57,6 +59,9 @@ fun NoostakTextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     var isFocused by remember { mutableStateOf(false) }
+    var hasInvalidInput by remember { mutableStateOf(false) }
+
+    val validInputRegex = "^[a-zA-Z0-9가-힣]*$".toRegex()
 
     Column {
         Box(
@@ -65,6 +70,7 @@ fun NoostakTextField(
                 .border(
                     width = 1.dp,
                     color = when {
+                        hasInvalidInput -> NoostakTheme.colors.red02
                         isFocused -> focusedBorderColor // 포커스된 경우
                         value.isNotEmpty() -> unfocusedWithInputBorderColor // 텍스트가 입력되고 포커스 안된 경우
                         else -> unfocusedBorderColor // 포커스되지 않은 경우
@@ -79,10 +85,16 @@ fun NoostakTextField(
                     value = value,
                     textStyle = textStyle,
                     onValueChange = { newValue ->
-                        if (newValue.replace(" ", "").length <= maxLength) {
-                            onValueChange(
-                                newValue
-                            )
+                        if (textFieldType != TextFieldType.SIGNUP) {
+                            if (newValue.replace(" ", "").length <= maxLength) {
+                                onValueChange(newValue)
+                            }
+                        } else {
+                            hasInvalidInput = !validInputRegex.matches(newValue)
+
+                            if (newValue.length <= maxLength) {
+                                onValueChange(newValue)
+                            }
                         }
                     },
                     placeholder = {
@@ -119,7 +131,8 @@ fun NoostakTextField(
                         modifier = Modifier
                             .padding(end = 12.dp)
                             .size(24.dp),
-                        onClick = { onValueChange("") }
+                        onClick = { onValueChange("") },
+                        interactionSource = NoRippleInteractionSource
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_text_field_delete),
@@ -132,17 +145,19 @@ fun NoostakTextField(
         }
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(
-                text = if (textFieldType == TextFieldType.SIGNUP) stringResource(R.string.text_noostak_text_field_sign_up_example) else "",
-                color = NoostakTheme.colors.gray800,
-                style = NoostakTheme.typography.b5Regular,
-                modifier = modifier.padding(top = 6.dp),
-                maxLines = 1
-            )
+            if (textFieldType == TextFieldType.SIGNUP && hasInvalidInput) {
+                Text(
+                    text = stringResource(R.string.text_noostak_text_field_sign_up_condition),
+                    color = NoostakTheme.colors.red02,
+                    style = NoostakTheme.typography.c3SemiBold,
+                    modifier = modifier.padding(top = 6.dp),
+                    maxLines = 1
+                )
+            }
 
+            Spacer(modifier = Modifier.weight(1f))
             Text(
                 text = stringResource(
                     R.string.text_noostak_text_field_count,
@@ -150,7 +165,7 @@ fun NoostakTextField(
                     maxLength
                 ),
                 color = maxLengthColor,
-                style = NoostakTheme.typography.b5Regular,
+                style = lengthTextStyle,
                 modifier = modifier.padding(top = 6.dp),
                 maxLines = 1
             )
@@ -162,8 +177,6 @@ fun NoostakTextField(
 @Composable
 fun NoostakTextFieldPreview() {
     NoostakAndroidTheme {
-        Column {
-            NoostakTextField(textFieldType = TextFieldType.GROUP, value = "누스탁")
-        }
+        NoostakTextField(textFieldType = TextFieldType.SIGNUP, value = "누스탁")
     }
 }

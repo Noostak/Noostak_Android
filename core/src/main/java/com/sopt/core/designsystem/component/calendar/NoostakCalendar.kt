@@ -160,7 +160,7 @@ fun NoostakCalendar(
             days.forEach { day ->
                 Text(
                     text = day,
-                    style = typography.c2SemiBold,
+                    style = typography.c3SemiBold,
                     textAlign = TextAlign.Center,
                     color = colors.gray600,
                     modifier = Modifier
@@ -357,7 +357,7 @@ fun NoostakCalendar(
                     snackbar = { snackBarData ->
                         NoostakSnackBar(
                             message = snackBarData.visuals.message,
-                            textStyle = typography.c2SemiBold,
+                            textStyle = typography.c3SemiBold,
                             textColor = colors.red01,
                             backgroundColor = colors.pink
                         )

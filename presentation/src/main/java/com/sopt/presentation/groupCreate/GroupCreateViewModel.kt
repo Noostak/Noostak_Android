@@ -15,6 +15,18 @@ class GroupCreateViewModel @Inject constructor() : BaseViewModel<GroupCreateSide
     private val _groupProfileState = MutableStateFlow(GroupProfileEntity())
     val groupProfileState: StateFlow<GroupProfileEntity> = _groupProfileState
 
+    private val _showDialog = MutableStateFlow(false)
+    val showDialog: StateFlow<Boolean> get() = _showDialog
+
+    fun showDialog(show: Boolean) {
+        _showDialog.update { show }
+    }
+
+    fun triggerDialog() {
+        // 추후 서버 통신 fail 로직으로 옮겨야 함
+        emitSideEffect(GroupCreateSideEffect.ShowDialog)
+    }
+
     fun updateGalleryPermissionState(isGranted: Boolean) {
         viewModelScope.launch {
             _groupProfileState.update { it.copy(isPermissionGranted = isGranted) }
@@ -29,7 +41,7 @@ class GroupCreateViewModel @Inject constructor() : BaseViewModel<GroupCreateSide
         if (_groupProfileState.value.isPermissionGranted) {
             emitSideEffect(GroupCreateSideEffect.RequestImagePicker)
         } else {
-            emitSideEffect(GroupCreateSideEffect.ShowPermissionDeniedDialog)
+            emitSideEffect(GroupCreateSideEffect.ShowGalleryToast)
         }
     }
 

@@ -10,7 +10,7 @@ fun NoostakSubHeaderText(text: String, modifier: Modifier) {
     Text(
         modifier = modifier,
         text = text,
-        style = NoostakTheme.typography.c2SemiBold,
+        style = NoostakTheme.typography.c3SemiBold,
         color = NoostakTheme.colors.gray900
     )
 }

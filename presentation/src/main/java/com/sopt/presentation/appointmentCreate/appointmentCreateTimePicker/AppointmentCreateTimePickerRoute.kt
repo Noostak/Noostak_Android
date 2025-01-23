@@ -162,7 +162,7 @@ fun AppointmentCreateTimePickerScreen(
                     snackbar = { snackBarData ->
                         NoostakSnackBar(
                             message = snackBarData.visuals.message,
-                            textStyle = NoostakTheme.typography.c2SemiBold,
+                            textStyle = NoostakTheme.typography.c3SemiBold,
                             textColor = NoostakTheme.colors.red01,
                             backgroundColor = NoostakTheme.colors.pink
                         )

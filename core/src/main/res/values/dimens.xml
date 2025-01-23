@@ -20,4 +20,6 @@
     <dimen name="appbar_height">48dp</dimen>
     <dimen name="appbar_start_padding">8dp</dimen>
 
+    <dimen name="dialog_radius">20dp</dimen>
+
 </resources>

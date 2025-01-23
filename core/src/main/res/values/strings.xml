@@ -19,7 +19,7 @@
     <string name="tf_calendar_info_placeholder">이름을 입력해주세요</string>
 
     <!-- Noostak Text Field -->
-    <string name="text_noostak_text_field_sign_up_example">예) 홍길동</string>
+    <string name="text_noostak_text_field_sign_up_condition">띄어쓰기 없이 한글, 영문, 숫자만 가능해요.</string>
     <string name="text_noostak_text_field_count">%1$s/%2$s</string>
     <string name="icon_noostak_text_field_descrition">Delete Profile Name</string>
 
@@ -32,6 +32,17 @@
     <string name="category_chip_schedule">일정</string>
     <string name="category_chip_hobby">취미</string>
     <string name="category_chip_etc">기타</string>
+
+    <!-- Dialog Type -->
+    <string name="text_dialog_type_group_content">네트워크 문제로\n그룹 만들기에 실패했습니다.\n다시 시도하시겠습니까?</string>
+    <string name="text_dialog_type_dismiss_cancel">취소</string>
+    <string name="text_dialog_type_confirm_retry">재시도</string>
+    <string name="text_dialog_type_logout_content">로그아웃하시겠습니까?</string>
+    <string name="text_dialog_type_confirm_logout">로그아웃</string>
+    <string name="text_dialog_type_withdrawal_content">회원 탈퇴 시 복구가 불가해요.\n정말 탈퇴하시겠어요?</string>
+    <string name="text_dialog_type_confirm_withdrawal">탈퇴하기</string>
+    <string name="text_dialog_type_login_kakao_content">네트워크 문제로\n카카오톡 로그인을 연결하지 못했습니다.\n다시 시도하시겠습니까?</string>
+    <string name="text_dialog_type_login_google_content">네트워크 문제로\nGoogle 로그인을 연결하지 못했습니다.\n다시 시도하시겠습니까?</string>
 
     <!-- Noostak Calendar -->
     <string name="text_noostak_calendar_7days">최대 7일까지 선택할 수 있어요</string>

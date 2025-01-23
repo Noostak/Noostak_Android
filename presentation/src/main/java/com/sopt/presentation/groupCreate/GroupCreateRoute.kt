@@ -34,11 +34,13 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.image.ProfileImagePicker
 import com.sopt.core.designsystem.component.textfield.NoostakTextField
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
+import com.sopt.core.type.DialogType
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
 import com.sopt.domain.entity.GroupProfileEntity
@@ -49,20 +51,22 @@ import timber.log.Timber
 fun GroupCreateRoute(
     paddingValues: PaddingValues,
     navigateToGroupCreateSuccess: () -> Unit,
-    viewModel: GroupCreateViewModel = hiltViewModel()
+    groupCreateViewModel: GroupCreateViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val groupProfileState by viewModel.groupProfileState.collectAsStateWithLifecycle()
+    val groupProfileState by groupCreateViewModel.groupProfileState.collectAsStateWithLifecycle()
 
     var isGalleryPermission by remember { mutableStateOf(false) }
+
+    val showDialog by groupCreateViewModel.showDialog.collectAsStateWithLifecycle()
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         try {
             if (isGranted) {
-                viewModel.updateGalleryPermissionState(true)
+                groupCreateViewModel.updateGalleryPermissionState(true)
             } else {
                 isGalleryPermission = true
             }
@@ -82,22 +86,23 @@ fun GroupCreateRoute(
     }
 
     val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
-        viewModel.onImageSelected(uri.toString())
+        groupCreateViewModel.onImageSelected(uri.toString())
     }
 
     val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
-        viewModel.onImageSelected(uri.toString())
+        groupCreateViewModel.onImageSelected(uri.toString())
     }
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
+        groupCreateViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
                     is GroupCreateSideEffect.NavigateToGroupCreateSuccess -> navigateToGroupCreateSuccess()
 
-                    is GroupCreateSideEffect.ShowPermissionDeniedDialog ->
-                        isGalleryPermission =
-                            true
+                    is GroupCreateSideEffect.ShowGalleryToast ->
+                        isGalleryPermission = true
+
+                    is GroupCreateSideEffect.ShowDialog -> groupCreateViewModel.showDialog(true)
 
                     is GroupCreateSideEffect.RequestImagePicker -> context.launchImagePicker(
                         galleryLauncher,
@@ -116,15 +121,25 @@ fun GroupCreateRoute(
         isGalleryPermission = false
     }
 
+    if (showDialog) {
+        NoostakDialog(
+            dialogType = DialogType.GROUP,
+            onClick = {
+                groupCreateViewModel.navigateToGroupCreateSuccess()
+            },
+            onDismissRequest = { groupCreateViewModel.showDialog(false) }
+        )
+    }
+
     GroupCreateScreen(
         paddingValues = paddingValues,
         groupProfileState = groupProfileState,
-        onProfileCameraBtnClick = { viewModel.requestGalleryPicker() },
+        onProfileCameraBtnClick = { groupCreateViewModel.requestGalleryPicker() },
         onNameChange = { newName ->
-            viewModel.onGroupNameChanged(newName)
+            groupCreateViewModel.onGroupNameChanged(newName)
         },
         onNextBtnClick = { nickname, imageUri ->
-            viewModel.navigateToGroupCreateSuccess()
+            groupCreateViewModel.navigateToGroupCreateSuccess()
         }
     )
 }
@@ -172,7 +187,8 @@ fun GroupCreateScreen(
             NoostakTextField(
                 textFieldType = TextFieldType.GROUP,
                 value = groupProfileState.groupName,
-                onValueChange = { onNameChange(it) }
+                onValueChange = { onNameChange(it) },
+                lengthTextStyle = NoostakTheme.typography.c3Regular
             )
         }
         NoostakBottomButton(

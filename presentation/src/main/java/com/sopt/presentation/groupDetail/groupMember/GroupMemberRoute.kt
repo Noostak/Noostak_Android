@@ -183,7 +183,7 @@ fun GroupMemberItem(
         Text(
             text = name,
             color = NoostakTheme.colors.gray900,
-            style = NoostakTheme.typography.c2SemiBold,
+            style = NoostakTheme.typography.c3SemiBold,
             textAlign = TextAlign.Center
         )
     }

@@ -181,7 +181,7 @@ fun RecommendationItem(
                     modifier = Modifier.padding(start = 2.dp),
                     text = likes.toString(),
                     color = if (isLiked) NoostakTheme.colors.black else NoostakTheme.colors.gray600,
-                    style = NoostakTheme.typography.c2SemiBold
+                    style = NoostakTheme.typography.c3SemiBold
                 )
             }
         }
@@ -191,7 +191,7 @@ fun RecommendationItem(
                 data.availableMemberCount
             ),
             color = NoostakTheme.colors.black,
-            style = NoostakTheme.typography.c2SemiBold
+            style = NoostakTheme.typography.c3SemiBold
         )
         FlowRow(
             modifier = Modifier.padding(top = 10.dp),
@@ -210,7 +210,7 @@ fun RecommendationItem(
                 data.unavailableMemberCount
             ),
             color = NoostakTheme.colors.black,
-            style = NoostakTheme.typography.c2SemiBold
+            style = NoostakTheme.typography.c3SemiBold
         )
         FlowRow(
             modifier = Modifier.padding(top = 10.dp),

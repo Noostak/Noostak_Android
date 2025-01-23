@@ -1,85 +1,172 @@
 package com.sopt.presentation.mypage
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.sopt.core.designsystem.component.button.BaseButton
-import com.sopt.core.designsystem.component.textfield.BaseTextField
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
+import com.skydoves.landscapist.ImageOptions
+import com.skydoves.landscapist.glide.GlideImage
+import com.sopt.core.R
+import com.sopt.core.designsystem.component.dialog.NoostakDialog
+import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
-import com.sopt.presentation.R
+import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.type.DialogType
+import com.sopt.presentation.mypage.component.MyPageItem
+import com.sopt.presentation.mypage.component.MyPageProfileEditButton
 
 @Composable
 fun MyPageRoute(
-    paddingValues: PaddingValues,
-    navigateToExample: (String) -> Unit,
     myPageViewModel: MyPageViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-    LaunchedEffect(myPageViewModel.sideEffects) {
-        myPageViewModel.sideEffects.collect { sideEffect ->
-            when (sideEffect) {
-                is MyPageSideEffect.NavigateToExample -> {
-                    navigateToExample(sideEffect.text)
+    val showLogoutDialog by myPageViewModel.showLogoutDialog.collectAsStateWithLifecycle()
+    val showWithdrawalDialog by myPageViewModel.showWithdrawalDialog.collectAsStateWithLifecycle()
+
+    LaunchedEffect(lifecycleOwner) {
+        myPageViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
+            .collect { sideEffect ->
+                when (sideEffect) {
+                    is MyPageSideEffect.ShowDialog -> {
+                        when (sideEffect.dialogType) {
+                            DialogType.LOGOUT -> myPageViewModel.showDialog(DialogType.LOGOUT, true)
+                            DialogType.WITHDRAWAL -> myPageViewModel.showDialog(
+                                DialogType.WITHDRAWAL,
+                                true
+                            )
+
+                            else -> Unit
+                        }
+                    }
                 }
             }
-        }
+    }
+
+    if (showLogoutDialog) {
+        NoostakDialog(
+            dialogType = DialogType.LOGOUT,
+            onClick = {
+                // 추가해야 함
+            },
+            onDismissRequest = { myPageViewModel.showDialog(DialogType.LOGOUT, false) }
+        )
+    }
+
+    if (showWithdrawalDialog) {
+        NoostakDialog(
+            dialogType = DialogType.WITHDRAWAL,
+            onClick = {
+                // 추가해야 함
+            },
+            onDismissRequest = { myPageViewModel.showDialog(DialogType.WITHDRAWAL, false) }
+        )
     }
 
     MyPageScreen(
-        paddingValues = paddingValues,
-        onExampleClick = myPageViewModel::navigateToExample
+        onProfileEditBtnClick = {
+            // nav Profile 추가해야 함
+        },
+        onPolicyBtnClick = {
+            // browser intent 추가해야 함
+        },
+        onLogoutBtnClick = { myPageViewModel.triggerDialog(DialogType.LOGOUT) },
+        onWithdrawalBtnClick = { myPageViewModel.triggerDialog(DialogType.WITHDRAWAL) }
     )
 }
 
 @Composable
 fun MyPageScreen(
-    paddingValues: PaddingValues = PaddingValues(),
-    onExampleClick: (String) -> Unit
+    onProfileEditBtnClick: () -> Unit = {},
+    onPolicyBtnClick: () -> Unit = {},
+    onLogoutBtnClick: () -> Unit = {},
+    onWithdrawalBtnClick: () -> Unit = {}
 ) {
-    var text by remember { mutableStateOf("") }
-
-    Column(
+    Scaffold(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = "MyPage Screen")
-        BaseTextField(
-            value = text,
-            onValueChange = { text = it },
-            label = "텍스트 입력칸",
-            placeholder = "텍스트를 적어주세요",
-            modifier = Modifier.padding(bottom = 10.dp)
-        )
-        BaseButton(
-            shape = RoundedCornerShape(30.dp),
-            style = TextStyle.Default,
-            paddingVertical = 9.dp,
-            paddingHorizontal = 20.dp,
-            text = stringResource(R.string.btn_my_page),
-            onButtonClick = { onExampleClick(text) }
-        )
+            .statusBarsPadding()
+            .navigationBarsPadding(),
+        topBar = {
+            NoostakTopAppBar(
+                title = stringResource(com.sopt.presentation.R.string.appbar_mu_page_title),
+                modifier = Modifier,
+                isIconVisible = false
+            )
+        }
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding)) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(
+                    top = 24.dp,
+                    start = dimensionResource(id = com.sopt.presentation.R.dimen.horizontal_padding),
+                    end = dimensionResource(id = com.sopt.presentation.R.dimen.horizontal_padding),
+                    bottom = 20.dp
+                )
+            ) {
+                GlideImage(
+                    imageModel = { R.drawable.ic_profile },
+                    imageOptions = ImageOptions(
+                        contentScale = ContentScale.Crop,
+                        alignment = Alignment.Center
+                    ),
+                    modifier = Modifier
+                        .padding(end = 12.dp)
+                        .size(60.dp)
+                        .aspectRatio(1f)
+                        .clip(CircleShape),
+                    previewPlaceholder = painterResource(id = R.drawable.ic_profile)
+                )
+                Text(
+                    text = "정해인",
+                    color = NoostakTheme.colors.gray900,
+                    style = NoostakTheme.typography.t4Bold
+                )
+            }
+            MyPageProfileEditButton(
+                text = stringResource(com.sopt.presentation.R.string.btn_my_page_profile_edit),
+                onClick = { onProfileEditBtnClick() }
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            MyPageItem(
+                text = stringResource(com.sopt.presentation.R.string.text_my_page_item_policy),
+                onClick = onPolicyBtnClick
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            MyPageItem(
+                text = stringResource(com.sopt.presentation.R.string.text_my_page_item_logout),
+                onClick = onLogoutBtnClick
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            MyPageItem(
+                text = stringResource(com.sopt.presentation.R.string.text_my_page_item_withdrawal),
+                onClick = onWithdrawalBtnClick
+            )
+        }
     }
 }
 
@@ -87,8 +174,6 @@ fun MyPageScreen(
 @Composable
 fun MyPageScreenPreview() {
     NoostakAndroidTheme {
-        MyPageScreen(
-            onExampleClick = {}
-        )
+        MyPageScreen()
     }
 }

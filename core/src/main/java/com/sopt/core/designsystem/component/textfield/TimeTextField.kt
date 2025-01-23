@@ -70,7 +70,7 @@ fun TimeTextField(
         )
         Text(
             text = stringResource(R.string.text_time_text_field),
-            style = NoostakTheme.typography.c2SemiBold,
+            style = NoostakTheme.typography.c3SemiBold,
             color = if (isTimeExceedLimit) NoostakTheme.colors.red02 else NoostakTheme.colors.gray500,
             modifier = Modifier.padding(top = 10.dp)
         )
