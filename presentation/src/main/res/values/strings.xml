@@ -127,6 +127,7 @@
     <string name="text_calendar_appointment_fri">금</string>
     <string name="text_calendar_appointment_sat">토</string>
     <string name="text_calendar_appointment_sun">일</string>
+    <string name="text_calendar_appointment_time_text">시간</string>
     <string name="text_calendar_appointment_7days">최대 7일까지 선택할 수 있어요</string>
     <string name="text_calendar_appointment_one_day">하루씩 설정하기</string>
     <string name="text_calendar_appointment_next">다음</string>
