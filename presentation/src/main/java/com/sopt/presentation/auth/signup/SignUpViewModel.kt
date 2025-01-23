@@ -57,6 +57,10 @@ class SignUpViewModel @Inject constructor(
             saveUserNickname(nickname)
             emitSideEffect(SignUpSideEffect.NavigateToCheckInvite(nickname))
         }
+
+        viewModelScope.launch {
+            userInfoRepository.saveIsAutoLogin(true)
+        }
     }
 
     private fun saveUserNickname(nickname: String) {

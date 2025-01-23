@@ -154,7 +154,6 @@ class LoginViewModel @Inject constructor(
                 emitSideEffect(LoginSideEffect.NavigateToHome)
             } else {
                 emitSideEffect(LoginSideEffect.NavigateOnboarding(authId))
-                userInfoRepository.saveIsAutoLogin(true)
             }
         }
     }
