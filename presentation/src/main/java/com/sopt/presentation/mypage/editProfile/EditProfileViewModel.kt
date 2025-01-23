@@ -5,10 +5,12 @@ import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.UserEntity
 import com.sopt.domain.repository.UserInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,7 +41,11 @@ class EditProfileViewModel @Inject constructor(
     fun navigateToMyPage() {
         saveNickname(_userInfoState.value.nickname)
         saveProfileImage(_userInfoState.value.profileImage)
-        emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
+        executeInScope {
+            withContext(Dispatchers.Main) {
+                emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
+            }
+        }
     }
 
     fun onNicknameChanged(nickname: String) {
