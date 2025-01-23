@@ -10,12 +10,10 @@
     <string name="server_success">Server Success</string>
     <string name="server_failure">Server Error</string>
     <string name="appbar_example_title">팔로워 목록</string>
-    <string name="btn_my_page">예제 화면으로 이동하기</string>
     <string name="btn_example_back">뒤로 돌아가기</string>
 
     <!-- 버튼 -->
     <string name="btn_next">다음</string>
-    <string name="btn_submit">확인</string>
 
     <!-- 로그인 -->
     <string name="tv_login_description">SNS 계정으로 빠르게 시작하기</string>
@@ -27,21 +25,15 @@
     <string name="toast_login_cancelled">로그인이 취소되었습니다.</string>
     <string name="toast_google_login_success">구글 로그인 성공</string>
     <string name="toast_google_login_failed">구글 로그인 실패: %s</string>
-    <string name="type_login_kakao">카카오톡</string>
-    <string name="type_login_google">구글</string>
     <string name="dialog_login_description">네트워크 문제로\n%1$s 로그인을 연결하지 못했습니다.\n다시 시도하시겠습니까?</string>
     <string name="dialog_login_dismiss">취소</string>
     <string name="dialog_login_retry">재시도</string>
 
     <!-- 회원가입 -->
     <string name="tv_signup_profile">프로필 설정</string>
-    <string name="tv_signup_example_name">예) 홍길동</string>
-    <string name="hint_signup_name">이름을 입력해주세요</string>
-    <string name="tv_signup_count">%1$d / %2$d</string>
     <string name="toast_permission_gallery">갤러리 권한이 필요합니다.</string>
 
     <!-- 그룹 초대 입력 -->
-    <string name="iv_invite_description">그룹 초대 설명 이미지</string>
     <string name="tv_invite_description">환영해요 %1$s님!\n그룹코드를 받으셨나요?</string>
     <string name="tv_invite_empty">아니요, 초대받은 그룹이 없어요.</string>
     <string name="btn_invite_code">그룹코드 입력하기</string>
@@ -87,9 +79,6 @@
     <string name="subtitle_appointment_confirm">한 번 확정된 약속은 수정이 어려워요!</string>
     <string name="tv_appointment_confirm_info">약속 정보</string>
     <string name="btn_appointment_confirm_complete">완료</string>
-    <string name="dialog_appointment_description">아직 일정을 등록하지 않았어요!\n일정을 등록하러 가볼까요?</string>
-    <string name="dialog_appointment_dismiss">나중에 등록하기</string>
-    <string name="dialog_appointment_confirm">가능일정 등록하기</string>
     <string name="text_appointment_priority">Best%1$s</string>
     <string name="tv_appointment_availableMembersCount">%1$s명</string>
     <string name="tv_appointment_totalMembersCount">" / %1$s명"</string>
