@@ -98,7 +98,7 @@ fun SignUpRoute(
         onProfileSettingBtnClick = {
             handleProfileBtnClick(viewModel, permissionLauncher)
         },
-        onNameChange = { viewModel.onUserNameChanged(it) },
+        onNameChange = { viewModel.onNicknameChanged(it) },
         onSignUpClick = { viewModel.navigateToCheckInvite() }
     )
 }
@@ -148,14 +148,14 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.height(27.dp))
         NoostakTextField(
             textFieldType = TextFieldType.SIGNUP,
-            value = signUpState.userName,
+            value = signUpState.nickname,
             maxLength = 10,
             onValueChange = onNameChange
         )
         Spacer(modifier = Modifier.weight(1f))
         NoostakBottomButton(
             text = stringResource(R.string.btn_next),
-            isEnabled = signUpState.userName.isNotEmpty(),
+            isEnabled = signUpState.nickname.isNotEmpty(),
             onButtonClick = onSignUpClick
         )
     }
@@ -167,7 +167,7 @@ fun SignUpScreenPreview() {
     NoostakAndroidTheme {
         SignUpScreen(
             signUpState = SignUpState(
-                userName = stringResource(R.string.app_name),
+                nickname = stringResource(R.string.app_name),
                 profileImageUri = null
             ),
             onProfileSettingBtnClick = {},

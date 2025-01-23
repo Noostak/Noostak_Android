@@ -17,13 +17,6 @@ fun NavController.navigateToGroupCreate(navOptions: NavOptions? = null) {
     )
 }
 
-fun NavController.navigateToGroupEnter(navOptions: NavOptions? = null) {
-    navigate(
-        route = GroupEnter,
-        navOptions = navOptions
-    )
-}
-
 fun NavGraphBuilder.groupCreateNavGraph(
     paddingValues: PaddingValues,
     navHostController: NavController
@@ -36,14 +29,7 @@ fun NavGraphBuilder.groupCreateNavGraph(
             }
         )
     }
-
-    composable<GroupEnter> {
-        // 이동 코드 추가하기
-    }
 }
 
 @Serializable
 data object GroupCreate : Route
-
-@Serializable
-data object GroupEnter : Route

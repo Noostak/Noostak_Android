@@ -16,7 +16,7 @@ class UserInfoRepositoryImpl @Inject constructor(
 
     override fun getIsAutoLogin(): Flow<Boolean> = authDataSource.isAutoLogin
 
-    override fun getNickName(): Flow<String> = authDataSource.nickName
+    override fun getNickname(): Flow<String> = authDataSource.nickname
 
     override fun getProfileImage(): Flow<String> = authDataSource.profileImage
 
@@ -36,8 +36,8 @@ class UserInfoRepositoryImpl @Inject constructor(
         authDataSource.updateIsAutoLogin(isAutoLogin)
     }
 
-    override suspend fun saveNickName(nickName: String) {
-        authDataSource.updateNickName(nickName)
+    override suspend fun saveNickname(nickname: String) {
+        authDataSource.updateNickname(nickname)
     }
 
     override suspend fun saveProfileImage(profileImage: String) {
