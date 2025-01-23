@@ -88,7 +88,7 @@ fun NoostakTextField(
                     textStyle = textStyle,
                     onValueChange = { newValue ->
                         if (textFieldType != TextFieldType.SIGNUP && textFieldType != TextFieldType.EDITPROFILE) {
-                            if (newValue.replace(" ", "").length <= maxLength) {
+                            if (newValue.length <= maxLength) {
                                 onValueChange(newValue)
                             }
                         } else {
