@@ -77,7 +77,7 @@ fun TimePicker(
         ) {
             Spacer(modifier = Modifier.height(32.dp))
             HorizontalDivider(
-                modifier = Modifier.padding(start = 10.5.dp, end = 10.5.dp),
+                modifier = Modifier.padding(start = 10.5.dp, end = 10.5.dp), //디자인 변경시 변경(요청드렷움)
                 thickness = 1.dp,
                 color = colors.gray200
             )
@@ -232,7 +232,7 @@ fun NoostakTimePicker(
         HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 9.dp, bottom = 30.dp, start = 33.5.dp, end = 33.5.dp) //디자인 소수점 변경 후 변경
+                .padding(top = 9.dp, bottom = 30.dp, start = 32.dp, end = 32.dp)
                 .clip(CircleShape),
             thickness = 3.dp,
             color = colors.gray100

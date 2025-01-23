@@ -54,13 +54,13 @@ fun AppointmentCreatePeriodRoute(
     groupId: Long,
     appointmentName: String,
     appointmentCategory: String,
-    appointmentTime: Int,
+    appointmentDuration: Int,
     navigateUp: () -> Unit,
     navigateToTimePicker: (Long, String, String, Int, Boolean, List<String>) -> Unit,
     calendarPeriodViewModel: AppointmentCreatePeriodViewModel = hiltViewModel()
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
-    var snackBarVisible = remember { mutableStateOf(false) }
+    val snackBarVisible = remember { mutableStateOf(false) }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
@@ -113,7 +113,7 @@ fun AppointmentCreatePeriodRoute(
         onButtonClick = calendarPeriodViewModel::navigateToAppointmentCreateTimePicker,
         appointmentName = appointmentName,
         appointmentCategory = appointmentCategory,
-        appointmentDuration = appointmentTime,
+        appointmentDuration = appointmentDuration,
         appointmentDate = calendarPeriodViewModel.days,
         groupId = groupId
     )

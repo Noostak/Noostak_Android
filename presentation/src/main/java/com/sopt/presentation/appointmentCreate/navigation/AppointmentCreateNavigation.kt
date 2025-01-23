@@ -28,7 +28,7 @@ fun NavController.navigateAppointmentCreatePeriod(
     groupId: Long,
     appointmentName: String,
     appointmentCategory: String,
-    appointmentTime: Int,
+    appointmentDuration: Int,
     navOptions: NavOptions? = null
 ) {
     navigate(
@@ -36,7 +36,7 @@ fun NavController.navigateAppointmentCreatePeriod(
             groupId = groupId,
             appointmentName = appointmentName,
             appointmentCategory = appointmentCategory,
-            appointmentTime = appointmentTime
+            appointmentDuration = appointmentDuration
         ),
         navOptions = navOptions
     )
@@ -46,7 +46,7 @@ fun NavController.navigateAppointmentCreateTimePicker(
     groupId: Long,
     appointmentName: String,
     appointmentCategory: String,
-    appointmentTime: Int,
+    appointmentDuration: Int,
     isSingleDateMode: Boolean,
     appointmentDate: List<String>?,
     navOptions: NavOptions? = null
@@ -56,7 +56,7 @@ fun NavController.navigateAppointmentCreateTimePicker(
             groupId = groupId,
             appointmentName = appointmentName,
             appointmentCategory = appointmentCategory,
-            appointmentTime = appointmentTime,
+            appointmentDuration = appointmentDuration,
             isSingleDateMode = isSingleDateMode,
             appointmentDate = appointmentDate
         ),
@@ -119,12 +119,12 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
         val args = it.toRoute<AppointmentCreateInfo>()
         AppointmentCreateInfoRoute(
             groupId = args.groupId,
-            navigateToPeriod = { groupId, appointmentName, category, time ->
+            navigateToPeriod = { groupId, appointmentName, category, duration ->
                 navHostController.navigateAppointmentCreatePeriod(
                     groupId = groupId,
                     appointmentName = appointmentName,
                     appointmentCategory = category,
-                    appointmentTime = time
+                    appointmentDuration = duration
                 )
             },
             navigateUp = navHostController::navigateUp
@@ -137,13 +137,13 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
             groupId = args.groupId,
             appointmentName = args.appointmentName,
             appointmentCategory = args.appointmentCategory,
-            appointmentTime = args.appointmentTime,
-            navigateToTimePicker = { groupId, appointmentName, category, time, isSingleDateMode, dates ->
+            appointmentDuration = args.appointmentDuration,
+            navigateToTimePicker = { groupId, appointmentName, category, duration, isSingleDateMode, dates ->
                 navHostController.navigateAppointmentCreateTimePicker(
                     groupId = groupId,
                     appointmentName = appointmentName,
                     appointmentCategory = category,
-                    appointmentTime = time,
+                    appointmentDuration = duration,
                     isSingleDateMode = isSingleDateMode,
                     appointmentDate = dates
                 )
@@ -158,7 +158,7 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
             groupId = args.groupId,
             appointmentName = args.appointmentName,
             appointmentCategory = args.appointmentCategory,
-            appointmentTime = args.appointmentTime,
+            appointmentDuration = args.appointmentDuration,
             isSingleDateMode = args.isSingleDateMode,
             appointmentDate = args.appointmentDate ?: emptyList(),
             navigateToCheck = { groupId, appointmentName, appointmentCategory, appointmentDuration, isSingleDateMode, appointmentDate, appointmentTime ->
@@ -177,7 +177,7 @@ fun NavGraphBuilder.appointmentCreateNavGraph(
     }
 
     composable<AppointmentSubmit> {
-        val args = it.toRoute<AppointmentSubmit>() // 이전 화면에서 데이터 전달 받기
+        val args = it.toRoute<AppointmentSubmit>()
         AppointmentSubmitRoute(
             groupId = args.groupId,
             appointmentName = args.appointmentName,
@@ -228,7 +228,7 @@ data class AppointmentCreatePeriod(
     val groupId: Long,
     val appointmentName: String,
     val appointmentCategory: String,
-    val appointmentTime: Int
+    val appointmentDuration: Int
 ) : Route
 
 @Serializable
@@ -236,7 +236,7 @@ data class AppointmentCreateTimePicker(
     val groupId: Long,
     val appointmentName: String,
     val appointmentCategory: String,
-    val appointmentTime: Int,
+    val appointmentDuration: Int,
     val isSingleDateMode: Boolean,
     val appointmentDate: List<String>? = null
 ) : Route

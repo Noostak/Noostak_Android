@@ -24,6 +24,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,13 +61,27 @@ fun AppointmentCreateTimePickerRoute(
     groupId: Long,
     appointmentName: String,
     appointmentCategory: String,
-    appointmentTime: Int,
+    appointmentDuration: Int,
     isSingleDateMode: Boolean,
     appointmentDate: List<String>,
     navigateUp: () -> Unit,
     navigateToCheck: (Long, String, String, Int, Boolean, List<String>, String) -> Unit,
     calendarTimePickerViewModel: AppointmentCreateTimePickerViewModel = hiltViewModel()
 ) {
+    val snackBarHostState = remember { SnackbarHostState() }
+    val snackBarVisible = remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val onShowSnackBar: (String) -> Unit = { msg ->
+        coroutineScope.launch {
+            snackBarVisible.value = true
+            val job = launch { snackBarHostState.showSnackbar(message = msg) }
+            delay(SNACK_BAR_DURATION)
+            job.cancel()
+            snackBarVisible.value = false
+        }
+    }
     LaunchedEffect(key1 = calendarTimePickerViewModel.sideEffects) {
         calendarTimePickerViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -85,15 +100,28 @@ fun AppointmentCreateTimePickerRoute(
                 is AppointmentCreateTimePickerSideEffect.NavigateUp -> {
                     navigateUp()
                 }
+
+                is AppointmentCreateTimePickerSideEffect.ShowSnackBar -> onShowSnackBar(
+                    context.getString(
+                        sideEffect.message,appointmentDuration
+                    )
+                )
             }
         }
     }
 
     AppointmentCreateTimePickerScreen(
+        snackBarHostState = snackBarHostState,
+        snackBarVisible = snackBarVisible,
+        showSnackBar = {
+            coroutineScope.launch {
+                calendarTimePickerViewModel.showSnackBar()
+            }
+        },
         groupId = groupId,
         appointmentName = appointmentName,
         appointmentCategory = appointmentCategory,
-        appointmentDuration = appointmentTime,
+        appointmentDuration = appointmentDuration,
         isSingleDateMode = isSingleDateMode,
         appointmentDate = appointmentDate,
         onBackButtonClick = calendarTimePickerViewModel::navigateUp,
@@ -103,6 +131,9 @@ fun AppointmentCreateTimePickerRoute(
 
 @Composable
 fun AppointmentCreateTimePickerScreen(
+    snackBarHostState: SnackbarHostState,
+    snackBarVisible: MutableState<Boolean>,
+    showSnackBar: () -> Unit,
     groupId: Long,
     appointmentName: String,
     appointmentCategory: String,
@@ -112,32 +143,10 @@ fun AppointmentCreateTimePickerScreen(
     onButtonClick: (Long, String, String, Int, Boolean, List<String>, String) -> Unit,
     onBackButtonClick: () -> Unit
 ) {
-    val snackBarHostState = remember { SnackbarHostState() }
     var isChecked by remember { mutableStateOf(false) }
     var showPicker by remember { mutableStateOf(true) }
     var selectedStartHour by remember { mutableStateOf<Int?>(0) }
     var selectedEndHour by remember { mutableStateOf<Int?>(23) }
-    var showMessage by remember { mutableStateOf(false) }
-    val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
-
-    val onShowSnackBar: (String) -> Unit = { msg ->
-        coroutineScope.launch {
-            showMessage = true
-            val job = launch { snackBarHostState.showSnackbar(message = msg) }
-            delay(SNACK_BAR_DURATION)
-            job.cancel()
-            showMessage = false
-        }
-    }
-
-    LaunchedEffect(showMessage) {
-        if (showMessage) {
-            coroutineScope.launch {
-                onShowSnackBar(context.getString(R.string.sb_appointment_create_time_picker, appointmentDuration))
-            }
-        }
-    }
 
     Scaffold(
         modifier = Modifier
@@ -152,7 +161,7 @@ fun AppointmentCreateTimePickerScreen(
         },
         snackbarHost = {
             AnimatedVisibility(
-                visible = showMessage,
+                visible = snackBarVisible.value,
                 enter = slideInVertically(initialOffsetY = { it }),
                 exit = slideOutVertically(targetOffsetY = { it })
             ) {
@@ -264,7 +273,8 @@ fun AppointmentCreateTimePickerScreen(
                     } ?: 24
 
                     if (duration < appointmentDuration) {
-                        showMessage = true
+                        snackBarVisible.value = true
+                        showSnackBar()
                         return@NoostakBottomButton
                     }
 
@@ -296,7 +306,14 @@ fun AppointmentCreateTimePickerScreen(
 @Composable
 fun AppointmentCreateTimePickerScreenPreview() {
     NoostakAndroidTheme {
+        val snackBarHostState = remember { SnackbarHostState() }
+        val snackBarVisible = remember { mutableStateOf(false) }
         AppointmentCreateTimePickerScreen(
+            snackBarHostState = snackBarHostState,
+            snackBarVisible = snackBarVisible,
+            showSnackBar = {
+                snackBarVisible.value = true
+            },
             groupId = 0,
             appointmentName = "약속 이름",
             appointmentCategory = "약속 카테고리",

@@ -181,14 +181,15 @@ fun AppointmentInfoBox(
         AppointmentInfoRow(
             icon = R.drawable.ic_appointment_calendar,
             label = stringResource(R.string.text_appointment_submit_time),
-            content = if (isConsecutive) {
-                stringResource(
-                    R.string.text_appointment_submit_date_consecutive,
-                    appointmentDate.first(),
-                    appointmentDate.last()
-                )
+            content = if (!isConsecutive) {
+                val firstDateParts = appointmentDate.first().split("-")
+                val lastDateParts = appointmentDate.last().split("-")
+                "${firstDateParts[1].toInt()}/${firstDateParts[2].toInt()} ~ ${lastDateParts[1].toInt()}/${lastDateParts[2].toInt()}"
             } else {
-                appointmentDate.joinToString(stringResource(R.string.text_appointment_submit_date_separator))
+                appointmentDate.joinToString(", ") { date ->
+                    val parts = date.split("-")
+                    "${parts[1].toInt()}/${parts[2].toInt()}"
+                }
             },
             additionalContent = appointmentTime
         )
