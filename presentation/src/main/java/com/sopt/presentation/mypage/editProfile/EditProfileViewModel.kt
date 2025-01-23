@@ -37,7 +37,10 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun navigateToMyPage() {
-        saveNickname(_userInfoState.value.nickname)
+        viewModelScope.launch {
+            saveNickname(_userInfoState.value.nickname)
+        }
+
         emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
     }
 
