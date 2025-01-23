@@ -33,7 +33,7 @@ import com.sopt.presentation.auth.component.LoginButton
 @Composable
 fun LoginRoute(
     navigateToHome: () -> Unit,
-    navigateToSignUp: (String) -> Unit,
+    navigateToOnboarding: (String) -> Unit,
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -45,7 +45,7 @@ fun LoginRoute(
         loginViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
                 is LoginSideEffect.NavigateToHome -> navigateToHome()
-                is LoginSideEffect.NavigateSignUp -> navigateToSignUp(sideEffect.authId)
+                is LoginSideEffect.NavigateOnboarding -> navigateToOnboarding(sideEffect.authId)
                 is LoginSideEffect.ShowToast -> context.toast(sideEffect.message)
             }
         }
