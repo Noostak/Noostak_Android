@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sopt.core.designsystem.component.dialog.AppointmentDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -100,23 +99,23 @@ fun AppointmentRoute(
     }
 
     if (showDialog) {
-        AppointmentDialog(
-            onDismissRequest = {
-                appointmentViewModel.apply {
-                    showDialog(false)
-                    navigateUp()
-                }
-            },
-            onConfirmButtonClick = {
-                appointmentViewModel.apply {
-                    showDialog(false)
-                    navigateToAppointmentCheck(groupId, appointmentsId, appointmentName)
-                }
-            },
-            description = stringResource(R.string.dialog_appointment_description),
-            dismissText = stringResource(R.string.dialog_appointment_dismiss),
-            confirmButtonText = stringResource(R.string.dialog_appointment_confirm)
-        )
+//        AppointmentDialog(
+//            onDismissRequest = {
+//                appointmentViewModel.apply {
+//                    showDialog(false)
+//                    navigateUp()
+//                }
+//            },
+//            onConfirmButtonClick = {
+//                appointmentViewModel.apply {
+//                    showDialog(false)
+//                    navigateToAppointmentCheck(groupId, appointmentsId, appointmentName)
+//                }
+//            },
+//            description = stringResource(R.string.dialog_appointment_description),
+//            dismissText = stringResource(R.string.dialog_appointment_dismiss),
+//            confirmButtonText = stringResource(R.string.dialog_appointment_confirm)
+//        )
     }
 
     AppointmentScreen(
