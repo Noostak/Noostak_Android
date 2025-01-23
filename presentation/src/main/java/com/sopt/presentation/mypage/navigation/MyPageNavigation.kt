@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.MainTabRoute
 import com.sopt.core.navigation.Route
+import com.sopt.presentation.auth.login.navigation.navigateToLogin
 import com.sopt.presentation.mypage.MyPageRoute
 import com.sopt.presentation.mypage.editProfile.EditProfileRoute
 import kotlinx.serialization.Serializable
@@ -43,6 +44,10 @@ fun NavGraphBuilder.myPageNavGraph(
                     nickname = nickname,
                     profileImage = profileImage
                 )
+            },
+            navigateToLogin = {
+                navHostController.popBackStack()
+                navHostController.navigateToLogin()
             }
         )
     }
