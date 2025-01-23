@@ -103,7 +103,8 @@ fun AppointmentCreateTimePickerRoute(
 
                 is AppointmentCreateTimePickerSideEffect.ShowSnackBar -> onShowSnackBar(
                     context.getString(
-                        sideEffect.message,appointmentDuration
+                        sideEffect.message,
+                        appointmentDuration
                     )
                 )
             }

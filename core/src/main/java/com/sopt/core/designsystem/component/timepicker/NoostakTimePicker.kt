@@ -77,7 +77,7 @@ fun TimePicker(
         ) {
             Spacer(modifier = Modifier.height(32.dp))
             HorizontalDivider(
-                modifier = Modifier.padding(start = 10.5.dp, end = 10.5.dp), //디자인 변경시 변경(요청드렷움)
+                modifier = Modifier.padding(start = 10.5.dp, end = 10.5.dp), // 디자인 변경시 변경(요청드렷움)
                 thickness = 1.dp,
                 color = colors.gray200
             )

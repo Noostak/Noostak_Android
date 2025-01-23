@@ -87,7 +87,7 @@ fun AppointmentCreatePeriodRoute(
                         sideEffect.appointmentDate
                     )
                 }
-                
+
                 is AppointmentCreatePeriodSideEffect.ShowSnackBar -> onShowSnackBar(
                     context.getString(
                         sideEffect.message
