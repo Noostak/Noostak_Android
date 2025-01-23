@@ -41,10 +41,12 @@ import com.sopt.presentation.mypage.component.MyPageProfileEditButton
 
 @Composable
 fun MyPageRoute(
+    navigateToEditProfile: (String, String?) -> Unit,
     myPageViewModel: MyPageViewModel = hiltViewModel()
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
 
+    val userInfoState by myPageViewModel.userInfoState.collectAsStateWithLifecycle()
     val showLogoutDialog by myPageViewModel.showLogoutDialog.collectAsStateWithLifecycle()
     val showWithdrawalDialog by myPageViewModel.showWithdrawalDialog.collectAsStateWithLifecycle()
 
@@ -52,6 +54,11 @@ fun MyPageRoute(
         myPageViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
+                    is MyPageSideEffect.NavigateToEditProfile -> navigateToEditProfile(
+                        sideEffect.nickname,
+                        sideEffect.profileImage
+                    )
+
                     is MyPageSideEffect.ShowDialog -> {
                         when (sideEffect.dialogType) {
                             DialogType.LOGOUT -> myPageViewModel.showDialog(DialogType.LOGOUT, true)
@@ -88,9 +95,9 @@ fun MyPageRoute(
     }
 
     MyPageScreen(
-        onProfileEditBtnClick = {
-            // nav Profile 추가해야 함
-        },
+        nickname = userInfoState.nickname,
+        profileImage = userInfoState.profileImage,
+        onProfileEditBtnClick = { myPageViewModel.navigateToEditProfile() },
         onPolicyBtnClick = {
             // browser intent 추가해야 함
         },
@@ -101,6 +108,8 @@ fun MyPageRoute(
 
 @Composable
 fun MyPageScreen(
+    nickname: String,
+    profileImage: String?,
     onProfileEditBtnClick: () -> Unit = {},
     onPolicyBtnClick: () -> Unit = {},
     onLogoutBtnClick: () -> Unit = {},
@@ -129,7 +138,7 @@ fun MyPageScreen(
                 )
             ) {
                 GlideImage(
-                    imageModel = { R.drawable.ic_profile },
+                    imageModel = { profileImage?.takeIf { it.isNotBlank() } ?: R.drawable.ic_profile },
                     imageOptions = ImageOptions(
                         contentScale = ContentScale.Crop,
                         alignment = Alignment.Center
@@ -142,7 +151,7 @@ fun MyPageScreen(
                     previewPlaceholder = painterResource(id = R.drawable.ic_profile)
                 )
                 Text(
-                    text = "정해인",
+                    text = nickname,
                     color = NoostakTheme.colors.gray900,
                     style = NoostakTheme.typography.t4Bold
                 )
@@ -174,6 +183,9 @@ fun MyPageScreen(
 @Composable
 fun MyPageScreenPreview() {
     NoostakAndroidTheme {
-        MyPageScreen()
+        MyPageScreen(
+            nickname = "정해인",
+            profileImage = null
+        )
     }
 }

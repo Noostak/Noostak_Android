@@ -23,7 +23,7 @@ class UserDataSourceImpl @Inject constructor(
         val refreshToken = stringPreferencesKey("refreshToken")
         val userId = intPreferencesKey("userId")
         val isAutoLogin = booleanPreferencesKey("isAutoLogin")
-        val nickName = stringPreferencesKey("nickName")
+        val nickname = stringPreferencesKey("nickname")
         val profileImage = stringPreferencesKey("profileImage")
     }
 
@@ -51,10 +51,10 @@ class UserDataSourceImpl @Inject constructor(
             preferences[PreferencesKeys.isAutoLogin] ?: false
         }
 
-    override val nickName: Flow<String> = dataStore.data
+    override val nickname: Flow<String> = dataStore.data
         .catch { handleError(it) }
         .map { preferences ->
-            preferences[PreferencesKeys.nickName].orEmpty()
+            preferences[PreferencesKeys.nickname].orEmpty()
         }
 
     override var profileImage: Flow<String> = dataStore.data
@@ -87,9 +87,9 @@ class UserDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateNickName(nickName: String) {
+    override suspend fun updateNickname(nickname: String) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.nickName] = nickName
+            preferences[PreferencesKeys.nickname] = nickname
         }
     }
 

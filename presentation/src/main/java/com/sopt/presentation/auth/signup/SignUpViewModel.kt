@@ -19,13 +19,13 @@ class SignUpViewModel @Inject constructor(
     private val _signUpState: MutableStateFlow<SignUpState> = MutableStateFlow(SignUpState())
     val signUpState: StateFlow<SignUpState> get() = _signUpState.asStateFlow()
 
-    fun onUserNameChanged(userName: String) {
-        _signUpState.update { it.copy(userName = userName) }
-        validateUserName(userName)
+    fun onNicknameChanged(nickname: String) {
+        _signUpState.update { it.copy(nickname = nickname) }
+        validateNickname(nickname)
     }
 
-    private fun validateUserName(userName: String) {
-        _signUpState.update { it.copy(isNameCheck = userName.length in 1..10) }
+    private fun validateNickname(nickname: String) {
+        _signUpState.update { it.copy(isNameCheck = nickname.length in 1..10) }
     }
 
     fun updateGalleryPermissionState(isGranted: Boolean) {
@@ -52,16 +52,16 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun navigateToCheckInvite() {
-        val name = _signUpState.value.userName
-        if (name.isNotEmpty()) {
-            saveUserNickName(name)
-            emitSideEffect(SignUpSideEffect.NavigateToCheckInvite(name))
+        val nickname = _signUpState.value.nickname
+        if (nickname.isNotEmpty()) {
+            saveUserNickname(nickname)
+            emitSideEffect(SignUpSideEffect.NavigateToCheckInvite(nickname))
         }
     }
 
-    private fun saveUserNickName(nickName: String) {
+    private fun saveUserNickname(nickname: String) {
         executeInScope {
-            userInfoRepository.saveNickName(nickName)
+            userInfoRepository.saveNickname(nickname)
         }
     }
 
