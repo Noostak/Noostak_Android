@@ -53,17 +53,17 @@ fun EditProfileRoute(
     profileImage: String?,
     navigateUp: () -> Unit,
     navigateToMyPage: () -> Unit,
-    viewModel: EditProfileViewModel = hiltViewModel()
+    editProfileViewModel: EditProfileViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val editProfileState by viewModel.editProfileState.collectAsStateWithLifecycle()
-    val userInfoState by viewModel.userInfoState.collectAsStateWithLifecycle()
+    val editProfileState by editProfileViewModel.editProfileState.collectAsStateWithLifecycle()
+    val userInfoState by editProfileViewModel.userInfoState.collectAsStateWithLifecycle()
 
     var isGalleryPermission by remember { mutableStateOf(false) }
 
     LaunchedEffect(nickName) {
-        viewModel.setInitialUserInfo(nickName, profileImage)
+        editProfileViewModel.setInitialUserInfo(nickName, profileImage)
     }
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -71,7 +71,7 @@ fun EditProfileRoute(
     ) { isGranted ->
         try {
             if (isGranted) {
-                viewModel.updateGalleryPermissionState(true)
+                editProfileViewModel.updateGalleryPermissionState(true)
             } else {
                 isGalleryPermission = true
             }
@@ -91,15 +91,15 @@ fun EditProfileRoute(
     }
 
     val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
-        viewModel.updateProfileImage(uri.toString())
+        editProfileViewModel.updateProfileImage(uri.toString())
     }
 
     val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
-        viewModel.updateProfileImage(uri.toString())
+        editProfileViewModel.updateProfileImage(uri.toString())
     }
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
+        editProfileViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
                     is EditProfileSideEffect.NavigateUp -> navigateUp()
@@ -127,15 +127,15 @@ fun EditProfileRoute(
     }
 
     EditProfileScreen(
-        onBackButtonClick = viewModel::navigateUp,
+        onBackButtonClick = editProfileViewModel::navigateUp,
         userInfoState = userInfoState,
         editProfileState = editProfileState,
-        onProfileCameraBtnClick = { viewModel.requestGalleryPicker() },
+        onProfileCameraBtnClick = { editProfileViewModel.requestGalleryPicker() },
         onNameChange = { newName ->
-            viewModel.onNickNameChanged(newName)
+            editProfileViewModel.onNickNameChanged(newName)
         },
         onNextBtnClick = {
-            viewModel.navigateToMyPage()
+            editProfileViewModel.navigateToMyPage()
         }
     )
 }
