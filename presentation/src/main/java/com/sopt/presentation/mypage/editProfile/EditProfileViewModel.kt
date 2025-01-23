@@ -39,13 +39,17 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun navigateToMyPage() {
-        saveNickname(_userInfoState.value.nickname)
-        saveProfileImage(_userInfoState.value.profileImage)
         executeInScope {
+            saveUserInfo()
             withContext(Dispatchers.Main) {
                 emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
             }
         }
+    }
+
+    private suspend fun saveUserInfo() {
+        userInfoRepository.saveNickname(_userInfoState.value.nickname)
+        _userInfoState.value.profileImage?.let { userInfoRepository.saveProfileImage(it) }
     }
 
     fun onNicknameChanged(nickname: String) {
@@ -66,18 +70,6 @@ class EditProfileViewModel @Inject constructor(
         return !nickname.isNullOrBlank() && nickname.length in 1..10 && nickname.all { it.isLetterOrDigit() }
     }
 
-    private fun saveNickname(nickname: String) {
-        executeInScope {
-            userInfoRepository.saveNickname(nickname)
-        }
-    }
-
-    private fun saveProfileImage(imageUri: String?) {
-        executeInScope {
-            imageUri?.let { userInfoRepository.saveProfileImage(it) }
-        }
-    }
-
     fun updateGalleryPermissionState(isGranted: Boolean) {
         _editProfileState.update { it.copy(isPermissionGranted = isGranted) }
     }
@@ -91,10 +83,8 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun updateProfileImage(imageUri: String?) {
-        executeInScope {
-            _userInfoState.update { it.copy(profileImage = imageUri) }
-            validateChanges()
-        }
+        _userInfoState.update { it.copy(profileImage = imageUri) }
+        validateChanges()
     }
 
     private fun executeInScope(block: suspend () -> Unit) {
