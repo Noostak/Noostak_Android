@@ -12,11 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.sopt.core.R
 
 @Composable
 fun NoostakCalendarChip(
@@ -32,12 +35,12 @@ fun NoostakCalendarChip(
         modifier = Modifier
             .background(
                 color = backgroundColor,
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.calendar_chip_corner_padding))
             )
             .border(
                 width = 1.dp,
                 color = borderColor,
-                shape = RoundedCornerShape(20.dp)
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.calendar_chip_corner_padding))
             )
             .defaultMinSize(minWidth = 39.dp)
             .padding(horizontal = horizontalPaddingValues, vertical = verticalPaddingValues)
