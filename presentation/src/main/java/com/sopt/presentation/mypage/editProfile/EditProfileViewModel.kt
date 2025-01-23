@@ -22,13 +22,13 @@ class EditProfileViewModel @Inject constructor(
     private val _userInfoState = MutableStateFlow(UserEntity())
     val userInfoState: StateFlow<UserEntity> = _userInfoState
 
-    private var initialNickName: String? = null
+    private var initialNickname: String? = null
     private var initialProfileImage: String? = null
 
-    fun setInitialUserInfo(nickName: String, profileImage: String?) {
-        initialNickName = nickName
+    fun setInitialUserInfo(nickname: String, profileImage: String?) {
+        initialNickname = nickname
         initialProfileImage = profileImage
-        _userInfoState.update { it.copy(nickName = nickName, profileImage = profileImage) }
+        _userInfoState.update { it.copy(nickname = nickname, profileImage = profileImage) }
         validateChanges()
     }
 
@@ -37,31 +37,31 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun navigateToMyPage() {
-        saveNickName(_userInfoState.value.nickName)
+        saveNickname(_userInfoState.value.nickname)
         emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
     }
 
-    fun onNickNameChanged(nickName: String) {
-        _userInfoState.update { it.copy(nickName = nickName) }
+    fun onNicknameChanged(nickname: String) {
+        _userInfoState.update { it.copy(nickname = nickname) }
         validateChanges()
     }
 
     private fun validateChanges() {
         val currentState = _userInfoState.value
-        val isNameValid = validateNickName(currentState.nickName)
+        val isNameValid = validateNickname(currentState.nickname)
         val isChanged =
-            currentState.nickName != initialNickName || currentState.profileImage != initialProfileImage
+            currentState.nickname != initialNickname || currentState.profileImage != initialProfileImage
 
         _editProfileState.update { it.copy(isNameCheck = isNameValid && isChanged) }
     }
 
-    private fun validateNickName(nickName: String?): Boolean {
-        return !nickName.isNullOrBlank() && nickName.length in 1..10 && nickName.all { it.isLetterOrDigit() }
+    private fun validateNickname(nickname: String?): Boolean {
+        return !nickname.isNullOrBlank() && nickname.length in 1..10 && nickname.all { it.isLetterOrDigit() }
     }
 
-    private fun saveNickName(nickName: String) {
+    private fun saveNickname(nickname: String) {
         executeInScope {
-            userInfoRepository.saveNickName(nickName)
+            userInfoRepository.saveNickname(nickname)
         }
     }
 

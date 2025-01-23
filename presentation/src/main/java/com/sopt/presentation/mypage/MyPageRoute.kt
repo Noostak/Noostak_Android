@@ -55,7 +55,7 @@ fun MyPageRoute(
             .collect { sideEffect ->
                 when (sideEffect) {
                     is MyPageSideEffect.NavigateToEditProfile -> navigateToEditProfile(
-                        sideEffect.nickName,
+                        sideEffect.nickname,
                         sideEffect.profileImage
                     )
 
@@ -95,7 +95,7 @@ fun MyPageRoute(
     }
 
     MyPageScreen(
-        nickName = userInfoState.nickName,
+        nickname = userInfoState.nickname,
         profileImage = userInfoState.profileImage,
         onProfileEditBtnClick = { myPageViewModel.navigateToEditProfile() },
         onPolicyBtnClick = {
@@ -108,7 +108,7 @@ fun MyPageRoute(
 
 @Composable
 fun MyPageScreen(
-    nickName: String,
+    nickname: String,
     profileImage: String?,
     onProfileEditBtnClick: () -> Unit = {},
     onPolicyBtnClick: () -> Unit = {},
@@ -151,7 +151,7 @@ fun MyPageScreen(
                     previewPlaceholder = painterResource(id = R.drawable.ic_profile)
                 )
                 Text(
-                    text = nickName,
+                    text = nickname,
                     color = NoostakTheme.colors.gray900,
                     style = NoostakTheme.typography.t4Bold
                 )
@@ -184,7 +184,7 @@ fun MyPageScreen(
 fun MyPageScreenPreview() {
     NoostakAndroidTheme {
         MyPageScreen(
-            nickName = "정해인",
+            nickname = "정해인",
             profileImage = null
         )
     }

@@ -20,13 +20,13 @@ fun NavController.navigateMyPage(navOptions: NavOptions? = null) {
 }
 
 fun NavController.navigateEditProfile(
-    nickName: String,
+    nickname: String,
     profileImage: String? = null,
     navOptions: NavOptions? = null
 ) {
     navigate(
         route = EditProfile(
-            nickName = nickName,
+            nickname = nickname,
             profileImage = profileImage.toString()
         ),
         navOptions = navOptions
@@ -38,9 +38,9 @@ fun NavGraphBuilder.myPageNavGraph(
 ) {
     composable<MyPage> {
         MyPageRoute(
-            navigateToEditProfile = { nickName, profileImage ->
+            navigateToEditProfile = { nickname, profileImage ->
                 navHostController.navigateEditProfile(
-                    nickName = nickName,
+                    nickname = nickname,
                     profileImage = profileImage
                 )
             }
@@ -50,7 +50,7 @@ fun NavGraphBuilder.myPageNavGraph(
     composable<EditProfile> {
         val args = it.toRoute<EditProfile>()
         EditProfileRoute(
-            nickName = args.nickName,
+            nickname = args.nickname,
             profileImage = args.profileImage,
             navigateUp = navHostController::navigateUp,
             navigateToMyPage = { navHostController.navigate(MyPage) }
@@ -63,6 +63,6 @@ data object MyPage : MainTabRoute
 
 @Serializable
 data class EditProfile(
-    val nickName: String,
+    val nickname: String,
     val profileImage: String
 ) : Route

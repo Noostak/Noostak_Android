@@ -49,7 +49,7 @@ import timber.log.Timber
 
 @Composable
 fun EditProfileRoute(
-    nickName: String,
+    nickname: String,
     profileImage: String?,
     navigateUp: () -> Unit,
     navigateToMyPage: () -> Unit,
@@ -62,8 +62,8 @@ fun EditProfileRoute(
 
     var isGalleryPermission by remember { mutableStateOf(false) }
 
-    LaunchedEffect(nickName) {
-        editProfileViewModel.setInitialUserInfo(nickName, profileImage)
+    LaunchedEffect(nickname) {
+        editProfileViewModel.setInitialUserInfo(nickname, profileImage)
     }
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -132,7 +132,7 @@ fun EditProfileRoute(
         editProfileState = editProfileState,
         onProfileCameraBtnClick = { editProfileViewModel.requestGalleryPicker() },
         onNameChange = { newName ->
-            editProfileViewModel.onNickNameChanged(newName)
+            editProfileViewModel.onNicknameChanged(newName)
         },
         onNextBtnClick = {
             editProfileViewModel.navigateToMyPage()
@@ -191,7 +191,7 @@ fun EditProfileScreen(
                 Spacer(modifier = Modifier.height(32.dp))
                 NoostakTextField(
                     textFieldType = TextFieldType.EDITPROFILE,
-                    value = userInfoState.nickName,
+                    value = userInfoState.nickname,
                     onValueChange = { onNameChange(it) },
                     maxLength = 10,
                     lengthTextStyle = NoostakTheme.typography.c3Regular
@@ -216,7 +216,7 @@ fun GroupCreateScreenPreview() {
         EditProfileScreen(
             onBackButtonClick = {},
             userInfoState = UserEntity(
-                nickName = "누스탁",
+                nickname = "누스탁",
                 profileImage = null
             ),
             editProfileState = EditProfileState(),

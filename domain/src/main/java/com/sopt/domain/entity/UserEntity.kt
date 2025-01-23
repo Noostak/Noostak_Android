@@ -5,6 +5,6 @@ data class UserEntity(
     val refreshToken: String? = null,
     val userId: Int? = null,
     val isAutoLogin: Boolean = false,
-    val nickName: String = "",
+    val nickname: String = "",
     val profileImage: String? = null
 )

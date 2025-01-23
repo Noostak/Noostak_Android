@@ -32,14 +32,14 @@ class MyPageViewModel @Inject constructor(
 
     private fun loadUserInfo() {
         executeInScope {
-            loadNickName()
+            loadNickname()
             loadProfileImage()
         }
     }
 
-    private suspend fun loadNickName() {
-        val nickName = userInfoRepository.getNickName().first()
-        _userInfoState.update { it.copy(nickName = nickName) }
+    private suspend fun loadNickname() {
+        val nickname = userInfoRepository.getNickname().first()
+        _userInfoState.update { it.copy(nickname = nickname) }
     }
 
     private suspend fun loadProfileImage() {
@@ -50,7 +50,7 @@ class MyPageViewModel @Inject constructor(
     fun navigateToEditProfile() {
         emitSideEffect(
             MyPageSideEffect.NavigateToEditProfile(
-                nickName = _userInfoState.value.nickName,
+                nickname = _userInfoState.value.nickname,
                 profileImage = _userInfoState.value.profileImage
             )
         )

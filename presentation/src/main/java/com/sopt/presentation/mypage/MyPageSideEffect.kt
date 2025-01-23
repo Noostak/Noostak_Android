@@ -4,7 +4,7 @@ import com.sopt.core.type.DialogType
 
 sealed interface MyPageSideEffect {
     data class NavigateToEditProfile(
-        val nickName: String,
+        val nickname: String,
         val profileImage: String?
     ) : MyPageSideEffect
 
