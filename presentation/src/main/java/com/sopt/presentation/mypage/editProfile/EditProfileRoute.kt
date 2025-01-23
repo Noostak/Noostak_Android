@@ -1,10 +1,6 @@
 package com.sopt.presentation.mypage.editProfile
 
-import android.Manifest
-import android.os.Build
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -43,9 +39,9 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
+import com.sopt.core.util.permission.RequestGalleryPermission
 import com.sopt.domain.entity.UserEntity
 import com.sopt.presentation.R
-import timber.log.Timber
 
 @Composable
 fun EditProfileRoute(
@@ -60,42 +56,26 @@ fun EditProfileRoute(
     val editProfileState by editProfileViewModel.editProfileState.collectAsStateWithLifecycle()
     val userInfoState by editProfileViewModel.userInfoState.collectAsStateWithLifecycle()
 
-    var isGalleryPermission by remember { mutableStateOf(false) }
-
-    LaunchedEffect(nickname) {
-        editProfileViewModel.setInitialUserInfo(nickname, profileImage)
-    }
-
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        try {
-            if (isGranted) {
-                editProfileViewModel.updateGalleryPermissionState(true)
-            } else {
-                isGalleryPermission = true
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        val permission = when {
-            Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_MEDIA_IMAGES
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_EXTERNAL_STORAGE
-            else -> return@LaunchedEffect
-        }
-
-        permissionLauncher.launch(permission)
-    }
-
     val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
         editProfileViewModel.updateProfileImage(uri.toString())
     }
 
     val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
         editProfileViewModel.updateProfileImage(uri.toString())
+    }
+
+    var isGalleryPermissionDenied by remember { mutableStateOf(false) }
+
+    LaunchedEffect(nickname) {
+        editProfileViewModel.setInitialUserInfo(nickname, profileImage)
+    }
+
+    RequestGalleryPermission { isGranted ->
+        if (isGranted) {
+            editProfileViewModel.updateGalleryPermissionState(true)
+        } else {
+            isGalleryPermissionDenied = true
+        }
     }
 
     LaunchedEffect(lifecycleOwner) {
@@ -107,7 +87,7 @@ fun EditProfileRoute(
                     is EditProfileSideEffect.NavigateToMyPage -> navigateToMyPage()
 
                     is EditProfileSideEffect.ShowGalleryToast ->
-                        isGalleryPermission = true
+                        isGalleryPermissionDenied = true
 
                     is EditProfileSideEffect.RequestImagePicker -> context.launchImagePicker(
                         galleryLauncher,
@@ -117,13 +97,13 @@ fun EditProfileRoute(
             }
     }
 
-    if (isGalleryPermission) {
+    if (isGalleryPermissionDenied) {
         Toast.makeText(
             context,
             stringResource(R.string.toast_permission_gallery),
             Toast.LENGTH_SHORT
         ).show()
-        isGalleryPermission = false
+        isGalleryPermissionDenied = false
     }
 
     EditProfileScreen(
