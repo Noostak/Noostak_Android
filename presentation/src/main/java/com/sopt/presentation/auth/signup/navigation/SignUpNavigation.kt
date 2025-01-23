@@ -28,6 +28,7 @@ fun NavGraphBuilder.signUpNavGraph(
         SignUpRoute(
             authId = args.authId,
             navigateToCheckInvite = { name ->
+                navHostController.popBackStack()
                 navHostController.navigateCheckInvite(name)
             }
         )

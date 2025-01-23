@@ -31,8 +31,14 @@ fun NavGraphBuilder.checkInviteNavGraph(
         val args = it.toRoute<CheckInvite>()
         CheckInviteRoute(
             name = args.name,
-            navigateToGroup = { navHostController.navigateGroup() },
-            navigateToInputGroupCode = { navHostController.navigateInputGroupCode() }
+            navigateToGroup = {
+                navHostController.popBackStack()
+                navHostController.navigateGroup()
+            },
+            navigateToInputGroupCode = {
+                navHostController.popBackStack()
+                navHostController.navigateInputGroupCode()
+            }
         )
     }
 }

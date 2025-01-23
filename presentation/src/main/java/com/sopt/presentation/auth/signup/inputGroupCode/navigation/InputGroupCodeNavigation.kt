@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sopt.core.navigation.Route
+import com.sopt.presentation.auth.login.navigation.Login
 import com.sopt.presentation.auth.signup.inputGroupCode.InputGroupCodeRoute
 import com.sopt.presentation.group.navigation.navigateGroup
 import kotlinx.serialization.Serializable
@@ -14,7 +15,9 @@ fun NavController.navigateInputGroupCode(
 ) {
     navigate(
         route = InputGroupCode,
-        navOptions = navOptions
+        navOptions = navOptions ?: NavOptions.Builder()
+            .setPopUpTo(Login, inclusive = false)
+            .build()
     )
 }
 
@@ -24,7 +27,10 @@ fun NavGraphBuilder.inputGroupCodeNavGraph(
     composable<InputGroupCode> {
         InputGroupCodeRoute(
             navigateUp = { navHostController.navigateUp() },
-            navigateToGroup = { navHostController.navigateGroup() }
+            navigateToGroup = {
+                navHostController.popBackStack()
+                navHostController.navigateGroup()
+            }
         )
     }
 }

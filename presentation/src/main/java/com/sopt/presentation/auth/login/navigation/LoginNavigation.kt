@@ -49,6 +49,7 @@ fun NavGraphBuilder.loginNavGraph(
         OnboardingRoute(
             authId = args.authId,
             navigateToSignUp = { authId ->
+                navHostController.popBackStack()
                 navHostController.navigateSignUp(authId)
             }
         )
