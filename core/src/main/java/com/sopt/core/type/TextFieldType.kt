@@ -14,5 +14,8 @@ enum class TextFieldType(
     ),
     CALENDAR(
         placeholder = R.string.tf_calendar_info_placeholder
+    ),
+    EDITPROFILE(
+        placeholder = R.string.tf_edit_profile_placeholder
     )
 }

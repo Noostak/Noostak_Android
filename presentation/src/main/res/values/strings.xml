@@ -31,7 +31,10 @@
 
     <!-- 회원가입 -->
     <string name="tv_signup_profile">프로필 설정</string>
-    <string name="toast_permission_gallery">갤러리 권한이 필요합니다.</string>
+    <string name="tv_signup_example_name">예) 홍길동</string>
+    <string name="hint_signup_name">이름을 입력해주세요</string>
+    <string name="tv_signup_count">%1$d / %2$d</string>
+    <string name="toast_permission_gallery">설정에서 갤러리 권한을 설정하세요.</string>
 
     <!-- 그룹 초대 입력 -->
     <string name="tv_invite_description">환영해요 %1$s님!\n그룹코드를 받으셨나요?</string>
