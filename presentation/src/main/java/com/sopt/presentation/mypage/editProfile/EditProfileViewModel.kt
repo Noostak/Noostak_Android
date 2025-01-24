@@ -39,7 +39,7 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun navigateToMyPage() {
-        executeInScope {
+        viewModelScope.launch {
             saveUserInfo()
             withContext(Dispatchers.Main) {
                 emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
@@ -85,9 +85,5 @@ class EditProfileViewModel @Inject constructor(
     fun updateProfileImage(imageUri: String?) {
         _userInfoState.update { it.copy(profileImage = imageUri) }
         validateChanges()
-    }
-
-    private fun executeInScope(block: suspend () -> Unit) {
-        viewModelScope.launch { block() }
     }
 }
