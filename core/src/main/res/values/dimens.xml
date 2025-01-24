@@ -5,6 +5,7 @@
     <dimen name="user_chip_vertical_padding">6dp</dimen>
     <dimen name="category_chip_horizontal_padding">15dp</dimen>
     <dimen name="category_chip_vertical_padding">6dp</dimen>
+    <dimen name="calendar_chip_corner_padding">20dp</dimen>
 
     <dimen name="fab_radius">30dp</dimen>
     <dimen name="fab_shadow">4dp</dimen>

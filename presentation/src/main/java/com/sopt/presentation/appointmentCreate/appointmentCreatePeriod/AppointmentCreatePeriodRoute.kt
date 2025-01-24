@@ -1,0 +1,282 @@
+package com.sopt.presentation.appointmentCreate.appointmentCreatePeriod
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.calendar.NoostakCalendar
+import com.sopt.core.designsystem.component.progressbar.NoostakProgressBar
+import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
+import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
+import com.sopt.core.designsystem.component.text.NoostakHeaderText
+import com.sopt.core.designsystem.component.toggle.NoostakSwitch
+import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.theme.NoostakAndroidTheme
+import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.presentation.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+@Composable
+fun AppointmentCreatePeriodRoute(
+    groupId: Long,
+    appointmentName: String,
+    appointmentCategory: String,
+    appointmentDuration: Int,
+    navigateUp: () -> Unit,
+    navigateToTimePicker: (Long, String, String, Int, Boolean, List<String>) -> Unit,
+    calendarPeriodViewModel: AppointmentCreatePeriodViewModel = hiltViewModel()
+) {
+    val snackBarHostState = remember { SnackbarHostState() }
+    val snackBarVisible = remember { mutableStateOf(false) }
+    val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    val onShowSnackBar: (String) -> Unit = { msg ->
+        coroutineScope.launch {
+            snackBarVisible.value = true
+            val job = launch { snackBarHostState.showSnackbar(message = msg) }
+            delay(SNACK_BAR_DURATION)
+            job.cancel()
+            snackBarVisible.value = false
+        }
+    }
+
+    LaunchedEffect(key1 = calendarPeriodViewModel.sideEffects) {
+        calendarPeriodViewModel.sideEffects.collect { sideEffect ->
+            when (sideEffect) {
+                is AppointmentCreatePeriodSideEffect.NavigateToTimePicker -> {
+                    navigateToTimePicker(
+                        sideEffect.groupId,
+                        sideEffect.appointmentName,
+                        sideEffect.appointmentCategory,
+                        sideEffect.appointmentDuration,
+                        sideEffect.isSingleDateMode,
+                        sideEffect.appointmentDate
+                    )
+                }
+
+                is AppointmentCreatePeriodSideEffect.ShowSnackBar -> onShowSnackBar(
+                    context.getString(
+                        sideEffect.message
+                    )
+                )
+
+                is AppointmentCreatePeriodSideEffect.NavigateUp -> {
+                    navigateUp()
+                }
+            }
+        }
+    }
+
+    AppointmentCreatePeriodScreen(
+        snackBarHostState = snackBarHostState,
+        snackBarVisible = snackBarVisible,
+        showSnackBar = {
+            coroutineScope.launch {
+                calendarPeriodViewModel.showSnackBar()
+            }
+        },
+        onBackButtonClick = calendarPeriodViewModel::navigateUp,
+        onButtonClick = calendarPeriodViewModel::navigateToAppointmentCreateTimePicker,
+        appointmentName = appointmentName,
+        appointmentCategory = appointmentCategory,
+        appointmentDuration = appointmentDuration,
+        appointmentDate = calendarPeriodViewModel.days,
+        groupId = groupId
+    )
+}
+
+@Composable
+fun AppointmentCreatePeriodScreen(
+    snackBarHostState: SnackbarHostState,
+    snackBarVisible: MutableState<Boolean>,
+    showSnackBar: () -> Unit,
+    onButtonClick: (Long, String, String, Int, Boolean, List<String>) -> Unit,
+    onBackButtonClick: () -> Unit,
+    appointmentName: String,
+    appointmentCategory: String,
+    appointmentDuration: Int,
+    appointmentDate: List<String>,
+    groupId: Long
+) {
+    var startDate by remember { mutableStateOf("") }
+    var endDate by remember { mutableStateOf("") }
+    var dates by remember { mutableStateOf(listOf<String>()) }
+    var isSingleDateMode by remember { mutableStateOf(false) }
+    var isButtonEnabled by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isSingleDateMode, dates) {
+        isButtonEnabled = if (isSingleDateMode) {
+            dates.size in 1..7
+        } else {
+            dates.isNotEmpty()
+        }
+    }
+
+    Scaffold(
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding(),
+        topBar = {
+            NoostakTopAppBar(
+                title = stringResource(R.string.text_calendar_appointment),
+                isIconVisible = true,
+                onBackButtonClick = { onBackButtonClick() }
+            )
+        },
+        snackbarHost = {
+            AnimatedVisibility(
+                visible = snackBarVisible.value,
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                SnackbarHost(
+                    modifier = Modifier.padding(bottom = 96.dp),
+                    hostState = snackBarHostState,
+                    snackbar = { snackBarData ->
+                        NoostakSnackBar(
+                            message = snackBarData.visuals.message,
+                            textStyle = NoostakTheme.typography.c3SemiBold,
+                            textColor = NoostakTheme.colors.red01,
+                            backgroundColor = NoostakTheme.colors.pink
+                        )
+                    }
+                )
+            }
+        }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(dimensionResource(id = R.dimen.default_padding))
+        ) {
+            Spacer(modifier = Modifier.height(18.dp))
+            NoostakProgressBar(progressBar = listOf(false, true, false))
+            NoostakHeaderText(text = stringResource(R.string.text_calendar_appointment_choose))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 18.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(R.string.text_calendar_appointment_one_day),
+                    style = NoostakTheme.typography.b2Regular,
+                    textAlign = TextAlign.Start,
+                    color = NoostakTheme.colors.gray900
+                )
+                NoostakSwitch(
+                    checked = isSingleDateMode,
+                    onCheckedChange = {
+                        isSingleDateMode = it
+                        dates = emptyList()
+                        startDate = ""
+                        endDate = ""
+                    }
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            HorizontalDivider(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 17.dp),
+                thickness = 1.dp,
+                color = NoostakTheme.colors.gray200
+            )
+            NoostakCalendar(
+                start = startDate,
+                end = endDate,
+                isSingleDate = isSingleDateMode,
+                isRangeSelected = { selectedDates ->
+                    dates = selectedDates
+                    if (isSingleDateMode) {
+                        startDate = ""
+                        endDate = ""
+                    } else {
+                        if (selectedDates.isNotEmpty()) {
+                            startDate = selectedDates.first()
+                            endDate = selectedDates.last()
+                        }
+                    }
+                },
+                days = appointmentDate,
+                onShowMessageChange = { showSnackBar() }
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            NoostakBottomButton(
+                text = stringResource(R.string.text_calendar_appointment_next),
+                onButtonClick = {
+                    onButtonClick(
+                        groupId,
+                        appointmentName,
+                        appointmentCategory,
+                        appointmentDuration,
+                        isSingleDateMode,
+                        dates
+                    )
+                },
+                isEnabled = isButtonEnabled,
+                deactivateColor = NoostakTheme.colors.gray500,
+                activateColor = NoostakTheme.colors.gray900
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AppointmentCreatePeriodScreenPreview() {
+    NoostakAndroidTheme {
+        val snackBarHostState = remember { SnackbarHostState() }
+        val snackBarVisible = remember { mutableStateOf(false) }
+        AppointmentCreatePeriodScreen(
+            snackBarHostState = snackBarHostState,
+            snackBarVisible = snackBarVisible,
+            showSnackBar = {
+                snackBarVisible.value = true
+            },
+            onButtonClick = { _, _, _, _, _, _ -> },
+            onBackButtonClick = { },
+            appointmentName = "약속 이름",
+            appointmentCategory = "약속 카테고리",
+            appointmentDuration = 1,
+            appointmentDate = listOf("일", "월", "화", "수", "목", "금", "토"),
+            groupId = 0
+        )
+    }
+}

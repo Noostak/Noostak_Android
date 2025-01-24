@@ -45,6 +45,10 @@ class GroupDetailViewModel @Inject constructor(
         )
     }
 
+    fun navigateToAppointmentCreate(groupId: Long) {
+        emitSideEffect(GroupDetailSideEffect.NavigateToAppointmentCreate(groupId))
+    }
+
     val tabs = immutableListOf(
         context.stringOf(R.string.tab_group_detail_progress),
         context.stringOf(R.string.tab_group_detail_confirmed)

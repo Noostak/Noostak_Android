@@ -4,20 +4,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.sopt.core.designsystem.theme.NoostakAndroidTheme
-import com.sopt.core.designsystem.theme.NoostakTheme
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun CalendarRoute(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    calendarViewModel: CalendarViewModel = hiltViewModel()
 ) {
-    CalendarScreen(paddingValues = paddingValues)
+    LaunchedEffect(key1 = calendarViewModel.sideEffects) {
+        calendarViewModel.sideEffects.collect { sideEffect ->
+        }
+    }
+
+    CalendarScreen(
+        paddingValues = paddingValues
+    )
 }
 
 @Composable
@@ -25,24 +29,10 @@ fun CalendarScreen(
     paddingValues: PaddingValues = PaddingValues()
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues),
+        modifier = androidx.compose.ui.Modifier
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "Calendar Screen",
-            style = NoostakTheme.typography.h1Bold,
-            color = NoostakTheme.colors.blue600
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun CalendarScreenPreview() {
-    NoostakAndroidTheme {
-        CalendarScreen()
     }
 }

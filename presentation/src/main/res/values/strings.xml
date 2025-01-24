@@ -112,6 +112,32 @@
     <string name="btn_group_create_success_code_send">그룹 코드 보내기</string>
     <string name="sb_group_create_success_code_copy">그룹 코드가 복사되었습니다</string>
 
+    <!-- Calendar -->
+    <string name="text_calendar_appointment">약속 만들기</string>
+    <string name="text_calendar_appointment_duration">시간</string>
+    <string name="text_calendar_appointment_write">약속 정보를 입력해주세요</string>
+    <string name="text_calendar_appointment_name">약속 이름</string>
+    <string name="text_calendar_appointment_category">약속 카테고리</string>
+    <string name="text_calendar_appointment_time">소요시간</string>
+    <string name="text_calendar_appointment_choose">약속을 생성할 기간을\n선택해주세요</string>
+    <string name="text_calendar_appointment_mon">월</string>
+    <string name="text_calendar_appointment_tues">화</string>
+    <string name="text_calendar_appointment_wed">수</string>
+    <string name="text_calendar_appointment_thurs">목</string>
+    <string name="text_calendar_appointment_fri">금</string>
+    <string name="text_calendar_appointment_sat">토</string>
+    <string name="text_calendar_appointment_sun">일</string>
+    <string name="text_calendar_appointment_time_text">시간</string>
+    <string name="text_calendar_appointment_7days">최대 7일까지 선택할 수 있어요</string>
+    <string name="text_calendar_appointment_one_day">하루씩 설정하기</string>
+    <string name="text_calendar_appointment_next">다음</string>
+    <string name="text_calendar_appointment_time_choose">시간대를 선택해주세요</string>
+    <string name="text_calendar_appointment_time_check">시간대 설정</string>
+    <string name="text_calendar_appointment_time_check_btn">소요시간 이상으로 선택해주세요</string>
+    <string name="text_calendar_appointment_time_check_btn_limit">24시간 선택은 불가능합니다</string>
+    <string name="text_calendar_appointment_time_select">시간대는 상관 없어요</string>
+    <string name="sb_appointment_create_time_picker">%1$d시간 이상 선택해주세요</string>
+
     <!-- 약속 만들기_약속 등록 확인 -->
     <string name="appbar_appointment_submit">약속 만들기</string>
     <string name="header_appointment_submit">이대로 약속을 등록할까요?</string>
