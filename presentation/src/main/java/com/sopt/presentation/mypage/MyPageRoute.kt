@@ -1,6 +1,7 @@
 package com.sopt.presentation.mypage
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -41,6 +42,7 @@ import com.sopt.presentation.mypage.component.MyPageProfileEditButton
 
 @Composable
 fun MyPageRoute(
+    paddingValues: PaddingValues,
     navigateToEditProfile: (String, String?) -> Unit,
     myPageViewModel: MyPageViewModel = hiltViewModel()
 ) {
@@ -95,6 +97,7 @@ fun MyPageRoute(
     }
 
     MyPageScreen(
+        paddingValues = paddingValues,
         nickname = userInfoState.nickname,
         profileImage = userInfoState.profileImage,
         onProfileEditBtnClick = { myPageViewModel.navigateToEditProfile() },
@@ -108,6 +111,7 @@ fun MyPageRoute(
 
 @Composable
 fun MyPageScreen(
+    paddingValues: PaddingValues = PaddingValues(),
     nickname: String,
     profileImage: String?,
     onProfileEditBtnClick: () -> Unit = {},
@@ -118,7 +122,8 @@ fun MyPageScreen(
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .padding(paddingValues),
         topBar = {
             NoostakTopAppBar(
                 title = stringResource(com.sopt.presentation.R.string.appbar_mu_page_title),

@@ -12,6 +12,7 @@ import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.sopt.core.type.DialogType
 import com.sopt.core.type.SocialType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.UserEntity
@@ -32,15 +33,11 @@ class LoginViewModel @Inject constructor(
     private val userInfoRepository: UserInfoRepository
 ) : BaseViewModel<LoginSideEffect>() {
 
-    private val _showDialog = MutableStateFlow(false)
-    val showDialog: StateFlow<Boolean> get() = _showDialog
+    private val _showDialog = MutableStateFlow(Pair(DialogType.LOGIN_GOOGLE, false))
+    val showDialog: StateFlow<Pair<DialogType, Boolean>> get() = _showDialog
 
-    private val _dialogDescription = MutableStateFlow("")
-    val dialogDescription: StateFlow<String> get() = _dialogDescription
-
-    fun showFailLoginDialog(show: Boolean, description: String = "") {
-        _showDialog.update { show }
-        _dialogDescription.update { description }
+    fun showDialog(dialogType: DialogType, isVisible: Boolean) {
+        _showDialog.update { it.copy(first = dialogType, second = isVisible) }
     }
 
     // Kakao Login
@@ -65,7 +62,7 @@ class LoginViewModel @Inject constructor(
 
                 error != null -> {
                     handleError(error, R.string.toast_kakao_login_failed)
-                    showFailLoginDialog(true, description = KAKAO)
+                    showDialog(DialogType.LOGIN_KAKAO, true)
                 }
             }
         }
@@ -91,7 +88,7 @@ class LoginViewModel @Inject constructor(
                 handleGoogleLoginResult(result.credential)
             }.onFailure { exception ->
                 handleError(exception, R.string.toast_google_login_failed)
-                showFailLoginDialog(true, description = GOOGLE)
+                showDialog(DialogType.LOGIN_GOOGLE, true)
             }
         }
     }
@@ -105,7 +102,7 @@ class LoginViewModel @Inject constructor(
                 R.string.toast_google_login_success
             )
         } else {
-            showFailLoginDialog(true, description = GOOGLE)
+            showDialog(DialogType.LOGIN_GOOGLE, true)
         }
     }
 
