@@ -45,7 +45,7 @@ fun LoginRoute(
         loginViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
                 is LoginSideEffect.NavigateToHome -> navigateToHome()
-                is LoginSideEffect.NavigateOnboarding -> navigateToOnboarding(sideEffect.authId)
+                is LoginSideEffect.NavigateToOnboarding -> navigateToOnboarding(sideEffect.authId)
                 is LoginSideEffect.ShowToast -> context.toast(sideEffect.message)
             }
         }
