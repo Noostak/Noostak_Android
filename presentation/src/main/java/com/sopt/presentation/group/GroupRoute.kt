@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
@@ -67,8 +66,14 @@ fun GroupRoute(
         GroupFloatingActionDialog(
             onClick = { groupViewModel.showFloatingActionButtonDialog(false) },
             onDismissRequest = { groupViewModel.showFloatingActionButtonDialog(false) },
-            onCreateGroupClick = groupViewModel::navigateToGroupCreate,
-            onEnterGroupClick = groupViewModel::navigateToGroupEnter
+            onCreateGroupClick = {
+                groupViewModel.navigateToGroupCreate()
+                groupViewModel.showFloatingActionButtonDialog(false)
+            },
+            onEnterGroupClick = {
+                groupViewModel.navigateToGroupEnter()
+                groupViewModel.showFloatingActionButtonDialog(false)
+            }
         )
     }
 
