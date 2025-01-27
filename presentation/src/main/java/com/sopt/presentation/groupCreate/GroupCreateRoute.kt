@@ -2,23 +2,29 @@ package com.sopt.presentation.groupCreate
 
 import android.Manifest
 import android.os.Build
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +42,8 @@ import androidx.lifecycle.flowWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.image.ProfileImagePicker
+import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
+import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.component.textfield.NoostakTextField
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -45,6 +53,8 @@ import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
 import com.sopt.domain.entity.GroupProfileEntity
 import com.sopt.presentation.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
@@ -60,6 +70,20 @@ fun GroupCreateRoute(
     var isGalleryPermission by remember { mutableStateOf(false) }
 
     val showDialog by groupCreateViewModel.showDialog.collectAsStateWithLifecycle()
+
+    val snackBarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    val snackBarVisible = remember { mutableStateOf(false) }
+
+    val onShowPermissionGallerySnackBar: (message: String) -> Unit = {
+        coroutineScope.launch {
+            snackBarVisible.value = true
+            val job = launch { snackBarHostState.showSnackbar(message = it) }
+            delay(SNACK_BAR_DURATION)
+            job.cancel()
+            snackBarVisible.value = false
+        }
+    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
@@ -99,7 +123,7 @@ fun GroupCreateRoute(
                 when (sideEffect) {
                     is GroupCreateSideEffect.NavigateToGroupCreateSuccess -> navigateToGroupCreateSuccess()
 
-                    is GroupCreateSideEffect.ShowGalleryToast ->
+                    is GroupCreateSideEffect.ShowSnackBar ->
                         isGalleryPermission = true
 
                     is GroupCreateSideEffect.ShowDialog -> groupCreateViewModel.showDialog(true)
@@ -113,11 +137,7 @@ fun GroupCreateRoute(
     }
 
     if (isGalleryPermission) {
-        Toast.makeText(
-            context,
-            "설정에서 갤러리 권한을 설정하세요",
-            Toast.LENGTH_SHORT
-        ).show()
+        onShowPermissionGallerySnackBar(context.getString(R.string.sb_permission_gallery))
         isGalleryPermission = false
     }
 
@@ -129,6 +149,31 @@ fun GroupCreateRoute(
             },
             onDismissRequest = { groupCreateViewModel.showDialog(false) }
         )
+    }
+
+    AnimatedVisibility(
+        visible = snackBarVisible.value,
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it })
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            SnackbarHost(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 96.dp),
+                hostState = snackBarHostState,
+                snackbar = { snackBarData ->
+                    NoostakSnackBar(
+                        message = snackBarData.visuals.message,
+                        textStyle = NoostakTheme.typography.c3SemiBold,
+                        textColor = NoostakTheme.colors.red01,
+                        backgroundColor = NoostakTheme.colors.pink
+                    )
+                }
+            )
+        }
     }
 
     GroupCreateScreen(
