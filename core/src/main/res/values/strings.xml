@@ -27,6 +27,9 @@
     <string name="icon_noostak_text_field_descrition">Delete Profile Name</string>
     <string name="text_noostak_text_field_edit_profile_empty">이름을 입력해주세요!</string>
 
+    <!-- Time Text Field -->
+    <string name="text_time_text_field">최대 10시간까지 가능해요</string>
+
     <!-- Profile Image Picker -->
     <string name="image_profile_image_picker_description">Add Profile Image By Camera Button</string>
     <string name="category_chip_important">중요</string>
@@ -44,5 +47,12 @@
     <string name="text_dialog_type_confirm_withdrawal">탈퇴하기</string>
     <string name="text_dialog_type_login_kakao_content">네트워크 문제로\n카카오톡 로그인을 연결하지 못했습니다.\n다시 시도하시겠습니까?</string>
     <string name="text_dialog_type_login_google_content">네트워크 문제로\nGoogle 로그인을 연결하지 못했습니다.\n다시 시도하시겠습니까?</string>
+    <string name="text_dialog_type_appointment_content">아직 등록된 일정이 없어요.\n일정을 등록하러 갈까요?</string>
+    <string name="text_dialog_type_appointment_dismiss">나중에 등록하기</string>
+    <string name="text_dialog_type_appointment_confirm">일정 등록하기</string>
 
+    <!-- Noostak Time Picker -->
+    <string name="text_noostak_time_picker_start">약속 시작 시간</string>
+    <string name="text_noostak_time_picker_end">약속 종료 시간</string>
+    <string name="text_noostak_time_picker_wave">~</string>
 </resources>

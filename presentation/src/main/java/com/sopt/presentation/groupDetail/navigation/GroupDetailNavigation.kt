@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
 import com.sopt.presentation.appointment.navigation.navigateAppointment
+import com.sopt.presentation.appointmentCreate.navigation.navigateAppointmentCreateInfo
 import com.sopt.presentation.group.navigation.Group
 import com.sopt.presentation.groupDetail.GroupDetailRoute
 import com.sopt.presentation.groupDetail.confirmedDetail.ConfirmedDetailRoute
@@ -78,6 +79,9 @@ fun NavGraphBuilder.groupDetailNavGraph(
                     appointmentsId = appointmentsId,
                     appointmentName = appointmentName
                 )
+            },
+            navigateToAppointmentCreate = { groupId ->
+                navHostController.navigateAppointmentCreateInfo(groupId = groupId)
             }
         )
     }

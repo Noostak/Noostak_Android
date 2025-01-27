@@ -32,5 +32,10 @@ enum class DialogType(
         content = R.string.text_dialog_type_withdrawal_content,
         dismissText = R.string.text_dialog_type_dismiss_cancel,
         confirmText = R.string.text_dialog_type_confirm_withdrawal
+    ),
+    APPOINTMENT(
+        content = R.string.text_dialog_type_appointment_content,
+        dismissText = R.string.text_dialog_type_appointment_dismiss,
+        confirmText = R.string.text_dialog_type_appointment_confirm
     )
 }
