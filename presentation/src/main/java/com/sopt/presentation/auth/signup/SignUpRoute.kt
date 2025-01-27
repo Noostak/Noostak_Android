@@ -60,7 +60,7 @@ fun SignUpRoute(
                 viewModel.updateGalleryPermissionState(true)
             } else {
                 isGalleryPermission = false
-                context.toast(R.string.toast_permission_gallery)
+                context.toast(R.string.sb_permission_gallery)
             }
         } catch (e: Exception) {
             Timber.e(e)
