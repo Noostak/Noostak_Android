@@ -100,7 +100,7 @@ fun EditProfileRoute(
     if (isGalleryPermissionDenied) {
         Toast.makeText(
             context,
-            stringResource(R.string.toast_permission_gallery),
+            stringResource(R.string.sb_permission_gallery),
             Toast.LENGTH_SHORT
         ).show()
         isGalleryPermissionDenied = false

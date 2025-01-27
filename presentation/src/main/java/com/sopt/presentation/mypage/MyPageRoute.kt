@@ -1,5 +1,7 @@
 package com.sopt.presentation.mypage
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -44,8 +47,10 @@ import com.sopt.presentation.mypage.component.MyPageProfileEditButton
 fun MyPageRoute(
     paddingValues: PaddingValues,
     navigateToEditProfile: (String, String?) -> Unit,
+    navigateToLogin: () -> Unit,
     myPageViewModel: MyPageViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val userInfoState by myPageViewModel.userInfoState.collectAsStateWithLifecycle()
@@ -60,6 +65,8 @@ fun MyPageRoute(
                         sideEffect.nickname,
                         sideEffect.profileImage
                     )
+
+                    is MyPageSideEffect.NavigateToLogin -> navigateToLogin()
 
                     is MyPageSideEffect.ShowDialog -> {
                         when (sideEffect.dialogType) {
@@ -80,7 +87,8 @@ fun MyPageRoute(
         NoostakDialog(
             dialogType = DialogType.LOGOUT,
             onClick = {
-                // 추가해야 함
+                myPageViewModel.clearInfo()
+                navigateToLogin()
             },
             onDismissRequest = { myPageViewModel.showDialog(DialogType.LOGOUT, false) }
         )
@@ -102,7 +110,10 @@ fun MyPageRoute(
         profileImage = userInfoState.profileImage,
         onProfileEditBtnClick = { myPageViewModel.navigateToEditProfile() },
         onPolicyBtnClick = {
-            // browser intent 추가해야 함
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://tough-sled-044.notion.site/5a1ad92b5b484747a6ddd97e939e86f7?pvs=4")
+            ).let { context.startActivity(it) }
         },
         onLogoutBtnClick = { myPageViewModel.triggerDialog(DialogType.LOGOUT) },
         onWithdrawalBtnClick = { myPageViewModel.triggerDialog(DialogType.WITHDRAWAL) }
@@ -112,7 +123,7 @@ fun MyPageRoute(
 @Composable
 fun MyPageScreen(
     paddingValues: PaddingValues = PaddingValues(),
-    nickname: String,
+    nickname: String = "",
     profileImage: String?,
     onProfileEditBtnClick: () -> Unit = {},
     onPolicyBtnClick: () -> Unit = {},
@@ -143,7 +154,9 @@ fun MyPageScreen(
                 )
             ) {
                 GlideImage(
-                    imageModel = { profileImage?.takeIf { it.isNotBlank() } ?: R.drawable.ic_profile },
+                    imageModel = {
+                        profileImage?.takeIf { it.isNotBlank() } ?: R.drawable.ic_profile
+                    },
                     imageOptions = ImageOptions(
                         contentScale = ContentScale.Crop,
                         alignment = Alignment.Center

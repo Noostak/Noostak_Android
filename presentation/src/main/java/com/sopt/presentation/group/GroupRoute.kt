@@ -2,12 +2,11 @@ package com.sopt.presentation.group
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
@@ -39,6 +38,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun GroupRoute(
+    paddingValues: PaddingValues,
     groupViewModel: GroupViewModel = hiltViewModel(),
     navigateToGroupDetail: (Long) -> Unit,
     navigateToGroupCreate: () -> Unit,
@@ -66,8 +66,14 @@ fun GroupRoute(
         GroupFloatingActionDialog(
             onClick = { groupViewModel.showFloatingActionButtonDialog(false) },
             onDismissRequest = { groupViewModel.showFloatingActionButtonDialog(false) },
-            onCreateGroupClick = groupViewModel::navigateToGroupCreate,
-            onEnterGroupClick = groupViewModel::navigateToGroupEnter
+            onCreateGroupClick = {
+                groupViewModel.navigateToGroupCreate()
+                groupViewModel.showFloatingActionButtonDialog(false)
+            },
+            onEnterGroupClick = {
+                groupViewModel.navigateToGroupEnter()
+                groupViewModel.showFloatingActionButtonDialog(false)
+            }
         )
     }
 
@@ -79,6 +85,7 @@ fun GroupRoute(
         )
 
         else -> GroupScreen(
+            paddingValues = paddingValues,
             groupItems = groupItems,
             isFabClicked = groupViewModel.showDialog,
             onItemClick = groupViewModel::navigateToGroupDetail,
@@ -90,6 +97,7 @@ fun GroupRoute(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
 @Composable
 fun GroupScreen(
+    paddingValues: PaddingValues = PaddingValues(),
     groupItems: List<GroupEntity>,
     isFabClicked: StateFlow<Boolean>,
     onItemClick: (Long) -> Unit,
@@ -97,8 +105,7 @@ fun GroupScreen(
 ) {
     Scaffold(
         modifier = Modifier
-            .statusBarsPadding()
-            .navigationBarsPadding(),
+            .padding(paddingValues),
         topBar = {
             NoostakTopAppBar(
                 title = stringResource(R.string.bottom_nav_group),
@@ -110,7 +117,7 @@ fun GroupScreen(
             if (!isFabClicked.value) {
                 NoostakFloatingActionButton(
                     title = stringResource(R.string.fab_group_create),
-                    modifier = Modifier.offset(x = 0.dp, y = (-74).dp)
+                    modifier = Modifier.offset(x = 0.dp, y = (-22).dp)
                 ) {
                     onFabClick()
                 }
@@ -124,12 +131,14 @@ fun GroupScreen(
                     .padding(innerPadding)
                     .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
             ) {
-                items(items = groupItems, key = { item -> item.groupId }) {
-                    GroupItem(it, onItemClick)
-                    HorizontalDivider(
-                        thickness = 1.dp,
-                        color = NoostakTheme.colors.gray100
-                    )
+                itemsIndexed(items = groupItems, key = { _, item -> item.groupId }) { index, item ->
+                    GroupItem(item, onItemClick)
+                    if (index != groupItems.lastIndex) {
+                        HorizontalDivider(
+                            thickness = 1.dp,
+                            color = NoostakTheme.colors.gray100
+                        )
+                    }
                 }
             }
         }

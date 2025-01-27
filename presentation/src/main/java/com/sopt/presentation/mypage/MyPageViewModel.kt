@@ -8,7 +8,7 @@ import com.sopt.domain.repository.UserInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,20 +31,30 @@ class MyPageViewModel @Inject constructor(
     }
 
     private fun loadUserInfo() {
-        executeInScope {
-            loadNickname()
-            loadProfileImage()
+        loadNickname()
+        loadProfileImage()
+    }
+
+    private fun loadNickname() {
+        viewModelScope.launch {
+            userInfoRepository.getNickname().collectLatest { newNickname ->
+                _userInfoState.update { it.copy(nickname = newNickname) }
+            }
         }
     }
 
-    private suspend fun loadNickname() {
-        val nickname = userInfoRepository.getNickname().first()
-        _userInfoState.update { it.copy(nickname = nickname) }
+    private fun loadProfileImage() {
+        viewModelScope.launch {
+            userInfoRepository.getProfileImage().collectLatest { newImageUrl ->
+                _userInfoState.update { it.copy(profileImage = newImageUrl) }
+            }
+        }
     }
 
-    private suspend fun loadProfileImage() {
-        val profileImageUrl = userInfoRepository.getProfileImage().first()
-        _userInfoState.update { it.copy(profileImage = profileImageUrl) }
+    fun clearInfo() {
+        viewModelScope.launch {
+            userInfoRepository.clearAll()
+        }
     }
 
     fun navigateToEditProfile() {
@@ -70,9 +80,5 @@ class MyPageViewModel @Inject constructor(
         } else if (dialogType == DialogType.WITHDRAWAL) {
             emitSideEffect(MyPageSideEffect.ShowDialog(DialogType.WITHDRAWAL))
         }
-    }
-
-    private fun executeInScope(block: suspend () -> Unit) {
-        viewModelScope.launch { block() }
     }
 }
