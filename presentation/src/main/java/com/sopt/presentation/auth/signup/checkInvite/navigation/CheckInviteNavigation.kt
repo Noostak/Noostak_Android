@@ -32,11 +32,9 @@ fun NavGraphBuilder.checkInviteNavGraph(
         CheckInviteRoute(
             name = args.name,
             navigateToGroup = {
-                navHostController.popBackStack()
                 navHostController.navigateGroup()
             },
             navigateToInputGroupCode = {
-                navHostController.popBackStack()
                 navHostController.navigateInputGroupCode()
             }
         )
