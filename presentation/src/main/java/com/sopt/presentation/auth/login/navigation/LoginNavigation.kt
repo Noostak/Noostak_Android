@@ -27,7 +27,9 @@ fun NavController.navigateOnboarding(
 ) {
     navigate(
         route = Onboarding(authId = authId),
-        navOptions = navOptions
+        navOptions = navOptions ?: NavOptions.Builder()
+            .setPopUpTo(Login, inclusive = false)
+            .build()
     )
 }
 
@@ -49,7 +51,6 @@ fun NavGraphBuilder.loginNavGraph(
         OnboardingRoute(
             authId = args.authId,
             navigateToSignUp = { authId ->
-                navHostController.popBackStack()
                 navHostController.navigateSignUp(authId)
             }
         )
