@@ -63,7 +63,7 @@ class EditProfileViewModel @Inject constructor(
     }
 
     private fun saveNickname(nickname: String) {
-        executeInScope {
+        viewModelScope.launch {
             userInfoRepository.saveNickname(nickname)
         }
     }
@@ -81,14 +81,10 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun updateProfileImage(imageUri: String?) {
-        executeInScope {
+        viewModelScope.launch {
             _userInfoState.update { it.copy(profileImage = imageUri) }
             imageUri?.let { userInfoRepository.saveProfileImage(it) }
             validateChanges()
         }
-    }
-
-    private fun executeInScope(block: suspend () -> Unit) {
-        viewModelScope.launch { block() }
     }
 }
