@@ -114,7 +114,7 @@ fun OnboardingScreen(
         ) {
             repeat(pagerState.pageCount) { iteration ->
                 val color =
-                    if (pagerState.currentPage == iteration) NoostakTheme.colors.blue600 else NoostakTheme.colors.dotColor
+                    if (pagerState.currentPage == iteration) NoostakTheme.colors.blue600 else NoostakTheme.colors.gray200
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 8.dp)
