@@ -31,6 +31,7 @@ import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 fun OnboardingRoute(
@@ -46,7 +47,7 @@ fun OnboardingRoute(
 fun OnboardingScreen(
     onNextButtonClick: () -> Unit
 ) {
-    val pages = listOf(
+    val pages = persistentListOf(
         BoardingPage(
             imageRes = R.drawable.ic_onboarding_1,
             subtitle = stringResource(R.string.tv_onboarding_subtitle_1),
