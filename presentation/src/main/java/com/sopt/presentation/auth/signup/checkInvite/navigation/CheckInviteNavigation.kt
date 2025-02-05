@@ -19,7 +19,7 @@ fun NavController.navigateCheckInvite(
     navigate(
         route = CheckInvite(name = name),
         navOptions = navOptions ?: NavOptions.Builder()
-            .setPopUpTo(Login, inclusive = false)
+            .setPopUpTo(Login, inclusive = true)
             .build()
     )
 }
