@@ -9,7 +9,9 @@ import com.sopt.core.navigation.MainTabRoute
 import com.sopt.presentation.calendar.CalendarRoute
 import kotlinx.serialization.Serializable
 
-fun NavController.navigateCalendar(navOptions: NavOptions? = null) {
+fun NavController.navigateCalendar(
+    navOptions: NavOptions? = null
+) {
     navigate(
         route = Calendar,
         navOptions = navOptions
@@ -17,8 +19,8 @@ fun NavController.navigateCalendar(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.calendarNavGraph(
-    paddingValues: PaddingValues,
-    navHostController: NavController
+    navHostController: NavController,
+    paddingValues: PaddingValues = PaddingValues()
 ) {
     composable<Calendar> {
         CalendarRoute(
@@ -28,4 +30,4 @@ fun NavGraphBuilder.calendarNavGraph(
 }
 
 @Serializable
-data object Calendar : MainTabRoute
+object Calendar : MainTabRoute

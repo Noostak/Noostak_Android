@@ -1,5 +1,6 @@
 package com.sopt.presentation.mypage.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -8,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.MainTabRoute
 import com.sopt.core.navigation.Route
+import com.sopt.presentation.auth.login.navigation.navigateToLogin
 import com.sopt.presentation.mypage.MyPageRoute
 import com.sopt.presentation.mypage.editProfile.EditProfileRoute
 import kotlinx.serialization.Serializable
@@ -34,15 +36,21 @@ fun NavController.navigateEditProfile(
 }
 
 fun NavGraphBuilder.myPageNavGraph(
+    paddingValues: PaddingValues,
     navHostController: NavHostController
 ) {
     composable<MyPage> {
         MyPageRoute(
+            paddingValues = paddingValues,
             navigateToEditProfile = { nickname, profileImage ->
                 navHostController.navigateEditProfile(
                     nickname = nickname,
                     profileImage = profileImage
                 )
+            },
+            navigateToLogin = {
+                navHostController.popBackStack()
+                navHostController.navigateToLogin()
             }
         )
     }

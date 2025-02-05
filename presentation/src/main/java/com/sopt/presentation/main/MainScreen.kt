@@ -151,14 +151,20 @@ fun MainScreen(
                     paddingValues = paddingValues,
                     navHostController = navigator.navController
                 )
-                groupNavGraph(navHostController = navigator.navController)
+                groupNavGraph(
+                    paddingValues = paddingValues,
+                    navHostController = navigator.navController
+                )
                 groupCreateNavGraph(
                     paddingValues = paddingValues,
                     navHostController = navigator.navController
                 )
                 groupCreateSuccessNavGraph(navHostController = navigator.navController)
                 groupDetailNavGraph(navHostController = navigator.navController)
-                myPageNavGraph(navHostController = navigator.navController)
+                myPageNavGraph(
+                    paddingValues = paddingValues,
+                    navHostController = navigator.navController
+                )
                 loginNavGraph(navHostController = navigator.navController)
                 signUpNavGraph(navHostController = navigator.navController)
                 checkInviteNavGraph(navHostController = navigator.navController)

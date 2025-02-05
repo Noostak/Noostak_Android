@@ -1,5 +1,6 @@
 package com.sopt.presentation.group.navigation
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -22,10 +23,12 @@ fun NavController.navigateGroup(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.groupNavGraph(
+    paddingValues: PaddingValues,
     navHostController: NavController
 ) {
     composable<Group> {
         GroupRoute(
+            paddingValues = paddingValues,
             navigateToGroupDetail = { groupId ->
                 navHostController.navigateGroupDetail(groupId = groupId)
             },

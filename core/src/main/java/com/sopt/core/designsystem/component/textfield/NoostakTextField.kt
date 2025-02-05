@@ -53,6 +53,7 @@ fun NoostakTextField(
     unfocusedBorderColor: Color = NoostakTheme.colors.gray500,
     errorBorderColor: Color = NoostakTheme.colors.red02,
     maxLength: Int = 30,
+    maxLengthColor: Color = NoostakTheme.colors.gray800,
     modifier: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
@@ -88,7 +89,7 @@ fun NoostakTextField(
                     textStyle = textStyle,
                     onValueChange = { newValue ->
                         if (textFieldType != TextFieldType.SIGNUP && textFieldType != TextFieldType.EDITPROFILE) {
-                            if (newValue.replace(" ", "").length <= maxLength) {
+                            if (newValue.length <= maxLength) {
                                 onValueChange(newValue)
                             }
                         } else {
@@ -188,7 +189,7 @@ fun NoostakTextField(
                     value.length,
                     maxLength
                 ),
-                color = NoostakTheme.colors.gray800,
+                color = maxLengthColor,
                 style = lengthTextStyle,
                 modifier = modifier.padding(top = 6.dp),
                 maxLines = 1

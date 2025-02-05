@@ -12,7 +12,7 @@ import com.sopt.presentation.auth.signup.navigation.navigateSignUp
 import com.sopt.presentation.group.navigation.navigateGroup
 import kotlinx.serialization.Serializable
 
-fun NavController.navigateLogin(
+fun NavController.navigateToLogin(
     navOptions: NavOptions? = null
 ) {
     navigate(

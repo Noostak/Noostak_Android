@@ -63,7 +63,7 @@ fun NoostakDialog(
                     modifier = Modifier.height(
                         when (dialogType) {
                             DialogType.LOGOUT -> 41.dp
-                            DialogType.WITHDRAWAL -> 30.dp
+                            DialogType.APPOINTMENT, DialogType.WITHDRAWAL -> 30.dp
                             else -> 24.dp
                         }
                     )
@@ -71,17 +71,16 @@ fun NoostakDialog(
                 Text(
                     text = stringResource(dialogType.content),
                     textAlign = TextAlign.Center,
-                    style = if (dialogType == DialogType.LOGOUT || dialogType == DialogType.WITHDRAWAL) {
-                        NoostakTheme.typography.b4Regular
-                    } else {
-                        NoostakTheme.typography.c3Regular
+                    style = when (dialogType) {
+                        DialogType.LOGOUT, DialogType.WITHDRAWAL, DialogType.APPOINTMENT -> NoostakTheme.typography.b4Regular
+                        else -> NoostakTheme.typography.c3Regular
                     }
                 )
                 Spacer(
                     modifier = Modifier.height(
                         when (dialogType) {
                             DialogType.LOGOUT -> 36.dp
-                            DialogType.WITHDRAWAL -> 26.dp
+                            DialogType.APPOINTMENT, DialogType.WITHDRAWAL -> 26.dp
                             else -> 20.dp
                         }
                     )
@@ -154,6 +153,6 @@ fun NoostakDialog(
 @Composable
 fun NoostakDialogPreview() {
     NoostakAndroidTheme {
-        NoostakDialog(dialogType = DialogType.LOGOUT, onClick = {}, onDismissRequest = {})
+        NoostakDialog(dialogType = DialogType.APPOINTMENT, onClick = {}, onDismissRequest = {})
     }
 }

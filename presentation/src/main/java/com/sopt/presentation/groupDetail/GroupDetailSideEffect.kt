@@ -15,4 +15,5 @@ sealed class GroupDetailSideEffect {
         val appointmentsId: Long,
         val appointmentName: String
     ) : GroupDetailSideEffect()
+    data class NavigateToAppointmentCreate(val groupId: Long) : GroupDetailSideEffect()
 }

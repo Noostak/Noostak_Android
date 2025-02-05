@@ -41,7 +41,7 @@ class GroupCreateViewModel @Inject constructor() : BaseViewModel<GroupCreateSide
         if (_groupProfileState.value.isPermissionGranted) {
             emitSideEffect(GroupCreateSideEffect.RequestImagePicker)
         } else {
-            emitSideEffect(GroupCreateSideEffect.ShowGalleryToast)
+            emitSideEffect(GroupCreateSideEffect.ShowSnackBar)
         }
     }
 

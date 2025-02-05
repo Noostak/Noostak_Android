@@ -5,12 +5,10 @@ import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.UserEntity
 import com.sopt.domain.repository.UserInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -40,16 +38,10 @@ class EditProfileViewModel @Inject constructor(
 
     fun navigateToMyPage() {
         viewModelScope.launch {
-            saveUserInfo()
-            withContext(Dispatchers.Main) {
-                emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
-            }
+            saveNickname(_userInfoState.value.nickname)
         }
-    }
 
-    private suspend fun saveUserInfo() {
-        userInfoRepository.saveNickname(_userInfoState.value.nickname)
-        _userInfoState.value.profileImage?.let { userInfoRepository.saveProfileImage(it) }
+        emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
     }
 
     fun onNicknameChanged(nickname: String) {
@@ -70,6 +62,12 @@ class EditProfileViewModel @Inject constructor(
         return !nickname.isNullOrBlank() && nickname.length in 1..10 && nickname.all { it.isLetterOrDigit() }
     }
 
+    private fun saveNickname(nickname: String) {
+        executeInScope {
+            userInfoRepository.saveNickname(nickname)
+        }
+    }
+
     fun updateGalleryPermissionState(isGranted: Boolean) {
         _editProfileState.update { it.copy(isPermissionGranted = isGranted) }
     }
@@ -83,7 +81,14 @@ class EditProfileViewModel @Inject constructor(
     }
 
     fun updateProfileImage(imageUri: String?) {
-        _userInfoState.update { it.copy(profileImage = imageUri) }
-        validateChanges()
+        executeInScope {
+            _userInfoState.update { it.copy(profileImage = imageUri) }
+            imageUri?.let { userInfoRepository.saveProfileImage(it) }
+            validateChanges()
+        }
+    }
+
+    private fun executeInScope(block: suspend () -> Unit) {
+        viewModelScope.launch { block() }
     }
 }
