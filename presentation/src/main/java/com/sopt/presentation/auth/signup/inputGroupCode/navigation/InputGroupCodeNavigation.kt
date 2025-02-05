@@ -28,7 +28,6 @@ fun NavGraphBuilder.inputGroupCodeNavGraph(
         InputGroupCodeRoute(
             navigateUp = { navHostController.navigateUp() },
             navigateToGroup = {
-                navHostController.popBackStack()
                 navHostController.navigateGroup()
             }
         )
