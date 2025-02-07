@@ -166,7 +166,7 @@ fun SignUpScreen(
         Spacer(modifier = Modifier.weight(1f))
         NoostakBottomButton(
             text = stringResource(R.string.btn_next),
-            isEnabled = signUpState.nickname.isNotEmpty(),
+            isEnabled = signUpState.isNameCheck,
             onButtonClick = onSignUpClick
         )
     }

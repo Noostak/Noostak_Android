@@ -25,7 +25,8 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun validateNickname(nickname: String) {
-        _signUpState.update { it.copy(isNameCheck = nickname.length in 1..10) }
+        val isValid = nickname.isNotBlank() && nickname.length in 1..10 && nickname.matches("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+$".toRegex())
+        _signUpState.update { it.copy(isNameCheck = isValid) }
     }
 
     fun updateGalleryPermissionState(isGranted: Boolean) {
