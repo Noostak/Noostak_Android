@@ -1,5 +1,6 @@
 package com.sopt.presentation.auth.signup.inputGroupCode
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -56,12 +59,18 @@ fun InputGroupCodeScreen(
     onBackButtonClick: () -> Unit,
     onCheckGroupCodeClick: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
     var groupCode by remember { mutableStateOf("") }
 
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
-            .navigationBarsPadding(),
+            .navigationBarsPadding()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            },
         topBar = {
             NoostakTopAppBar(
                 modifier = Modifier,
