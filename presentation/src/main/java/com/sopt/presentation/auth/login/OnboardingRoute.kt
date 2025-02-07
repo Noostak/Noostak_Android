@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +33,7 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingRoute(
@@ -66,6 +68,7 @@ fun OnboardingScreen(
     )
 
     val pagerState = rememberPagerState(pageCount = { pages.size })
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -83,15 +86,13 @@ fun OnboardingScreen(
                 verticalArrangement = Arrangement.Top
             ) {
                 Image(
-                    modifier = Modifier
-                        .fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth(),
                     imageVector = ImageVector.vectorResource(id = pages[page].imageRes),
                     contentDescription = null,
                     contentScale = ContentScale.FillWidth
                 )
                 Text(
-                    modifier = Modifier
-                        .padding(top = 30.dp),
+                    modifier = Modifier.padding(top = 30.dp),
                     text = pages[page].subtitle,
                     color = NoostakTheme.colors.blue700,
                     style = NoostakTheme.typography.b1SemiBold,
@@ -111,8 +112,7 @@ fun OnboardingScreen(
             }
         }
         Row(
-            Modifier
-                .weight(1f)
+            Modifier.weight(1f)
         ) {
             repeat(pagerState.pageCount) { iteration ->
                 val color =
@@ -126,15 +126,28 @@ fun OnboardingScreen(
                 )
             }
         }
+
+        val isLastPage = pagerState.currentPage == pages.size - 1
+        val buttonText =
+            if (isLastPage) stringResource(R.string.btn_onboarding_start) else stringResource(R.string.btn_next)
+
         NoostakBottomButton(
             modifier = Modifier.padding(
                 horizontal = dimensionResource(id = R.dimen.horizontal_padding),
                 vertical = dimensionResource(id = R.dimen.vertical_padding)
             ),
-            text = stringResource(R.string.btn_group_create_next),
+            text = buttonText,
             activateColor = NoostakTheme.colors.blue600,
             deactivateColor = NoostakTheme.colors.gray500,
-            onButtonClick = onNextButtonClick
+            onButtonClick = {
+                coroutineScope.launch {
+                    if (isLastPage) {
+                        onNextButtonClick()
+                    } else {
+                        pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                    }
+                }
+            }
         )
     }
 }
