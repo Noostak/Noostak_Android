@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.textfield.OtpInputField
-import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.component.topappbar.NoostakCloseAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
@@ -72,10 +72,11 @@ fun InputGroupCodeScreen(
                 })
             },
         topBar = {
-            NoostakTopAppBar(
+            NoostakCloseAppBar(
                 modifier = Modifier,
-                isIconVisible = true,
-                onBackButtonClick = onBackButtonClick
+                onBackButtonClick = {
+                    onBackButtonClick()
+                }
             )
         }
     ) { innerPadding ->
