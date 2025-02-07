@@ -33,15 +33,19 @@ fun OtpInputField(
     otpCount: Int = 6,
     onOtpTextChange: (String, Boolean) -> Unit
 ) {
+    val allowedCharactersRegex = "^[A-Z0-9]*$".toRegex()
+
     BasicTextField(
         modifier = modifier,
         value = TextFieldValue(otpText, selection = TextRange(otpText.length)),
         onValueChange = {
-            if (it.text.length <= otpCount) {
-                onOtpTextChange.invoke(it.text, it.text.length == otpCount)
+            val filteredText = it.text.uppercase()
+                .filter { char -> char.toString().matches(allowedCharactersRegex) }
+            if (filteredText.length <= otpCount) {
+                onOtpTextChange.invoke(filteredText, filteredText.length == otpCount)
             }
         },
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
         decorationBox = {
             Row(
                 modifier = Modifier.fillMaxWidth(),
