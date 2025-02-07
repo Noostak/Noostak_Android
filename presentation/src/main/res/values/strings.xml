@@ -22,6 +22,7 @@
     <string name="tv_onboarding_title_1">손쉽게 그룹을 만들고\n그룹코드를 공유해요!</string>
     <string name="tv_onboarding_title_2">원하는 시간대를 선택해\n약속을 만들어요!</string>
     <string name="tv_onboarding_title_3">그룹원들의 가능 시간으로\n약속 시간을 확정해요!</string>
+    <string name="btn_onboarding_start">시작하기</string>
 
     <!-- 로그인 -->
     <string name="tv_login_description">SNS 계정으로 빠르게 시작하기</string>
