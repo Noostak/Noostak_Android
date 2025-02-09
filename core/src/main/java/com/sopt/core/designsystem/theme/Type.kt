@@ -47,7 +47,8 @@ class NoostakTypography internal constructor(
     c1Bold: TextStyle,
     c3SemiBold: TextStyle,
     c3Regular: TextStyle,
-    c4Regular: TextStyle
+    c4Regular: TextStyle,
+    c5Regular: TextStyle
 ) {
     var codeMedium: TextStyle by mutableStateOf(codeMedium)
         private set
@@ -95,6 +96,8 @@ class NoostakTypography internal constructor(
         private set
     var c4Regular: TextStyle by mutableStateOf(c4Regular)
         private set
+    var c5Regular: TextStyle by mutableStateOf(c5Regular)
+        private set
 
     fun copy(
         codeMedium: TextStyle = this.codeMedium,
@@ -119,7 +122,8 @@ class NoostakTypography internal constructor(
         c1Bold: TextStyle = this.c1Bold,
         c3SemiBold: TextStyle = this.c3SemiBold,
         c3Regular: TextStyle = this.c3Regular,
-        c4Regular: TextStyle = this.c4Regular
+        c4Regular: TextStyle = this.c4Regular,
+        c5Regular: TextStyle = this.c5Regular
     ): NoostakTypography = NoostakTypography(
         codeMedium = codeMedium,
         h1Bold = h1Bold,
@@ -143,7 +147,8 @@ class NoostakTypography internal constructor(
         c1Bold = c1Bold,
         c3SemiBold = c3SemiBold,
         c3Regular = c3Regular,
-        c4Regular = c4Regular
+        c4Regular = c4Regular,
+        c5Regular = c5Regular
     )
 
     fun update(other: NoostakTypography) {
@@ -169,7 +174,8 @@ class NoostakTypography internal constructor(
         c1Bold = other.c1Bold
         c3SemiBold = other.c3SemiBold
         c3Regular = other.c3Regular
-        c4Regular = other.c4Regular
+        c4Regular = other.c4Regular,
+        c5Regular = other.c5Regular
     }
 }
 
@@ -333,6 +339,12 @@ fun noostakTypography(): NoostakTypography {
             fontWeight = FontWeight.Normal,
             fontSize = 11.sp,
             lineHeight = 15.sp
+        ),
+        c5Regular = noostakTextStyle(
+            fontFamily = PretendardRegular,
+            fontWeight = FontWeight.Normal,
+            fontSize = 10.sp,
+            lineHeight = 14.sp
         )
     )
 }
