@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,34 +39,65 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.noRippleClickable
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.scrollToItem
+import com.sopt.presentation.calendar.component.CalendarFloatingActionDialog
 import com.sopt.presentation.calendar.component.CalendarGroupItem
 
 @Composable
 fun CalendarRoute(
     paddingValues: PaddingValues,
-    calendarViewModel: CalendarViewModel = hiltViewModel()
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
+    navigateToGroupCreate: () -> Unit,
+    navigateToGroupEnter: () -> Unit
 ) {
+    val showAddDialog by calendarViewModel.showAddDialog.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = calendarViewModel.sideEffects) {
         calendarViewModel.sideEffects.collect { sideEffect ->
+            when (sideEffect) {
+                is CalendarSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
+                is CalendarSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
+                is CalendarSideEffect.ShowAddDialog -> {
+                    calendarViewModel.showAddDialog(true)
+                }
+            }
         }
+    }
+
+    if (showAddDialog) {
+        CalendarFloatingActionDialog(
+            onClick = { calendarViewModel.showAddDialog(false) },
+            onDismissRequest = { calendarViewModel.showAddDialog(false) },
+            onCreateGroupClick = {
+                calendarViewModel.navigateToGroupCreate()
+                calendarViewModel.showAddDialog(false)
+            },
+            onEnterGroupClick = {
+                calendarViewModel.navigateToGroupEnter()
+                calendarViewModel.showAddDialog(false)
+            }
+
+        )
     }
 
     CalendarScreen(
         paddingValues = paddingValues,
-        groups = calendarViewModel.mockGroups
+        groups = calendarViewModel.mockGroups,
+        onAddBtnClick = { calendarViewModel.showAddDialog(true) }
     )
 }
 
 @Composable
 fun CalendarScreen(
     paddingValues: PaddingValues = PaddingValues(),
-    groups: List<CalendarGroupEntity>
+    groups: List<CalendarGroupEntity>,
+    onAddBtnClick: () -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
@@ -91,15 +123,14 @@ fun CalendarScreen(
                 .padding(dimensionResource(R.dimen.default_padding))
         ) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Image(
                     modifier = Modifier
                         .size(56.dp)
                         .align(Alignment.CenterEnd)
-                        .zIndex(2f),
+                        .zIndex(2f)
+                        .noRippleClickable { onAddBtnClick() },
                     imageVector = ImageVector.vectorResource(R.drawable.ic_calendar_add),
                     contentDescription = null
                 )
@@ -143,6 +174,7 @@ fun CalendarScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }

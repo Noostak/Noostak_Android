@@ -3,10 +3,27 @@ package com.sopt.presentation.calendar
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.CalendarGroupEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor() : BaseViewModel<CalendarSideEffect>() {
+    private val _showAddDialog = MutableStateFlow(false)
+    val showAddDialog get() = _showAddDialog
+
+    fun showAddDialog(show: Boolean) {
+        _showAddDialog.update { show }
+    }
+
+    fun navigateToGroupCreate() {
+        emitSideEffect(CalendarSideEffect.NavigateToGroupCreate)
+    }
+
+    fun navigateToGroupEnter() {
+        emitSideEffect(CalendarSideEffect.NavigateToGroupEnter)
+    }
+
     val mockGroups = listOf(
         CalendarGroupEntity(
             id = 1,
