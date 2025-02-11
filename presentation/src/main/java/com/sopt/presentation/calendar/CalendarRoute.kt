@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,8 +43,8 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.presentation.R
+import com.sopt.presentation.appointment.scrollToItem
 import com.sopt.presentation.calendar.component.CalendarGroupItem
-import kotlinx.coroutines.launch
 
 @Composable
 fun CalendarRoute(
@@ -68,6 +69,7 @@ fun CalendarScreen(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
+    val density = LocalDensity.current
     var selectedGroup by remember { mutableIntStateOf(0) }
 
     Scaffold(
@@ -130,9 +132,7 @@ fun CalendarScreen(
                             isSelected = index == selectedGroup,
                             onClick = {
                                 selectedGroup = index
-                                coroutineScope.launch {
-                                    listState.animateScrollToItem(index)
-                                }
+                                scrollToItem(listState, coroutineScope, density, index)
                             }
                         )
                         if (index == groups.lastIndex) {
