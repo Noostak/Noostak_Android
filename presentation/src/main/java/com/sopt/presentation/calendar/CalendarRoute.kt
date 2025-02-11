@@ -127,7 +127,7 @@ fun CalendarScreen(
             ) {
                 Image(
                     modifier = Modifier
-                        .size(56.dp)
+                        .size(46.dp)
                         .align(Alignment.CenterEnd)
                         .zIndex(2f)
                         .noRippleClickable { onAddBtnClick() },

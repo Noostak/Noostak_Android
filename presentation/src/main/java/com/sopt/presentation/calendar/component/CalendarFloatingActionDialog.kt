@@ -7,10 +7,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,7 +26,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
-import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.presentation.R
 import com.sopt.presentation.group.component.GroupFloatingActionButtonItem
 
@@ -54,10 +52,30 @@ fun CalendarFloatingActionDialog(
                 modifier = Modifier
                     .padding(
                         end = dimensionResource(id = R.dimen.horizontal_padding),
-                        bottom = 73.dp
+                        top = 99.dp
                     )
-                    .align(Alignment.BottomEnd)
+                    .align(Alignment.TopEnd)
             ) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.End)
+                        .size(46.dp)
+                        .background(
+                            color = NoostakTheme.colors.white,
+                            shape = CircleShape
+                        )
+                        .noRippleClickable { onClick() }
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .size(18.4.dp)
+                            .align(Alignment.Center),
+                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_group_fab_close),
+                        contentDescription = null,
+                        tint = NoostakTheme.colors.black
+                    )
+                }
+                Spacer(modifier = Modifier.height(22.dp))
                 Box(
                     modifier = Modifier.background(
                         color = NoostakTheme.colors.white,
@@ -78,21 +96,6 @@ fun CalendarFloatingActionDialog(
                             onEnterGroupClick()
                         }
                     }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                FloatingActionButton(
-                    modifier = Modifier.align(Alignment.End),
-                    shape = CircleShape,
-                    containerColor = NoostakTheme.colors.white,
-                    elevation = FloatingActionButtonDefaults.elevation(0.dp),
-                    onClick = { onClick() },
-                    interactionSource = NoRippleInteractionSource
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_group_fab_close),
-                        contentDescription = null,
-                        tint = NoostakTheme.colors.black
-                    )
                 }
             }
         }
