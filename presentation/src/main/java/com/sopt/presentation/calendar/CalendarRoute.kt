@@ -65,6 +65,7 @@ fun CalendarRoute(
     CalendarScreen(
         paddingValues = paddingValues,
         groups = calendarViewModel.mockGroups,
+        showAddDialog = showAddDialog,
         onAddBtnClick = { calendarViewModel.showAddDialog(true) }
     )
 }
@@ -73,6 +74,7 @@ fun CalendarRoute(
 fun CalendarScreen(
     paddingValues: PaddingValues = PaddingValues(),
     groups: List<CalendarGroupEntity>,
+    showAddDialog: Boolean = false,
     onAddBtnClick: () -> Unit = {}
 ) {
     Scaffold(
@@ -96,6 +98,7 @@ fun CalendarScreen(
         ) {
             CalendarGroup(
                 groups = groups,
+                showAddDialog = showAddDialog,
                 onAddBtnClick = onAddBtnClick
             )
             Spacer(modifier = Modifier.height(8.dp))

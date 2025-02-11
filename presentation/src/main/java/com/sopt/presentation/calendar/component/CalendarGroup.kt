@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -34,6 +33,7 @@ import androidx.compose.ui.zIndex
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.extension.showIf
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.scrollToItem
@@ -41,6 +41,7 @@ import com.sopt.presentation.appointment.scrollToItem
 @Composable
 fun CalendarGroup(
     groups: List<CalendarGroupEntity>,
+    showAddDialog: Boolean = false,
     onAddBtnClick: () -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -53,6 +54,7 @@ fun CalendarGroup(
     ) {
         Box(
             modifier = Modifier
+                .showIf(!showAddDialog)
                 .padding(top = 5.dp, end = 16.dp)
                 .size(46.dp)
                 .background(
