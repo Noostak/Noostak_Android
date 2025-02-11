@@ -164,4 +164,7 @@
     <string name="text_my_page_item_logout">로그아웃</string>
     <string name="text_my_page_item_withdrawal">탈퇴하기</string>
 
+    <!-- 캘린더 -->
+    <string name="appbar_calendar">ScheTook</string>
+
 </resources>

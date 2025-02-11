@@ -62,7 +62,7 @@ fun CalendarGroupItemPreview() {
         CalendarGroupItem(
             data = CalendarGroupEntity(
                 id = 0,
-                groupName = "누스탁",
+                groupName = "누스탁탁탁탁",
                 groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
             ),
             isSelected = true
