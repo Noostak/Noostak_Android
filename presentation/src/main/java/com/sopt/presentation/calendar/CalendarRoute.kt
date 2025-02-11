@@ -1,6 +1,5 @@
 package com.sopt.presentation.calendar
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,6 +17,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -112,33 +113,47 @@ fun CalendarScreen(
             .navigationBarsPadding(),
         topBar = {
             NoostakTopAppBar(
-                title = "캘린더",
-                isIconVisible = false
+                title = "ScheTook",
+                isIconVisible = false,
+                isMainAppBar = true
             )
         }
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(dimensionResource(R.dimen.default_padding))
+                .padding(vertical = dimensionResource(id = R.dimen.vertical_padding))
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Image(
+                Box(
                     modifier = Modifier
+                        .padding(top = 5.dp, end = 16.dp)
                         .size(46.dp)
-                        .align(Alignment.CenterEnd)
+                        .background(
+                            color = NoostakTheme.colors.black,
+                            shape = CircleShape
+                        )
+                        .align(Alignment.TopEnd)
                         .zIndex(2f)
-                        .noRippleClickable { onAddBtnClick() },
-                    imageVector = ImageVector.vectorResource(R.drawable.ic_calendar_add),
-                    contentDescription = null
-                )
+                        .noRippleClickable { onAddBtnClick() }
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .size(20.dp),
+                        imageVector = ImageVector.vectorResource(R.drawable.ic_add),
+                        contentDescription = null,
+                        tint = NoostakTheme.colors.white
+                    )
+                }
                 Box(
                     modifier = Modifier
                         .zIndex(1f)
-                        .padding(end = 26.dp)
-                        .size(width = 64.dp, height = 94.dp)
+                        .padding(end = 42.dp)
+                        .width(64.dp)
+                        .height(85.dp)
                         .align(Alignment.CenterEnd)
                         .background(
                             brush = Brush.horizontalGradient(
@@ -154,10 +169,15 @@ fun CalendarScreen(
                     state = listState,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 16.dp, end = 26.dp),
+                        .padding(end = 42.dp),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     itemsIndexed(items = groups, key = { _, item -> item.id }) { index, group ->
+                        if (index == 0) {
+                            Spacer(
+                                modifier = Modifier.width(16.dp)
+                            )
+                        }
                         CalendarGroupItem(
                             data = group,
                             isSelected = index == selectedGroup,

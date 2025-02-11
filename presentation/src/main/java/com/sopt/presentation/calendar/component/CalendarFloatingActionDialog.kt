@@ -52,7 +52,7 @@ fun CalendarFloatingActionDialog(
                 modifier = Modifier
                     .padding(
                         end = dimensionResource(id = R.dimen.horizontal_padding),
-                        top = 99.dp
+                        top = 71.dp
                     )
                     .align(Alignment.TopEnd)
             ) {
