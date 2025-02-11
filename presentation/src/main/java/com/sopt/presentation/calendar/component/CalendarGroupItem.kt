@@ -31,9 +31,15 @@ fun CalendarGroupItem(
         modifier = modifier
             .width(56.dp)
             .noRippleClickable { onClick() }
-            .then(if (isSelected) Modifier.graphicsLayer {
-                alpha = 1f
-            } else Modifier.graphicsLayer { alpha = 0.6f }),
+            .then(
+                if (isSelected) {
+                    Modifier.graphicsLayer {
+                        alpha = 1f
+                    }
+                } else {
+                    Modifier.graphicsLayer { alpha = 0.6f }
+                }
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
