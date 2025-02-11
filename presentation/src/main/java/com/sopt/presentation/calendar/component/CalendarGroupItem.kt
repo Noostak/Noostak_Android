@@ -5,26 +5,20 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.glide.GlideImage
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.domain.entity.CalendarGroupEntity
-import com.sopt.presentation.R
+import com.sopt.presentation.group.component.GroupImage
 
 @Composable
 fun CalendarGroupItem(
@@ -43,17 +37,12 @@ fun CalendarGroupItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        GlideImage(
-            imageModel = { data.groupImage },
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.Center
-            ),
+        GroupImage(
+            imageUrl = data.groupImage,
             modifier = Modifier
-                .clip(RoundedCornerShape(12.dp))
                 .size(56.dp)
                 .aspectRatio(1f),
-            previewPlaceholder = painterResource(id = R.drawable.ic_launcher_background)
+            cornerRadius = 12.dp
         )
         Text(
             text = data.groupName,
