@@ -34,6 +34,9 @@ internal fun CalendarWeek(
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         dayInfo.forEach { day ->
+            val isPastDate = day.day.isBefore(LocalDate.now())
+            val schedules = scheduleMap[day.day.toDateString()]?.takeIf { it.isNotEmpty() }
+
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
@@ -41,8 +44,6 @@ internal fun CalendarWeek(
                     .padding(top = 4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val schedules = scheduleMap[day.day.toDateString()]?.takeIf { it.isNotEmpty() }
-
                 CalendarDay(
                     dayInfo = day,
                     isToday = day.day.isToday(),
@@ -52,6 +53,7 @@ internal fun CalendarWeek(
                 if (!day.isOtherMonth && schedules != null) {
                     CalendarScheduleGroup(
                         scheduleList = schedules,
+                        isPastDate = isPastDate,
                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.CenterHorizontally)
