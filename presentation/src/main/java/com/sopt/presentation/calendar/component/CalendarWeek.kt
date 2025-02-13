@@ -21,7 +21,6 @@ import com.sopt.core.extension.isToday
 import com.sopt.core.extension.toDateString
 import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.domain.entity.DayEntity
-import com.sopt.presentation.calendar.component.next.CalendarScheduleGroup
 import java.time.LocalDate
 
 @Composable
