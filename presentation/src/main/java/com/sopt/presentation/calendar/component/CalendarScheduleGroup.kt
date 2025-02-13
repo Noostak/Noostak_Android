@@ -1,4 +1,4 @@
-package com.sopt.presentation.calendar.component.next
+package com.sopt.presentation.calendar.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,7 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.domain.entity.CalendarSchedule
-import com.sopt.presentation.calendar.component.ScheduleItem
 import kotlin.math.max
 import kotlin.math.min
 
