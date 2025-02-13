@@ -8,6 +8,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,12 +21,17 @@ import kotlin.math.min
 @Composable
 internal fun CalendarScheduleGroup(
     scheduleList: List<CalendarSchedule>,
+    isPastDate: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val displayCount = min(scheduleList.size, MAX_VISIBLE_SCHEDULES)
     val hiddenCount = max(0, scheduleList.size - displayCount)
 
-    Column(modifier = modifier.wrapContentSize()) {
+    Column(
+        modifier = modifier
+            .wrapContentSize()
+            .graphicsLayer(alpha = if (isPastDate) 0.6f else 1.0f)
+    ) {
         scheduleList.take(displayCount).forEach { schedule ->
             ScheduleItem(
                 title = schedule.title,
@@ -56,7 +62,33 @@ fun String.toColor(): Color {
     }
 }
 
-@Preview(showBackground = true)
+@Preview
+@Composable
+fun CalendarSchedulePastPreview() {
+    NoostakAndroidTheme {
+        Box(
+            modifier = Modifier.background(NoostakTheme.colors.white)
+        ) {
+            CalendarScheduleGroup(
+                scheduleList = listOf(
+                    CalendarSchedule(
+                        scrapId = 1,
+                        title = "Meeting",
+                        color = "#8D78D8"
+                    ),
+                    CalendarSchedule(
+                        scrapId = 2,
+                        title = "Workout",
+                        color = "#3E8EFF",
+                    )
+                ),
+                isPastDate = true
+            )
+        }
+    }
+}
+
+@Preview
 @Composable
 fun CalendarScheduleGroupPreview() {
     NoostakAndroidTheme {
@@ -90,7 +122,8 @@ fun CalendarScheduleGroupPreview() {
                         title = "Workout",
                         color = "#3E8EFF"
                     )
-                )
+                ),
+                isPastDate = false
             )
         }
     }
