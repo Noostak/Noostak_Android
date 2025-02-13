@@ -16,12 +16,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.presentation.calendar.model.DayModel
+import com.sopt.domain.entity.DayEntity
 import java.time.LocalDate
 
 @Composable
 fun CalendarDay(
-    dayModel: DayModel,
+    dayInfo: DayEntity,
     isToday: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -37,7 +37,7 @@ fun CalendarDay(
     val textColor by rememberUpdatedState(
         when {
             isToday -> colors.white
-            dayModel.isOtherMonth -> colors.gray600
+            dayInfo.isOtherMonth -> colors.gray600
             else -> colors.gray900
         }
     )
@@ -49,7 +49,7 @@ fun CalendarDay(
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = dayModel.day.dayOfMonth.toString(),
+            text = dayInfo.day.dayOfMonth.toString(),
             color = textColor,
             style = NoostakTheme.typography.c3Regular
         )
@@ -63,17 +63,17 @@ fun CalendarDayPreview() {
         Row {
             // 다른 달 날짜
             CalendarDay(
-                dayModel = DayModel(day = LocalDate.now().minusMonths(1), isOtherMonth = true),
+                dayInfo = DayEntity(day = LocalDate.now().minusMonths(1), isOtherMonth = true),
                 isToday = false
             )
             // 현재 달 날짜
             CalendarDay(
-                dayModel = DayModel(day = LocalDate.now(), isOtherMonth = false),
+                dayInfo = DayEntity(day = LocalDate.now(), isOtherMonth = false),
                 isToday = false
             )
             // 오늘 날짜
             CalendarDay(
-                dayModel = DayModel(day = LocalDate.now(), isOtherMonth = false),
+                dayInfo = DayEntity(day = LocalDate.now(), isOtherMonth = false),
                 isToday = true
             )
         }

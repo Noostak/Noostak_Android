@@ -16,21 +16,21 @@ import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.isToday
-import com.sopt.presentation.calendar.model.DayModel
+import com.sopt.domain.entity.DayEntity
 import java.time.LocalDate
 
 @Composable
 internal fun CalendarWeek(
-    dayModels: List<DayModel>,
+    dayInfo: List<DayEntity>,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        dayModels.forEach { dayModel ->
+        dayInfo.forEach { dayInfo ->
             CalendarDayItem(
-                dayModel,
+                dayInfo,
                 modifier = Modifier.weight(1f)
             )
         }
@@ -38,7 +38,7 @@ internal fun CalendarWeek(
 }
 
 @Composable
-private fun CalendarDayItem(dayModel: DayModel, modifier: Modifier = Modifier) {
+private fun CalendarDayItem(dayInfo: DayEntity, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxHeight()
@@ -46,8 +46,8 @@ private fun CalendarDayItem(dayModel: DayModel, modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CalendarDay(
-            dayModel = dayModel,
-            isToday = dayModel.day.isToday(),
+            dayInfo = dayInfo,
+            isToday = dayInfo.day.isToday(),
         )
     }
 }
@@ -57,8 +57,8 @@ private fun CalendarDayItem(dayModel: DayModel, modifier: Modifier = Modifier) {
 private fun CalendarWeekPreview() {
     NoostakAndroidTheme {
         CalendarWeek(
-            dayModels = List(7) { index ->
-                DayModel(
+            dayInfo = List(7) { index ->
+                DayEntity(
                     day = LocalDate.now().minusDays(3 - index.toLong()),
                     isOtherMonth = false
                 )
