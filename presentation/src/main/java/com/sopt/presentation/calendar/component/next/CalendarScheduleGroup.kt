@@ -3,7 +3,7 @@ package com.sopt.presentation.calendar.component.next
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,7 +26,7 @@ internal fun CalendarScheduleGroup(
     val displayCount = min(scheduleList.size, MAX_VISIBLE_SCHEDULES)
     val hiddenCount = max(0, scheduleList.size - displayCount)
 
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(modifier = modifier.wrapContentSize()) {
         scheduleList.take(displayCount).forEach { schedule ->
             ScheduleItem(
                 title = schedule.title,

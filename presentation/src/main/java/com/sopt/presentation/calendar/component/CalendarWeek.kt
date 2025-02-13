@@ -53,7 +53,9 @@ internal fun CalendarWeek(
                 if (!day.isOtherMonth && schedules != null) {
                     CalendarScheduleGroup(
                         scheduleList = schedules,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.CenterHorizontally)
                     )
                 }
             }
