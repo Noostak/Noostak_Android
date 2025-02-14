@@ -219,10 +219,8 @@ fun AppointmentCreatePeriodScreen(
                 color = NoostakTheme.colors.gray200
             )
             NoostakCalendar(
-                start = startDate,
-                end = endDate,
                 isSingleDate = isSingleDateMode,
-                isRangeSelected = { selectedDates ->
+                selectedPeriod = { selectedDates ->
                     dates = selectedDates
                     if (isSingleDateMode) {
                         startDate = ""
