@@ -33,8 +33,8 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme.colors
 import com.sopt.core.designsystem.theme.NoostakTheme.typography
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.util.calendar.Calendar
 import java.time.LocalDate
-import java.time.YearMonth
 
 @Composable
 fun NoostakCalendar(
@@ -63,10 +63,7 @@ fun NoostakCalendar(
         if (isSingleDate) {
             selectedPeriod(selectedDates)
         } else if (startDate.isNotEmpty() && endDate.isNotEmpty()) {
-            val startLocalDate = LocalDate.parse(startDate)
-            val rangeDates = (0..LocalDate.parse(endDate).toEpochDay() - startLocalDate.toEpochDay())
-                .map { startLocalDate.plusDays(it).toString() }
-            selectedPeriod(rangeDates)
+            selectedPeriod(Calendar().generateDateRange(startDate, endDate))
         }
     }
 
@@ -81,12 +78,9 @@ fun NoostakCalendar(
                 modifier = Modifier
                     .size(16.dp)
                     .noRippleClickable {
-                        if (month == 1) {
-                            year -= 1
-                            month = 12
-                        } else {
-                            month -= 1
-                        }
+                        val (newYear, newMonth) = Calendar().manageMonth(year, month, isNext = false)
+                        year = newYear
+                        month = newMonth
                     }
             )
             Spacer(modifier = Modifier.width(10.dp))
@@ -103,13 +97,9 @@ fun NoostakCalendar(
                 modifier = Modifier
                     .size(16.dp)
                     .noRippleClickable {
-                        when (month) {
-                            12 -> {
-                                year += 1
-                                month = 1
-                            }
-                            else -> month += 1
-                        }
+                        val (newYear, newMonth) = Calendar().manageMonth(year, month, isNext = true)
+                        year = newYear
+                        month = newMonth
                     }
             )
         }
@@ -140,11 +130,11 @@ fun NoostakCalendar(
                 ) {
                     (0..6).forEach { dayOfWeek ->
                         val dateText = when {
-                            week == 0 && dayOfWeek < LocalDate.of(year, month, 1).dayOfWeek.value % 7 -> ""
-                            day > YearMonth.of(year, month).lengthOfMonth() -> ""
+                            week == 0 && dayOfWeek < Calendar().getFirstDayOfWeek(year, month) -> ""
+                            day > Calendar().getDaysInMonth(year, month) -> ""
                             else -> (day++).toString()
                         }
-                        val dateValue = "$year-${month.toString().padStart(2, '0')}-${dateText.padStart(2, '0')}"
+                        val dateValue = Calendar().dateFormat(year, month, dateText.toIntOrNull() ?: 0)
                         val isSelected = dateValue in selectedDates
                         val isRange = !isSingleDate &&
                                 dateText.isNotEmpty() &&
@@ -201,42 +191,17 @@ fun NoostakCalendar(
                                     .padding(vertical = 11.dp)
                                     .noRippleClickable {
                                         if (isSingleDate) {
-                                            selectedDates = if (dateValue in selectedDates) {
-                                                selectedDates - dateValue
-                                            } else if (selectedDates.size < 7) {
-                                                selectedDates + dateValue
-                                            } else {
-                                                onShowSnackBar()
-                                                selectedDates
-                                            }
+                                            selectedDates = Calendar().singleDateSelection(dateValue, selectedDates, onShowSnackBar)
                                         } else {
-                                            if (startDate.isNotEmpty() && endDate.isNotEmpty() || dateValue == startDate || dateValue == endDate) {
-                                                startDate = ""
-                                                endDate = ""
-                                                selectedDates = emptyList()
-                                                selectedPeriod(emptyList())
-                                            }
-                                            else if (startDate.isEmpty()) {
-                                                startDate = dateValue
-                                            }
-                                            else {
-                                                val valueLocalDate = LocalDate.parse(dateValue)
-                                                val startLocalDate = LocalDate.parse(startDate)
-                                                if (valueLocalDate.isBefore(startLocalDate)) {
-                                                    if (valueLocalDate.plusDays(6).isBefore(startLocalDate)) {
-                                                        onShowSnackBar()
-                                                    } else {
-                                                        endDate = startDate
-                                                        startDate = dateValue
-                                                    }
-                                                } else {
-                                                    if (startLocalDate.plusDays(6).isBefore(valueLocalDate)) {
-                                                        onShowSnackBar()
-                                                    } else {
-                                                        endDate = dateValue
-                                                    }
-                                                }
-                                            }
+                                            val (tempStartDate, tempEndDate) = Calendar().periodDateSelection(
+                                                dateValue,
+                                                startDate,
+                                                endDate,
+                                                onShowSnackBar,
+                                                selectedPeriod
+                                            )
+                                            startDate = tempStartDate
+                                            endDate = tempEndDate
                                         }
                                     }
                             )
