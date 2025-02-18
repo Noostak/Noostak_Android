@@ -62,7 +62,7 @@ fun NoostakTextField(
     var isFocused by remember { mutableStateOf(false) }
     var hasInvalidInput by remember { mutableStateOf(false) }
 
-    val validInputRegex = "^[a-zA-Z0-9가-힣]*$".toRegex()
+    val validInputRegex = "^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]*$".toRegex()
     val isEmptyError = textFieldType == TextFieldType.EDITPROFILE && value.isBlank()
 
     Column {

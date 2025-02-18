@@ -74,7 +74,7 @@ fun CheckInviteScreen(
             style = NoostakTheme.typography.t1SemiBold
         )
         Image(
-            painter = painterResource(id = R.drawable.ic_launcher_background),
+            painter = painterResource(id = R.drawable.ic_invite_code),
             contentDescription = stringResource(R.string.btn_invite_code),
             modifier = Modifier
                 .offset(y = offsetY.value.dp)
