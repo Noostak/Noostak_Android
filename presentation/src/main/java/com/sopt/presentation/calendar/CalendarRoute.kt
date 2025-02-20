@@ -17,7 +17,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,6 +29,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.getYearMonthByPage
+import com.sopt.core.extension.initialPage
+import com.sopt.core.extension.pageCount
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.presentation.R
@@ -37,7 +39,6 @@ import com.sopt.presentation.calendar.component.CalendarFloatingActionDialog
 import com.sopt.presentation.calendar.component.CalendarGroup
 import com.sopt.presentation.calendar.component.WeekDaysHeader
 import com.sopt.presentation.calendar.component.YearMonthHeader
-import com.sopt.presentation.calendar.model.CalendarModel
 import java.time.YearMonth
 
 @Composable
@@ -48,21 +49,21 @@ fun CalendarRoute(
     navigateToGroupEnter: () -> Unit
 ) {
     val showAddDialog by calendarViewModel.showAddDialog.collectAsStateWithLifecycle()
-
     val scheduleMap by calendarViewModel.scheduleMap.collectAsStateWithLifecycle()
 
-    val calendarModel = remember { CalendarModel(startYear = 2020, endYear = 2030) }
     val pagerState = rememberPagerState(
-        initialPage = calendarModel.initialPage,
-        pageCount = { calendarModel.pageCount }
+        initialPage = initialPage,
+        pageCount = { pageCount }
     )
 
-    var currentYearMonth by remember { mutableStateOf(YearMonth.now()) }
+    val currentYearMonth by remember(pagerState.currentPage) {
+        mutableStateOf(getYearMonthByPage(pagerState.currentPage))
+    }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
             .collect { page ->
-                currentYearMonth = calendarModel.getMonthModelByPage(page).yearMonth
+                calendarViewModel.getScheduleMonth(getYearMonthByPage(page).atDay(1))
             }
     }
 
@@ -97,7 +98,6 @@ fun CalendarRoute(
         paddingValues = paddingValues,
         groups = calendarViewModel.mockGroups,
         scheduleMap = scheduleMap,
-        calendarModel = calendarModel,
         pagerState = pagerState,
         currentYearMonth = currentYearMonth,
         showAddDialog = showAddDialog,
@@ -110,7 +110,6 @@ fun CalendarScreen(
     paddingValues: PaddingValues = PaddingValues(),
     groups: List<CalendarGroupEntity>,
     scheduleMap: Map<String, List<CalendarSchedule>>,
-    calendarModel: CalendarModel,
     pagerState: PagerState,
     currentYearMonth: YearMonth,
     showAddDialog: Boolean = false,
@@ -143,10 +142,8 @@ fun CalendarScreen(
             Spacer(modifier = Modifier.height(24.dp))
             CalendarContent(
                 scheduleMap = scheduleMap,
-                calendarModel = calendarModel,
                 pagerState = pagerState,
-                currentYearMonth = currentYearMonth,
-                modifier = Modifier
+                currentYearMonth = currentYearMonth
             )
         }
     }
@@ -155,7 +152,6 @@ fun CalendarScreen(
 @Composable
 private fun CalendarContent(
     scheduleMap: Map<String, List<CalendarSchedule>>,
-    calendarModel: CalendarModel,
     pagerState: PagerState,
     currentYearMonth: YearMonth,
     modifier: Modifier = Modifier
@@ -172,10 +168,8 @@ private fun CalendarContent(
         Spacer(modifier = Modifier.height(8.dp))
         WeekDaysHeader()
         CalendarMonthScreen(
-            calendarModel = calendarModel,
             pagerState = pagerState,
-            scheduleMap = scheduleMap,
-            viewModel = hiltViewModel()
+            scheduleMap = scheduleMap
         )
     }
 }
@@ -184,14 +178,10 @@ private fun CalendarContent(
 @Composable
 fun CalendarScreenPreview() {
     NoostakAndroidTheme {
-        val calendarModel = CalendarModel(startYear = 2020, endYear = 2030)
         val pagerState = rememberPagerState(
-            initialPage = calendarModel.initialPage,
-            pageCount = { calendarModel.pageCount }
+            initialPage = initialPage,
+            pageCount = { pageCount }
         )
-
-        val initialYearMonth =
-            calendarModel.getMonthModelByPage(calendarModel.initialPage).yearMonth
 
         CalendarScreen(
             groups = listOf(
@@ -227,9 +217,8 @@ fun CalendarScreenPreview() {
                 )
             ),
             scheduleMap = emptyMap(),
-            calendarModel = calendarModel,
             pagerState = pagerState,
-            currentYearMonth = initialYearMonth
+            currentYearMonth = getYearMonthByPage(initialPage)
         )
     }
 }
