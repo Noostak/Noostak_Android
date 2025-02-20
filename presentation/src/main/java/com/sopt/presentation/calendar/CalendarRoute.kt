@@ -14,8 +14,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -56,9 +56,7 @@ fun CalendarRoute(
         pageCount = { pageCount }
     )
 
-    val currentYearMonth by remember(pagerState.currentPage) {
-        mutableStateOf(getYearMonthByPage(pagerState.currentPage))
-    }
+    val currentYearMonth by remember { derivedStateOf { getYearMonthByPage(pagerState.currentPage) } }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
