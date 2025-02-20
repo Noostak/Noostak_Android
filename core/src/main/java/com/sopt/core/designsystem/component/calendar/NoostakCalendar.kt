@@ -137,10 +137,10 @@ fun NoostakCalendar(
                         val dateValue = Calendar().dateFormat(year, month, dateText.toIntOrNull() ?: 0)
                         val isSelected = dateValue in selectedDates
                         val isRange = !isSingleDate &&
-                                dateText.isNotEmpty() &&
-                                startDate.isNotEmpty() &&
-                                endDate.isNotEmpty() &&
-                                LocalDate.parse(dateValue) in LocalDate.parse(startDate)..LocalDate.parse(
+                            dateText.isNotEmpty() &&
+                            startDate.isNotEmpty() &&
+                            endDate.isNotEmpty() &&
+                            LocalDate.parse(dateValue) in LocalDate.parse(startDate)..LocalDate.parse(
                             endDate
                         )
                         val isStart = dateValue == startDate
@@ -151,8 +151,8 @@ fun NoostakCalendar(
                             contentAlignment = Alignment.Center
                         ) {
                             when {
-                                isSelected || isStart || isEnd-> {
-                                    if( isStart && endDate.isNotEmpty() || isEnd){
+                                isSelected || isStart || isEnd -> {
+                                    if (isStart && endDate.isNotEmpty() || isEnd) {
                                         Box(
                                             modifier = Modifier
                                                 .fillMaxWidth()
@@ -225,6 +225,3 @@ fun NoostakCalendarPreview() {
         )
     }
 }
-
-
-
