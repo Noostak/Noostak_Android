@@ -12,23 +12,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.getLocalDateByPage
 import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.presentation.calendar.component.CalendarMonthPager
-import com.sopt.presentation.calendar.model.CalendarModel
 
 @Composable
 fun CalendarMonthScreen(
-    calendarModel: CalendarModel,
     pagerState: PagerState,
     scheduleMap: Map<String, List<CalendarSchedule>>,
     modifier: Modifier = Modifier,
-    viewModel: CalendarViewModel = hiltViewModel()
+    calendarViewModel: CalendarViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(key1 = pagerState) {
+    LaunchedEffect(key1 = pagerState.currentPage) {
         snapshotFlow { pagerState.currentPage }
             .collect { currentPage ->
-                val localDate = calendarModel.getLocalDateByPage(currentPage)
-                viewModel.getScheduleMonth(localDate)
+                calendarViewModel.getScheduleMonth(getLocalDateByPage(currentPage))
             }
     }
 
@@ -37,7 +35,6 @@ fun CalendarMonthScreen(
             .fillMaxSize()
             .background(NoostakTheme.colors.white),
         pagerState = pagerState,
-        calendarModel = calendarModel,
         scheduleMap = scheduleMap
     )
 }
@@ -46,8 +43,11 @@ fun CalendarMonthScreen(
 @Composable
 fun CalendarMonthScreenPreview() {
     NoostakAndroidTheme {
-        val pagerState = rememberPagerState { 10 }
-        val calendarModel = CalendarModel()
+        val pagerState = rememberPagerState(
+            initialPage = 0,
+            pageCount = { 10 }
+        )
+
         val scheduleMap = mapOf(
             "2024-02-14" to listOf(
                 CalendarSchedule(title = "회의", categoryType = "일정"),
@@ -56,7 +56,6 @@ fun CalendarMonthScreenPreview() {
         )
 
         CalendarMonthScreen(
-            calendarModel = calendarModel,
             pagerState = pagerState,
             scheduleMap = scheduleMap,
             modifier = Modifier.fillMaxSize()
