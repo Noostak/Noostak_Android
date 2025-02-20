@@ -1,10 +1,9 @@
 package com.sopt.core.designsystem.component.topappbar
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -13,14 +12,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.sopt.core.R
@@ -38,12 +35,13 @@ fun NoostakTopAppBar(
     isIconVisible: Boolean = true,
     onBackButtonClick: () -> Unit = {},
     @DrawableRes iconResource: Int = R.drawable.ic_back_24,
-    paddingStart: Dp = 8.dp
+    paddingVertical: Dp = 7.dp,
+    paddingHorizontal: Dp = 12.dp
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 7.dp, vertical = 12.dp)
+            .padding(horizontal = paddingVertical, vertical = paddingHorizontal)
     ) {
         Icon(
             painter = painterResource(id = iconResource),

@@ -49,7 +49,7 @@ fun ScheduleDetailScreen(
                 isIconVisible = true,
                 onBackButtonClick = onBackBtnClick,
                 iconResource = R.drawable.ic_back_48,
-                paddingStart = 0.dp
+                paddingHorizontal = 4.dp
             )
         }
         HorizontalDivider(color = NoostakTheme.colors.gray100)
