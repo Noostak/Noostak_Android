@@ -1,13 +1,20 @@
 plugins {
-    id("java-library")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.ktlint)
+
+    id("kotlin-parcelize")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+android {
+    namespace = "com.sopt.domain"
+    compileSdk = libs.versions.compileSdk.get().toInt()
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 }
 
 dependencies {
