@@ -1,12 +1,10 @@
 package com.sopt.presentation.calendar
 
 import com.sopt.core.util.BaseViewModel
+import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.ScheduleDetailEntity
 import com.sopt.domain.entity.ScheduleEntity
-import com.sopt.domain.entity.CalendarGroupEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,6 +24,10 @@ class CalendarViewModel @Inject constructor() : BaseViewModel<CalendarSideEffect
 
     fun showAddDialog(show: Boolean) {
         _showAddDialog.update { show }
+    }
+
+    fun showBottomSheet(show: Boolean) {
+        _showSheet.update { show }
     }
 
     fun updateDetailSchedule(schedule: ScheduleDetailEntity) {
