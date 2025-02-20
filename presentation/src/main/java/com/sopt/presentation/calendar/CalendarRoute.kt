@@ -142,7 +142,6 @@ fun CalendarScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
             CalendarContent(
-                paddingValues = paddingValues,
                 scheduleMap = scheduleMap,
                 calendarModel = calendarModel,
                 pagerState = pagerState,
@@ -155,7 +154,6 @@ fun CalendarScreen(
 
 @Composable
 private fun CalendarContent(
-    paddingValues: PaddingValues,
     scheduleMap: Map<String, List<CalendarSchedule>>,
     calendarModel: CalendarModel,
     pagerState: PagerState,
@@ -166,7 +164,7 @@ private fun CalendarContent(
         modifier = modifier
             .fillMaxSize()
             .background(NoostakTheme.colors.white)
-            .padding(paddingValues)
+            .padding(bottom = 34.dp)
             .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
