@@ -130,7 +130,6 @@ fun SignUpScreen(
     onNameChange: (String) -> Unit,
     onSignUpClick: () -> Unit
 ) {
-
     val focusManager = LocalFocusManager.current
 
     Column(
