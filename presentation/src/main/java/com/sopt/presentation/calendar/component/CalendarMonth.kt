@@ -26,13 +26,13 @@ internal fun CalendarMonth(
             .fillMaxSize()
             .background(NoostakTheme.colors.white)
     ) {
-        weeks.forEach { week ->
+        weeks.forEachIndexed { index, week ->
             CalendarWeek(
                 dayInfo = week,
                 scheduleMap = scheduleMap,
                 modifier = Modifier
                     .weight(1f)
-                    .padding(top = 4.dp)
+                    .padding(top = if (index == 0) 0.dp else 4.dp)
             )
         }
     }
