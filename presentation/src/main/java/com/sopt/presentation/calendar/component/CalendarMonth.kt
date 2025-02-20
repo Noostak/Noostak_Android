@@ -10,9 +10,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.getMonthDays
 import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.domain.entity.DayEntity
-import com.sopt.presentation.calendar.model.MonthModel
 import java.time.YearMonth
 
 @Composable
@@ -40,8 +40,6 @@ internal fun CalendarMonth(
 @Composable
 private fun CalendarMonthGroupPreview() {
     NoostakAndroidTheme {
-        val monthModel = MonthModel(YearMonth.now())
-
         val sampleScheduleMap = mapOf(
             "2025-02-04" to listOf(
                 CalendarSchedule(title = "회의", categoryType = "기타"),
@@ -64,7 +62,7 @@ private fun CalendarMonthGroupPreview() {
         )
 
         CalendarMonth(
-            weeks = monthModel.calendarMonth,
+            weeks = getMonthDays(YearMonth.now()),
             scheduleMap = sampleScheduleMap
         )
     }
