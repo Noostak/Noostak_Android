@@ -1,4 +1,4 @@
-package com.sopt.presentation.calendar.component
+package com.sopt.core.designsystem.component.calendar
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.HorizontalPager
@@ -15,7 +15,7 @@ import com.sopt.core.extension.pageCount
 import com.sopt.domain.entity.CalendarSchedule
 
 @Composable
-internal fun CalendarMonthPager(
+fun CalendarMonthPager(
     pagerState: PagerState,
     scheduleMap: Map<String, List<CalendarSchedule>>,
     modifier: Modifier = Modifier

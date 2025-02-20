@@ -26,6 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sopt.core.designsystem.component.calendar.WeekDaysHeader
+import com.sopt.core.designsystem.component.calendar.YearMonthHeader
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -37,8 +39,6 @@ import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.presentation.R
 import com.sopt.presentation.calendar.component.CalendarFloatingActionDialog
 import com.sopt.presentation.calendar.component.CalendarGroup
-import com.sopt.presentation.calendar.component.WeekDaysHeader
-import com.sopt.presentation.calendar.component.YearMonthHeader
 import java.time.YearMonth
 
 @Composable

@@ -10,11 +10,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sopt.core.designsystem.component.calendar.CalendarMonthPager
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.getLocalDateByPage
 import com.sopt.domain.entity.CalendarSchedule
-import com.sopt.presentation.calendar.component.CalendarMonthPager
 
 @Composable
 fun CalendarMonthScreen(

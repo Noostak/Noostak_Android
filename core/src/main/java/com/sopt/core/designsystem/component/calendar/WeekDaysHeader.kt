@@ -1,4 +1,4 @@
-package com.sopt.presentation.calendar.component
+package com.sopt.core.designsystem.component.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

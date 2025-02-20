@@ -1,4 +1,4 @@
-package com.sopt.presentation.calendar.component
+package com.sopt.core.designsystem.component.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -13,10 +13,11 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.getMonthDays
 import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.domain.entity.DayEntity
+import com.sopt.presentation.calendar.component.CalendarWeek
 import java.time.YearMonth
 
 @Composable
-internal fun CalendarMonth(
+fun CalendarMonth(
     weeks: List<List<DayEntity>>,
     modifier: Modifier = Modifier,
     scheduleMap: Map<String, List<CalendarSchedule>> = emptyMap()

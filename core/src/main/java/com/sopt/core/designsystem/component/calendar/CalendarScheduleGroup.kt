@@ -1,4 +1,4 @@
-package com.sopt.presentation.calendar.component
+package com.sopt.core.designsystem.component.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,7 +19,7 @@ import com.sopt.domain.entity.CalendarSchedule
 import kotlin.math.min
 
 @Composable
-internal fun CalendarScheduleGroup(
+fun CalendarScheduleGroup(
     scheduleList: List<CalendarSchedule>,
     isPastDate: Boolean,
     modifier: Modifier = Modifier
