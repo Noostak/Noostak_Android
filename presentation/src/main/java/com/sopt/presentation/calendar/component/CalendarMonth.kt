@@ -30,9 +30,7 @@ internal fun CalendarMonth(
             CalendarWeek(
                 dayInfo = week,
                 scheduleMap = scheduleMap,
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(top = if (index == 0) 0.dp else 4.dp)
+                modifier = Modifier.padding(top = if (index == 0) 0.dp else 4.dp)
             )
         }
     }
