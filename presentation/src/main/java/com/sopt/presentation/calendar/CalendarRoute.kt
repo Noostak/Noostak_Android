@@ -128,11 +128,11 @@ fun CalendarScreenPreview() {
             paddingValues = PaddingValues(),
             scheduleMap = mapOf(
                 "2025-02-04" to listOf(
-                    CalendarSchedule(title = "회의", color = "#A9DBBE"),
-                    CalendarSchedule(title = "책 읽기", color = "#8D78D8")
+                    CalendarSchedule(title = "회의", categoryType = "중요"),
+                    CalendarSchedule(title = "책 읽기", categoryType = "취미")
                 ),
                 "2025-02-12" to listOf(
-                    CalendarSchedule(title = "운동", color = "#8D78D8")
+                    CalendarSchedule(title = "운동", categoryType = "취미")
                 )
             ),
             calendarModel = calendarModel,

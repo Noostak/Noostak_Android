@@ -9,11 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.type.CategoryType
 import com.sopt.domain.entity.CalendarSchedule
 import kotlin.math.max
 import kotlin.math.min
@@ -35,7 +37,7 @@ internal fun CalendarScheduleGroup(
         scheduleList.take(displayCount).forEach { schedule ->
             ScheduleItem(
                 title = schedule.title,
-                color = schedule.color.toColor()
+                categoryType = CategoryType.fromText(LocalContext.current, schedule.categoryType)
             )
         }
 
@@ -74,12 +76,12 @@ fun CalendarSchedulePastPreview() {
                     CalendarSchedule(
                         scrapId = 1,
                         title = "Meeting",
-                        color = "#8D78D8"
+                        categoryType = "취미"
                     ),
                     CalendarSchedule(
                         scrapId = 2,
                         title = "Workout",
-                        color = "#3E8EFF",
+                        categoryType = "일정",
                     )
                 ),
                 isPastDate = true
@@ -100,27 +102,27 @@ fun CalendarScheduleGroupPreview() {
                     CalendarSchedule(
                         scrapId = 1,
                         title = "Meeting",
-                        color = "#8D78D8"
+                        categoryType = "취미"
                     ),
                     CalendarSchedule(
                         scrapId = 2,
                         title = "Workout",
-                        color = "#3E8EFF",
+                        categoryType = "일정",
                     ),
                     CalendarSchedule(
                         scrapId = 3,
                         title = "Dinner",
-                        color = "#3E8EFF"
+                        categoryType = "일정"
                     ),
                     CalendarSchedule(
                         scrapId = 4,
                         title = "Meeting",
-                        color = "#3E8EFF"
+                        categoryType = "중요"
                     ),
                     CalendarSchedule(
                         scrapId = 5,
                         title = "Workout",
-                        color = "#3E8EFF"
+                        categoryType = "기타"
                     )
                 ),
                 isPastDate = false

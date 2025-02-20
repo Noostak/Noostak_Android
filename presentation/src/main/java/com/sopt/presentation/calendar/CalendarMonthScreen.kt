@@ -50,8 +50,8 @@ fun CalendarMonthScreenPreview() {
         val calendarModel = CalendarModel()
         val scheduleMap = mapOf(
             "2024-02-14" to listOf(
-                CalendarSchedule(title = "회의", color = "#A9DBBE"),
-                CalendarSchedule(title = "책 읽기", color = "#8D78D8")
+                CalendarSchedule(title = "회의", categoryType = "일정"),
+                CalendarSchedule(title = "책 읽기", categoryType = "취미")
             )
         )
 

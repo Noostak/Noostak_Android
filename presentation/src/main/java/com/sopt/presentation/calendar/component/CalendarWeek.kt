@@ -70,13 +70,13 @@ private fun CalendarWeekGroupNoScrapPreview() {
     NoostakAndroidTheme {
         val sampleScheduleMap = mapOf(
             LocalDate.now().toDateString() to listOf(
-                CalendarSchedule(title = "회의", color = "#A9DBBE"),
-                CalendarSchedule(title = "운동", color = "#A9DBBE"),
-                CalendarSchedule(title = "저녁식사", color = "#8D78D8"),
-                CalendarSchedule(title = "출근", color = "#8D78D8")
+                CalendarSchedule(title = "회의", categoryType = "중요"),
+                CalendarSchedule(title = "운동", categoryType = "취미"),
+                CalendarSchedule(title = "저녁식사", categoryType = "일정"),
+                CalendarSchedule(title = "출근", categoryType = "일정")
             ),
             LocalDate.now().minusDays(2).toDateString() to listOf(
-                CalendarSchedule(title = "친구 만남", color = "#3E8EFF")
+                CalendarSchedule(title = "친구 만남", categoryType = "일정")
             )
         )
 
