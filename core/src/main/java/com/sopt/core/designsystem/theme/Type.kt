@@ -174,7 +174,7 @@ class NoostakTypography internal constructor(
         c1Bold = other.c1Bold
         c3SemiBold = other.c3SemiBold
         c3Regular = other.c3Regular
-        c4Regular = other.c4Regular,
+        c4Regular = other.c4Regular
         c5Regular = other.c5Regular
     }
 }
