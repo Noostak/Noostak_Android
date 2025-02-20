@@ -14,17 +14,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.toColor
+import com.sopt.core.type.CategoryType
 
 @Composable
 fun ScheduleItem(
     title: String,
-    color: Color,
+    categoryType: CategoryType,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -37,7 +38,7 @@ fun ScheduleItem(
         Box(
             modifier = Modifier
                 .size(width = 2.dp, height = 12.dp)
-                .background(color = color, shape = RoundedCornerShape(50))
+                .background(color = categoryType.toColor(), shape = RoundedCornerShape(50))
         )
 
         Spacer(modifier = Modifier.width(2.dp))
@@ -53,8 +54,7 @@ fun ScheduleItem(
     }
 }
 
-
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun ScheduleItemPreview() {
     NoostakAndroidTheme {
@@ -64,7 +64,10 @@ fun ScheduleItemPreview() {
                 .background(NoostakTheme.colors.white)
         ) {
             Column {
-                ScheduleItem(title = "제목 없음", color = NoostakTheme.colors.blue500)
+                ScheduleItem(title = "Meeting", categoryType = CategoryType.IMPORTANT)
+                ScheduleItem(title = "Workout", categoryType = CategoryType.SCHEDULE)
+                ScheduleItem(title = "Reading", categoryType = CategoryType.HOBBY)
+                ScheduleItem(title = "Miscellaneous", categoryType = CategoryType.ETC)
             }
         }
     }
