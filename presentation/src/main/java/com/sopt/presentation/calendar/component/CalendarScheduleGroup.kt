@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
@@ -55,14 +54,6 @@ internal fun CalendarScheduleGroup(
 }
 
 private const val MAX_VISIBLE_SCHEDULES = 4
-
-fun String.toColor(): Color {
-    return try {
-        Color(android.graphics.Color.parseColor(this))
-    } catch (e: IllegalArgumentException) {
-        Color.Gray
-    }
-}
 
 @Preview
 @Composable
