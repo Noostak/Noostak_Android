@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.designsystem.theme.NoostakTheme.colors
 
-class TimePicker{
+class TimePicker {
     fun timeFormat(hour: Int, minute: Int): String {
         val time = String.format("%02d:%02d", hour, minute)
         return time

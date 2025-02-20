@@ -28,9 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakTheme.colors
+import com.sopt.core.util.timepicker.TimePicker
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import com.sopt.core.util.timepicker.TimePicker
 
 @Composable
 fun TimePicker(

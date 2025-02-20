@@ -1,5 +1,6 @@
 package com.sopt.presentation.calendar
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -8,10 +9,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -19,12 +26,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.sopt.core.designsystem.component.calendar.WeekDaysHeader
+import com.sopt.core.designsystem.component.calendar.YearMonthHeader
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
+import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.getYearMonthByPage
+import com.sopt.core.extension.initialPage
+import com.sopt.core.extension.pageCount
 import com.sopt.domain.entity.CalendarGroupEntity
+import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.presentation.R
 import com.sopt.presentation.calendar.component.CalendarFloatingActionDialog
 import com.sopt.presentation.calendar.component.CalendarGroup
+import java.time.YearMonth
 
 @Composable
 fun CalendarRoute(
@@ -34,6 +49,22 @@ fun CalendarRoute(
     navigateToGroupEnter: () -> Unit
 ) {
     val showAddDialog by calendarViewModel.showAddDialog.collectAsStateWithLifecycle()
+    val scheduleMap by calendarViewModel.scheduleMap.collectAsStateWithLifecycle()
+
+    val pagerState = rememberPagerState(
+        initialPage = initialPage,
+        pageCount = { pageCount }
+    )
+
+    val currentYearMonth by remember { derivedStateOf { getYearMonthByPage(pagerState.currentPage) } }
+
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }
+            .collect { page ->
+                calendarViewModel.getScheduleMonth(getYearMonthByPage(page).atDay(1))
+            }
+    }
+
     LaunchedEffect(key1 = calendarViewModel.sideEffects) {
         calendarViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -58,13 +89,15 @@ fun CalendarRoute(
                 calendarViewModel.navigateToGroupEnter()
                 calendarViewModel.showAddDialog(false)
             }
-
         )
     }
 
     CalendarScreen(
         paddingValues = paddingValues,
         groups = calendarViewModel.mockGroups,
+        scheduleMap = scheduleMap,
+        pagerState = pagerState,
+        currentYearMonth = currentYearMonth,
         showAddDialog = showAddDialog,
         onAddBtnClick = { calendarViewModel.showAddDialog(true) }
     )
@@ -74,6 +107,9 @@ fun CalendarRoute(
 fun CalendarScreen(
     paddingValues: PaddingValues = PaddingValues(),
     groups: List<CalendarGroupEntity>,
+    scheduleMap: Map<String, List<CalendarSchedule>>,
+    pagerState: PagerState,
+    currentYearMonth: YearMonth,
     showAddDialog: Boolean = false,
     onAddBtnClick: () -> Unit = {}
 ) {
@@ -101,8 +137,38 @@ fun CalendarScreen(
                 showAddDialog = showAddDialog,
                 onAddBtnClick = onAddBtnClick
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(24.dp))
+            CalendarContent(
+                scheduleMap = scheduleMap,
+                pagerState = pagerState,
+                currentYearMonth = currentYearMonth
+            )
         }
+    }
+}
+
+@Composable
+private fun CalendarContent(
+    scheduleMap: Map<String, List<CalendarSchedule>>,
+    pagerState: PagerState,
+    currentYearMonth: YearMonth,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(NoostakTheme.colors.white)
+            .padding(bottom = 34.dp)
+            .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding)),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        YearMonthHeader(date = currentYearMonth)
+        Spacer(modifier = Modifier.height(8.dp))
+        WeekDaysHeader()
+        CalendarMonthScreen(
+            pagerState = pagerState,
+            scheduleMap = scheduleMap
+        )
     }
 }
 
@@ -110,6 +176,11 @@ fun CalendarScreen(
 @Composable
 fun CalendarScreenPreview() {
     NoostakAndroidTheme {
+        val pagerState = rememberPagerState(
+            initialPage = initialPage,
+            pageCount = { pageCount }
+        )
+
         CalendarScreen(
             groups = listOf(
                 CalendarGroupEntity(
@@ -142,7 +213,10 @@ fun CalendarScreenPreview() {
                     groupName = "누스탁2",
                     groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
                 )
-            )
+            ),
+            scheduleMap = emptyMap(),
+            pagerState = pagerState,
+            currentYearMonth = getYearMonthByPage(initialPage)
         )
     }
 }
