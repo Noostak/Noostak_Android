@@ -8,13 +8,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
+import com.sopt.core.extension.getMonthDays
+import com.sopt.core.extension.getYearMonthByPage
+import com.sopt.core.extension.initialPage
+import com.sopt.core.extension.pageCount
 import com.sopt.domain.entity.CalendarSchedule
-import com.sopt.presentation.calendar.model.CalendarModel
 
 @Composable
 internal fun CalendarMonthPager(
     pagerState: PagerState,
-    calendarModel: CalendarModel,
     scheduleMap: Map<String, List<CalendarSchedule>>,
     modifier: Modifier = Modifier
 ) {
@@ -22,10 +24,8 @@ internal fun CalendarMonthPager(
         state = pagerState,
         modifier = modifier.fillMaxSize()
     ) { page ->
-        val monthModel = calendarModel.getMonthModelByPage(page)
-
         CalendarMonth(
-            weeks = monthModel.calendarMonth,
+            weeks = getMonthDays(getYearMonthByPage(page)),
             scheduleMap = scheduleMap,
             modifier = Modifier.fillMaxSize()
         )
@@ -36,20 +36,17 @@ internal fun CalendarMonthPager(
 @Composable
 private fun CalendarMonthScreenPreview() {
     NoostakAndroidTheme {
-        val calendarModel = CalendarModel()
         val pagerState = rememberPagerState(
-            initialPage = calendarModel.initialPage,
-            pageCount = { calendarModel.pageCount }
+            initialPage = initialPage,
+            pageCount = { pageCount }
         )
 
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
-            val monthModel = calendarModel.getMonthModelByPage(page = page)
-
             CalendarMonth(
-                weeks = monthModel.calendarMonth,
+                weeks = getMonthDays(getYearMonthByPage(page)),
                 modifier = Modifier.fillMaxSize()
             )
         }
