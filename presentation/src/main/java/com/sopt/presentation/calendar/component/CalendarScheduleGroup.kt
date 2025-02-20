@@ -16,7 +16,6 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.type.CategoryType
 import com.sopt.domain.entity.CalendarSchedule
-import kotlin.math.max
 import kotlin.math.min
 
 @Composable
@@ -26,7 +25,7 @@ internal fun CalendarScheduleGroup(
     modifier: Modifier = Modifier
 ) {
     val displayCount = min(scheduleList.size, MAX_VISIBLE_SCHEDULES)
-    val hiddenCount = max(0, scheduleList.size - displayCount)
+    val hiddenCount = scheduleList.size - displayCount
 
     Column(
         modifier = modifier
@@ -53,7 +52,7 @@ internal fun CalendarScheduleGroup(
     }
 }
 
-private const val MAX_VISIBLE_SCHEDULES = 4
+private const val MAX_VISIBLE_SCHEDULES = 3
 
 @Preview
 @Composable
