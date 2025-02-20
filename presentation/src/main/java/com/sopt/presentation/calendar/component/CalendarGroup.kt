@@ -33,10 +33,10 @@ import androidx.compose.ui.zIndex
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.extension.scrollToItem
 import com.sopt.core.extension.showIf
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.presentation.R
-import com.sopt.presentation.appointment.scrollToItem
 
 @Composable
 fun CalendarGroup(
@@ -108,7 +108,7 @@ fun CalendarGroup(
                     isSelected = index == selectedGroup,
                     onClick = {
                         selectedGroup = index
-                        scrollToItem(listState, coroutineScope, density, index)
+                        listState.scrollToItem(coroutineScope, density, index)
                     }
                 )
                 if (index == groups.lastIndex) {
