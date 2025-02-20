@@ -23,7 +23,7 @@ import kotlin.math.min
 internal fun CalendarScheduleGroup(
     scheduleList: List<CalendarSchedule>,
     isPastDate: Boolean,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val displayCount = min(scheduleList.size, MAX_VISIBLE_SCHEDULES)
     val hiddenCount = max(0, scheduleList.size - displayCount)
@@ -72,7 +72,7 @@ fun CalendarSchedulePastPreview() {
                     CalendarSchedule(
                         scrapId = 2,
                         title = "Workout",
-                        categoryType = "일정",
+                        categoryType = "일정"
                     )
                 ),
                 isPastDate = true
@@ -98,7 +98,7 @@ fun CalendarScheduleGroupPreview() {
                     CalendarSchedule(
                         scrapId = 2,
                         title = "Workout",
-                        categoryType = "일정",
+                        categoryType = "일정"
                     ),
                     CalendarSchedule(
                         scrapId = 3,

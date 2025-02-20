@@ -17,7 +17,7 @@ import com.sopt.core.type.WeekDayType
 
 @Composable
 fun WeekDaysHeader(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = modifier

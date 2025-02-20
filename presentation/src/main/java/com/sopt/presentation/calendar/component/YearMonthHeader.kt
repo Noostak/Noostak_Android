@@ -31,7 +31,7 @@ fun YearMonthHeader(
             Text(
                 text = date.toYearMonthString(),
                 style = NoostakTheme.typography.b1SemiBold,
-                color = NoostakTheme.colors.gray900,
+                color = NoostakTheme.colors.gray900
             )
         }
     }
@@ -42,7 +42,7 @@ fun YearMonthHeader(
 fun YearMonthHeaderPreview() {
     NoostakAndroidTheme {
         YearMonthHeader(
-            date = YearMonth.now(),
+            date = YearMonth.now()
         )
     }
 }

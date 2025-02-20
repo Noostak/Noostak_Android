@@ -16,7 +16,7 @@ internal fun CalendarMonthPager(
     pagerState: PagerState,
     calendarModel: CalendarModel,
     scheduleMap: Map<String, List<CalendarSchedule>>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     HorizontalPager(
         state = pagerState,
@@ -27,7 +27,7 @@ internal fun CalendarMonthPager(
         CalendarMonth(
             weeks = monthModel.calendarMonth,
             scheduleMap = scheduleMap,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
         )
     }
 }

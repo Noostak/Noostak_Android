@@ -43,7 +43,7 @@ internal fun CalendarWeek(
             ) {
                 CalendarDay(
                     dayInfo = day,
-                    isToday = day.day.isToday(),
+                    isToday = day.day.isToday()
                 )
                 Spacer(modifier = Modifier.height(2.dp))
 

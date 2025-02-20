@@ -23,7 +23,7 @@ import java.time.LocalDate
 fun CalendarDay(
     dayInfo: DayEntity,
     isToday: Boolean,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     val colors = NoostakTheme.colors
 

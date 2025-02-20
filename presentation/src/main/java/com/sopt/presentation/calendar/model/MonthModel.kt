@@ -4,7 +4,6 @@ import androidx.compose.runtime.Immutable
 import com.sopt.domain.entity.DayEntity
 import java.time.YearMonth
 
-
 @Immutable
 data class MonthModel(
     val yearMonth: YearMonth

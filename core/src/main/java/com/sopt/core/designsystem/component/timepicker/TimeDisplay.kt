@@ -33,7 +33,7 @@ fun TimeDisplay(
         )
         Text(
             text = TimePicker().timeFormat(hour, minute),
-            style =  NoostakTheme.typography.h1Bold.copy(color = textColor)
+            style = NoostakTheme.typography.h1Bold.copy(color = textColor)
         )
     }
 }

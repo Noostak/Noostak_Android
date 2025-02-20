@@ -3,7 +3,7 @@ package com.sopt.core.util.calendar
 import java.time.LocalDate
 import java.time.YearMonth
 
-class Calendar{
+class Calendar {
     fun getFirstDayOfWeek(year: Int, month: Int): Int =
         LocalDate.of(year, month, 1).dayOfWeek.value % 7
 

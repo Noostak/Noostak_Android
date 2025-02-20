@@ -1,7 +1,7 @@
 package com.sopt.core.type
 
 enum class WeekDayType(
-    val koreanDay: String,
+    val koreanDay: String
 ) {
     SUNDAY(koreanDay = "일"),
     MONDAY(koreanDay = "월"),
