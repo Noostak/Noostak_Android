@@ -79,7 +79,7 @@ fun GroupRoute(
 
     when {
         isEmpty -> NoostakEmptyScreen(
-            emptyText = R.string.text_group_empty,
+            emptyText = R.string.text_group_empty_content,
             color = NoostakTheme.colors.gray600,
             style = NoostakTheme.typography.b4Regular
         )
