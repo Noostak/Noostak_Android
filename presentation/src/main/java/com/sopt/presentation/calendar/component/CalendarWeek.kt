@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,8 +39,7 @@ internal fun CalendarWeek(
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f)
-                    .padding(top = 4.dp),
+                    .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CalendarDay(
