@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -37,7 +36,6 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,6 +44,7 @@ import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.extension.scrollToItem
 import com.sopt.core.extension.showIf
 import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.AppointmentEntity
@@ -54,8 +53,6 @@ import com.sopt.domain.entity.TimeTableEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
 import com.sopt.presentation.appointment.screen.RecommendationScreen
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun AppointmentRoute(
@@ -151,7 +148,7 @@ fun AppointmentScreen(
             -1 -> onBackButtonClick()
             else -> {
                 selectedItemIndex = -1
-                scrollToItem(listState, coroutineScope, density)
+                listState.scrollToItem(coroutineScope, density)
             }
         }
     }
@@ -170,7 +167,7 @@ fun AppointmentScreen(
                         -1 -> onBackButtonClick()
                         else -> {
                             selectedItemIndex = -1
-                            scrollToItem(listState, coroutineScope, density)
+                            listState.scrollToItem(coroutineScope, density)
                         }
                     }
                 }
@@ -238,7 +235,7 @@ fun AppointmentScreen(
                             selectedItemIndex = selectedItemIndex,
                             onHeaderItemClick = {
                                 selectedItemIndex = it
-                                scrollToItem(listState, coroutineScope, density, index)
+                                listState.scrollToItem(coroutineScope, density, index)
                             },
                             priority = index
                         )
@@ -352,24 +349,6 @@ fun RecommendationHeaderItem(
             },
             style = NoostakTheme.typography.b4SemiBold
         )
-    }
-}
-
-fun scrollToItem(
-    listState: LazyListState,
-    coroutineScope: CoroutineScope,
-    density: Density,
-    index: Int = 0
-) {
-    coroutineScope.launch {
-        if (index == 0) {
-            listState.scrollToItem(index)
-        } else {
-            listState.animateScrollToItem(
-                index = index,
-                scrollOffset = with(density) { -30.dp.roundToPx() }
-            )
-        }
     }
 }
 

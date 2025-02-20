@@ -128,7 +128,7 @@
     <string name="text_calendar_appointment_fri">금</string>
     <string name="text_calendar_appointment_sat">토</string>
     <string name="text_calendar_appointment_sun">일</string>
-    <string name="text_calendar_appointment_time_text">시간</string>
+    <string name="text_calendar_appointment_time_text">최대 10시간까지 가능해요</string>
     <string name="text_calendar_appointment_7days">최대 7일까지 선택할 수 있어요</string>
     <string name="text_calendar_appointment_one_day">하루씩 설정하기</string>
     <string name="text_calendar_appointment_next">다음</string>
@@ -172,6 +172,9 @@
     <string name="text_my_page_item_policy">약관 및 정책</string>
     <string name="text_my_page_item_logout">로그아웃</string>
     <string name="text_my_page_item_withdrawal">탈퇴하기</string>
+
+    <!-- 캘린더 -->
+    <string name="appbar_calendar">ScheTook</string>
 
     <!-- Schedule List -->
     <string name="text_schedule_list_empty_content">아직 약속이 없어요!\n그룹 약속을 만들러 가볼까요?</string>

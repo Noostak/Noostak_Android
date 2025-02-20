@@ -9,6 +9,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -17,7 +18,8 @@ import com.sopt.presentation.R
 @Composable
 fun GroupImage(
     imageUrl: String?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    cornerRadius: Dp = dimensionResource(id = R.dimen.image_radius)
 ) {
     if (!imageUrl.isNullOrBlank()) {
         GlideImage(
@@ -26,7 +28,7 @@ fun GroupImage(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
             ),
-            modifier = modifier.clip(RoundedCornerShape(dimensionResource(id = R.dimen.image_radius))),
+            modifier = modifier.clip(RoundedCornerShape(cornerRadius)),
             previewPlaceholder = painterResource(id = R.drawable.ic_launcher_background)
         )
     }

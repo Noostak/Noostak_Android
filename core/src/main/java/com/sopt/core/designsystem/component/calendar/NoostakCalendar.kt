@@ -33,15 +33,13 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme.colors
 import com.sopt.core.designsystem.theme.NoostakTheme.typography
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.util.calendar.Calendar
 import java.time.LocalDate
-import java.time.YearMonth
 
 @Composable
 fun NoostakCalendar(
-    start: String,
-    end: String,
     isSingleDate: Boolean,
-    isRangeSelected: (List<String>) -> Unit,
+    selectedPeriod: (List<String>) -> Unit,
     modifier: Modifier = Modifier,
     days: List<String>,
     onShowMessageChange: (Boolean) -> Unit
@@ -49,12 +47,8 @@ fun NoostakCalendar(
     var year by remember { mutableIntStateOf(LocalDate.now().year) }
     var month by remember { mutableIntStateOf(LocalDate.now().monthValue) }
     var selectedDates by remember { mutableStateOf<List<String>>(emptyList()) }
-    var startDate by remember { mutableStateOf(start) }
-    var endDate by remember { mutableStateOf(end) }
-    val yearMonth = YearMonth.of(year, month)
-    val totalDays = yearMonth.lengthOfMonth()
-    val firstDay = LocalDate.of(year, month, 1).dayOfWeek.value % 7
-
+    var startDate by remember { mutableStateOf("") }
+    var endDate by remember { mutableStateOf("") }
     val onShowSnackBar: () -> Unit = {
         onShowMessageChange(true)
     }
@@ -67,13 +61,9 @@ fun NoostakCalendar(
 
     LaunchedEffect(selectedDates, startDate, endDate) {
         if (isSingleDate) {
-            isRangeSelected(selectedDates)
+            selectedPeriod(selectedDates)
         } else if (startDate.isNotEmpty() && endDate.isNotEmpty()) {
-            val startLocalDate = LocalDate.parse(startDate)
-            val endLocalDate = LocalDate.parse(endDate)
-            val rangeDates = (0..endLocalDate.toEpochDay() - startLocalDate.toEpochDay())
-                .map { startLocalDate.plusDays(it).toString() }
-            isRangeSelected(rangeDates)
+            selectedPeriod(Calendar().generateDateRange(startDate, endDate))
         }
     }
 
@@ -88,12 +78,9 @@ fun NoostakCalendar(
                 modifier = Modifier
                     .size(16.dp)
                     .noRippleClickable {
-                        if (month == 1) {
-                            year -= 1
-                            month = 12
-                        } else {
-                            month -= 1
-                        }
+                        val (newYear, newMonth) = Calendar().manageMonth(year, month, isNext = false)
+                        year = newYear
+                        month = newMonth
                     }
             )
             Spacer(modifier = Modifier.width(10.dp))
@@ -110,12 +97,9 @@ fun NoostakCalendar(
                 modifier = Modifier
                     .size(16.dp)
                     .noRippleClickable {
-                        if (month == 12) {
-                            year += 1
-                            month = 1
-                        } else {
-                            month += 1
-                        }
+                        val (newYear, newMonth) = Calendar().manageMonth(year, month, isNext = true)
+                        year = newYear
+                        month = newMonth
                     }
             )
         }
@@ -146,22 +130,17 @@ fun NoostakCalendar(
                 ) {
                     (0..6).forEach { dayOfWeek ->
                         val dateText = when {
-                            week == 0 && dayOfWeek < firstDay -> ""
-                            day > totalDays -> ""
+                            week == 0 && dayOfWeek < Calendar().getFirstDayOfWeek(year, month) -> ""
+                            day > Calendar().getDaysInMonth(year, month) -> ""
                             else -> (day++).toString()
                         }
-                        val dateValue = "$year-${month.toString().padStart(2, '0')}-${
-                        dateText.padStart(
-                            2,
-                            '0'
-                        )
-                        }"
+                        val dateValue = Calendar().dateFormat(year, month, dateText.toIntOrNull() ?: 0)
                         val isSelected = dateValue in selectedDates
                         val isRange = !isSingleDate &&
-                            dateText.isNotEmpty() &&
-                            startDate.isNotEmpty() &&
-                            endDate.isNotEmpty() &&
-                            LocalDate.parse(dateValue) in LocalDate.parse(startDate)..LocalDate.parse(
+                                dateText.isNotEmpty() &&
+                                startDate.isNotEmpty() &&
+                                endDate.isNotEmpty() &&
+                                LocalDate.parse(dateValue) in LocalDate.parse(startDate)..LocalDate.parse(
                             endDate
                         )
                         val isStart = dateValue == startDate
@@ -172,79 +151,37 @@ fun NoostakCalendar(
                             contentAlignment = Alignment.Center
                         ) {
                             when {
-                                isSelected -> {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .background(
-                                                color = colors.blue300,
-                                                shape = CircleShape
-                                            )
-                                    )
-                                }
-
-                                isEnd && startDate.isEmpty() -> {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .background(
-                                                color = colors.blue300,
-                                                shape = CircleShape
-                                            )
-                                    )
-                                }
-
-                                isStart && endDate.isEmpty() -> {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .background(
-                                                color = colors.blue300,
-                                                shape = CircleShape
-                                            )
-                                    )
-                                }
-
-                                isRange && !isStart && !isEnd && startDate.isNotEmpty() && endDate.isNotEmpty() -> {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(40.dp)
-                                            .background(colors.blue100)
-                                    )
-                                }
-
-                                isStart && endDate.isNotEmpty() -> {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(40.dp)
-                                            .padding(start = 20.dp)
-                                            .background(colors.blue100)
-                                    )
-                                }
-
-                                isEnd && startDate.isNotEmpty() -> {
-                                    Box(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(40.dp)
-                                            .padding(end = 20.dp)
-                                            .background(colors.blue100)
-                                    )
-                                }
-                            }
-                            if (isStart || isEnd) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(40.dp)
-                                        .background(
-                                            color = colors.blue300,
-                                            shape = CircleShape
+                                isSelected || isStart || isEnd-> {
+                                    if( isStart && endDate.isNotEmpty() || isEnd){
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(40.dp)
+                                                .padding(
+                                                    start = if (isStart) 20.dp else 0.dp,
+                                                    end = if (isEnd) 20.dp else 0.dp
+                                                )
+                                                .background(colors.blue100)
                                         )
-                                )
+                                    }
+                                    Box(
+                                        modifier = Modifier
+                                            .size(40.dp)
+                                            .background(
+                                                color = colors.blue300,
+                                                shape = CircleShape
+                                            )
+                                    )
+                                }
+                                isRange -> {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(40.dp)
+                                            .background(colors.blue100)
+                                    )
+                                }
                             }
-
                             Text(
                                 text = dateText,
                                 style = typography.c3Regular,
@@ -254,46 +191,17 @@ fun NoostakCalendar(
                                     .padding(vertical = 11.dp)
                                     .noRippleClickable {
                                         if (isSingleDate) {
-                                            if (dateValue in selectedDates) {
-                                                selectedDates = selectedDates - dateValue
-                                            } else {
-                                                if (selectedDates.size < 7) {
-                                                    selectedDates = selectedDates + dateValue
-                                                } else {
-                                                    onShowSnackBar()
-                                                }
-                                            }
+                                            selectedDates = Calendar().singleDateSelection(dateValue, selectedDates, onShowSnackBar)
                                         } else {
-                                            if (dateValue == startDate || dateValue == endDate) {
-                                                startDate = ""
-                                                endDate = ""
-                                                selectedDates = emptyList()
-                                                isRangeSelected(emptyList())
-                                            } else {
-                                                val selectedDate = LocalDate.parse(dateValue)
-                                                if (startDate.isEmpty() || (startDate.isNotEmpty() && endDate.isNotEmpty())) {
-                                                    startDate = dateValue
-                                                    endDate = ""
-                                                    isRangeSelected(emptyList())
-                                                } else {
-                                                    if (LocalDate.parse(startDate).isAfter(selectedDate)) {
-                                                        if (LocalDate.parse(startDate).minusDays(6) > selectedDate) {
-                                                            endDate = ""
-                                                            onShowSnackBar()
-                                                        } else {
-                                                            endDate = startDate
-                                                            startDate = selectedDate.toString()
-                                                        }
-                                                    } else {
-                                                        if (LocalDate.parse(startDate).plusDays(6) < selectedDate) {
-                                                            endDate = ""
-                                                            onShowSnackBar()
-                                                        } else {
-                                                            endDate = selectedDate.toString()
-                                                        }
-                                                    }
-                                                }
-                                            }
+                                            val (tempStartDate, tempEndDate) = Calendar().periodDateSelection(
+                                                dateValue,
+                                                startDate,
+                                                endDate,
+                                                onShowSnackBar,
+                                                selectedPeriod
+                                            )
+                                            startDate = tempStartDate
+                                            endDate = tempEndDate
                                         }
                                     }
                             )
@@ -310,12 +218,13 @@ fun NoostakCalendar(
 fun NoostakCalendarPreview() {
     NoostakAndroidTheme {
         NoostakCalendar(
-            start = "",
-            end = "",
             isSingleDate = true,
-            isRangeSelected = {},
+            selectedPeriod = {},
             days = listOf("일", "월", "화", "수", "목", "금", "토"),
             onShowMessageChange = {}
         )
     }
 }
+
+
+
