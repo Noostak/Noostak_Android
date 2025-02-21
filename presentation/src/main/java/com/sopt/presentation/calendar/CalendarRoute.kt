@@ -9,12 +9,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -155,7 +153,7 @@ fun CalendarRoute(
         currentYearMonth = currentYearMonth,
         showAddDialog = showAddDialog,
         onAddBtnClick = { calendarViewModel.showAddDialog(true) },
-        onBtnClick = { calendarViewModel.showBottomSheet(true) }
+        onItemClick = { calendarViewModel.showBottomSheet(true) }
     )
 }
 
@@ -168,7 +166,7 @@ fun CalendarScreen(
     currentYearMonth: YearMonth,
     showAddDialog: Boolean = false,
     onAddBtnClick: () -> Unit = {},
-    onBtnClick: () -> Unit = {}
+    onItemClick: () -> Unit = {}
 ) {
     Scaffold(
         modifier = Modifier
@@ -195,13 +193,11 @@ fun CalendarScreen(
                 onAddBtnClick = onAddBtnClick
             )
             Spacer(modifier = Modifier.height(24.dp))
-            Button(onClick = { onBtnClick() }) {
-                Text(text = "Show BottomSheet")
-            }
             CalendarContent(
                 scheduleMap = scheduleMap,
                 pagerState = pagerState,
-                currentYearMonth = currentYearMonth
+                currentYearMonth = currentYearMonth,
+                onItemClick = { onItemClick() }
             )
         }
     }
@@ -212,7 +208,8 @@ private fun CalendarContent(
     scheduleMap: Map<String, List<CalendarSchedule>>,
     pagerState: PagerState,
     currentYearMonth: YearMonth,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onItemClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -227,7 +224,8 @@ private fun CalendarContent(
         WeekDaysHeader()
         CalendarMonthScreen(
             pagerState = pagerState,
-            scheduleMap = scheduleMap
+            scheduleMap = scheduleMap,
+            onItemClick = { onItemClick() }
         )
     }
 }
