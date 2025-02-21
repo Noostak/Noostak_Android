@@ -3,14 +3,13 @@ package com.sopt.presentation.calendar
 import androidx.lifecycle.viewModelScope
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.CalendarGroupEntity
+import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.domain.entity.ScheduleDetailEntity
 import com.sopt.domain.entity.ScheduleEntity
-import com.sopt.domain.entity.CalendarSchedule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -165,7 +164,7 @@ class CalendarViewModel @Inject constructor() : BaseViewModel<CalendarSideEffect
                     "하루", "야마다", "이누마키", "츠키시마",
                     "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이",
                     "하루", "야마다", "이누마키", "츠키시마",
-                    "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이",
+                    "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이"
                 ),
                 unavailableMembers = listOf("박보검", "정해인", "권지용")
             ),
