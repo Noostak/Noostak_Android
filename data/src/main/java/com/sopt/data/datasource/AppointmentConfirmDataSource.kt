@@ -1,6 +1,7 @@
 package com.sopt.data.datasource
 
 import com.sopt.data.dto.BaseResponse
+import com.sopt.data.dto.response.ResponseGetConfirmedDto
 import com.sopt.data.dto.response.ResponseGetOptionsDto
 import com.sopt.data.dto.response.ResponseLikesDto
 
@@ -18,4 +19,7 @@ interface AppointmentConfirmDataSource {
     ): BaseResponse<ResponseLikesDto>
 
     suspend fun getOptions(appointmentId: Long): BaseResponse<ResponseGetOptionsDto>
+
+    suspend fun getConfirmed(appointmentOptionId: Long): BaseResponse<ResponseGetConfirmedDto>
+    suspend fun postConfirmed(appointmentOptionId: Long): BaseResponse<Unit>
 }

@@ -1,11 +1,15 @@
 package com.sopt.data.service
 
 import com.sopt.data.dto.BaseResponse
+import com.sopt.data.dto.response.ResponseGetConfirmedDto
 import com.sopt.data.dto.response.ResponseGetOptionsDto
 import com.sopt.data.dto.response.ResponseLikesDto
 import com.sopt.data.service.ApiKeyStorage.API
 import com.sopt.data.service.ApiKeyStorage.APPOINTMENTS
 import com.sopt.data.service.ApiKeyStorage.APPOINTMENT_ID
+import com.sopt.data.service.ApiKeyStorage.APPOINTMENT_OPTIONS
+import com.sopt.data.service.ApiKeyStorage.APPOINTMENT_OPTION_ID
+import com.sopt.data.service.ApiKeyStorage.CONFIRMED
 import com.sopt.data.service.ApiKeyStorage.GROUPS
 import com.sopt.data.service.ApiKeyStorage.GROUP_ID
 import com.sopt.data.service.ApiKeyStorage.LIKES
@@ -37,5 +41,15 @@ interface AppointmentConfirmApiService {
     suspend fun getOptions(
         @Path(APPOINTMENT_ID) appointmentId: Long
     ): BaseResponse<ResponseGetOptionsDto>
+
+    @GET("/$API/$V1/$APPOINTMENT_OPTIONS/{$APPOINTMENT_OPTION_ID}/$CONFIRMED")
+    suspend fun getConfirmed(
+        @Path(APPOINTMENT_OPTION_ID) appointmentOptionId: Long
+    ): BaseResponse<ResponseGetConfirmedDto>
+
+    @POST("/$API/$V1/$APPOINTMENT_OPTIONS/{$APPOINTMENT_OPTION_ID}/$CONFIRMED")
+    suspend fun postConfirmed(
+        @Path(APPOINTMENT_OPTION_ID) appointmentOptionId: Long
+    ): BaseResponse<Unit>
 
 }

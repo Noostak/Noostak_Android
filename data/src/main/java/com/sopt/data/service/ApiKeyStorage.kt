@@ -11,6 +11,8 @@ object ApiKeyStorage {
     const val GROUP_ID = "groupId"
     const val APPOINTMENTS = "appointments"
     const val APPOINTMENT_ID = "appointmentId"
+    const val APPOINTMENT_OPTIONS = "appointment-options"
+    const val APPOINTMENT_OPTION_ID = "appointmentOptionId"
     const val PROGRESS = "progress"
     const val OPTIONS = "options"
     const val OPTION_ID = "optionId"
