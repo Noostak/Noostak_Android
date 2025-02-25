@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -47,6 +48,7 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.extension.scrollToItem
 import com.sopt.core.extension.showIf
+import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.AppointmentEntity
 import com.sopt.domain.entity.PeriodEntity
@@ -54,6 +56,7 @@ import com.sopt.domain.entity.TimeTableEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
 import com.sopt.presentation.appointment.screen.RecommendationScreen
+import timber.log.Timber
 
 @Composable
 fun AppointmentRoute(
@@ -66,6 +69,8 @@ fun AppointmentRoute(
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
     val showDialog by appointmentViewModel.showDialog.collectAsStateWithLifecycle()
+    val getOptionsState by appointmentViewModel.getOptionsState.collectAsStateWithLifecycle()
+    
     LaunchedEffect(key1 = appointmentViewModel.sideEffects) {
         appointmentViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -96,6 +101,7 @@ fun AppointmentRoute(
 
     LaunchedEffect(key1 = Unit) {
         appointmentViewModel.showDialog(false)
+        appointmentViewModel.getOptions(appointmentId = appointmentsId)
     }
 
     if (showDialog) {
@@ -116,16 +122,48 @@ fun AppointmentRoute(
         )
     }
 
-    AppointmentScreen(
-        groupId = groupId,
-        appointmentsId = appointmentsId,
-        appointmentName = appointmentName,
-        onBackButtonClick = appointmentViewModel::navigateUp,
-        onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
-        availablePeriods = appointmentViewModel.mockAvailablePeriods,
-        availableTimes = appointmentViewModel.mockAvailableTimes,
-        recommendations = appointmentViewModel.mockRecommendations
-    )
+    when (getOptionsState) {
+        is UiState.Loading -> CircularProgressIndicator()
+        is UiState.Success -> {
+            AppointmentScreen(
+                groupId = groupId,
+                appointmentsId = appointmentsId,
+                appointmentName = appointmentName,
+                onBackButtonClick = appointmentViewModel::navigateUp,
+                onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
+                availablePeriods = appointmentViewModel.mockAvailablePeriods,
+                availableTimes = appointmentViewModel.mockAvailableTimes,
+                recommendations = (getOptionsState as UiState.Success).data,
+                onLikeClick = { optionId, isLiked ->
+                    if (isLiked) {
+                        appointmentViewModel.postLike(groupId, appointmentsId, optionId)
+                    } else {
+                        appointmentViewModel.deleteLike(groupId, appointmentsId, optionId)
+                    }
+                }
+            )
+        }
+        else -> {
+            Timber.e("$getOptionsState")
+            AppointmentScreen(
+                groupId = groupId,
+                appointmentsId = appointmentsId,
+                appointmentName = appointmentName,
+                onBackButtonClick = appointmentViewModel::navigateUp,
+                onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
+                availablePeriods = appointmentViewModel.mockAvailablePeriods,
+                availableTimes = appointmentViewModel.mockAvailableTimes,
+                recommendations = appointmentViewModel.mockRecommendations,
+                onLikeClick = { optionId, isLiked ->
+                    if (isLiked) {
+                        appointmentViewModel.postLike(groupId, appointmentsId, optionId)
+                    } else {
+                        appointmentViewModel.deleteLike(groupId, appointmentsId, optionId)
+                    }
+                }
+            )
+        }
+    }
 }
 
 @Composable
@@ -137,7 +175,8 @@ fun AppointmentScreen(
     onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
     availablePeriods: PeriodEntity,
     availableTimes: TimeTableEntity,
-    recommendations: AppointmentEntity
+    recommendations: AppointmentEntity,
+    onLikeClick: (Long, Boolean) -> Unit = { _, _ -> }
 ) {
     val listState = rememberLazyListState()
     val density = LocalDensity.current
@@ -255,7 +294,8 @@ fun AppointmentScreen(
                     data = recommendations.recommendationPriority,
                     onConfirmButtonClick = { optionId ->
                         onConfirmButtonClick(groupId, appointmentsId, optionId, appointmentName)
-                    }
+                    },
+                    onLikeClick = onLikeClick
                 )
             }
         }

@@ -17,5 +17,5 @@ interface AppointmentConfirmDataSource {
         optionId: Long
     ): BaseResponse<ResponseLikesDto>
 
-    suspend fun getOptions(appointmentId: Long): BaseResponse<ResponseGetOptionsDto?>
+    suspend fun getOptions(appointmentId: Long): BaseResponse<ResponseGetOptionsDto>
 }

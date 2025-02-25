@@ -54,7 +54,8 @@ fun RecommendationScreen(
     isHost: Boolean,
     selectedItemIndex: Int,
     data: List<RecommendationPriorityEntity>,
-    onConfirmButtonClick: (Long) -> Unit
+    onConfirmButtonClick: (Long) -> Unit,
+    onLikeClick: (Long, Boolean) -> Unit = { _, _ -> }
 ) {
     val filteredData = data[selectedItemIndex].options
     var selectedItemId by remember { mutableStateOf<Long?>(null) }
@@ -79,6 +80,9 @@ fun RecommendationScreen(
                     onItemClick = {
                         selectedItemId =
                             if (selectedItemId == recommendation.id) null else recommendation.id
+                    },
+                    onLikeClick = { isLiked ->
+                        onLikeClick(recommendation.id, isLiked) // ✅ 부모로 전달
                     }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -101,7 +105,8 @@ fun RecommendationScreen(
 fun RecommendationItem(
     data: OptionEntity,
     isSelected: Boolean,
-    onItemClick: () -> Unit
+    onItemClick: () -> Unit,
+    onLikeClick: (Boolean) -> Unit
 ) {
     var isLiked by remember { mutableStateOf(data.liked) }
     var likes by remember { mutableIntStateOf(data.likes) }
@@ -171,6 +176,7 @@ fun RecommendationItem(
                     modifier = Modifier.noRippleClickable {
                         isLiked = !isLiked
                         likes = if (isLiked) likes + 1 else likes - 1
+                        onLikeClick(isLiked)
                     },
                     imageVector = if (isLiked) {
                         ImageVector.vectorResource(id = R.drawable.ic_heart_on)

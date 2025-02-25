@@ -28,7 +28,7 @@ class AppointmentConfirmDataSourceImpl @Inject constructor(
 
     override suspend fun getOptions(
         appointmentId: Long
-    ): BaseResponse<ResponseGetOptionsDto?> {
+    ): BaseResponse<ResponseGetOptionsDto> {
         return appointmentConfirmApiService.getOptions(appointmentId)
     }
 }

@@ -19,6 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,9 +29,9 @@ class AppointmentViewModel @Inject constructor(
     private val _showDialog = MutableStateFlow(false)
     val showDialog: StateFlow<Boolean> get() = _showDialog
 
-    private val _getOptionsState: MutableStateFlow<UiState<AppointmentEntity?>> =
+    private val _getOptionsState: MutableStateFlow<UiState<AppointmentEntity>> =
         MutableStateFlow(UiState.Empty)
-    val getOptionsState: StateFlow<UiState<AppointmentEntity?>> get() = _getOptionsState.asStateFlow()
+    val getOptionsState: StateFlow<UiState<AppointmentEntity>> get() = _getOptionsState.asStateFlow()
 
     private val _postLikeState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Empty)
     val postLikeState: StateFlow<UiState<Unit>> get() = _postLikeState.asStateFlow()
@@ -58,9 +59,11 @@ class AppointmentViewModel @Inject constructor(
             appointmentConfirmRepository.postLike(groupId, appointmentId, optionId).fold(
                 onSuccess = {
                     _postLikeState.emit(UiState.Success(it))
+                    Timber.d("postLike success: $it")
                 },
                 onFailure = {
                     _postLikeState.emit(UiState.Failure(it.message.toString()))
+                    Timber.e("postLike failed: ${it.message}")
                 }
             )
         }
@@ -72,9 +75,11 @@ class AppointmentViewModel @Inject constructor(
             appointmentConfirmRepository.deleteLike(groupId, appointmentId, optionId).fold(
                 onSuccess = {
                     _deleteLikeState.emit(UiState.Success(it))
+                    Timber.d("deleteLike success: $it")
                 },
                 onFailure = {
                     _deleteLikeState.emit(UiState.Failure(it.message.toString()))
+                    Timber.e("deleteLike failed: ${it.message}")
                 }
             )
         }

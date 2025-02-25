@@ -29,9 +29,9 @@ class AppointmentConfirmRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getOptions(appointmentId: Long): Result<AppointmentEntity?> {
+    override suspend fun getOptions(appointmentId: Long): Result<AppointmentEntity> {
         return runCatching {
-            appointmentConfirmDataSource.getOptions(appointmentId).result?.toAppointmentEntity()
+            appointmentConfirmDataSource.getOptions(appointmentId).result?.toAppointmentEntity() ?: throw Exception("getOptions failed")
         }
     }
 }

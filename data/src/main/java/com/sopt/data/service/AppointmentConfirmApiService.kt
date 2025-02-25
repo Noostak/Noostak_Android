@@ -36,6 +36,6 @@ interface AppointmentConfirmApiService {
     @GET("/$API/$V1/$APPOINTMENTS/{$APPOINTMENT_ID}/$OPTIONS")
     suspend fun getOptions(
         @Path(APPOINTMENT_ID) appointmentId: Long
-    ): BaseResponse<ResponseGetOptionsDto?>
+    ): BaseResponse<ResponseGetOptionsDto>
 
 }
