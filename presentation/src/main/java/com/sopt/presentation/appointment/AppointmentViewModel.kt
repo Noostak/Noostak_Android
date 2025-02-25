@@ -10,6 +10,7 @@ import com.sopt.domain.entity.PeriodEntity
 import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity
+import com.sopt.domain.repository.AppointmentConfirmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,7 +18,9 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSideEffect>() {
+class AppointmentViewModel @Inject constructor(
+    private val appointmentConfirmRepository: AppointmentConfirmRepository
+) : BaseViewModel<AppointmentSideEffect>() {
     private val _showDialog = MutableStateFlow(false)
     val showDialog: StateFlow<Boolean> get() = _showDialog
 
@@ -162,10 +165,10 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
 
     val mockRecommendations =
         AppointmentEntity(
-            isSubmitted = true,
             isHost = true,
             recommendationPriority = listOf(
                 RecommendationPriorityEntity(
+                    priority = 1,
                     options = listOf(
                         OptionEntity(
                             id = 1,
@@ -214,6 +217,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
                     )
                 ),
                 RecommendationPriorityEntity(
+                    priority = 2,
                     options = listOf(
                         OptionEntity(
                             id = 3,
@@ -262,6 +266,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
                     )
                 ),
                 RecommendationPriorityEntity(
+                    priority = 3,
                     options = listOf(
                         OptionEntity(
                             id = 5,
@@ -288,6 +293,7 @@ class AppointmentViewModel @Inject constructor() : BaseViewModel<AppointmentSide
                     )
                 ),
                 RecommendationPriorityEntity(
+                    priority = 4,
                     options = listOf(
                         OptionEntity(
                             id = 6,

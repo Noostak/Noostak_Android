@@ -95,7 +95,7 @@ fun AppointmentRoute(
     }
 
     LaunchedEffect(key1 = Unit) {
-        appointmentViewModel.showDialog(!appointmentViewModel.mockRecommendations.isSubmitted)
+        appointmentViewModel.showDialog(false)
     }
 
     if (showDialog) {

@@ -9,13 +9,13 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ResponseGetOptionsDto(
     @SerialName("isAppointmentHost") val isAppointmentHost: Boolean,
-    @SerialName("priorities") val properties: List<ResponseGetOptionsPropertiesDto>
+    @SerialName("priorities") val priorities: List<ResponseGetOptionsPrioritiesDto?>
 )
 
 @Serializable
-data class ResponseGetOptionsPropertiesDto(
+data class ResponseGetOptionsPrioritiesDto(
     @SerialName("priority") val priority: Int,
-    @SerialName("options") val options: List<ResponseGetOptionsOptionDto>
+    @SerialName("options") val options: List<ResponseGetOptionsOptionDto?>
 )
 
 @Serializable
