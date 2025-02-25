@@ -34,7 +34,7 @@ import timber.log.Timber
 @Composable
 fun AppointmentCheckRoute(
     groupId: Long,
-    appointmentsId: Long,
+    appointmentId: Long,
     appointmentName: String,
     navigateUp: () -> Unit,
     navigateToAppointment: (Long, Long, String) -> Unit,
@@ -48,7 +48,7 @@ fun AppointmentCheckRoute(
                 is AppointmentCheckSideEffect.NavigateToAppointment -> {
                     navigateToAppointment(
                         sideEffect.groupId,
-                        sideEffect.appointmentsId,
+                        sideEffect.appointmentId,
                         sideEffect.appointmentName
                     )
                 }
@@ -61,7 +61,7 @@ fun AppointmentCheckRoute(
     }
     AppointmentCheckScreen(
         groupId = groupId,
-        appointmentsId = appointmentsId,
+        appointmentsId = appointmentId,
         appointmentName = appointmentName,
         availablePeriods = appointmentCheckViewModel.mockAvailablePeriods,
         onBackButtonClick = appointmentCheckViewModel::navigateToGroupDetail,

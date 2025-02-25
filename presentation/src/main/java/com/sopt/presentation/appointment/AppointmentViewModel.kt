@@ -89,11 +89,11 @@ class AppointmentViewModel @Inject constructor(
         emitSideEffect(AppointmentSideEffect.NavigateUp)
     }
 
-    fun navigateToAppointmentCheck(groupId: Long, appointmentsId: Long, appointmentName: String) {
+    fun navigateToAppointmentCheck(groupId: Long, appointmentId: Long, appointmentName: String) {
         emitSideEffect(
             AppointmentSideEffect.NavigateToAppointmentCheck(
                 groupId,
-                appointmentsId,
+                appointmentId,
                 appointmentName
             )
         )
@@ -101,14 +101,14 @@ class AppointmentViewModel @Inject constructor(
 
     fun navigateToAppointmentConfirm(
         groupId: Long,
-        appointmentsId: Long,
+        appointmentId: Long,
         optionId: Long,
         appointmentName: String
     ) {
         emitSideEffect(
             AppointmentSideEffect.NavigateToAppointmentConfirm(
                 groupId,
-                appointmentsId,
+                appointmentId,
                 optionId,
                 appointmentName
             )

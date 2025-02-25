@@ -16,14 +16,14 @@ import kotlinx.serialization.Serializable
 
 fun NavController.navigateAppointment(
     groupId: Long,
-    appointmentsId: Long,
+    appointmentId: Long,
     appointmentName: String,
     navOptions: NavOptions? = null
 ) {
     navigate(
         route = Appointment(
             groupId = groupId,
-            appointmentsId = appointmentsId,
+            appointmentId = appointmentId,
             appointmentName = appointmentName
         ),
         navOptions = navOptions ?: NavOptions.Builder()
@@ -37,14 +37,14 @@ fun NavController.navigateAppointment(
 
 fun NavController.navigateAppointmentCheck(
     groupId: Long,
-    appointmentsId: Long,
+    appointmentId: Long,
     appointmentName: String,
     navOptions: NavOptions? = null
 ) {
     navigate(
         route = AppointmentCheck(
             groupId = groupId,
-            appointmentsId = appointmentsId,
+            appointmentId = appointmentId,
             appointmentName = appointmentName
         ),
         navOptions = navOptions
@@ -53,7 +53,7 @@ fun NavController.navigateAppointmentCheck(
 
 fun NavController.navigateAppointmentConfirm(
     groupId: Long,
-    appointmentsId: Long,
+    appointmentId: Long,
     appointmentName: String,
     optionId: Long,
     navOptions: NavOptions? = null
@@ -61,7 +61,7 @@ fun NavController.navigateAppointmentConfirm(
     navigate(
         route = AppointmentConfirm(
             groupId = groupId,
-            appointmentsId = appointmentsId,
+            appointmentId = appointmentId,
             appointmentName = appointmentName,
             optionId = optionId
         ),
@@ -76,20 +76,20 @@ fun NavGraphBuilder.appointmentNavGraph(
         val args = it.toRoute<Appointment>()
         AppointmentRoute(
             groupId = args.groupId,
-            appointmentsId = args.appointmentsId,
+            appointmentId = args.appointmentId,
             appointmentName = args.appointmentName,
             navigateUp = navHostController::navigateUp,
-            navigateToAppointmentCheck = { groupId, appointmentsId, appointmentName ->
+            navigateToAppointmentCheck = { groupId, appointmentId, appointmentName ->
                 navHostController.navigateAppointmentCheck(
                     groupId = groupId,
-                    appointmentsId = appointmentsId,
+                    appointmentId = appointmentId,
                     appointmentName = appointmentName
                 )
             },
-            navigateToAppointmentConfirm = { groupId, appointmentsId, optionId, appointmentName ->
+            navigateToAppointmentConfirm = { groupId, appointmentId, optionId, appointmentName ->
                 navHostController.navigateAppointmentConfirm(
                     groupId = groupId,
-                    appointmentsId = appointmentsId,
+                    appointmentId = appointmentId,
                     optionId = optionId,
                     appointmentName = appointmentName
                 )
@@ -101,13 +101,13 @@ fun NavGraphBuilder.appointmentNavGraph(
         val args = it.toRoute<AppointmentCheck>()
         AppointmentCheckRoute(
             groupId = args.groupId,
-            appointmentsId = args.appointmentsId,
+            appointmentId = args.appointmentId,
             appointmentName = args.appointmentName,
             navigateUp = navHostController::navigateUp,
-            navigateToAppointment = { groupId, appointmentsId, appointmentName ->
+            navigateToAppointment = { groupId, appointmentId, appointmentName ->
                 navHostController.navigateAppointment(
                     groupId = groupId,
-                    appointmentsId = appointmentsId,
+                    appointmentId = appointmentId,
                     appointmentName = appointmentName
                 )
             },
@@ -121,7 +121,7 @@ fun NavGraphBuilder.appointmentNavGraph(
         val args = it.toRoute<AppointmentConfirm>()
         AppointmentConfirmRoute(
             groupId = args.groupId,
-            appointmentsId = args.appointmentsId,
+            appointmentId = args.appointmentId,
             optionId = args.optionId,
             appointmentName = args.appointmentName,
             navigateUp = navHostController::navigateUp,
@@ -135,21 +135,21 @@ fun NavGraphBuilder.appointmentNavGraph(
 @Serializable
 data class Appointment(
     val groupId: Long,
-    val appointmentsId: Long,
+    val appointmentId: Long,
     val appointmentName: String
 ) : Route
 
 @Serializable
 data class AppointmentCheck(
     val groupId: Long,
-    val appointmentsId: Long,
+    val appointmentId: Long,
     val appointmentName: String
 ) : Route
 
 @Serializable
 data class AppointmentConfirm(
     val groupId: Long,
-    val appointmentsId: Long,
+    val appointmentId: Long,
     val optionId: Long,
     val appointmentName: String
 ) : Route

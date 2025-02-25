@@ -46,7 +46,7 @@ import timber.log.Timber
 @Composable
 fun AppointmentConfirmRoute(
     groupId: Long,
-    appointmentsId: Long,
+    appointmentId: Long,
     optionId: Long,
     appointmentName: String,
     navigateUp: () -> Unit,

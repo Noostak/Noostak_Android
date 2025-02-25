@@ -61,7 +61,7 @@ import timber.log.Timber
 @Composable
 fun AppointmentRoute(
     groupId: Long,
-    appointmentsId: Long,
+    appointmentId: Long,
     appointmentName: String,
     navigateUp: () -> Unit,
     navigateToAppointmentCheck: (Long, Long, String) -> Unit,
@@ -101,7 +101,7 @@ fun AppointmentRoute(
 
     LaunchedEffect(key1 = Unit) {
         appointmentViewModel.showDialog(false)
-        appointmentViewModel.getOptions(appointmentId = appointmentsId)
+        appointmentViewModel.getOptions(appointmentId = appointmentId)
     }
 
     if (showDialog) {
@@ -110,7 +110,7 @@ fun AppointmentRoute(
             onClick = {
                 appointmentViewModel.apply {
                     showDialog(false)
-                    navigateToAppointmentCheck(groupId, appointmentsId, appointmentName)
+                    navigateToAppointmentCheck(groupId, appointmentId, appointmentName)
                 }
             },
             onDismissRequest = {
@@ -127,7 +127,7 @@ fun AppointmentRoute(
         is UiState.Success -> {
             AppointmentScreen(
                 groupId = groupId,
-                appointmentsId = appointmentsId,
+                appointmentsId = appointmentId,
                 appointmentName = appointmentName,
                 onBackButtonClick = appointmentViewModel::navigateUp,
                 onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
@@ -136,9 +136,9 @@ fun AppointmentRoute(
                 recommendations = (getOptionsState as UiState.Success).data,
                 onLikeClick = { optionId, isLiked ->
                     if (isLiked) {
-                        appointmentViewModel.postLike(groupId, appointmentsId, optionId)
+                        appointmentViewModel.postLike(groupId, appointmentId, optionId)
                     } else {
-                        appointmentViewModel.deleteLike(groupId, appointmentsId, optionId)
+                        appointmentViewModel.deleteLike(groupId, appointmentId, optionId)
                     }
                 }
             )
@@ -147,7 +147,7 @@ fun AppointmentRoute(
             Timber.e("$getOptionsState")
             AppointmentScreen(
                 groupId = groupId,
-                appointmentsId = appointmentsId,
+                appointmentsId = appointmentId,
                 appointmentName = appointmentName,
                 onBackButtonClick = appointmentViewModel::navigateUp,
                 onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
@@ -156,9 +156,9 @@ fun AppointmentRoute(
                 recommendations = appointmentViewModel.mockRecommendations,
                 onLikeClick = { optionId, isLiked ->
                     if (isLiked) {
-                        appointmentViewModel.postLike(groupId, appointmentsId, optionId)
+                        appointmentViewModel.postLike(groupId, appointmentId, optionId)
                     } else {
-                        appointmentViewModel.deleteLike(groupId, appointmentsId, optionId)
+                        appointmentViewModel.deleteLike(groupId, appointmentId, optionId)
                     }
                 }
             )
