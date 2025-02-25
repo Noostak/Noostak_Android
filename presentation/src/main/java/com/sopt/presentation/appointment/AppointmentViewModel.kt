@@ -1,5 +1,7 @@
 package com.sopt.presentation.appointment
 
+import androidx.lifecycle.viewModelScope
+import com.sopt.core.state.UiState
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AppointmentEntity
 import com.sopt.domain.entity.AvailableTimeEntity
@@ -14,7 +16,9 @@ import com.sopt.domain.repository.AppointmentConfirmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -23,6 +27,24 @@ class AppointmentViewModel @Inject constructor(
 ) : BaseViewModel<AppointmentSideEffect>() {
     private val _showDialog = MutableStateFlow(false)
     val showDialog: StateFlow<Boolean> get() = _showDialog
+
+    private val _getOptionsState: MutableStateFlow<UiState<AppointmentEntity?>> =
+        MutableStateFlow(UiState.Empty)
+    val getOptionsState: StateFlow<UiState<AppointmentEntity?>> get() = _getOptionsState.asStateFlow()
+
+    fun getOptions(appointmentId: Long) {
+        viewModelScope.launch {
+            _getOptionsState.emit(UiState.Loading)
+            appointmentConfirmRepository.getOptions(appointmentId).fold(
+                onSuccess = {
+                    _getOptionsState.emit(UiState.Success(it))
+                },
+                onFailure = {
+                    _getOptionsState.emit(UiState.Failure(it.message.toString()))
+                }
+            )
+        }
+    }
 
     fun navigateUp() {
         emitSideEffect(AppointmentSideEffect.NavigateUp)
