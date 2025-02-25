@@ -76,7 +76,7 @@ fun RecommendationScreen(
             items(filteredData, key = { it.id }) { recommendation ->
                 RecommendationItem(
                     data = recommendation,
-                    isSelected = selectedItemId == recommendation.id,
+                    isSelected = if (isHost) selectedItemId == recommendation.id else false,
                     onItemClick = {
                         selectedItemId =
                             if (selectedItemId == recommendation.id) null else recommendation.id
