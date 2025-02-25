@@ -14,22 +14,26 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
+import com.sopt.core.state.UiState
 import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.AppointmentDetailEntity
@@ -37,6 +41,7 @@ import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.confirmedDetail.AvailableUserChips
 import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
 import com.sopt.presentation.groupDetail.confirmedDetail.UnavailableUserChips
+import timber.log.Timber
 
 @Composable
 fun AppointmentConfirmRoute(
@@ -48,6 +53,9 @@ fun AppointmentConfirmRoute(
     navigateToGroupDetail: (Long) -> Unit,
     appointmentConfirmViewModel: AppointmentConfirmViewModel = hiltViewModel()
 ) {
+    val getConfirmedState by appointmentConfirmViewModel.getConfirmedState.collectAsStateWithLifecycle()
+    val postConfirmedState by appointmentConfirmViewModel.postConfirmedState.collectAsStateWithLifecycle()
+
     LaunchedEffect(key1 = appointmentConfirmViewModel.sideEffects) {
         appointmentConfirmViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -58,13 +66,43 @@ fun AppointmentConfirmRoute(
             }
         }
     }
-    AppointmentConfirmScreen(
-        groupId = groupId,
-        appointmentName = appointmentName,
-        onBackButtonClick = appointmentConfirmViewModel::navigateUp,
-        onConfirmButtonClick = appointmentConfirmViewModel::navigateToGroupDetail,
-        data = appointmentConfirmViewModel.mockAppointmentDetail
-    )
+    LaunchedEffect(key1 = Unit) {
+        appointmentConfirmViewModel.getConfirmed(optionId)
+    }
+
+    when (getConfirmedState) {
+        is UiState.Empty -> Timber.e("getConfirmedState is empty")
+        is UiState.Loading -> CircularProgressIndicator()
+        is UiState.Success -> {
+            AppointmentConfirmScreen(
+                groupId = groupId,
+                appointmentName = appointmentName,
+                onBackButtonClick = appointmentConfirmViewModel::navigateUp,
+                onConfirmButtonClick = {
+                    appointmentConfirmViewModel.postConfirmed(optionId)
+                    when (postConfirmedState) {
+                        is UiState.Success -> appointmentConfirmViewModel.navigateToGroupDetail(
+                            groupId
+                        )
+
+                        else -> Timber.e("postConfirmedState is not success")
+                    }
+                },
+                data = appointmentConfirmViewModel.mockAppointmentDetail
+            )
+        }
+
+        is UiState.Failure -> {
+            Timber.e("getConfirmedState is failure $getConfirmedState")
+            AppointmentConfirmScreen(
+                groupId = groupId,
+                appointmentName = appointmentName,
+                onBackButtonClick = appointmentConfirmViewModel::navigateUp,
+                onConfirmButtonClick = appointmentConfirmViewModel::navigateToGroupDetail,
+                data = appointmentConfirmViewModel.mockAppointmentDetail
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)

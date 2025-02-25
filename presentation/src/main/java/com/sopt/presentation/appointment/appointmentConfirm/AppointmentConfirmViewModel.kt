@@ -1,14 +1,54 @@
 package com.sopt.presentation.appointment.appointmentConfirm
 
+import androidx.lifecycle.viewModelScope
+import com.sopt.core.state.UiState
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AppointmentDetailEntity
 import com.sopt.domain.entity.IdentityEntity
+import com.sopt.domain.repository.AppointmentConfirmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AppointmentConfirmViewModel @Inject constructor() :
-    BaseViewModel<AppointmentConfirmSideEffect>() {
+class AppointmentConfirmViewModel @Inject constructor(
+    private val appointmentConfirmRepository: AppointmentConfirmRepository
+) : BaseViewModel<AppointmentConfirmSideEffect>() {
+    private val _getConfirmedState: MutableStateFlow<UiState<AppointmentDetailEntity>> =
+        MutableStateFlow(UiState.Empty)
+    val getConfirmedState: MutableStateFlow<UiState<AppointmentDetailEntity>> = _getConfirmedState
+
+    private val _postConfirmedState: MutableStateFlow<UiState<Unit>> =
+        MutableStateFlow(UiState.Empty)
+    val postConfirmedState: MutableStateFlow<UiState<Unit>> = _postConfirmedState
+
+    fun getConfirmed(appointmentOptionId: Long) {
+        viewModelScope.launch {
+            _getConfirmedState.emit(UiState.Loading)
+            appointmentConfirmRepository.getConfirmed(appointmentOptionId).let { result ->
+                result.onSuccess {
+                    _getConfirmedState.emit(UiState.Success(it))
+                }.onFailure {
+                    _getConfirmedState.emit(UiState.Failure(it.message.toString()))
+                }
+            }
+        }
+    }
+
+    fun postConfirmed(appointmentOptionId: Long) {
+        viewModelScope.launch {
+            _postConfirmedState.emit(UiState.Loading)
+            appointmentConfirmRepository.postConfirmed(appointmentOptionId).let { result ->
+                result.onSuccess {
+                    _postConfirmedState.emit(UiState.Success(it))
+                }.onFailure {
+                    _postConfirmedState.emit(UiState.Failure(it.message.toString()))
+                }
+            }
+        }
+    }
+
     fun navigateUp() {
         emitSideEffect(AppointmentConfirmSideEffect.NavigateUp)
     }
