@@ -32,6 +32,12 @@ class AppointmentViewModel @Inject constructor(
         MutableStateFlow(UiState.Empty)
     val getOptionsState: StateFlow<UiState<AppointmentEntity?>> get() = _getOptionsState.asStateFlow()
 
+    private val _postLikeState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Empty)
+    val postLikeState: StateFlow<UiState<Unit>> get() = _postLikeState.asStateFlow()
+
+    private val _deleteLikeState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Empty)
+    val deleteLikeState: StateFlow<UiState<Unit>> get() = _deleteLikeState.asStateFlow()
+
     fun getOptions(appointmentId: Long) {
         viewModelScope.launch {
             _getOptionsState.emit(UiState.Loading)
@@ -41,6 +47,34 @@ class AppointmentViewModel @Inject constructor(
                 },
                 onFailure = {
                     _getOptionsState.emit(UiState.Failure(it.message.toString()))
+                }
+            )
+        }
+    }
+
+    fun postLike(groupId: Long, appointmentId: Long, optionId: Long) {
+        viewModelScope.launch {
+            _postLikeState.emit(UiState.Loading)
+            appointmentConfirmRepository.postLike(groupId, appointmentId, optionId).fold(
+                onSuccess = {
+                    _postLikeState.emit(UiState.Success(it))
+                },
+                onFailure = {
+                    _postLikeState.emit(UiState.Failure(it.message.toString()))
+                }
+            )
+        }
+    }
+
+    fun deleteLike(groupId: Long, appointmentId: Long, optionId: Long) {
+        viewModelScope.launch {
+            _deleteLikeState.emit(UiState.Loading)
+            appointmentConfirmRepository.deleteLike(groupId, appointmentId, optionId).fold(
+                onSuccess = {
+                    _deleteLikeState.emit(UiState.Success(it))
+                },
+                onFailure = {
+                    _deleteLikeState.emit(UiState.Failure(it.message.toString()))
                 }
             )
         }

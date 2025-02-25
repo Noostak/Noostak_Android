@@ -9,6 +9,26 @@ import javax.inject.Inject
 class AppointmentConfirmRepositoryImpl @Inject constructor(
     private val appointmentConfirmDataSource: AppointmentConfirmDataSource
 ): AppointmentConfirmRepository {
+    override suspend fun postLike(
+        groupId: Long,
+        appointmentId: Long,
+        optionId: Long
+    ): Result<Unit> {
+        return runCatching {
+            appointmentConfirmDataSource.postLike(groupId, appointmentId, optionId)
+        }
+    }
+
+    override suspend fun deleteLike(
+        groupId: Long,
+        appointmentId: Long,
+        optionId: Long
+    ): Result<Unit> {
+        return runCatching {
+            appointmentConfirmDataSource.deleteLike(groupId, appointmentId, optionId)
+        }
+    }
+
     override suspend fun getOptions(appointmentId: Long): Result<AppointmentEntity?> {
         return runCatching {
             appointmentConfirmDataSource.getOptions(appointmentId).result?.toAppointmentEntity()
