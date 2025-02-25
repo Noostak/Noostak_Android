@@ -70,7 +70,6 @@ fun AppointmentRoute(
 ) {
     val showDialog by appointmentViewModel.showDialog.collectAsStateWithLifecycle()
     val getOptionsState by appointmentViewModel.getOptionsState.collectAsStateWithLifecycle()
-    
     LaunchedEffect(key1 = appointmentViewModel.sideEffects) {
         appointmentViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {

@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class AppointmentConfirmRepositoryImpl @Inject constructor(
     private val appointmentConfirmDataSource: AppointmentConfirmDataSource
-): AppointmentConfirmRepository {
+) : AppointmentConfirmRepository {
     override suspend fun postLike(
         groupId: Long,
         appointmentId: Long,
@@ -33,13 +33,15 @@ class AppointmentConfirmRepositoryImpl @Inject constructor(
 
     override suspend fun getOptions(appointmentId: Long): Result<AppointmentEntity> {
         return runCatching {
-            appointmentConfirmDataSource.getOptions(appointmentId).result?.toAppointmentEntity() ?: throw Exception("getOptions failed")
+            appointmentConfirmDataSource.getOptions(appointmentId).result?.toAppointmentEntity()
+                ?: throw Exception("getOptions failed")
         }
     }
 
     override suspend fun getConfirmed(appointmentOptionId: Long): Result<AppointmentDetailEntity> {
         return runCatching {
-            appointmentConfirmDataSource.getConfirmed(appointmentOptionId).result?.toAppointmentDetailEntity() ?: throw Exception("getConfirmed failed")
+            appointmentConfirmDataSource.getConfirmed(appointmentOptionId).result?.toAppointmentDetailEntity()
+                ?: throw Exception("getConfirmed failed")
         }
     }
 

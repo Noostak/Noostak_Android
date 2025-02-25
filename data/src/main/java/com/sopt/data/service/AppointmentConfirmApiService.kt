@@ -51,5 +51,4 @@ interface AppointmentConfirmApiService {
     suspend fun postConfirmed(
         @Path(APPOINTMENT_OPTION_ID) appointmentOptionId: Long
     ): BaseResponse<Unit>
-
 }

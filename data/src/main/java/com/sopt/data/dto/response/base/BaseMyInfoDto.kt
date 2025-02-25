@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 data class BaseMyInfoDto(
     @SerialName("availability") val availability: String,
     @SerialName("position") val position: Int,
-    @SerialName("name") val name: String,
+    @SerialName("name") val name: String
 )

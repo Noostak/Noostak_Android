@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class AppointmentConfirmDataSourceImpl @Inject constructor(
     private val appointmentConfirmApiService: AppointmentConfirmApiService
-): AppointmentConfirmDataSource {
+) : AppointmentConfirmDataSource {
     override suspend fun postLike(
         groupId: Long,
         appointmentId: Long,
