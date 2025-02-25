@@ -10,7 +10,7 @@ object ApiKeyStorage {
     const val JOIN = "join"
     const val GROUP_ID = "groupId"
     const val APPOINTMENTS = "appointments"
-    const val APPOINTMENTS_ID = "appointmentsId"
+    const val APPOINTMENT_ID = "appointmentId"
     const val PROGRESS = "progress"
     const val OPTIONS = "options"
     const val OPTION_ID = "optionId"
