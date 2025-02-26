@@ -8,7 +8,7 @@ import com.sopt.core.type.CellType
 import com.sopt.core.util.CalculateTime
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableMemberEntity
-import com.sopt.domain.entity.TimeTableSelectedTimesEntity
+import com.sopt.domain.entity.TimeTableScheduleEntity
 
 class TimeTable {
     fun calculateTimeSlots(startTime: String, endTime: String): Int {
@@ -29,7 +29,7 @@ class TimeTable {
         cellType: CellType,
         rowIndex: Int,
         columnIndex: Int,
-        availablePeriods: TimeTableSelectedTimesEntity,
+        availablePeriods: TimeTableScheduleEntity,
         availableTimes: TimeTableMemberEntity
     ): Color {
         return when (cellType) {
@@ -89,7 +89,7 @@ class TimeTable {
         cellType: CellType,
         rowIndex: Int,
         columnIndex: Int,
-        data: TimeTableSelectedTimesEntity
+        data: TimeTableScheduleEntity
     ): String {
         val startHour = extractHour(data.startTime)
 
@@ -110,7 +110,7 @@ class TimeTable {
 
     fun getSelectedTimes(
         selectedCells: List<Pair<Int, Int>>,
-        availablePeriods: TimeTableSelectedTimesEntity
+        availablePeriods: TimeTableScheduleEntity
     ): List<TimeEntity> {
         val selectedTimes = mutableListOf<TimeEntity>()
         val selectedCellsByDate = selectedCells.groupBy { it.second }

@@ -51,7 +51,7 @@ import com.sopt.core.extension.showIf
 import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.AppointmentEntity
-import com.sopt.domain.entity.TimeTableSelectedTimesEntity
+import com.sopt.domain.entity.TimeTableScheduleEntity
 import com.sopt.domain.entity.TimeTableMemberEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
@@ -172,7 +172,7 @@ fun AppointmentScreen(
     appointmentName: String,
     onBackButtonClick: () -> Unit,
     onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
-    availablePeriods: TimeTableSelectedTimesEntity,
+    availablePeriods: TimeTableScheduleEntity,
     availableTimes: TimeTableMemberEntity,
     recommendations: AppointmentEntity,
     onLikeClick: (Long, Boolean) -> Unit = { _, _ -> }

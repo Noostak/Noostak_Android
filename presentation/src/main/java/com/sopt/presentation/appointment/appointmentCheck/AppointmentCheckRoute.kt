@@ -26,8 +26,8 @@ import com.sopt.core.designsystem.component.timetable.NoostakEditableTimeTable
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.domain.entity.TimeTableSelectedTimesEntity
 import com.sopt.domain.entity.TimeEntity
+import com.sopt.domain.entity.TimeTableScheduleEntity
 import com.sopt.presentation.R
 import timber.log.Timber
 
@@ -74,7 +74,7 @@ fun AppointmentCheckScreen(
     groupId: Long,
     appointmentsId: Long,
     appointmentName: String,
-    availablePeriods: TimeTableSelectedTimesEntity,
+    availablePeriods: TimeTableScheduleEntity,
     onBackButtonClick: (Long) -> Unit,
     onConfirmButtonClick: (Long, Long, String) -> Unit
 ) {
@@ -151,13 +151,16 @@ fun AppointmentCheckScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewAppointmentConfirmScreen() {
-    val appointmentCheckViewModel: AppointmentCheckViewModel = hiltViewModel()
     NoostakAndroidTheme {
         AppointmentCheckScreen(
             groupId = 1,
             appointmentsId = 1,
             appointmentName = "3차 회의",
-            availablePeriods = appointmentCheckViewModel.mockAvailablePeriods,
+            availablePeriods = TimeTableScheduleEntity(
+                dates = listOf("2024-09-05T10:00:00", "2024-09-06T10:00:00", "2024-09-07T10:00:00"),
+                startTime = "2024-09-05T10:00:00",
+                endTime = "2024-09-05T18:00:00"
+            ),
             onBackButtonClick = {},
             onConfirmButtonClick = { _, _, _ -> }
         )

@@ -10,7 +10,7 @@ import com.sopt.domain.entity.OptionEntity
 import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableMemberEntity
-import com.sopt.domain.entity.TimeTableSelectedTimesEntity
+import com.sopt.domain.entity.TimeTableScheduleEntity
 import com.sopt.domain.repository.AppointmentConfirmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -118,7 +118,7 @@ class AppointmentViewModel @Inject constructor(
         _showDialog.update { show }
     }
 
-    val mockAvailablePeriods = TimeTableSelectedTimesEntity(
+    val mockAvailablePeriods = TimeTableScheduleEntity(
         dates = listOf("2024-09-05T10:00:00", "2024-09-06T10:00:00", "2024-09-07T10:00:00"),
         startTime = "2024-09-05T10:00:00",
         endTime = "2024-09-05T18:00:00"
