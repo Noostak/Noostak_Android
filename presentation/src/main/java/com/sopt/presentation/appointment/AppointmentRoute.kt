@@ -56,7 +56,6 @@ import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
 import com.sopt.presentation.appointment.screen.RecommendationScreen
-import timber.log.Timber
 
 @Composable
 fun AppointmentRoute(

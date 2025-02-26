@@ -158,7 +158,6 @@ fun NoostakTimeTable1Preview() {
             )
         )
 
-
         val mockAvailableTimes = listOf(
             AppointmentMembersInfoEntity(
                 memberId = 1,

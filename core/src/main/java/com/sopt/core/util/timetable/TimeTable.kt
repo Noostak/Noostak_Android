@@ -123,10 +123,10 @@ class TimeTable {
                     TimeEntity(
                         date = "${extractDate(date)}T${String.format("%02d", startHour)}:00:00",
                         startTime = "${extractDate(date)}T${
-                            String.format(
-                                "%02d",
-                                startHour
-                            )
+                        String.format(
+                            "%02d",
+                            startHour
+                        )
                         }:00:00",
                         endTime = "${extractDate(date)}T${String.format("%02d", endHour)}:00:00"
                     )

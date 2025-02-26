@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ResponseGetTimeTableDto(
     @SerialName("isAppointmentMemberTimeSet") val isAppointmentMemberTimeSet: Boolean,
-    @SerialName("appointmentSchedule") val appointmentSchedule: ResponseAppointmentScheduleDto,
+    @SerialName("appointmentSchedule") val appointmentSchedule: ResponseAppointmentScheduleDto
 )
 
 @Serializable
