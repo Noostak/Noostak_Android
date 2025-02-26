@@ -1,13 +1,38 @@
 package com.sopt.presentation.appointment.appointmentCheck
 
+import androidx.lifecycle.viewModelScope
+import com.sopt.core.state.UiState
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.TimeEntity
+import com.sopt.domain.repository.AppointmentConfirmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AppointmentCheckViewModel @Inject constructor() :
-    BaseViewModel<AppointmentCheckSideEffect>() {
+class AppointmentCheckViewModel @Inject constructor(
+    private val appointmentConfirmRepository: AppointmentConfirmRepository
+) : BaseViewModel<AppointmentCheckSideEffect>() {
+    private val _postTimeTableState: MutableStateFlow<UiState<Unit>> =
+        MutableStateFlow(UiState.Empty)
+    val postTimeTableState: StateFlow<UiState<Unit>> get() = _postTimeTableState
+
+    fun postTimeTable(appointmentId: Long, availableTimes: List<TimeEntity>) {
+        viewModelScope.launch {
+            _postTimeTableState.emit(UiState.Loading)
+            appointmentConfirmRepository.postTimeTable(appointmentId, availableTimes).fold(
+                onSuccess = {
+                    _postTimeTableState.emit(UiState.Success(it))
+                },
+                onFailure = {
+                    _postTimeTableState.emit(UiState.Failure(it.message.toString()))
+                }
+            )
+        }
+    }
+
     fun navigateUp() {
         emitSideEffect(AppointmentCheckSideEffect.NavigateUp)
     }

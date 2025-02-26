@@ -21,11 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.timetable.NoostakEditableTimeTable
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.state.UiState
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
 import timber.log.Timber
@@ -40,6 +42,8 @@ fun AppointmentCheckRoute(
     navigateToGroupDetail: (Long) -> Unit,
     appointmentCheckViewModel: AppointmentCheckViewModel = hiltViewModel()
 ) {
+    val postTimeTableState by appointmentCheckViewModel.postTimeTableState.collectAsStateWithLifecycle()
+    var selectedData by remember { mutableStateOf(emptyList<TimeEntity>()) }
     LaunchedEffect(key1 = appointmentCheckViewModel.sideEffects) {
         appointmentCheckViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -60,24 +64,42 @@ fun AppointmentCheckRoute(
     }
     AppointmentCheckScreen(
         groupId = groupId,
-        appointmentsId = appointmentId,
         appointmentName = appointmentName,
         availablePeriods = appointmentCheckViewModel.mockAvailablePeriods,
+        onSelectedDataChange = { selectedData = it },
         onBackButtonClick = appointmentCheckViewModel::navigateToGroupDetail,
-        onConfirmButtonClick = appointmentCheckViewModel::navigateToAppointment
+        onConfirmButtonClick = {
+            appointmentCheckViewModel.postTimeTable(appointmentId, selectedData)
+            when (postTimeTableState) {
+                is UiState.Success -> appointmentCheckViewModel.navigateToAppointment(
+                    groupId,
+                    appointmentId,
+                    appointmentName
+                )
+
+                is UiState.Failure -> {
+                    Timber.e("postTimeTable 실패: ${(postTimeTableState as UiState.Failure).msg}")
+                    appointmentCheckViewModel.navigateToAppointment(
+                        groupId,
+                        appointmentId,
+                        appointmentName
+                    )
+                }
+                else -> Timber.d("postTimeTable 로딩 중")
+            }
+        }
     )
 }
 
 @Composable
 fun AppointmentCheckScreen(
     groupId: Long,
-    appointmentsId: Long,
     appointmentName: String,
     availablePeriods: List<TimeEntity>,
+    onSelectedDataChange: (List<TimeEntity>) -> Unit = {},
     onBackButtonClick: (Long) -> Unit,
-    onConfirmButtonClick: (Long, Long, String) -> Unit
+    onConfirmButtonClick: () -> Unit
 ) {
-    var selectedData by remember { mutableStateOf(emptyList<TimeEntity>()) }
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
@@ -123,6 +145,7 @@ fun AppointmentCheckScreen(
                         height = Dimension.fillToConstraints
                     }
             ) {
+                onSelectedDataChange(it)
                 Timber.d("selectedData: $it")
             }
 
@@ -139,7 +162,7 @@ fun AppointmentCheckScreen(
                         bottom = dimensionResource(id = R.dimen.vertical_padding)
                     ),
                 text = stringResource(R.string.btn_appointment_check),
-                onButtonClick = { onConfirmButtonClick(groupId, appointmentsId, appointmentName) },
+                onButtonClick = onConfirmButtonClick,
                 isEnabled = true,
                 activateColor = NoostakTheme.colors.gray900
             )
@@ -153,7 +176,6 @@ fun PreviewAppointmentConfirmScreen() {
     NoostakAndroidTheme {
         AppointmentCheckScreen(
             groupId = 1,
-            appointmentsId = 1,
             appointmentName = "3차 회의",
             availablePeriods = listOf(
                 TimeEntity(
@@ -173,7 +195,7 @@ fun PreviewAppointmentConfirmScreen() {
                 )
             ),
             onBackButtonClick = {},
-            onConfirmButtonClick = { _, _, _ -> }
+            onConfirmButtonClick = {}
         )
     }
 }
