@@ -1,6 +1,12 @@
 package com.sopt.domain.entity
 
-data class TimeTableSelectedEntity(
+data class TimeTableEntity(
+    val isAppointMemberTimeSet: Boolean,
+    val appointmentSchedule: AppointmentScheduleEntity // appointmentSchedule 추가
+)
+
+data class AppointmentScheduleEntity(
+    val appointmentHostSelectionTimes: List<TimeEntity>,
     val appointmentMembersInfo: List<AppointmentMembersInfoEntity>
 )
 

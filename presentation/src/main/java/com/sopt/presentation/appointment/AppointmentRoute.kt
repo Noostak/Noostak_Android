@@ -51,8 +51,8 @@ import com.sopt.core.extension.showIf
 import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.AppointmentEntity
-import com.sopt.domain.entity.TimeTableScheduleEntity
-import com.sopt.domain.entity.TimeTableSelectedEntity
+import com.sopt.domain.entity.AppointmentMembersInfoEntity
+import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
 import com.sopt.presentation.appointment.screen.RecommendationScreen
@@ -142,6 +142,7 @@ fun AppointmentRoute(
                 }
             )
         }
+
         else -> {
             Timber.e("$getOptionsState")
             AppointmentScreen(
@@ -172,8 +173,8 @@ fun AppointmentScreen(
     appointmentName: String,
     onBackButtonClick: () -> Unit,
     onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
-    availablePeriods: TimeTableScheduleEntity,
-    availableTimes: TimeTableSelectedEntity,
+    availablePeriods: List<TimeEntity>,
+    availableTimes: List<AppointmentMembersInfoEntity>,
     recommendations: AppointmentEntity,
     onLikeClick: (Long, Boolean) -> Unit = { _, _ -> }
 ) {

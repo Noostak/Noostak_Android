@@ -30,19 +30,18 @@ import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.type.CellType
 import com.sopt.core.util.timetable.TimeTable
 import com.sopt.domain.entity.TimeEntity
-import com.sopt.domain.entity.TimeTableScheduleEntity
 
 @Composable
 fun NoostakEditableTimeTable(
-    availablePeriods: TimeTableScheduleEntity,
+    availablePeriods: List<TimeEntity>,
     modifier: Modifier = Modifier,
     onSelectedTimesChanged: (List<TimeEntity>) -> Unit
 ) {
-    val days = availablePeriods.data.size
+    val days = availablePeriods.size
     val timeSlots =
         TimeTable().calculateTimeSlots(
-            availablePeriods.data.first().startTime,
-            availablePeriods.data.first().endTime
+            availablePeriods.first().startTime,
+            availablePeriods.first().endTime
         )
     val selectedCells = remember { mutableStateListOf<Pair<Int, Int>>() }
 
@@ -156,23 +155,21 @@ fun NoostakEditableTimeTable(
 @Composable
 fun NoostakEditableTimeTable1Preview() {
     NoostakAndroidTheme {
-        val mockAvailablePeriods = TimeTableScheduleEntity(
-            listOf(
-                TimeEntity(
-                    date = "2024-09-05T10:00:00",
-                    startTime = "2024-09-05T10:00:00",
-                    endTime = "2024-09-05T18:00:00"
-                ),
-                TimeEntity(
-                    date = "2024-09-06T10:00:00",
-                    startTime = "2024-09-06T10:00:00",
-                    endTime = "2024-09-06T18:00:00"
-                ),
-                TimeEntity(
-                    date = "2024-09-07T10:00:00",
-                    startTime = "2024-09-07T10:00:00",
-                    endTime = "2024-09-07T18:00:00"
-                )
+        val mockAvailablePeriods = listOf(
+            TimeEntity(
+                date = "2024-09-05T10:00:00",
+                startTime = "2024-09-05T10:00:00",
+                endTime = "2024-09-05T18:00:00"
+            ),
+            TimeEntity(
+                date = "2024-09-06T10:00:00",
+                startTime = "2024-09-06T10:00:00",
+                endTime = "2024-09-06T18:00:00"
+            ),
+            TimeEntity(
+                date = "2024-09-07T10:00:00",
+                startTime = "2024-09-07T10:00:00",
+                endTime = "2024-09-07T18:00:00"
             )
         )
         Column(

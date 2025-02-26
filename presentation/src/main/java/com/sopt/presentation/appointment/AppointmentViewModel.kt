@@ -9,8 +9,6 @@ import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.entity.OptionEntity
 import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.domain.entity.TimeEntity
-import com.sopt.domain.entity.TimeTableSelectedEntity
-import com.sopt.domain.entity.TimeTableScheduleEntity
 import com.sopt.domain.repository.AppointmentConfirmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -118,73 +116,69 @@ class AppointmentViewModel @Inject constructor(
         _showDialog.update { show }
     }
 
-    val mockAvailablePeriods = TimeTableScheduleEntity(
-        listOf(
-            TimeEntity(
-                date = "2024-09-05T10:00:00",
-                startTime = "2024-09-05T10:00:00",
-                endTime = "2024-09-05T18:00:00"
-            ),
-            TimeEntity(
-                date = "2024-09-06T10:00:00",
-                startTime = "2024-09-06T10:00:00",
-                endTime = "2024-09-06T18:00:00"
-            ),
-            TimeEntity(
-                date = "2024-09-07T10:00:00",
-                startTime = "2024-09-07T10:00:00",
-                endTime = "2024-09-07T18:00:00"
-            )
+    val mockAvailablePeriods = listOf(
+        TimeEntity(
+            date = "2024-09-05T10:00:00",
+            startTime = "2024-09-05T10:00:00",
+            endTime = "2024-09-05T18:00:00"
+        ),
+        TimeEntity(
+            date = "2024-09-06T10:00:00",
+            startTime = "2024-09-06T10:00:00",
+            endTime = "2024-09-06T18:00:00"
+        ),
+        TimeEntity(
+            date = "2024-09-07T10:00:00",
+            startTime = "2024-09-07T10:00:00",
+            endTime = "2024-09-07T18:00:00"
         )
     )
 
-    val mockAvailableTimes = TimeTableSelectedEntity(
-        appointmentMembersInfo = listOf(
-            AppointmentMembersInfoEntity(
-                memberId = 1,
-                memberName = "권장순",
-                appointmentMemberAvailableTimes = listOf(
-                    TimeEntity(
-                        date = "2024-09-05T00:00:00",
-                        startTime = "2024-09-05T10:00:00",
-                        endTime = "2024-09-05T11:00:00"
-                    ),
-                    TimeEntity(
-                        date = "2024-09-05T00:00:00",
-                        startTime = "2024-09-06T14:00:00",
-                        endTime = "2024-09-06T15:00:00"
-                    ),
-                    TimeEntity(
-                        date = "2024-09-06T00:00:00",
-                        startTime = "2024-09-06T10:00:00",
-                        endTime = "2024-09-06T11:00:00"
-                    ),
-                    TimeEntity(
-                        date = "2024-09-07T00:00:00",
-                        startTime = "2024-09-07T10:00:00",
-                        endTime = "2024-09-07T11:00:00"
-                    )
+    val mockAvailableTimes = listOf(
+        AppointmentMembersInfoEntity(
+            memberId = 1,
+            memberName = "권장순",
+            appointmentMemberAvailableTimes = listOf(
+                TimeEntity(
+                    date = "2024-09-05T00:00:00",
+                    startTime = "2024-09-05T10:00:00",
+                    endTime = "2024-09-05T11:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-05T00:00:00",
+                    startTime = "2024-09-06T14:00:00",
+                    endTime = "2024-09-06T15:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-06T00:00:00",
+                    startTime = "2024-09-06T10:00:00",
+                    endTime = "2024-09-06T11:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-07T00:00:00",
+                    startTime = "2024-09-07T10:00:00",
+                    endTime = "2024-09-07T11:00:00"
                 )
-            ),
-            AppointmentMembersInfoEntity(
-                memberId = 2,
-                memberName = "김민수",
-                appointmentMemberAvailableTimes = listOf(
-                    TimeEntity(
-                        date = "2024-09-05T00:00:00",
-                        startTime = "2024-09-05T11:00:00",
-                        endTime = "2024-09-05T12:00:00"
-                    ),
-                    TimeEntity(
-                        date = "2024-09-06T00:00:00",
-                        startTime = "2024-09-06T11:00:00",
-                        endTime = "2024-09-06T12:00:00"
-                    ),
-                    TimeEntity(
-                        date = "2024-09-07T00:00:00",
-                        startTime = "2024-09-07T11:00:00",
-                        endTime = "2024-09-07T12:00:00"
-                    )
+            )
+        ),
+        AppointmentMembersInfoEntity(
+            memberId = 2,
+            memberName = "김민수",
+            appointmentMemberAvailableTimes = listOf(
+                TimeEntity(
+                    date = "2024-09-05T00:00:00",
+                    startTime = "2024-09-05T11:00:00",
+                    endTime = "2024-09-05T12:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-06T00:00:00",
+                    startTime = "2024-09-06T11:00:00",
+                    endTime = "2024-09-06T12:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-07T00:00:00",
+                    startTime = "2024-09-07T11:00:00",
+                    endTime = "2024-09-07T12:00:00"
                 )
             )
         )

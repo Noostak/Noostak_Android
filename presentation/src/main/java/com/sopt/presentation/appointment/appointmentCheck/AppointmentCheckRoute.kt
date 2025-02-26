@@ -27,7 +27,6 @@ import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.domain.entity.TimeEntity
-import com.sopt.domain.entity.TimeTableScheduleEntity
 import com.sopt.presentation.R
 import timber.log.Timber
 
@@ -74,7 +73,7 @@ fun AppointmentCheckScreen(
     groupId: Long,
     appointmentsId: Long,
     appointmentName: String,
-    availablePeriods: TimeTableScheduleEntity,
+    availablePeriods: List<TimeEntity>,
     onBackButtonClick: (Long) -> Unit,
     onConfirmButtonClick: (Long, Long, String) -> Unit
 ) {
@@ -156,23 +155,21 @@ fun PreviewAppointmentConfirmScreen() {
             groupId = 1,
             appointmentsId = 1,
             appointmentName = "3차 회의",
-            availablePeriods = TimeTableScheduleEntity(
-                listOf(
-                    TimeEntity(
-                        date = "2024-09-05T10:00:00",
-                        startTime = "2024-09-05T10:00:00",
-                        endTime = "2024-09-05T18:00:00"
-                    ),
-                    TimeEntity(
-                        date = "2024-09-06T10:00:00",
-                        startTime = "2024-09-06T10:00:00",
-                        endTime = "2024-09-06T18:00:00"
-                    ),
-                    TimeEntity(
-                        date = "2024-09-07T10:00:00",
-                        startTime = "2024-09-07T10:00:00",
-                        endTime = "2024-09-07T18:00:00"
-                    )
+            availablePeriods = listOf(
+                TimeEntity(
+                    date = "2024-09-05T10:00:00",
+                    startTime = "2024-09-05T10:00:00",
+                    endTime = "2024-09-05T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-06T10:00:00",
+                    startTime = "2024-09-06T10:00:00",
+                    endTime = "2024-09-06T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-07T10:00:00",
+                    startTime = "2024-09-07T10:00:00",
+                    endTime = "2024-09-07T18:00:00"
                 )
             ),
             onBackButtonClick = {},
