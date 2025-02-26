@@ -8,6 +8,7 @@ import com.sopt.domain.repository.AppointmentConfirmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,7 +18,7 @@ class AppointmentCheckViewModel @Inject constructor(
 ) : BaseViewModel<AppointmentCheckSideEffect>() {
     private val _postTimeTableState: MutableStateFlow<UiState<Unit>> =
         MutableStateFlow(UiState.Empty)
-    val postTimeTableState: StateFlow<UiState<Unit>> get() = _postTimeTableState
+    val postTimeTableState: StateFlow<UiState<Unit>> get() = _postTimeTableState.asStateFlow()
 
     fun postTimeTable(appointmentId: Long, availableTimes: List<TimeEntity>) {
         viewModelScope.launch {

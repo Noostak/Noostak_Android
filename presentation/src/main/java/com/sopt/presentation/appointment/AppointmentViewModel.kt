@@ -9,6 +9,7 @@ import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.entity.OptionEntity
 import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.domain.entity.TimeEntity
+import com.sopt.domain.entity.TimeTableEntity
 import com.sopt.domain.repository.AppointmentConfirmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,6 +36,10 @@ class AppointmentViewModel @Inject constructor(
 
     private val _deleteLikeState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Empty)
     val deleteLikeState: StateFlow<UiState<Unit>> get() = _deleteLikeState.asStateFlow()
+
+    private val _getTimeTableState: MutableStateFlow<UiState<TimeTableEntity>> =
+        MutableStateFlow(UiState.Empty)
+    val getTimeTableState: StateFlow<UiState<TimeTableEntity>> get() = _getTimeTableState.asStateFlow()
 
     fun getOptions(appointmentId: Long) {
         viewModelScope.launch {
@@ -77,6 +82,22 @@ class AppointmentViewModel @Inject constructor(
                 onFailure = {
                     _deleteLikeState.emit(UiState.Failure(it.message.toString()))
                     Timber.e("deleteLike failed: ${it.message}")
+                }
+            )
+        }
+    }
+
+    fun getTimeTable(appointmentId: Long) {
+        viewModelScope.launch {
+            _getTimeTableState.emit(UiState.Loading)
+            appointmentConfirmRepository.getTimeTable(appointmentId).fold(
+                onSuccess = {
+                    _getTimeTableState.emit(UiState.Success(it))
+                    Timber.d("getTimeTable success: $it")
+                },
+                onFailure = {
+                    _getTimeTableState.emit(UiState.Failure(it.message.toString()))
+                    Timber.e("getTimeTable failed: ${it.message}")
                 }
             )
         }

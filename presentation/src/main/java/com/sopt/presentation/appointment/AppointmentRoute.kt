@@ -70,6 +70,7 @@ fun AppointmentRoute(
 ) {
     val showDialog by appointmentViewModel.showDialog.collectAsStateWithLifecycle()
     val getOptionsState by appointmentViewModel.getOptionsState.collectAsStateWithLifecycle()
+    val getTimeTableState by appointmentViewModel.getTimeTableState.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = appointmentViewModel.sideEffects) {
         appointmentViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -99,8 +100,11 @@ fun AppointmentRoute(
     }
 
     LaunchedEffect(key1 = Unit) {
-        appointmentViewModel.showDialog(true)
         appointmentViewModel.getOptions(appointmentId = appointmentId)
+        appointmentViewModel.getTimeTable(appointmentId = appointmentId)
+        if (getTimeTableState is UiState.Success) {
+            appointmentViewModel.showDialog(!(getTimeTableState as UiState.Success).data.isAppointMemberTimeSet)
+        }
     }
 
     if (showDialog) {
@@ -120,49 +124,44 @@ fun AppointmentRoute(
             }
         )
     }
-
-    when (getOptionsState) {
-        is UiState.Loading -> CircularProgressIndicator()
-        is UiState.Success -> {
-            AppointmentScreen(
-                groupId = groupId,
-                appointmentsId = appointmentId,
-                appointmentName = appointmentName,
-                onBackButtonClick = appointmentViewModel::navigateUp,
-                onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
-                availablePeriods = appointmentViewModel.mockAvailablePeriods,
-                availableTimes = appointmentViewModel.mockAvailableTimes,
-                recommendations = (getOptionsState as UiState.Success).data,
-                onLikeClick = { optionId, isLiked ->
-                    if (isLiked) {
-                        appointmentViewModel.postLike(groupId, appointmentId, optionId)
-                    } else {
-                        appointmentViewModel.deleteLike(groupId, appointmentId, optionId)
-                    }
+    if (getOptionsState is UiState.Success && getTimeTableState is UiState.Success) {
+        AppointmentScreen(
+            groupId = groupId,
+            appointmentsId = appointmentId,
+            appointmentName = appointmentName,
+            onBackButtonClick = appointmentViewModel::navigateUp,
+            onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
+            availablePeriods = (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentHostSelectionTimes,
+            availableTimes = (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentMembersInfo,
+            recommendations = (getOptionsState as UiState.Success).data,
+            onLikeClick = { optionId, isLiked ->
+                if (isLiked) {
+                    appointmentViewModel.postLike(groupId, appointmentId, optionId)
+                } else {
+                    appointmentViewModel.deleteLike(groupId, appointmentId, optionId)
                 }
-            )
-        }
-
-        else -> {
-            Timber.e("$getOptionsState")
-            AppointmentScreen(
-                groupId = groupId,
-                appointmentsId = appointmentId,
-                appointmentName = appointmentName,
-                onBackButtonClick = appointmentViewModel::navigateUp,
-                onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
-                availablePeriods = appointmentViewModel.mockAvailablePeriods,
-                availableTimes = appointmentViewModel.mockAvailableTimes,
-                recommendations = appointmentViewModel.mockRecommendations,
-                onLikeClick = { optionId, isLiked ->
-                    if (isLiked) {
-                        appointmentViewModel.postLike(groupId, appointmentId, optionId)
-                    } else {
-                        appointmentViewModel.deleteLike(groupId, appointmentId, optionId)
-                    }
+            }
+        )
+    } else if (getOptionsState is UiState.Loading || getTimeTableState is UiState.Loading) {
+        CircularProgressIndicator()
+    } else {
+        AppointmentScreen(
+            groupId = groupId,
+            appointmentsId = appointmentId,
+            appointmentName = appointmentName,
+            onBackButtonClick = appointmentViewModel::navigateUp,
+            onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
+            availablePeriods = appointmentViewModel.mockAvailablePeriods,
+            availableTimes = appointmentViewModel.mockAvailableTimes,
+            recommendations = appointmentViewModel.mockRecommendations,
+            onLikeClick = { optionId, isLiked ->
+                if (isLiked) {
+                    appointmentViewModel.postLike(groupId, appointmentId, optionId)
+                } else {
+                    appointmentViewModel.deleteLike(groupId, appointmentId, optionId)
                 }
-            )
-        }
+            }
+        )
     }
 }
 
