@@ -93,7 +93,7 @@ fun AppointmentRoute(
                 }
 
                 is AppointmentSideEffect.ShowDialog -> {
-                    appointmentViewModel.showDialog(true)
+                    appointmentViewModel.showDialog(sideEffect.show)
                 }
             }
         }
@@ -102,9 +102,6 @@ fun AppointmentRoute(
     LaunchedEffect(key1 = Unit) {
         appointmentViewModel.getOptions(appointmentId = appointmentId)
         appointmentViewModel.getTimeTable(appointmentId = appointmentId)
-        if (getTimeTableState is UiState.Success) {
-            appointmentViewModel.showDialog(!(getTimeTableState as UiState.Success).data.isAppointMemberTimeSet)
-        }
     }
 
     if (showDialog) {

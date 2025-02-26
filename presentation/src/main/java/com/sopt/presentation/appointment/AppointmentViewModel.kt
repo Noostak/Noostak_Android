@@ -24,7 +24,7 @@ import javax.inject.Inject
 class AppointmentViewModel @Inject constructor(
     private val appointmentConfirmRepository: AppointmentConfirmRepository
 ) : BaseViewModel<AppointmentSideEffect>() {
-    private val _showDialog = MutableStateFlow(true)
+    private val _showDialog = MutableStateFlow(false)
     val showDialog: StateFlow<Boolean> get() = _showDialog
 
     private val _getOptionsState: MutableStateFlow<UiState<AppointmentEntity>> =
@@ -90,6 +90,9 @@ class AppointmentViewModel @Inject constructor(
             appointmentConfirmRepository.getTimeTable(appointmentId).fold(
                 onSuccess = {
                     _getTimeTableState.emit(UiState.Success(it))
+                    if (!it.isAppointMemberTimeSet) {
+                        emitSideEffect(AppointmentSideEffect.ShowDialog(true))
+                    }
                     Timber.d("getTimeTable success: $it")
                 },
                 onFailure = {
@@ -102,17 +105,6 @@ class AppointmentViewModel @Inject constructor(
 
     fun navigateUp() {
         emitSideEffect(AppointmentSideEffect.NavigateUp)
-    }
-
-    fun navigateToAppointmentCheck(groupId: Long, appointmentId: Long, appointmentName: String, availablePeriods: List<TimeEntity>) {
-        emitSideEffect(
-            AppointmentSideEffect.NavigateToAppointmentCheck(
-                groupId,
-                appointmentId,
-                appointmentName,
-                availablePeriods
-            )
-        )
     }
 
     fun navigateToAppointmentConfirm(
