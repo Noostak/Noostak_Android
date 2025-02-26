@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -27,6 +28,7 @@ import com.sopt.core.designsystem.component.timetable.NoostakEditableTimeTable
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.toast
 import com.sopt.core.state.UiState
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
@@ -37,6 +39,7 @@ fun AppointmentCheckRoute(
     groupId: Long,
     appointmentId: Long,
     appointmentName: String,
+    availablePeriods: List<TimeEntity>,
     navigateUp: () -> Unit,
     navigateToAppointment: (Long, Long, String) -> Unit,
     navigateToGroupDetail: (Long) -> Unit,
@@ -44,6 +47,8 @@ fun AppointmentCheckRoute(
 ) {
     val postTimeTableState by appointmentCheckViewModel.postTimeTableState.collectAsStateWithLifecycle()
     var selectedData by remember { mutableStateOf(emptyList<TimeEntity>()) }
+    val context = LocalContext.current
+    val rememberedAvailablePeriods = remember { availablePeriods }
     LaunchedEffect(key1 = appointmentCheckViewModel.sideEffects) {
         appointmentCheckViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -59,35 +64,38 @@ fun AppointmentCheckRoute(
                 is AppointmentCheckSideEffect.NavigateToGroupDetail -> {
                     navigateToGroupDetail(sideEffect.groupId)
                 }
+
+                is AppointmentCheckSideEffect.ShowToast -> {
+                    context.toast(sideEffect.message)
+                }
             }
         }
     }
+
+    LaunchedEffect(key1 = postTimeTableState) {
+        when (postTimeTableState) {
+            is UiState.Success -> appointmentCheckViewModel.navigateToAppointment(
+                groupId,
+                appointmentId,
+                appointmentName
+            )
+
+            is UiState.Failure -> {
+                Timber.e("postTimeTable 실패: ${(postTimeTableState as UiState.Failure).msg}")
+            }
+
+            else -> {}
+        }
+    }
+
     AppointmentCheckScreen(
         groupId = groupId,
         appointmentName = appointmentName,
-        availablePeriods = appointmentCheckViewModel.mockAvailablePeriods,
+        availablePeriods = rememberedAvailablePeriods,
         onSelectedDataChange = { selectedData = it },
         onBackButtonClick = appointmentCheckViewModel::navigateToGroupDetail,
         onConfirmButtonClick = {
             appointmentCheckViewModel.postTimeTable(appointmentId, selectedData)
-            when (postTimeTableState) {
-                is UiState.Success -> appointmentCheckViewModel.navigateToAppointment(
-                    groupId,
-                    appointmentId,
-                    appointmentName
-                )
-
-                is UiState.Failure -> {
-                    Timber.e("postTimeTable 실패: ${(postTimeTableState as UiState.Failure).msg}")
-                    appointmentCheckViewModel.navigateToAppointment(
-                        groupId,
-                        appointmentId,
-                        appointmentName
-                    )
-                }
-
-                else -> Timber.d("postTimeTable 로딩 중")
-            }
         }
     )
 }

@@ -24,7 +24,7 @@ import javax.inject.Inject
 class AppointmentViewModel @Inject constructor(
     private val appointmentConfirmRepository: AppointmentConfirmRepository
 ) : BaseViewModel<AppointmentSideEffect>() {
-    private val _showDialog = MutableStateFlow(false)
+    private val _showDialog = MutableStateFlow(true)
     val showDialog: StateFlow<Boolean> get() = _showDialog
 
     private val _getOptionsState: MutableStateFlow<UiState<AppointmentEntity>> =
@@ -104,12 +104,13 @@ class AppointmentViewModel @Inject constructor(
         emitSideEffect(AppointmentSideEffect.NavigateUp)
     }
 
-    fun navigateToAppointmentCheck(groupId: Long, appointmentId: Long, appointmentName: String) {
+    fun navigateToAppointmentCheck(groupId: Long, appointmentId: Long, appointmentName: String, availablePeriods: List<TimeEntity>) {
         emitSideEffect(
             AppointmentSideEffect.NavigateToAppointmentCheck(
                 groupId,
                 appointmentId,
-                appointmentName
+                appointmentName,
+                availablePeriods
             )
         )
     }

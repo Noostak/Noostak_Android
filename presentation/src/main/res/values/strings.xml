@@ -175,5 +175,6 @@
 
     <!-- 캘린더 -->
     <string name="appbar_calendar">ScheTook</string>
+    <string name="appointment_check_failure">시간 입력에 실패했어요</string>
 
 </resources>

@@ -63,7 +63,7 @@ fun AppointmentRoute(
     appointmentId: Long,
     appointmentName: String,
     navigateUp: () -> Unit,
-    navigateToAppointmentCheck: (Long, Long, String) -> Unit,
+    navigateToAppointmentCheck: (Long, Long, String, List<TimeEntity>) -> Unit,
     navigateToAppointmentConfirm: (Long, Long, Long, String) -> Unit,
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
@@ -78,7 +78,8 @@ fun AppointmentRoute(
                     navigateToAppointmentCheck(
                         sideEffect.groupId,
                         sideEffect.appointmentsId,
-                        sideEffect.appointmentName
+                        sideEffect.appointmentName,
+                        sideEffect.availablePeriods
                     )
                 }
 
@@ -112,7 +113,7 @@ fun AppointmentRoute(
             onClick = {
                 appointmentViewModel.apply {
                     showDialog(false)
-                    navigateToAppointmentCheck(groupId, appointmentId, appointmentName)
+                    navigateToAppointmentCheck(groupId, appointmentId, appointmentName, mockAvailablePeriods)
                 }
             },
             onDismissRequest = {

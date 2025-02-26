@@ -7,12 +7,14 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
+import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.appointment.AppointmentRoute
 import com.sopt.presentation.appointment.appointmentCheck.AppointmentCheckRoute
 import com.sopt.presentation.appointment.appointmentConfirm.AppointmentConfirmRoute
 import com.sopt.presentation.groupDetail.navigation.GroupDetail
 import com.sopt.presentation.groupDetail.navigation.navigateGroupDetail
 import kotlinx.serialization.Serializable
+import timber.log.Timber
 
 fun NavController.navigateAppointment(
     groupId: Long,
@@ -79,7 +81,11 @@ fun NavGraphBuilder.appointmentNavGraph(
             appointmentId = args.appointmentId,
             appointmentName = args.appointmentName,
             navigateUp = navHostController::navigateUp,
-            navigateToAppointmentCheck = { groupId, appointmentId, appointmentName ->
+            navigateToAppointmentCheck = { groupId, appointmentId, appointmentName, availablePeriods ->
+                navHostController.currentBackStackEntry?.savedStateHandle?.set(
+                    "availablePeriods",
+                    availablePeriods
+                )
                 navHostController.navigateAppointmentCheck(
                     groupId = groupId,
                     appointmentId = appointmentId,
@@ -99,10 +105,15 @@ fun NavGraphBuilder.appointmentNavGraph(
 
     composable<AppointmentCheck> {
         val args = it.toRoute<AppointmentCheck>()
+        val availablePeriods = navHostController.previousBackStackEntry?.savedStateHandle?.get<List<TimeEntity>>(
+            "availablePeriods"
+        ) ?: emptyList()
+        Timber.d("availablePeriods: $availablePeriods")
         AppointmentCheckRoute(
             groupId = args.groupId,
             appointmentId = args.appointmentId,
             appointmentName = args.appointmentName,
+            availablePeriods = availablePeriods,
             navigateUp = navHostController::navigateUp,
             navigateToAppointment = { groupId, appointmentId, appointmentName ->
                 navHostController.navigateAppointment(

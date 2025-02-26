@@ -5,6 +5,7 @@ import com.sopt.core.state.UiState
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.repository.AppointmentConfirmRepository
+import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +30,7 @@ class AppointmentCheckViewModel @Inject constructor(
                 },
                 onFailure = {
                     _postTimeTableState.emit(UiState.Failure(it.message.toString()))
+                    emitSideEffect(AppointmentCheckSideEffect.ShowToast(R.string.appointment_check_failure))
                 }
             )
         }
@@ -51,24 +53,6 @@ class AppointmentCheckViewModel @Inject constructor(
     fun navigateToGroupDetail(groupId: Long) {
         emitSideEffect(AppointmentCheckSideEffect.NavigateToGroupDetail(groupId))
     }
-
-    val mockAvailablePeriods = listOf(
-        TimeEntity(
-            date = "2024-09-05T10:00:00",
-            startTime = "2024-09-05T10:00:00",
-            endTime = "2024-09-05T18:00:00"
-        ),
-        TimeEntity(
-            date = "2024-09-06T10:00:00",
-            startTime = "2024-09-06T10:00:00",
-            endTime = "2024-09-06T18:00:00"
-        ),
-        TimeEntity(
-            date = "2024-09-07T10:00:00",
-            startTime = "2024-09-07T10:00:00",
-            endTime = "2024-09-07T18:00:00"
-        )
-    )
 }
 
 sealed class AppointmentCheckSideEffect {
@@ -80,4 +64,5 @@ sealed class AppointmentCheckSideEffect {
     ) : AppointmentCheckSideEffect()
 
     data class NavigateToGroupDetail(val groupId: Long) : AppointmentCheckSideEffect()
+    data class ShowToast(val message: Int) : AppointmentCheckSideEffect()
 }

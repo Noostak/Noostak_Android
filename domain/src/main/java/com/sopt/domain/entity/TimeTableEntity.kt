@@ -1,8 +1,10 @@
 package com.sopt.domain.entity
 
+import kotlinx.serialization.Serializable
+
 data class TimeTableEntity(
     val isAppointMemberTimeSet: Boolean,
-    val appointmentSchedule: AppointmentScheduleEntity // appointmentSchedule 추가
+    val appointmentSchedule: AppointmentScheduleEntity
 )
 
 data class AppointmentScheduleEntity(
@@ -16,6 +18,7 @@ data class AppointmentMembersInfoEntity(
     val appointmentMemberAvailableTimes: List<TimeEntity>
 )
 
+@Serializable
 data class TimeEntity(
     val date: String,
     val startTime: String,
