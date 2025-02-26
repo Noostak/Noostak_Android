@@ -113,7 +113,21 @@ fun AppointmentRoute(
             onClick = {
                 appointmentViewModel.apply {
                     showDialog(false)
-                    navigateToAppointmentCheck(groupId, appointmentId, appointmentName, mockAvailablePeriods)
+                    if (getTimeTableState is UiState.Success) {
+                        navigateToAppointmentCheck(
+                            groupId,
+                            appointmentId,
+                            appointmentName,
+                            (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentHostSelectionTimes
+                        )
+                    } else {
+                        navigateToAppointmentCheck(
+                            groupId,
+                            appointmentId,
+                            appointmentName,
+                            mockAvailablePeriods
+                        )
+                    }
                 }
             },
             onDismissRequest = {
