@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +34,7 @@ import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
+import com.sopt.core.extension.toast
 import com.sopt.core.state.UiState
 import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
@@ -55,7 +57,7 @@ fun AppointmentConfirmRoute(
 ) {
     val getConfirmedState by appointmentConfirmViewModel.getConfirmedState.collectAsStateWithLifecycle()
     val postConfirmedState by appointmentConfirmViewModel.postConfirmedState.collectAsStateWithLifecycle()
-
+    val context = LocalContext.current
     LaunchedEffect(key1 = appointmentConfirmViewModel.sideEffects) {
         appointmentConfirmViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -63,15 +65,27 @@ fun AppointmentConfirmRoute(
                 is AppointmentConfirmSideEffect.NavigateToGroupDetail -> {
                     navigateToGroupDetail(sideEffect.groupId)
                 }
+
+                is AppointmentConfirmSideEffect.ShowToast -> context.toast(sideEffect.message)
             }
         }
     }
+
     LaunchedEffect(key1 = Unit) {
         appointmentConfirmViewModel.getConfirmed(optionId)
     }
 
+    LaunchedEffect(key1 = postConfirmedState) {
+        when (postConfirmedState) {
+            is UiState.Success -> appointmentConfirmViewModel.navigateToGroupDetail(
+                groupId
+            )
+
+            else -> {}
+        }
+    }
+
     when (getConfirmedState) {
-        is UiState.Empty -> Timber.e("getConfirmedState is empty")
         is UiState.Loading -> NoostakLoadingScreen()
         is UiState.Success -> {
             AppointmentConfirmScreen(
@@ -80,15 +94,8 @@ fun AppointmentConfirmRoute(
                 onBackButtonClick = appointmentConfirmViewModel::navigateUp,
                 onConfirmButtonClick = {
                     appointmentConfirmViewModel.postConfirmed(optionId)
-                    when (postConfirmedState) {
-                        is UiState.Success -> appointmentConfirmViewModel.navigateToGroupDetail(
-                            groupId
-                        )
-
-                        else -> Timber.e("postConfirmedState is not success")
-                    }
                 },
-                data = appointmentConfirmViewModel.mockAppointmentDetail
+                data = (getConfirmedState as UiState.Success).data
             )
         }
 
@@ -98,10 +105,14 @@ fun AppointmentConfirmRoute(
                 groupId = groupId,
                 appointmentName = appointmentName,
                 onBackButtonClick = appointmentConfirmViewModel::navigateUp,
-                onConfirmButtonClick = appointmentConfirmViewModel::navigateToGroupDetail,
+                onConfirmButtonClick = {
+                    appointmentConfirmViewModel.postConfirmed(optionId)
+                },
                 data = appointmentConfirmViewModel.mockAppointmentDetail
             )
         }
+
+        else -> {}
     }
 }
 

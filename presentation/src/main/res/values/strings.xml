@@ -85,6 +85,7 @@
     <string name="btn_appointment_confirm">약속 확정하기</string>
     <string name="title_appointment_check">가능한 시간을\n모두 선택해주세요</string>
     <string name="btn_appointment_check">확인</string>
+    <string name="appointment_check_failure">시간 입력에 실패했어요</string>
     <string name="header_appointment_recommendation">추천 시간</string>
     <string name="btn_appointment_total">전체보기</string>
     <string name="title_appointment_confirm">이대로 약속을 확정 할까요?</string>
@@ -95,6 +96,7 @@
     <string name="tv_appointment_availableMembersCount">%1$s명</string>
     <string name="tv_appointment_totalMembersCount">" / %1$s명"</string>
     <string name="text_appointment_recommendations_blank">현재 추천 가능한 시간이 없어요.</string>
+    <string name="appointment_confirm_failure">약속 확정에 실패했어요</string>
 
     <!-- Group -->
     <string name="fab_group_create">그룹추가</string>
@@ -175,6 +177,5 @@
 
     <!-- 캘린더 -->
     <string name="appbar_calendar">ScheTook</string>
-    <string name="appointment_check_failure">시간 입력에 실패했어요</string>
 
 </resources>
