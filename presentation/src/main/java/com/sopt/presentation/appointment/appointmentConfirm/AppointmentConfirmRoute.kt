@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +29,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
@@ -72,7 +72,7 @@ fun AppointmentConfirmRoute(
 
     when (getConfirmedState) {
         is UiState.Empty -> Timber.e("getConfirmedState is empty")
-        is UiState.Loading -> CircularProgressIndicator()
+        is UiState.Loading -> NoostakLoadingScreen()
         is UiState.Success -> {
             AppointmentConfirmScreen(
                 groupId = groupId,
