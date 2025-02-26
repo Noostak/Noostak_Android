@@ -1,6 +1,6 @@
 package com.sopt.domain.entity
 
-data class PeriodEntity(
+data class TimeTableSelectedTimesEntity(
     val dates: List<String>,
     val startTime: String,
     val endTime: String

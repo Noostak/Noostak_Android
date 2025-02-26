@@ -26,7 +26,7 @@ import com.sopt.core.designsystem.component.timetable.NoostakEditableTimeTable
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.domain.entity.PeriodEntity
+import com.sopt.domain.entity.TimeTableSelectedTimesEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
 import timber.log.Timber
@@ -74,7 +74,7 @@ fun AppointmentCheckScreen(
     groupId: Long,
     appointmentsId: Long,
     appointmentName: String,
-    availablePeriods: PeriodEntity,
+    availablePeriods: TimeTableSelectedTimesEntity,
     onBackButtonClick: (Long) -> Unit,
     onConfirmButtonClick: (Long, Long, String) -> Unit
 ) {

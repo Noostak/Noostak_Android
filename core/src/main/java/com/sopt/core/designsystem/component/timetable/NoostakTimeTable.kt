@@ -26,16 +26,15 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.type.CellType
 import com.sopt.core.util.timetable.TimeTable
-import com.sopt.domain.entity.AvailableTimeEntity
-import com.sopt.domain.entity.MemberAvailableTimeEntity
-import com.sopt.domain.entity.PeriodEntity
+import com.sopt.domain.entity.AppointmentMembersInfoEntity
 import com.sopt.domain.entity.TimeEntity
-import com.sopt.domain.entity.TimeTableEntity
+import com.sopt.domain.entity.TimeTableMemberEntity
+import com.sopt.domain.entity.TimeTableSelectedTimesEntity
 
 @Composable
 fun NoostakTimeTable(
-    availablePeriods: PeriodEntity,
-    availableTimes: TimeTableEntity,
+    availablePeriods: TimeTableSelectedTimesEntity,
+    availableTimes: TimeTableMemberEntity,
     modifier: Modifier = Modifier
 ) {
     val days = availablePeriods.dates.size
@@ -140,105 +139,53 @@ fun NoostakTimeTable(
 @Composable
 fun NoostakTimeTable1Preview() {
     NoostakAndroidTheme {
-        val mockAvailablePeriods = PeriodEntity(
+        val mockAvailablePeriods = TimeTableSelectedTimesEntity(
             dates = listOf("2024-09-05T10:00:00", "2024-09-06T10:00:00", "2024-09-07T10:00:00"),
             startTime = "2024-09-05T10:00:00",
             endTime = "2024-09-07T18:00:00"
         )
 
-        val mockAvailableTimes = TimeTableEntity(
+        val mockAvailableTimes = TimeTableMemberEntity(
             members = listOf(
-                MemberAvailableTimeEntity(
+                AppointmentMembersInfoEntity(
                     memberId = 1,
                     memberName = "권장순",
-                    times = listOf(
-                        AvailableTimeEntity(
+                    appointmentMemberAvailableTimes = listOf(
+                        TimeEntity(
                             date = "2024-09-05T00:00:00",
-                            times = listOf(
-                                TimeEntity(
-                                    memberStartTime = "2024-09-05T11:00:00",
-                                    memberEndTime = "2024-09-05T12:00:00"
-                                ),
-                                TimeEntity(
-                                    memberStartTime = "2024-09-05T13:00:00",
-                                    memberEndTime = "2024-09-05T14:00:00"
-                                )
-                            )
+                            startTime = "2024-09-05T10:00:00",
+                            endTime = "2024-09-05T11:00:00"
                         ),
-                        AvailableTimeEntity(
+                        TimeEntity(
                             date = "2024-09-06T00:00:00",
-                            times = listOf(
-                                TimeEntity(
-                                    memberStartTime = "2024-09-06T14:00:00",
-                                    memberEndTime = "2024-09-06T15:00:00"
-                                ),
-                                TimeEntity(
-                                    memberStartTime = "2024-09-06T16:00:00",
-                                    memberEndTime = "2024-09-06T17:00:00"
-                                )
-                            )
+                            startTime = "2024-09-06T10:00:00",
+                            endTime = "2024-09-06T11:00:00"
                         ),
-                        AvailableTimeEntity(
+                        TimeEntity(
                             date = "2024-09-07T00:00:00",
-                            times = listOf(
-                                TimeEntity(
-                                    memberStartTime = "2024-09-07T10:00:00",
-                                    memberEndTime = "2024-09-07T11:00:00"
-                                ),
-                                TimeEntity(
-                                    memberStartTime = "2024-09-07T12:00:00",
-                                    memberEndTime = "2024-09-07T13:00:00"
-                                )
-                            )
+                            startTime = "2024-09-07T10:00:00",
+                            endTime = "2024-09-07T11:00:00"
                         )
                     )
                 ),
-                MemberAvailableTimeEntity(
+                AppointmentMembersInfoEntity(
                     memberId = 2,
                     memberName = "김민수",
-                    times = listOf(
-                        AvailableTimeEntity(
+                    appointmentMemberAvailableTimes = listOf(
+                        TimeEntity(
                             date = "2024-09-05T00:00:00",
-                            times = listOf(
-                                TimeEntity(
-                                    memberStartTime = "2024-09-05T10:00:00",
-                                    memberEndTime = "2024-09-05T11:00:00"
-                                ),
-                                TimeEntity(
-                                    memberStartTime = "2024-09-05T12:00:00",
-                                    memberEndTime = "2024-09-05T13:00:00"
-                                ),
-                                TimeEntity(
-                                    memberStartTime = "2024-09-05T13:00:00",
-                                    memberEndTime = "2024-09-05T14:00:00"
-                                )
-                            )
+                            startTime = "2024-09-05T11:00:00",
+                            endTime = "2024-09-05T12:00:00"
                         ),
-                        AvailableTimeEntity(
+                        TimeEntity(
                             date = "2024-09-06T00:00:00",
-                            times = listOf(
-                                TimeEntity(
-                                    memberStartTime = "2024-09-06T14:00:00",
-                                    memberEndTime = "2024-09-06T15:00:00"
-                                ),
-                                TimeEntity(
-                                    memberStartTime = "2024-09-06T15:00:00",
-                                    memberEndTime = "2024-09-06T16:00:00"
-                                )
-                            )
+                            startTime = "2024-09-06T11:00:00",
+                            endTime = "2024-09-06T12:00:00"
                         ),
-                        AvailableTimeEntity(
+                        TimeEntity(
                             date = "2024-09-07T00:00:00",
-                            times = listOf(
-                                TimeEntity(
-                                    memberStartTime = "2024-09-07T11:00:00",
-                                    memberEndTime = "2024-09-07T12:00:00"
-                                ),
-                                TimeEntity(
-                                    memberStartTime = "2024-09-07T12:00:00",
-                                    memberEndTime = "2024-09-07T13:00:00"
-                                )
-                            )
+                            startTime = "2024-09-07T11:00:00",
+                            endTime = "2024-09-07T12:00:00"
                         )
                     )
                 )

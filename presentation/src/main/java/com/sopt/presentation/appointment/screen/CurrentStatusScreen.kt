@@ -24,16 +24,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.timetable.NoostakTimeTable
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.NoRippleInteractionSource
-import com.sopt.domain.entity.PeriodEntity
-import com.sopt.domain.entity.TimeTableEntity
+import com.sopt.domain.entity.TimeTableSelectedTimesEntity
+import com.sopt.domain.entity.TimeTableMemberEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.AppointmentViewModel
 
 @Composable
 fun CurrentStatusScreen(
     modifier: Modifier = Modifier,
-    availablePeriods: PeriodEntity,
-    availableTimes: TimeTableEntity
+    availablePeriods: TimeTableSelectedTimesEntity,
+    availableTimes: TimeTableMemberEntity
 ) {
     Column(
         modifier = modifier
