@@ -1,7 +1,7 @@
 package com.sopt.domain.entity
 
-data class TimeTableMemberEntity(
-    val members: List<AppointmentMembersInfoEntity>
+data class TimeTableSelectedEntity(
+    val appointmentMembersInfo: List<AppointmentMembersInfoEntity>
 )
 
 data class AppointmentMembersInfoEntity(

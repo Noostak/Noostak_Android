@@ -28,18 +28,21 @@ import com.sopt.core.type.CellType
 import com.sopt.core.util.timetable.TimeTable
 import com.sopt.domain.entity.AppointmentMembersInfoEntity
 import com.sopt.domain.entity.TimeEntity
-import com.sopt.domain.entity.TimeTableMemberEntity
+import com.sopt.domain.entity.TimeTableSelectedEntity
 import com.sopt.domain.entity.TimeTableScheduleEntity
 
 @Composable
 fun NoostakTimeTable(
     availablePeriods: TimeTableScheduleEntity,
-    availableTimes: TimeTableMemberEntity,
+    availableTimes: TimeTableSelectedEntity,
     modifier: Modifier = Modifier
 ) {
-    val days = availablePeriods.dates.size
+    val days = availablePeriods.data.size
     val timeSlots =
-        TimeTable().calculateTimeSlots(availablePeriods.startTime, availablePeriods.endTime)
+        TimeTable().calculateTimeSlots(
+            availablePeriods.data.first().startTime,
+            availablePeriods.data.first().endTime
+        )
 
     LazyColumn(
         modifier = modifier
@@ -140,13 +143,27 @@ fun NoostakTimeTable(
 fun NoostakTimeTable1Preview() {
     NoostakAndroidTheme {
         val mockAvailablePeriods = TimeTableScheduleEntity(
-            dates = listOf("2024-09-05T10:00:00", "2024-09-06T10:00:00", "2024-09-07T10:00:00"),
-            startTime = "2024-09-05T10:00:00",
-            endTime = "2024-09-07T18:00:00"
+            listOf(
+                TimeEntity(
+                    date = "2024-09-05T00:00:00",
+                    startTime = "2024-09-05T10:00:00",
+                    endTime = "2024-09-05T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-06T00:00:00",
+                    startTime = "2024-09-06T10:00:00",
+                    endTime = "2024-09-06T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-07T00:00:00",
+                    startTime = "2024-09-07T10:00:00",
+                    endTime = "2024-09-07T18:00:00"
+                )
+            )
         )
 
-        val mockAvailableTimes = TimeTableMemberEntity(
-            members = listOf(
+        val mockAvailableTimes = TimeTableSelectedEntity(
+            appointmentMembersInfo = listOf(
                 AppointmentMembersInfoEntity(
                     memberId = 1,
                     memberName = "권장순",

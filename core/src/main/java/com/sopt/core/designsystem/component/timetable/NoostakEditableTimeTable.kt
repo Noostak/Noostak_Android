@@ -38,9 +38,12 @@ fun NoostakEditableTimeTable(
     modifier: Modifier = Modifier,
     onSelectedTimesChanged: (List<TimeEntity>) -> Unit
 ) {
-    val days = availablePeriods.dates.size
+    val days = availablePeriods.data.size
     val timeSlots =
-        TimeTable().calculateTimeSlots(availablePeriods.startTime, availablePeriods.endTime)
+        TimeTable().calculateTimeSlots(
+            availablePeriods.data.first().startTime,
+            availablePeriods.data.first().endTime
+        )
     val selectedCells = remember { mutableStateListOf<Pair<Int, Int>>() }
 
     LazyColumn(
@@ -154,9 +157,23 @@ fun NoostakEditableTimeTable(
 fun NoostakEditableTimeTable1Preview() {
     NoostakAndroidTheme {
         val mockAvailablePeriods = TimeTableScheduleEntity(
-            dates = listOf("2024-09-05T10:00:00", "2024-09-06T10:00:00", "2024-09-07T10:00:00"),
-            startTime = "2024-09-05T10:00:00",
-            endTime = "2024-09-07T18:00:00"
+            listOf(
+                TimeEntity(
+                    date = "2024-09-05T10:00:00",
+                    startTime = "2024-09-05T10:00:00",
+                    endTime = "2024-09-05T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-06T10:00:00",
+                    startTime = "2024-09-06T10:00:00",
+                    endTime = "2024-09-06T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-07T10:00:00",
+                    startTime = "2024-09-07T10:00:00",
+                    endTime = "2024-09-07T18:00:00"
+                )
+            )
         )
         Column(
             modifier = Modifier

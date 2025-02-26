@@ -52,7 +52,7 @@ import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.AppointmentEntity
 import com.sopt.domain.entity.TimeTableScheduleEntity
-import com.sopt.domain.entity.TimeTableMemberEntity
+import com.sopt.domain.entity.TimeTableSelectedEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
 import com.sopt.presentation.appointment.screen.RecommendationScreen
@@ -99,7 +99,7 @@ fun AppointmentRoute(
     }
 
     LaunchedEffect(key1 = Unit) {
-        appointmentViewModel.showDialog(false)
+        appointmentViewModel.showDialog(true)
         appointmentViewModel.getOptions(appointmentId = appointmentId)
     }
 
@@ -173,7 +173,7 @@ fun AppointmentScreen(
     onBackButtonClick: () -> Unit,
     onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
     availablePeriods: TimeTableScheduleEntity,
-    availableTimes: TimeTableMemberEntity,
+    availableTimes: TimeTableSelectedEntity,
     recommendations: AppointmentEntity,
     onLikeClick: (Long, Boolean) -> Unit = { _, _ -> }
 ) {

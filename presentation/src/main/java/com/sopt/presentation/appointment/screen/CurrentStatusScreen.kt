@@ -25,7 +25,7 @@ import com.sopt.core.designsystem.component.timetable.NoostakTimeTable
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.domain.entity.TimeTableScheduleEntity
-import com.sopt.domain.entity.TimeTableMemberEntity
+import com.sopt.domain.entity.TimeTableSelectedEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.AppointmentViewModel
 
@@ -33,7 +33,7 @@ import com.sopt.presentation.appointment.AppointmentViewModel
 fun CurrentStatusScreen(
     modifier: Modifier = Modifier,
     availablePeriods: TimeTableScheduleEntity,
-    availableTimes: TimeTableMemberEntity
+    availableTimes: TimeTableSelectedEntity
 ) {
     Column(
         modifier = modifier

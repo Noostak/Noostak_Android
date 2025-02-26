@@ -7,7 +7,7 @@ import com.sopt.core.type.AvailabilityLevel
 import com.sopt.core.type.CellType
 import com.sopt.core.util.CalculateTime
 import com.sopt.domain.entity.TimeEntity
-import com.sopt.domain.entity.TimeTableMemberEntity
+import com.sopt.domain.entity.TimeTableSelectedEntity
 import com.sopt.domain.entity.TimeTableScheduleEntity
 
 class TimeTable {
@@ -30,27 +30,26 @@ class TimeTable {
         rowIndex: Int,
         columnIndex: Int,
         availablePeriods: TimeTableScheduleEntity,
-        availableTimes: TimeTableMemberEntity
+        availableTimes: TimeTableSelectedEntity
     ): Color {
         return when (cellType) {
             CellType.Blank, CellType.DateHeader, CellType.TimeHeader -> Color.Transparent
             CellType.Data -> {
-                val startHour = extractHour(availablePeriods.startTime)
+                val startHour = extractHour(availablePeriods.data.first().startTime)
                 val currentHour = startHour + (rowIndex - 1)
 
-                val date =
-                    availablePeriods.dates.getOrNull(columnIndex - 1) ?: return Color.Transparent
+                val date = availablePeriods.data.getOrNull(columnIndex - 1)?.date ?: return Color.Transparent
                 // 해당 열(columnIndex) 날짜 데이터 가져오기
                 val formattedDate = extractDate(date)
                 // 해당 날짜에 해당하는 사용자의 가능 시간 데이터 필터링
-                val availableTimesForDate = availableTimes.members.flatMap { member ->
+                val availableTimesForDate = availableTimes.appointmentMembersInfo.flatMap { member ->
                     member.appointmentMemberAvailableTimes.filter { timeEntity ->
                         extractDate(timeEntity.date) == formattedDate
                     }
                 }
 
                 // 현재 시간에 해당하는 가능 레벨 계산
-                val totalMembers = availableTimes.members.size
+                val totalMembers = availableTimes.appointmentMembersInfo.size
                 val availableMembers = availableTimesForDate.count { timeEntity ->
                     val entityStartHour = extractHour(timeEntity.startTime)
                     val entityEndHour = extractHour(timeEntity.endTime)
@@ -91,7 +90,7 @@ class TimeTable {
         columnIndex: Int,
         data: TimeTableScheduleEntity
     ): String {
-        val startHour = extractHour(data.startTime)
+        val startHour = extractHour(data.data.first().startTime)
 
         return when (cellType) {
             CellType.Blank -> "\n"
@@ -99,7 +98,7 @@ class TimeTable {
                 if (columnIndex == 0) {
                     ""
                 } else {
-                    formatDateTimeToCustomFormat(data.dates[columnIndex - 1])
+                    formatDateTimeToCustomFormat(data.data[columnIndex - 1].date)
                 }
             }
 
@@ -114,24 +113,17 @@ class TimeTable {
     ): List<TimeEntity> {
         val selectedTimes = mutableListOf<TimeEntity>()
         val selectedCellsByDate = selectedCells.groupBy { it.second }
+
         selectedCellsByDate.forEach { (dateColumnIndex, cells) ->
-            val date = availablePeriods.dates.getOrNull(dateColumnIndex - 1) ?: return@forEach
-            val times = cells.map { (rowIndex, _) ->
-                val startHour =
-                    extractHour(availablePeriods.startTime) + (rowIndex - 1)
+            val date = availablePeriods.data.getOrNull(dateColumnIndex - 1)?.date ?: return@forEach
+            cells.forEach { (rowIndex, _) ->
+                val startHour = extractHour(availablePeriods.data.first().startTime) + (rowIndex - 1)
                 val endHour = startHour + 1
-                TimeEntity(
-                    date = "${extractDate(date)}T${String.format("%02d", startHour)}:00:00",
-                    startTime = "${extractDate(date)}T${String.format("%02d", startHour)}:00:00",
-                    endTime = "${extractDate(date)}T${String.format("%02d", endHour)}:00:00"
-                )
-            }
-            if (times.isNotEmpty()) {
                 selectedTimes.add(
                     TimeEntity(
-                        date = date,
-                        startTime = times.first().startTime,
-                        endTime = times.last().endTime
+                        date = "${extractDate(date)}T${String.format("%02d", startHour)}:00:00",
+                        startTime = "${extractDate(date)}T${String.format("%02d", startHour)}:00:00",
+                        endTime = "${extractDate(date)}T${String.format("%02d", endHour)}:00:00"
                     )
                 )
             }
@@ -145,8 +137,6 @@ class TimeTable {
         val date = CalculateTime().extractDateWithSlash(dateTime)
         return "$dayOfWeek\n$date"
     }
-
-    private fun extractTime(dateTime: String): String = dateTime.substringAfter('T')
 
     private fun extractDate(dateTime: String): String = dateTime.substringBefore('T')
 

@@ -9,7 +9,7 @@ import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.entity.OptionEntity
 import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.domain.entity.TimeEntity
-import com.sopt.domain.entity.TimeTableMemberEntity
+import com.sopt.domain.entity.TimeTableSelectedEntity
 import com.sopt.domain.entity.TimeTableScheduleEntity
 import com.sopt.domain.repository.AppointmentConfirmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -119,13 +119,27 @@ class AppointmentViewModel @Inject constructor(
     }
 
     val mockAvailablePeriods = TimeTableScheduleEntity(
-        dates = listOf("2024-09-05T10:00:00", "2024-09-06T10:00:00", "2024-09-07T10:00:00"),
-        startTime = "2024-09-05T10:00:00",
-        endTime = "2024-09-05T18:00:00"
+        listOf(
+            TimeEntity(
+                date = "2024-09-05T10:00:00",
+                startTime = "2024-09-05T10:00:00",
+                endTime = "2024-09-05T18:00:00"
+            ),
+            TimeEntity(
+                date = "2024-09-06T10:00:00",
+                startTime = "2024-09-06T10:00:00",
+                endTime = "2024-09-06T18:00:00"
+            ),
+            TimeEntity(
+                date = "2024-09-07T10:00:00",
+                startTime = "2024-09-07T10:00:00",
+                endTime = "2024-09-07T18:00:00"
+            )
+        )
     )
 
-    val mockAvailableTimes = TimeTableMemberEntity(
-        members = listOf(
+    val mockAvailableTimes = TimeTableSelectedEntity(
+        appointmentMembersInfo = listOf(
             AppointmentMembersInfoEntity(
                 memberId = 1,
                 memberName = "권장순",

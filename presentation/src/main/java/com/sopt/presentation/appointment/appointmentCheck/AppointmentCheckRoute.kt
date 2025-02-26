@@ -157,9 +157,23 @@ fun PreviewAppointmentConfirmScreen() {
             appointmentsId = 1,
             appointmentName = "3차 회의",
             availablePeriods = TimeTableScheduleEntity(
-                dates = listOf("2024-09-05T10:00:00", "2024-09-06T10:00:00", "2024-09-07T10:00:00"),
-                startTime = "2024-09-05T10:00:00",
-                endTime = "2024-09-05T18:00:00"
+                listOf(
+                    TimeEntity(
+                        date = "2024-09-05T10:00:00",
+                        startTime = "2024-09-05T10:00:00",
+                        endTime = "2024-09-05T18:00:00"
+                    ),
+                    TimeEntity(
+                        date = "2024-09-06T10:00:00",
+                        startTime = "2024-09-06T10:00:00",
+                        endTime = "2024-09-06T18:00:00"
+                    ),
+                    TimeEntity(
+                        date = "2024-09-07T10:00:00",
+                        startTime = "2024-09-07T10:00:00",
+                        endTime = "2024-09-07T18:00:00"
+                    )
+                )
             ),
             onBackButtonClick = {},
             onConfirmButtonClick = { _, _, _ -> }
