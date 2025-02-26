@@ -32,10 +32,7 @@ class AppointmentViewModel @Inject constructor(
     val getOptionsState: StateFlow<UiState<AppointmentEntity>> get() = _getOptionsState.asStateFlow()
 
     private val _postLikeState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Empty)
-    val postLikeState: StateFlow<UiState<Unit>> get() = _postLikeState.asStateFlow()
-
     private val _deleteLikeState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Empty)
-    val deleteLikeState: StateFlow<UiState<Unit>> get() = _deleteLikeState.asStateFlow()
 
     private val _getTimeTableState: MutableStateFlow<UiState<TimeTableEntity>> =
         MutableStateFlow(UiState.Empty)

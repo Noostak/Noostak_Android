@@ -85,6 +85,7 @@ fun AppointmentCheckRoute(
                         appointmentName
                     )
                 }
+
                 else -> Timber.d("postTimeTable 로딩 중")
             }
         }
@@ -119,8 +120,6 @@ fun AppointmentCheckScreen(
                 .padding(horizontal = dimensionResource(id = R.dimen.default_padding))
         ) {
             val (title, timeTable, button) = createRefs()
-
-            // 제목
             Text(
                 modifier = Modifier
                     .padding(top = 11.dp, start = 6.dp, bottom = 16.dp)
@@ -133,8 +132,6 @@ fun AppointmentCheckScreen(
                 style = NoostakTheme.typography.h4Bold,
                 textAlign = TextAlign.Start
             )
-
-            // 타임테이블 (스크롤 가능)
             NoostakEditableTimeTable(
                 availablePeriods = availablePeriods,
                 modifier = Modifier
@@ -148,8 +145,6 @@ fun AppointmentCheckScreen(
                 onSelectedDataChange(it)
                 Timber.d("selectedData: $it")
             }
-
-            // 버튼 (항상 하단 고정)
             NoostakBottomButton(
                 modifier = Modifier
                     .constrainAs(button) {
