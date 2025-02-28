@@ -66,7 +66,7 @@ class LoginViewModel @Inject constructor(
             when {
                 token != null -> handleLoginSuccess(
                     token.accessToken,
-                    SocialType.KAKAO,
+                    KAKAO,
                     R.string.toast_kakao_login_success
                 )
 
@@ -108,7 +108,7 @@ class LoginViewModel @Inject constructor(
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
             handleLoginSuccess(
                 googleIdTokenCredential.id,
-                SocialType.GOOGLE,
+                GOOGLE,
                 R.string.toast_google_login_success
             )
         } else {
@@ -118,7 +118,7 @@ class LoginViewModel @Inject constructor(
 
     private fun handleLoginSuccess(
         token: String,
-        socialType: SocialType,
+        socialType: String,
         successToast: Int
     ) {
         showToast(successToast)
@@ -144,7 +144,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun postSocialLogin(token: String, socialType: SocialType) {
+    private fun postSocialLogin(token: String, socialType: String) {
         viewModelScope.launch {
             authRepository.postSocialLogin(token, AuthTypeEntity(socialType)).fold(
                 onSuccess = { response ->
@@ -178,7 +178,7 @@ class LoginViewModel @Inject constructor(
     companion object {
         private const val BEARER = "Bearer "
         private const val CANCELLED = "CANCELLED"
-        private const val KAKAO = "카카오톡"
-        private const val GOOGLE = "구글"
+        private const val KAKAO = "KAKAO"
+        private const val GOOGLE = "GOOGLE"
     }
 }
