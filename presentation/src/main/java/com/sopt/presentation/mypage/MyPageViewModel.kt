@@ -99,4 +99,18 @@ class MyPageViewModel @Inject constructor(
                 }
         }
     }
+
+    // 회원탈퇴
+    fun deleteWithdraw() {
+        viewModelScope.launch {
+            authRepository.deleteWithdraw(userInfoRepository.getAccessToken().first())
+                .onSuccess {
+                    clearInfo()
+                    emitSideEffect(MyPageSideEffect.NavigateToLogin)
+                }
+                .onFailure { error ->
+                    Timber.e("deleteWithdraw Failed: ${error.message}")
+                }
+        }
+    }
 }
