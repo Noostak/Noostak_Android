@@ -46,7 +46,7 @@ fun ScheduleDetailScreen(
             contentAlignment = Alignment.Center
         ) {
             NoostakTopAppBar(
-                title = data.name,
+                title = data.name.chunked(10).joinToString("\n"),
                 style = NoostakTheme.typography.b1SemiBold,
                 isIconVisible = true,
                 onBackButtonClick = onBackBtnClick,
