@@ -1,7 +1,9 @@
 package com.sopt.noostak.di
 
+import com.sopt.data.repositoryimpl.AuthRepositoryImpl
 import com.sopt.data.repositoryimpl.ExampleRepositoryImpl
 import com.sopt.data.repositoryimpl.UserInfoRepositoryImpl
+import com.sopt.domain.repository.AuthRepository
 import com.sopt.domain.repository.ExampleRepository
 import com.sopt.domain.repository.UserInfoRepository
 import dagger.Binds
@@ -22,4 +24,7 @@ abstract class RepositoryModule {
     @Singleton
     abstract fun bindUserInfoRepository(userInfoRepositoryImpl: UserInfoRepositoryImpl): UserInfoRepository
 
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
 }
