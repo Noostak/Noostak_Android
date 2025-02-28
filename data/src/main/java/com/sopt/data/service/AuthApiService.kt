@@ -11,6 +11,7 @@ import com.sopt.data.service.ApiKeyStorage.API
 import com.sopt.data.service.ApiKeyStorage.AUTH
 import com.sopt.data.service.ApiKeyStorage.AUTHORIZATION
 import com.sopt.data.service.ApiKeyStorage.AUTHORIZE
+import com.sopt.data.service.ApiKeyStorage.LOGOUT
 import com.sopt.data.service.ApiKeyStorage.SIGN_IN
 import com.sopt.data.service.ApiKeyStorage.SIGN_UP
 import com.sopt.data.service.ApiKeyStorage.TOKEN_REISSUE
@@ -49,4 +50,9 @@ interface AuthApiService {
         @Part("authType") authType: RequestBody,
         @Part("authId") authId: RequestBody
     ): BaseResponse<ResponseSignUpDto>
+
+    @POST("/$API/$V1/$AUTH/$LOGOUT")
+    suspend fun postLogout(
+        @Header(AUTHORIZATION) accessToken: String
+    ): BaseResponse<Unit>
 }
