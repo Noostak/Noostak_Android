@@ -49,7 +49,7 @@ fun GroupRoute(
 
     val isEmpty = groupItems.isEmpty()
 
-    val showDialog by groupViewModel.showDialog.collectAsStateWithLifecycle()
+    val showFABDialog by groupViewModel.showFABDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleOwner) {
         groupViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
@@ -58,21 +58,22 @@ fun GroupRoute(
                     is GroupSideEffect.NavigateToGroupDetail -> navigateToGroupDetail(sideEffect.groupId)
                     is GroupSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
                     is GroupSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
+                    is GroupSideEffect.ShowFABDialog -> groupViewModel.showFABDialog(true)
                 }
             }
     }
 
-    if (showDialog) {
+    if (showFABDialog) {
         GroupFloatingActionDialog(
-            onClick = { groupViewModel.showFloatingActionButtonDialog(false) },
-            onDismissRequest = { groupViewModel.showFloatingActionButtonDialog(false) },
+            onClick = { groupViewModel.showFABDialog(false) },
+            onDismissRequest = { groupViewModel.showFABDialog(false) },
             onCreateGroupClick = {
                 groupViewModel.navigateToGroupCreate()
-                groupViewModel.showFloatingActionButtonDialog(false)
+                groupViewModel.showFABDialog(false)
             },
             onEnterGroupClick = {
                 groupViewModel.navigateToGroupEnter()
-                groupViewModel.showFloatingActionButtonDialog(false)
+                groupViewModel.showFABDialog(false)
             }
         )
     }
@@ -87,9 +88,9 @@ fun GroupRoute(
         else -> GroupScreen(
             paddingValues = paddingValues,
             groupItems = groupItems,
-            isFabClicked = groupViewModel.showDialog,
+            isFabClicked = groupViewModel.showFABDialog,
             onItemClick = groupViewModel::navigateToGroupDetail,
-            onFabClick = { groupViewModel.showFloatingActionButtonDialog(true) }
+            onFabClick = { groupViewModel.showFABDialog(true) }
         )
     }
 }
