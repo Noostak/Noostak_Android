@@ -1,0 +1,13 @@
+package com.sopt.data.dto.response
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class ResponseSocialLoginDto(
+    @SerialName("accessToken") val accessToken: String,
+    @SerialName("refreshToken") val refreshToken: String,
+    @SerialName("memberId") val memberId: Int,
+    @SerialName("socialId") val socialId: String,
+    @SerialName("authType") val authType: String
+)
