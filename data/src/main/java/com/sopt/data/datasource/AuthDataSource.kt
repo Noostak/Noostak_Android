@@ -2,6 +2,8 @@ package com.sopt.data.datasource
 
 import com.sopt.data.dto.BaseResponse
 import com.sopt.data.dto.request.RequestPostSocialLoginDto
+import com.sopt.data.dto.request.RequestRefreshTokenDto
+import com.sopt.data.dto.response.ResponseRefreshTokenDto
 import com.sopt.data.dto.response.ResponseReissueTokenDto
 import com.sopt.data.dto.response.ResponseSocialLoginDto
 
@@ -12,4 +14,6 @@ interface AuthDataSource {
     ): BaseResponse<ResponseSocialLoginDto>
 
     suspend fun postReissueToken(refreshToken: String): BaseResponse<ResponseReissueTokenDto>
+
+    suspend fun postRefreshToken(request: RequestRefreshTokenDto): BaseResponse<ResponseRefreshTokenDto>
 }
