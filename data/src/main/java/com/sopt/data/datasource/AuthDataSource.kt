@@ -30,4 +30,6 @@ interface AuthDataSource {
         authType: RequestBody,
         authId: RequestBody
     ): BaseResponse<ResponseSignUpDto>
+
+    suspend fun postLogout(accessToken: String): BaseResponse<Unit>
 }
