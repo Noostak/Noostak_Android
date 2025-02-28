@@ -1,5 +1,6 @@
 package com.sopt.presentation.calendar
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.CalendarGroupEntity
@@ -9,7 +10,6 @@ import com.sopt.domain.entity.ScheduleEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -17,15 +17,13 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor() : BaseViewModel<CalendarSideEffect>() {
+class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) :
+    BaseViewModel<CalendarSideEffect>() {
     private val _showAddDialog = MutableStateFlow(false)
     val showAddDialog get() = _showAddDialog
 
     private val _showBottomSheet = MutableStateFlow(false)
     val showBottomSheet: StateFlow<Boolean> get() = _showBottomSheet
-
-    private val _detailSchedule: MutableStateFlow<ScheduleDetailEntity?> = MutableStateFlow(null)
-    val detailSchedule: StateFlow<ScheduleDetailEntity?> get() = _detailSchedule.asStateFlow()
 
     private val _scheduleMap = MutableStateFlow<Map<String, List<CalendarSchedule>>>(emptyMap())
     val scheduleMap: StateFlow<Map<String, List<CalendarSchedule>>> get() = _scheduleMap
@@ -40,10 +38,6 @@ class CalendarViewModel @Inject constructor() : BaseViewModel<CalendarSideEffect
 
     fun showBottomSheet(show: Boolean) {
         _showBottomSheet.update { show }
-    }
-
-    fun updateDetailSchedule(schedule: ScheduleDetailEntity) {
-        _detailSchedule.value = schedule
     }
 
     fun navigateToGroupCreate() {
