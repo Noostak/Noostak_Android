@@ -87,8 +87,7 @@ fun MyPageRoute(
         NoostakDialog(
             dialogType = DialogType.LOGOUT,
             onClick = {
-                myPageViewModel.clearInfo()
-                navigateToLogin()
+                myPageViewModel.postLogout()
             },
             onDismissRequest = { myPageViewModel.showDialog(DialogType.LOGOUT, false) }
         )

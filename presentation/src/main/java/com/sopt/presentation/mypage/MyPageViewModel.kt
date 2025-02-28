@@ -4,18 +4,22 @@ import androidx.lifecycle.viewModelScope
 import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.UserEntity
+import com.sopt.domain.repository.AuthRepository
 import com.sopt.domain.repository.UserInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    private val userInfoRepository: UserInfoRepository
+    private val userInfoRepository: UserInfoRepository,
+    private val authRepository: AuthRepository
 ) : BaseViewModel<MyPageSideEffect>() {
     private val _userInfoState = MutableStateFlow(UserEntity())
     val userInfoState: StateFlow<UserEntity> = _userInfoState
@@ -79,6 +83,20 @@ class MyPageViewModel @Inject constructor(
             emitSideEffect(MyPageSideEffect.ShowDialog(DialogType.LOGOUT))
         } else if (dialogType == DialogType.WITHDRAWAL) {
             emitSideEffect(MyPageSideEffect.ShowDialog(DialogType.WITHDRAWAL))
+        }
+    }
+
+    // 로그아웃
+    fun postLogout() {
+        viewModelScope.launch {
+            authRepository.postLogout(userInfoRepository.getAccessToken().first())
+                .onSuccess {
+                    clearInfo()
+                    emitSideEffect(MyPageSideEffect.NavigateToLogin)
+                }
+                .onFailure { error ->
+                    Timber.e("postLogout Failed: ${error.message}")
+                }
         }
     }
 }
