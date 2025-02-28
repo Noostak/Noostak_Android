@@ -35,13 +35,13 @@ fun NoostakTopAppBar(
     isIconVisible: Boolean = true,
     onBackButtonClick: () -> Unit = {},
     @DrawableRes iconResource: Int = R.drawable.ic_back_24,
-    paddingVertical: Dp = 7.dp,
-    paddingHorizontal: Dp = 12.dp
+    paddingHorizontal: Dp = 7.dp,
+    paddingVertical: Dp = 12.dp
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = paddingVertical, vertical = paddingHorizontal)
+            .padding(horizontal = paddingHorizontal, vertical = paddingVertical)
     ) {
         Icon(
             painter = painterResource(id = iconResource),
