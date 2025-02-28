@@ -23,10 +23,11 @@ fun NavController.navigateToLogin(
 
 fun NavController.navigateOnboarding(
     authId: String,
+    socialType: String,
     navOptions: NavOptions? = null
 ) {
     navigate(
-        route = Onboarding(authId = authId),
+        route = Onboarding(authId = authId, socialType = socialType),
         navOptions = navOptions ?: NavOptions.Builder()
             .setPopUpTo(Login, inclusive = false)
             .build()
@@ -39,8 +40,8 @@ fun NavGraphBuilder.loginNavGraph(
     composable<Login> {
         LoginRoute(
             navigateToHome = { navHostController.navigateGroup() },
-            navigateToOnboarding = { authId ->
-                navHostController.navigateOnboarding(authId)
+            navigateToOnboarding = { authId, socialType ->
+                navHostController.navigateOnboarding(authId, socialType.toString())
             }
         )
     }
@@ -50,8 +51,9 @@ fun NavGraphBuilder.loginNavGraph(
 
         OnboardingRoute(
             authId = args.authId,
-            navigateToSignUp = { authId ->
-                navHostController.navigateSignUp(authId)
+            socialType = args.socialType,
+            navigateToSignUp = { authId, socialType ->
+                navHostController.navigateSignUp(authId, socialType.toString())
             }
         )
     }
@@ -62,5 +64,6 @@ data object Login : Route
 
 @Serializable
 data class Onboarding(
-    val authId: String
+    val authId: String,
+    val socialType: String
 ) : Route
