@@ -134,7 +134,7 @@ fun ScheduleDetailScreenPreview() {
         ScheduleDetailScreen(
             ScheduleDetailEntity(
                 id = 1,
-                name = "누스탁 회의",
+                name = "누스탁 회의djsakfjksadkfdsajfdksajfkajfsdkafdasfa",
                 category = "중요",
                 time = "1/13 21:00",
                 duration = "하루종일",
