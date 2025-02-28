@@ -4,5 +4,5 @@ sealed interface GroupSideEffect {
     data class NavigateToGroupDetail(val groupId: Long) : GroupSideEffect
     data object NavigateToGroupCreate : GroupSideEffect
     data object NavigateToGroupEnter : GroupSideEffect
-    data object ShowFABDialog: GroupSideEffect
+    data object ShowFABDialog : GroupSideEffect
 }
