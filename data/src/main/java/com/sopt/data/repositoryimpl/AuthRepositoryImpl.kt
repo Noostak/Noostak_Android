@@ -3,6 +3,7 @@ package com.sopt.data.repositoryimpl
 import com.sopt.data.datasource.AuthDataSource
 import com.sopt.data.dto.request.RequestPostSocialLoginDto
 import com.sopt.data.dto.request.RequestRefreshTokenDto
+import com.sopt.data.mapper.toAuthEntity
 import com.sopt.data.mapper.toRefreshTokenEntity
 import com.sopt.data.mapper.toReissueTokenEntity
 import com.sopt.data.mapper.toUserEntity
@@ -11,6 +12,8 @@ import com.sopt.domain.entity.AuthTypeEntity
 import com.sopt.domain.entity.RefreshTokenEntity
 import com.sopt.domain.entity.ReissueTokenEntity
 import com.sopt.domain.repository.AuthRepository
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -49,6 +52,19 @@ class AuthRepositoryImpl @Inject constructor(
             )
             response.result?.toRefreshTokenEntity()
                 ?: throw Exception("postRefreshToken failed")
+        }
+    }
+
+    override suspend fun postSignUp(
+        memberName: RequestBody,
+        memberProfileImage: MultipartBody.Part?,
+        authType: RequestBody,
+        authId: RequestBody
+    ): Result<AuthEntity> {
+        return runCatching {
+            authDataSource.postSignUp(memberName, memberProfileImage, authType, authId)
+                .result?.toAuthEntity()
+                ?: throw Exception("postSignUp failed")
         }
     }
 }
