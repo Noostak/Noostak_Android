@@ -13,10 +13,11 @@ import kotlinx.serialization.Serializable
 
 fun NavController.navigateSignUp(
     authId: String,
+    socialType: String,
     navOptions: NavOptions? = null
 ) {
     navigate(
-        route = SignUp(authId = authId),
+        route = SignUp(authId = authId, socialType = socialType),
         navOptions = navOptions ?: NavOptions.Builder()
             .setPopUpTo(Login, inclusive = false)
             .build()
@@ -30,6 +31,7 @@ fun NavGraphBuilder.signUpNavGraph(
         val args = it.toRoute<SignUp>()
         SignUpRoute(
             authId = args.authId,
+            socialType = args.socialType,
             navigateToCheckInvite = { name ->
                 navHostController.navigateCheckInvite(name)
             }
@@ -39,5 +41,6 @@ fun NavGraphBuilder.signUpNavGraph(
 
 @Serializable
 data class SignUp(
-    val authId: String
+    val authId: String,
+    val socialType: String
 ) : Route
