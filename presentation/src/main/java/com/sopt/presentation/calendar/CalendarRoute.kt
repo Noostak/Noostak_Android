@@ -59,7 +59,7 @@ fun CalendarRoute(
 ) {
     val showAddDialog by calendarViewModel.showAddDialog.collectAsStateWithLifecycle()
 
-    val showSheet by calendarViewModel.showSheet.collectAsStateWithLifecycle()
+    val showSheet by calendarViewModel.showBottomSheet.collectAsStateWithLifecycle()
     val navController = rememberNavController()
 
     val scheduleMap by calendarViewModel.scheduleMap.collectAsStateWithLifecycle()
@@ -83,9 +83,8 @@ fun CalendarRoute(
             when (sideEffect) {
                 is CalendarSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
                 is CalendarSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
-                is CalendarSideEffect.ShowAddDialog -> {
-                    calendarViewModel.showAddDialog(true)
-                }
+                is CalendarSideEffect.ShowAddDialog -> calendarViewModel.showAddDialog(true)
+                is CalendarSideEffect.ShowBottomSheet -> calendarViewModel.showBottomSheet(true)
             }
         }
     }

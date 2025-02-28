@@ -21,8 +21,8 @@ class CalendarViewModel @Inject constructor() : BaseViewModel<CalendarSideEffect
     private val _showAddDialog = MutableStateFlow(false)
     val showAddDialog get() = _showAddDialog
 
-    private val _showSheet = MutableStateFlow(false)
-    val showSheet: StateFlow<Boolean> get() = _showSheet
+    private val _showBottomSheet = MutableStateFlow(false)
+    val showBottomSheet: StateFlow<Boolean> get() = _showBottomSheet
 
     private val _detailSchedule: MutableStateFlow<ScheduleDetailEntity?> = MutableStateFlow(null)
     val detailSchedule: StateFlow<ScheduleDetailEntity?> get() = _detailSchedule.asStateFlow()
@@ -39,7 +39,7 @@ class CalendarViewModel @Inject constructor() : BaseViewModel<CalendarSideEffect
     }
 
     fun showBottomSheet(show: Boolean) {
-        _showSheet.update { show }
+        _showBottomSheet.update { show }
     }
 
     fun updateDetailSchedule(schedule: ScheduleDetailEntity) {
