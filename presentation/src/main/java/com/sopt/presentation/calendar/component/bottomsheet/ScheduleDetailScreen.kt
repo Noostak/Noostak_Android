@@ -25,8 +25,9 @@ import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.util.RearrangeList
+import com.sopt.domain.entity.ConfirmedDetailEntity
 import com.sopt.domain.entity.IdentityEntity
-import com.sopt.domain.entity.ScheduleDetailEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.confirmedDetail.AvailableUserChips
 import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
@@ -35,9 +36,19 @@ import com.sopt.presentation.groupDetail.confirmedDetail.UnavailableUserChips
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ScheduleDetailScreen(
-    data: ScheduleDetailEntity,
+    data: ConfirmedDetailEntity,
     onBackBtnClick: () -> Unit = {}
 ) {
+    val rearrangeList = RearrangeList()
+    val availableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
+        data.myIdentity,
+        data.availableMembers
+    )
+    val unavailableMembers = rearrangeList.rearrangeMembersBasedOnAvailability(
+        data.myIdentity,
+        data.unavailableMembers
+    )
+
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
@@ -46,7 +57,7 @@ fun ScheduleDetailScreen(
             contentAlignment = Alignment.Center
         ) {
             NoostakTopAppBar(
-                title = data.name.chunked(10).joinToString("\n"),
+                title = "누스탁 전체회의 호이호이호이호이호이호이호이호이".chunked(10).joinToString("\n"), // 수정해야함
                 style = NoostakTheme.typography.b1SemiBold,
                 isIconVisible = true,
                 onBackButtonClick = onBackBtnClick,
@@ -66,7 +77,7 @@ fun ScheduleDetailScreen(
                     horizontalArrangement = Arrangement.spacedBy(13.dp)
                 ) {
                     Text(
-                        text = data.time,
+                        text = data.date,
                         color = NoostakTheme.colors.black,
                         style = NoostakTheme.typography.b4SemiBold
                     )
@@ -90,12 +101,8 @@ fun ScheduleDetailScreen(
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     AvailableUserChips(
-                        members = data.availableMembers,
-                        myIdentity = IdentityEntity(
-                            availability = "available",
-                            position = 0,
-                            name = "김언지"
-                        )
+                        members = availableMembers,
+                        myIdentity = data.myIdentity
                     )
                 }
             }
@@ -104,7 +111,7 @@ fun ScheduleDetailScreen(
                 CompleteDetailInfo(
                     text = stringResource(
                         R.string.tv_complete_detail_unavailable,
-                        data.unavailableMembers.size
+                        data.unavailableMembersCount
                     )
                 )
                 FlowRow(
@@ -113,12 +120,8 @@ fun ScheduleDetailScreen(
                     verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     UnavailableUserChips(
-                        members = data.unavailableMembers,
-                        myIdentity = IdentityEntity(
-                            availability = "unavailable",
-                            position = 0,
-                            name = "김언지"
-                        )
+                        members = unavailableMembers,
+                        myIdentity = data.myIdentity
                     )
                 }
             }
@@ -132,17 +135,27 @@ fun ScheduleDetailScreen(
 fun ScheduleDetailScreenPreview() {
     NoostakAndroidTheme {
         ScheduleDetailScreen(
-            ScheduleDetailEntity(
-                id = 1,
-                name = "누스탁 회의djsakfjksadkfdsajfdksajfkajfsdkafdasfa",
-                category = "중요",
-                time = "1/13 21:00",
-                duration = "하루종일",
+            ConfirmedDetailEntity(
+                myIdentity = IdentityEntity(
+                    availability = "available",
+                    position = 0,
+                    name = "김언지"
+                ),
+                date = "1월 13일 (월)",
+                startTime = "1/13 21:00",
+                endTime = "1/13 21:00",
+                category = "기타",
+                likes = 15,
+                liked = true,
+                availableMembersCount = 81,
                 availableMembers = listOf(
                     "김언지", "하루", "야마다", "이누마키", "츠키시마",
+                    "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이",
+                    "하루", "야마다", "이누마키", "츠키시마",
                     "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이"
                 ),
-                unavailableMembers = listOf("김언지", "박보검", "정해인", "권지용")
+                unavailableMembersCount = 3,
+                unavailableMembers = listOf("박보검", "정해인", "권지용")
             )
         )
     }

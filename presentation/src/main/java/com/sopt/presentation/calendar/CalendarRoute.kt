@@ -41,7 +41,6 @@ import com.sopt.core.extension.initialPage
 import com.sopt.core.extension.pageCount
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
-import com.sopt.domain.entity.ScheduleDetailEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.calendar.component.CalendarFloatingActionDialog
 import com.sopt.presentation.calendar.component.CalendarGroup
@@ -114,9 +113,9 @@ fun CalendarRoute(
                 NavHost(navController, startDestination = SCHEDULE_LIST) {
                     composable(SCHEDULE_LIST) { backStackEntry ->
                         ScheduleListScreen(
-                            data = calendarViewModel.mockSchedule,
+                            data = calendarViewModel.mockScheduleList,
                             onItemClick = { schedule ->
-                                backStackEntry.savedStateHandle[SCHEDULE] = schedule
+                                backStackEntry.savedStateHandle[SCHEDULE] = schedule.id // 바꿔야 함
                                 navController.navigate(SCHEDULE_DETAIL)
                             },
                             onConfirmBtnClick = { calendarViewModel.showBottomSheet(false) }
@@ -124,12 +123,12 @@ fun CalendarRoute(
                     }
                     composable(SCHEDULE_DETAIL) {
                         val schedule =
-                            navController.previousBackStackEntry?.savedStateHandle?.get<ScheduleDetailEntity>(
+                            navController.previousBackStackEntry?.savedStateHandle?.get<Long>(
                                 SCHEDULE
                             )
-                        schedule?.let {
+                        schedule?.let { id ->
                             ScheduleDetailScreen(
-                                data = it,
+                                data = calendarViewModel.mockScheduleDetail,
                                 onBackBtnClick = { navController.popBackStack() }
                             )
                         }
@@ -147,7 +146,7 @@ fun CalendarRoute(
         currentYearMonth = currentYearMonth,
         showAddDialog = showAddDialog,
         onAddBtnClick = { calendarViewModel.showAddDialog(true) },
-        onItemClick = { calendarViewModel.showBottomSheet(true) }
+        onItemClick = { calendarViewModel.showBottomSheet(true) } // 바꿔야 함
     )
 }
 

@@ -13,8 +13,7 @@ data class ScheduleDetailEntity(
     val id: Long,
     val name: String,
     val category: String,
-    val time: String,
-    val duration: String,
-    val availableMembers: List<String>,
-    val unavailableMembers: List<String>
+    val startTime: String,
+    val endTime: String,
+    val duration: Int
 ) : Parcelable

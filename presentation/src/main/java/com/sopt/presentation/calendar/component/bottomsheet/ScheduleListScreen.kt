@@ -103,37 +103,25 @@ fun ScheduleListScreenPreview() {
                         id = 1,
                         name = "누스탁 회의dasfdsafsafdafdafsdfsafdsafdsadsdafsadfsdfsdafadafdsafsdafsaf",
                         category = "중요",
-                        time = "1월 13일(월)",
-                        duration = "하루종일",
-                        availableMembers = listOf(
-                            "하루", "야마다", "이누마키", "츠키시마",
-                            "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이"
-                        ),
-                        unavailableMembers = listOf("박보검", "정해인", "권지용")
+                        startTime = "1월 13일(월)",
+                        endTime = "1월 13일(월)",
+                        duration = 24
                     ),
                     ScheduleDetailEntity(
                         id = 2,
                         name = "누스탁 모각작",
                         category = "일정",
-                        time = "1월 15일(수)",
-                        duration = "하루종일",
-                        availableMembers = listOf(
-                            "하루", "야마다", "이누마키", "츠키시마",
-                            "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이"
-                        ),
-                        unavailableMembers = listOf("박보검", "정해인", "권지용")
+                        startTime = "1월 15일(수)",
+                        endTime = "1월 15일(수)",
+                        duration = 5
                     ),
                     ScheduleDetailEntity(
                         id = 3,
                         name = "누스탁 회식",
                         category = "취미",
-                        time = "1월 20일(화)",
-                        duration = "하루종일",
-                        availableMembers = listOf(
-                            "하루", "야마다", "이누마키", "츠키시마",
-                            "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이"
-                        ),
-                        unavailableMembers = listOf("박보검", "정해인", "권지용")
+                        startTime = "1월 20일(화)",
+                        endTime = "1월 20일(화)",
+                        duration = 2
                     )
                 )
             )
