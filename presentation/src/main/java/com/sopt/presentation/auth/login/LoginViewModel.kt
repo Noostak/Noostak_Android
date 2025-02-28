@@ -154,7 +154,11 @@ class LoginViewModel @Inject constructor(
                     emitSideEffect(LoginSideEffect.NavigateToHome)
                 },
                 onFailure = { error ->
-                    postReissueToken()
+                    if (userInfoRepository.getRefreshToken().first().isEmpty()) {
+                        postRefreshToken(token, socialType)
+                    } else {
+                        postReissueToken(token, socialType)
+                    }
                     Timber.e("postSocialLogin Failed: ${error.message}")
                 }
             )
@@ -162,16 +166,39 @@ class LoginViewModel @Inject constructor(
     }
 
     // 토큰 재발급
-    private fun postReissueToken() {
+    private fun postReissueToken(token: String, socialType: String) {
         viewModelScope.launch {
             authRepository.postReissueToken(userInfoRepository.getRefreshToken().first()).fold(
                 onSuccess = { response ->
                     saveTokens(response.accessToken, response.refreshToken)
                 },
                 onFailure = { error ->
+                    postRefreshToken(token, socialType)
                     Timber.e("postReissueToken Failed: ${error.message}")
                 }
             )
+        }
+    }
+
+    // RefreshToken 발급
+    private fun postRefreshToken(authCode: String, authType: String) {
+        viewModelScope.launch {
+            authRepository.postRefreshToken(authCode, authType).onSuccess { response ->
+                saveTokens(response.accessToken, response.refreshToken)
+                userInfoRepository.saveIsAutoLogin(response.isMember)
+                if (response.isMember) {
+                    emitSideEffect(LoginSideEffect.NavigateToHome)
+                } else {
+                    emitSideEffect(
+                        LoginSideEffect.NavigateToOnboarding(
+                            response.authId,
+                            response.authType
+                        )
+                    )
+                }
+            }.onFailure { error ->
+                Timber.e("postRefreshToken Failed: ${error.message}")
+            }
         }
     }
 
