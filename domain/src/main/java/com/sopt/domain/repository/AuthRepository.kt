@@ -28,4 +28,6 @@ interface AuthRepository {
         authType: RequestBody,
         authId: RequestBody
     ): Result<AuthEntity>
+
+    suspend fun postLogout(accessToken: String): Result<Unit>
 }
