@@ -32,4 +32,6 @@ interface AuthDataSource {
     ): BaseResponse<ResponseSignUpDto>
 
     suspend fun postLogout(accessToken: String): BaseResponse<Unit>
+
+    suspend fun deleteWithdraw(accessToken: String): BaseResponse<Unit>
 }
