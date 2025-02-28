@@ -48,4 +48,8 @@ class AuthDataSourceImpl @Inject constructor(
     override suspend fun postLogout(accessToken: String): BaseResponse<Unit> {
         return authApiService.postLogout(accessToken)
     }
+
+    override suspend fun deleteWithdraw(accessToken: String): BaseResponse<Unit> {
+        return authApiService.deleteWithdraw(accessToken)
+    }
 }
