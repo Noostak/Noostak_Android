@@ -73,4 +73,10 @@ class AuthRepositoryImpl @Inject constructor(
             authDataSource.postLogout(accessToken)
         }
     }
+
+    override suspend fun deleteWithdraw(accessToken: String): Result<Unit> {
+        return runCatching {
+            authDataSource.deleteWithdraw(accessToken)
+        }
+    }
 }
