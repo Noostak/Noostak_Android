@@ -16,3 +16,11 @@ data class ReissueTokenEntity(
     val refreshToken: String,
     val authType: String
 )
+
+data class RefreshTokenEntity(
+    val accessToken: String,
+    val refreshToken: String,
+    val authId: String,
+    val authType: String,
+    val isMember: Boolean
+)
