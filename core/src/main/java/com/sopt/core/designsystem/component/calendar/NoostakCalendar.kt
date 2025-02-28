@@ -78,7 +78,11 @@ fun NoostakCalendar(
                 modifier = Modifier
                     .size(16.dp)
                     .noRippleClickable {
-                        val (newYear, newMonth) = Calendar().manageMonth(year, month, isNext = false)
+                        val (newYear, newMonth) = Calendar().manageMonth(
+                            year,
+                            month,
+                            isNext = false
+                        )
                         year = newYear
                         month = newMonth
                     }
@@ -134,7 +138,8 @@ fun NoostakCalendar(
                             day > Calendar().getDaysInMonth(year, month) -> ""
                             else -> (day++).toString()
                         }
-                        val dateValue = Calendar().dateFormat(year, month, dateText.toIntOrNull() ?: 0)
+                        val dateValue =
+                            Calendar().dateFormat(year, month, dateText.toIntOrNull() ?: 0)
                         val isSelected = dateValue in selectedDates
                         val isRange = !isSingleDate &&
                             dateText.isNotEmpty() &&
@@ -173,6 +178,7 @@ fun NoostakCalendar(
                                             )
                                     )
                                 }
+
                                 isRange -> {
                                     Box(
                                         modifier = Modifier
@@ -191,7 +197,11 @@ fun NoostakCalendar(
                                     .padding(vertical = 11.dp)
                                     .noRippleClickable {
                                         if (isSingleDate) {
-                                            selectedDates = Calendar().singleDateSelection(dateValue, selectedDates, onShowSnackBar)
+                                            selectedDates = Calendar().singleDateSelection(
+                                                dateValue,
+                                                selectedDates,
+                                                onShowSnackBar
+                                            )
                                         } else {
                                             val (tempStartDate, tempEndDate) = Calendar().periodDateSelection(
                                                 dateValue,

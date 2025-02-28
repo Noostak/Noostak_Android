@@ -65,7 +65,9 @@ fun RecommendationScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
     ) {
         LazyColumn(
             modifier = Modifier.weight(1f)
