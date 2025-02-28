@@ -46,7 +46,7 @@ fun ScheduleListScreen(
                 Text(
                     text = data.date,
                     color = NoostakTheme.colors.black,
-                    style = NoostakTheme.typography.b1SemiBold,
+                    style = NoostakTheme.typography.b1SemiBold
                 )
             }
             HorizontalDivider(color = NoostakTheme.colors.gray100)
