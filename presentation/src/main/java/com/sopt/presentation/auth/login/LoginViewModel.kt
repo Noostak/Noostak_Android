@@ -144,6 +144,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    // 소셜 로그인
     private fun postSocialLogin(token: String, socialType: String) {
         viewModelScope.launch {
             authRepository.postSocialLogin(token, AuthTypeEntity(socialType)).fold(
@@ -153,7 +154,22 @@ class LoginViewModel @Inject constructor(
                     emitSideEffect(LoginSideEffect.NavigateToHome)
                 },
                 onFailure = { error ->
-                    Timber.e("🚨 postSocialLogin Failed: ${error.message}")
+                    postReissueToken()
+                    Timber.e("postSocialLogin Failed: ${error.message}")
+                }
+            )
+        }
+    }
+
+    // 토큰 재발급
+    private fun postReissueToken() {
+        viewModelScope.launch {
+            authRepository.postReissueToken(userInfoRepository.getRefreshToken().first()).fold(
+                onSuccess = { response ->
+                    saveTokens(response.accessToken, response.refreshToken)
+                },
+                onFailure = { error ->
+                    Timber.e("postReissueToken Failed: ${error.message}")
                 }
             )
         }
