@@ -41,6 +41,7 @@ import com.sopt.core.extension.initialPage
 import com.sopt.core.extension.pageCount
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
+import com.sopt.domain.entity.ScheduleDetailEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.calendar.component.CalendarFloatingActionDialog
 import com.sopt.presentation.calendar.component.CalendarGroup
@@ -112,26 +113,26 @@ fun CalendarRoute(
             },
             content = {
                 NavHost(navController, startDestination = "first") {
-                    composable("first") {
+                    composable("first") { backStackEntry ->
                         ScheduleListScreen(
                             data = calendarViewModel.mockSchedule,
                             onItemClick = { schedule ->
-//                                navController.currentBackStackEntry?.savedStateHandle?.set(
-//                                    "schedule",
-//                                    schedule
-//                                )
+                                backStackEntry.savedStateHandle["schedule"] = schedule
 
-                                calendarViewModel.updateDetailSchedule(schedule)
+//                                calendarViewModel.updateDetailSchedule(schedule)
                                 navController.navigate("second")
                             },
                             onConfirmBtnClick = { calendarViewModel.showBottomSheet(false) }
                         )
                     }
-                    composable("second") { backStackEntry ->
-//                        val schedule = backStackEntry.savedStateHandle.get<ScheduleDetailEntity>("schedule")
-
+                    composable("second") {
                         val schedule =
-                            calendarViewModel.detailSchedule.collectAsStateWithLifecycle().value
+                            navController.previousBackStackEntry?.savedStateHandle?.get<ScheduleDetailEntity>(
+                                "schedule"
+                            )
+
+//                        val schedule =
+//                            calendarViewModel.detailSchedule.collectAsStateWithLifecycle().value
 
                         schedule?.let {
                             ScheduleDetailScreen(
