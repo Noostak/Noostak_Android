@@ -108,31 +108,25 @@ fun CalendarRoute(
         NoostakBottomSheet(
             onDismissRequest = {
                 calendarViewModel.showBottomSheet(false)
-                navController.popBackStack("first", inclusive = false)
+                navController.popBackStack(SCHEDULE_LIST, inclusive = false)
             },
             content = {
-                NavHost(navController, startDestination = "first") {
-                    composable("first") { backStackEntry ->
+                NavHost(navController, startDestination = SCHEDULE_LIST) {
+                    composable(SCHEDULE_LIST) { backStackEntry ->
                         ScheduleListScreen(
                             data = calendarViewModel.mockSchedule,
                             onItemClick = { schedule ->
-                                backStackEntry.savedStateHandle["schedule"] = schedule
-
-//                                calendarViewModel.updateDetailSchedule(schedule)
-                                navController.navigate("second")
+                                backStackEntry.savedStateHandle[SCHEDULE] = schedule
+                                navController.navigate(SCHEDULE_DETAIL)
                             },
                             onConfirmBtnClick = { calendarViewModel.showBottomSheet(false) }
                         )
                     }
-                    composable("second") {
+                    composable(SCHEDULE_DETAIL) {
                         val schedule =
                             navController.previousBackStackEntry?.savedStateHandle?.get<ScheduleDetailEntity>(
-                                "schedule"
+                                SCHEDULE
                             )
-
-//                        val schedule =
-//                            calendarViewModel.detailSchedule.collectAsStateWithLifecycle().value
-
                         schedule?.let {
                             ScheduleDetailScreen(
                                 data = it,
@@ -229,6 +223,10 @@ private fun CalendarContent(
         )
     }
 }
+
+const val SCHEDULE = "schedule"
+const val SCHEDULE_LIST = "schedule_list"
+const val SCHEDULE_DETAIL = "schedule_detail"
 
 @Preview(showBackground = true)
 @Composable
