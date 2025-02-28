@@ -1,9 +1,11 @@
 package com.sopt.presentation.calendar.component.bottomsheet
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -30,7 +32,14 @@ fun ScheduleItem(
             .background(color = NoostakTheme.colors.gray50, shape = RoundedCornerShape(8.dp))
             .padding(8.dp)
     ) {
-        ScheduleColorChip(data.category)
+        Box(
+            modifier = Modifier
+                .fillMaxHeight()
+                .align(Alignment.Top)
+        ) {
+            ScheduleColorChip(data.category)
+        }
+
         Spacer(modifier = Modifier.width(7.dp))
         Column {
             Text(
@@ -42,7 +51,7 @@ fun ScheduleItem(
             Text(
                 text = data.duration,
                 style = NoostakTheme.typography.c4Regular,
-                color = NoostakTheme.colors.gray500
+                color = NoostakTheme.colors.gray700
             )
         }
     }
