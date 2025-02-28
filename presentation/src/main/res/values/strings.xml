@@ -98,7 +98,7 @@
 
     <!-- Group -->
     <string name="fab_group_create">그룹추가</string>
-    <string name="text_group_empty">아직 생성된 그룹이 없어요.\n그룹을 추가해보세요!</string>
+    <string name="text_group_empty_content">아직 생성된 그룹이 없어요.\n그룹을 추가해보세요!</string>
     <string name="text_group_fab_enter">그룹 입장하기</string>
     <string name="image_group_create_success_description">Image Group Create Success</string>
 
@@ -175,5 +175,8 @@
 
     <!-- 캘린더 -->
     <string name="appbar_calendar">ScheTook</string>
+
+    <!-- Schedule List -->
+    <string name="text_schedule_list_empty_content">아직 약속이 없어요!\n그룹 약속을 만들러 가볼까요?</string>
 
 </resources>

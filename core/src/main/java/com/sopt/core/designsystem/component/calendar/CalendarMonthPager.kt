@@ -18,7 +18,8 @@ import com.sopt.domain.entity.CalendarSchedule
 fun CalendarMonthPager(
     pagerState: PagerState,
     scheduleMap: Map<String, List<CalendarSchedule>>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onItemClick: () -> Unit = {}
 ) {
     HorizontalPager(
         state = pagerState,
@@ -27,7 +28,8 @@ fun CalendarMonthPager(
         CalendarMonth(
             weeks = getMonthDays(getYearMonthByPage(page)),
             scheduleMap = scheduleMap,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            onItemClick = { onItemClick() }
         )
     }
 }
