@@ -30,4 +30,6 @@ interface AuthRepository {
     ): Result<AuthEntity>
 
     suspend fun postLogout(accessToken: String): Result<Unit>
+
+    suspend fun deleteWithdraw(accessToken: String): Result<Unit>
 }
