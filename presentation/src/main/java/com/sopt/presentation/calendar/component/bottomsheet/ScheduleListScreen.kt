@@ -47,7 +47,6 @@ fun ScheduleListScreen(
                     text = data.date,
                     color = NoostakTheme.colors.black,
                     style = NoostakTheme.typography.b1SemiBold,
-                    modifier = Modifier.padding(horizontal = 20.dp)
                 )
             }
             HorizontalDivider(color = NoostakTheme.colors.gray100)
@@ -71,7 +70,7 @@ fun ScheduleListScreen(
             } else {
                 NoostakEmptyScreen(
                     emptyText = R.string.text_schedule_list_empty_content,
-                    color = NoostakTheme.colors.black,
+                    color = NoostakTheme.colors.gray700,
                     style = NoostakTheme.typography.b4Regular
                 )
             }
@@ -102,7 +101,7 @@ fun ScheduleListScreenPreview() {
                 scheduleList = listOf(
                     ScheduleDetailEntity(
                         id = 1,
-                        name = "누스탁 회의",
+                        name = "누스탁 회의dasfdsafsafdafdafsdfsafdsafdsadsdafsadfsdfsdafadafdsafsdafsaf",
                         category = "중요",
                         time = "1월 13일(월)",
                         duration = "하루종일",
