@@ -28,4 +28,5 @@ object ApiKeyStorage {
     const val CONFIRMED = "confirmed"
     const val APPOINTMENT_MEMBERS = "appointment-members"
     const val TIMETABLE = "timetable"
+    const val AUTHORIZE = "authorize"
 }
