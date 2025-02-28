@@ -13,9 +13,9 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.sopt.core.type.DialogType
-import com.sopt.core.type.SocialType
 import com.sopt.core.util.BaseViewModel
-import com.sopt.domain.entity.UserEntity
+import com.sopt.domain.entity.AuthTypeEntity
+import com.sopt.domain.repository.AuthRepository
 import com.sopt.domain.repository.UserInfoRepository
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,13 +24,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     @Named("GoogleClientId") private val googleClientId: String,
-    private val userInfoRepository: UserInfoRepository
+    private val userInfoRepository: UserInfoRepository,
+    private val authRepository: AuthRepository
 ) : BaseViewModel<LoginSideEffect>() {
 
     private val _showDialog = MutableStateFlow(Pair(DialogType.LOGIN_GOOGLE, false))
@@ -121,7 +123,7 @@ class LoginViewModel @Inject constructor(
     ) {
         showToast(successToast)
         viewModelScope.launch {
-            postLogin(token, socialType)
+            postSocialLogin(token, socialType)
         }
     }
 
@@ -131,13 +133,10 @@ class LoginViewModel @Inject constructor(
             error is ClientError && error.reason == ClientErrorCause.Cancelled -> {
                 showToast(R.string.toast_login_cancelled)
             }
-
             // 구글 로그인 취소
             error.message?.contains(CANCELLED, ignoreCase = true) == true -> {
                 showToast(R.string.toast_login_cancelled)
             }
-
-            // 기타 에러
             else -> {
                 val errorMessage = error.localizedMessage.orEmpty()
                 showToast(errorMessageResId, errorMessage)
@@ -145,31 +144,25 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun postLogin(token: String, socialType: SocialType) {
+    private fun postSocialLogin(token: String, socialType: SocialType) {
         viewModelScope.launch {
-            // TODO : 서버 연결
-            checkIsNewUser(token)
+            authRepository.postSocialLogin(token, AuthTypeEntity(socialType)).fold(
+                onSuccess = { response ->
+                    saveTokens(response.accessToken, response.refreshToken)
+                    userInfoRepository.saveMemberId(response.memberId)
+                    emitSideEffect(LoginSideEffect.NavigateToHome)
+                },
+                onFailure = { error ->
+                    Timber.e("🚨 postSocialLogin Failed: ${error.message}")
+                }
+            )
         }
     }
 
-    // 기존 사용자 확인
-    private fun checkIsNewUser(authId: String) {
+    private fun saveTokens(accessToken: String, refreshToken: String) {
         viewModelScope.launch {
-            if (userInfoRepository.getIsAutoLogin().first()) {
-                emitSideEffect(LoginSideEffect.NavigateToHome)
-            } else {
-                emitSideEffect(LoginSideEffect.NavigateToOnboarding(authId))
-            }
-        }
-    }
-
-    // TODO : 서버 연결 시 사용
-    private fun saveUserInfo(response: UserEntity) {
-        viewModelScope.launch {
-            response.accessToken?.let { userInfoRepository.saveAccessToken(BEARER + it) }
-            response.refreshToken?.let { userInfoRepository.saveRefreshToken(BEARER + it) }
-            response.userId?.let { userInfoRepository.saveUserId(it) }
-            userInfoRepository.saveIsAutoLogin(!response.accessToken.isNullOrEmpty())
+            userInfoRepository.saveAccessToken(BEARER + accessToken)
+            userInfoRepository.saveRefreshToken(BEARER + refreshToken)
         }
     }
 
