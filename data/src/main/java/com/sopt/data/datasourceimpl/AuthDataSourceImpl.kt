@@ -6,8 +6,11 @@ import com.sopt.data.dto.request.RequestPostSocialLoginDto
 import com.sopt.data.dto.request.RequestRefreshTokenDto
 import com.sopt.data.dto.response.ResponseRefreshTokenDto
 import com.sopt.data.dto.response.ResponseReissueTokenDto
+import com.sopt.data.dto.response.ResponseSignUpDto
 import com.sopt.data.dto.response.ResponseSocialLoginDto
 import com.sopt.data.service.AuthApiService
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import javax.inject.Inject
 
 class AuthDataSourceImpl @Inject constructor(
@@ -31,5 +34,14 @@ class AuthDataSourceImpl @Inject constructor(
         request: RequestRefreshTokenDto
     ): BaseResponse<ResponseRefreshTokenDto> {
         return authApiService.postRefreshToken(request)
+    }
+
+    override suspend fun postSignUp(
+        memberName: RequestBody,
+        memberProfileImage: MultipartBody.Part?,
+        authType: RequestBody,
+        authId: RequestBody
+    ): BaseResponse<ResponseSignUpDto> {
+        return authApiService.postSignUp(memberName, memberProfileImage, authType, authId)
     }
 }
