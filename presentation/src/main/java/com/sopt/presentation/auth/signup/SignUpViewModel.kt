@@ -3,8 +3,8 @@ package com.sopt.presentation.auth.signup
 import androidx.lifecycle.viewModelScope
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AuthEntity
-import com.sopt.domain.repository.AuthRepository
 import com.sopt.domain.repository.UserInfoRepository
+import com.sopt.domain.usecase.PostSignUpUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val userInfoRepository: UserInfoRepository,
-    private val authRepository: AuthRepository
+    private val postSignUpUseCase: PostSignUpUseCase
 ) : BaseViewModel<SignUpSideEffect>() {
 
     private val _signUpState: MutableStateFlow<SignUpState> = MutableStateFlow(SignUpState())
@@ -35,7 +35,8 @@ class SignUpViewModel @Inject constructor(
     }
 
     private fun validateNickname(nickname: String) {
-        val isValid = nickname.isNotBlank() && nickname.length in 1..10 && nickname.matches("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+$".toRegex())
+        val isValid =
+            nickname.isNotBlank() && nickname.length in 1..10 && nickname.matches("^[a-zA-Z0-9ㄱ-ㅎㅏ-ㅣ가-힣]+$".toRegex())
         _signUpState.update { it.copy(isNameCheck = isValid) }
     }
 
@@ -100,17 +101,20 @@ class SignUpViewModel @Inject constructor(
             val authTypeRequestBody = socialType.toRequestBody("text/plain".toMediaTypeOrNull())
             val authIdRequestBody = authId.toRequestBody("text/plain".toMediaTypeOrNull())
 
-            authRepository.postSignUp(
+            postSignUpUseCase(
                 memberName = nameRequestBody,
                 memberProfileImage = memberProfileImage,
                 authType = authTypeRequestBody,
                 authId = authIdRequestBody
-            ).onSuccess { authEntity ->
-                saveUserInfo(authEntity)
-                navigateToCheckInvite()
-            }.onFailure { error ->
-                Timber.e("postSignUp Failed: ${error.message}")
-            }
+            ).fold(
+                onSuccess = { authEntity ->
+                    saveUserInfo(authEntity)
+                    navigateToCheckInvite()
+                },
+                onFailure = { error ->
+                    Timber.e("postSignUp Failed: ${error.message}")
+                }
+            )
         }
     }
 
