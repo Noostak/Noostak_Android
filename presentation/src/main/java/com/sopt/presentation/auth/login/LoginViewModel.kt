@@ -15,8 +15,10 @@ import com.kakao.sdk.user.UserApiClient
 import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AuthTypeEntity
-import com.sopt.domain.repository.AuthRepository
 import com.sopt.domain.repository.UserInfoRepository
+import com.sopt.domain.usecase.PostRefreshTokenUseCase
+import com.sopt.domain.usecase.PostReissueTokenUseCase
+import com.sopt.domain.usecase.PostSocialLoginUseCase
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +34,9 @@ import javax.inject.Named
 class LoginViewModel @Inject constructor(
     @Named("GoogleClientId") private val googleClientId: String,
     private val userInfoRepository: UserInfoRepository,
-    private val authRepository: AuthRepository
+    private val postSocialLoginUseCase: PostSocialLoginUseCase,
+    private val postReissueTokenUseCase: PostReissueTokenUseCase,
+    private val postRefreshTokenUseCase: PostRefreshTokenUseCase
 ) : BaseViewModel<LoginSideEffect>() {
 
     private val _showDialog = MutableStateFlow(Pair(DialogType.LOGIN_GOOGLE, false))
@@ -137,6 +141,7 @@ class LoginViewModel @Inject constructor(
             error.message?.contains(CANCELLED, ignoreCase = true) == true -> {
                 showToast(R.string.toast_login_cancelled)
             }
+
             else -> {
                 val errorMessage = error.localizedMessage.orEmpty()
                 showToast(errorMessageResId, errorMessage)
@@ -147,7 +152,7 @@ class LoginViewModel @Inject constructor(
     // 소셜 로그인
     private fun postSocialLogin(authCode: String, socialType: String) {
         viewModelScope.launch {
-            authRepository.postSocialLogin(authCode, AuthTypeEntity(socialType)).fold(
+            postSocialLoginUseCase(authCode, AuthTypeEntity(socialType)).fold(
                 onSuccess = { response ->
                     saveTokens(response.accessToken, response.refreshToken)
                     userInfoRepository.saveMemberId(response.memberId)
@@ -168,7 +173,7 @@ class LoginViewModel @Inject constructor(
     // 토큰 재발급
     private fun postReissueToken(authCode: String, socialType: String) {
         viewModelScope.launch {
-            authRepository.postReissueToken(userInfoRepository.getRefreshToken().first()).fold(
+            postReissueTokenUseCase(userInfoRepository.getRefreshToken().first()).fold(
                 onSuccess = { response ->
                     saveTokens(response.accessToken, response.refreshToken)
                 },
@@ -183,22 +188,25 @@ class LoginViewModel @Inject constructor(
     // RefreshToken 발급
     private fun postRefreshToken(authCode: String, authType: String) {
         viewModelScope.launch {
-            authRepository.postRefreshToken(authCode, authType).onSuccess { response ->
-                saveTokens(response.accessToken, response.refreshToken)
-                userInfoRepository.saveIsAutoLogin(response.isMember)
-                if (response.isMember) {
-                    emitSideEffect(LoginSideEffect.NavigateToHome)
-                } else {
-                    emitSideEffect(
-                        LoginSideEffect.NavigateToOnboarding(
-                            response.authId,
-                            response.authType
+            postRefreshTokenUseCase(authCode, authType).fold(
+                onSuccess = { response ->
+                    saveTokens(response.accessToken, response.refreshToken)
+                    userInfoRepository.saveIsAutoLogin(response.isMember)
+                    if (response.isMember) {
+                        emitSideEffect(LoginSideEffect.NavigateToHome)
+                    } else {
+                        emitSideEffect(
+                            LoginSideEffect.NavigateToOnboarding(
+                                response.authId,
+                                response.authType
+                            )
                         )
-                    )
+                    }
+                },
+                onFailure = { error ->
+                    Timber.e("postRefreshToken Failed: ${error.message}")
                 }
-            }.onFailure { error ->
-                Timber.e("postRefreshToken Failed: ${error.message}")
-            }
+            )
         }
     }
 
