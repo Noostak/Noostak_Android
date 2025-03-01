@@ -117,13 +117,13 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun handleLoginSuccess(
-        token: String,
+        authCode: String,
         socialType: String,
         successToast: Int
     ) {
         showToast(successToast)
         viewModelScope.launch {
-            postSocialLogin(token, socialType)
+            postSocialLogin(authCode, socialType)
         }
     }
 
@@ -145,9 +145,9 @@ class LoginViewModel @Inject constructor(
     }
 
     // 소셜 로그인
-    private fun postSocialLogin(token: String, socialType: String) {
+    private fun postSocialLogin(authCode: String, socialType: String) {
         viewModelScope.launch {
-            authRepository.postSocialLogin(token, AuthTypeEntity(socialType)).fold(
+            authRepository.postSocialLogin(authCode, AuthTypeEntity(socialType)).fold(
                 onSuccess = { response ->
                     saveTokens(response.accessToken, response.refreshToken)
                     userInfoRepository.saveMemberId(response.memberId)
@@ -155,9 +155,9 @@ class LoginViewModel @Inject constructor(
                 },
                 onFailure = { error ->
                     if (userInfoRepository.getRefreshToken().first().isEmpty()) {
-                        postRefreshToken(token, socialType)
+                        postRefreshToken(authCode, socialType)
                     } else {
-                        postReissueToken(token, socialType)
+                        postReissueToken(authCode, socialType)
                     }
                     Timber.e("postSocialLogin Failed: ${error.message}")
                 }
@@ -166,14 +166,14 @@ class LoginViewModel @Inject constructor(
     }
 
     // 토큰 재발급
-    private fun postReissueToken(token: String, socialType: String) {
+    private fun postReissueToken(authCode: String, socialType: String) {
         viewModelScope.launch {
             authRepository.postReissueToken(userInfoRepository.getRefreshToken().first()).fold(
                 onSuccess = { response ->
                     saveTokens(response.accessToken, response.refreshToken)
                 },
                 onFailure = { error ->
-                    postRefreshToken(token, socialType)
+                    postRefreshToken(authCode, socialType)
                     Timber.e("postReissueToken Failed: ${error.message}")
                 }
             )
