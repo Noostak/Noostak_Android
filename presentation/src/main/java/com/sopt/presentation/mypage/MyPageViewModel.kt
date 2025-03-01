@@ -5,6 +5,7 @@ import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.UserEntity
 import com.sopt.domain.repository.UserInfoRepository
+import com.sopt.domain.usecase.DeleteWithdrawUseCase
 import com.sopt.domain.usecase.PostLogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +20,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
     private val userInfoRepository: UserInfoRepository,
-    private val postLogoutUseCase: PostLogoutUseCase
+    private val postLogoutUseCase: PostLogoutUseCase,
+    private val deleteWithdrawUseCase: DeleteWithdrawUseCase
 ) : BaseViewModel<MyPageSideEffect>() {
     private val _userInfoState = MutableStateFlow(UserEntity())
     val userInfoState: StateFlow<UserEntity> = _userInfoState
@@ -104,14 +106,15 @@ class MyPageViewModel @Inject constructor(
     // 회원탈퇴
     fun deleteWithdraw() {
         viewModelScope.launch {
-            authRepository.deleteWithdraw(userInfoRepository.getAccessToken().first())
-                .onSuccess {
+            deleteWithdrawUseCase(userInfoRepository.getAccessToken().first()).fold(
+                onSuccess = {
                     clearInfo()
                     emitSideEffect(MyPageSideEffect.NavigateToLogin)
-                }
-                .onFailure { error ->
+                },
+                onFailure = { error ->
                     Timber.e("deleteWithdraw Failed: ${error.message}")
                 }
+            )
         }
     }
 }
