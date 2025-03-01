@@ -4,8 +4,8 @@ import androidx.lifecycle.viewModelScope
 import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.UserEntity
-import com.sopt.domain.repository.AuthRepository
 import com.sopt.domain.repository.UserInfoRepository
+import com.sopt.domain.usecase.PostLogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
     private val userInfoRepository: UserInfoRepository,
-    private val authRepository: AuthRepository
+    private val postLogoutUseCase: PostLogoutUseCase
 ) : BaseViewModel<MyPageSideEffect>() {
     private val _userInfoState = MutableStateFlow(UserEntity())
     val userInfoState: StateFlow<UserEntity> = _userInfoState
@@ -89,14 +89,15 @@ class MyPageViewModel @Inject constructor(
     // 로그아웃
     fun postLogout() {
         viewModelScope.launch {
-            authRepository.postLogout(userInfoRepository.getAccessToken().first())
-                .onSuccess {
+            postLogoutUseCase(userInfoRepository.getAccessToken().first()).fold(
+                onSuccess = {
                     clearInfo()
                     emitSideEffect(MyPageSideEffect.NavigateToLogin)
-                }
-                .onFailure { error ->
+                },
+                onFailure = { error ->
                     Timber.e("postLogout Failed: ${error.message}")
                 }
+            )
         }
     }
 
