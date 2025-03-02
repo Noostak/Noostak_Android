@@ -6,7 +6,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sopt.core.navigation.MainTabRoute
-import com.sopt.presentation.auth.login.navigation.Login
 import com.sopt.presentation.auth.signup.inputGroupCode.navigation.navigateInputGroupCode
 import com.sopt.presentation.group.GroupRoute
 import com.sopt.presentation.groupCreate.navigation.navigateToGroupCreate
