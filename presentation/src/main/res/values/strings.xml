@@ -161,9 +161,6 @@
     <string name="text_appointment_submit_complete_date_consecutive">%1$s ~ %2$s</string>
     <string name="text_appointment_submit_complete_separator">", "</string>
 
-    <!-- 유저 칩 -->
-    <string name="user_chip_me">나</string>
-
     <!-- 날짜 형식 -->
     <string name="text_brace_between_hours">%1$s ~ %2$s</string>
 

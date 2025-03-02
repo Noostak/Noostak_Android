@@ -55,4 +55,5 @@
     <string name="text_noostak_time_picker_start">약속 시작 시간</string>
     <string name="text_noostak_time_picker_end">약속 종료 시간</string>
     <string name="text_noostak_time_picker_wave">~</string>
+    <string name="user_chip_me">나</string>
 </resources>

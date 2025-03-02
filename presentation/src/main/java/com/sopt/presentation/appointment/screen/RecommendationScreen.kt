@@ -36,6 +36,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.chip.AvailableUserChips
+import com.sopt.core.designsystem.component.chip.UnavailableUserChips
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
@@ -46,8 +48,6 @@ import com.sopt.domain.entity.OptionEntity
 import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.AppointmentViewModel
-import com.sopt.presentation.groupDetail.confirmedDetail.AvailableUserChips
-import com.sopt.presentation.groupDetail.confirmedDetail.UnavailableUserChips
 
 @Composable
 fun RecommendationScreen(
