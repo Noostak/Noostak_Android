@@ -13,14 +13,14 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.getMonthDays
 import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.domain.entity.DayEntity
-import com.sopt.presentation.calendar.component.CalendarWeek
 import java.time.YearMonth
 
 @Composable
 fun CalendarMonth(
     weeks: List<List<DayEntity>>,
     modifier: Modifier = Modifier,
-    scheduleMap: Map<String, List<CalendarSchedule>> = emptyMap()
+    scheduleMap: Map<String, List<CalendarSchedule>> = emptyMap(),
+    onItemClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -31,7 +31,8 @@ fun CalendarMonth(
             CalendarWeek(
                 dayInfo = week,
                 scheduleMap = scheduleMap,
-                modifier = Modifier.padding(top = if (index == 0) 0.dp else 4.dp)
+                modifier = Modifier.padding(top = if (index == 0) 0.dp else 4.dp),
+                onItemClick = { onItemClick() }
             )
         }
     }
