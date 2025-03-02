@@ -1,4 +1,4 @@
-package com.sopt.presentation.calendar.component
+package com.sopt.core.designsystem.component.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -13,11 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sopt.core.designsystem.component.calendar.CalendarDay
-import com.sopt.core.designsystem.component.calendar.CalendarScheduleGroup
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.isToday
+import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.extension.toDateString
 import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.domain.entity.DayEntity
@@ -27,7 +26,8 @@ import java.time.LocalDate
 internal fun CalendarWeek(
     dayInfo: List<DayEntity>,
     modifier: Modifier = Modifier,
-    scheduleMap: Map<String, List<CalendarSchedule>> = emptyMap()
+    scheduleMap: Map<String, List<CalendarSchedule>> = emptyMap(),
+    onItemClick: () -> Unit = {}
 ) {
     Row(
         modifier = modifier.background(NoostakTheme.colors.white),
@@ -40,7 +40,8 @@ internal fun CalendarWeek(
             Column(
                 modifier = Modifier
                     .height(84.dp)
-                    .weight(1f),
+                    .weight(1f)
+                    .noRippleClickable { onItemClick() },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CalendarDay(

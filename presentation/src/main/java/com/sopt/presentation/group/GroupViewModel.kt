@@ -10,11 +10,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GroupViewModel @Inject constructor() : BaseViewModel<GroupSideEffect>() {
-    private val _showDialog = MutableStateFlow(false)
-    val showDialog: StateFlow<Boolean> get() = _showDialog
+    private val _showFABDialog = MutableStateFlow(false)
+    val showFABDialog: StateFlow<Boolean> get() = _showFABDialog
 
-    fun showFloatingActionButtonDialog(show: Boolean) {
-        _showDialog.update { show }
+    fun showFABDialog(show: Boolean) {
+        _showFABDialog.update { show }
     }
 
     fun navigateToGroupDetail(groupId: Long) {

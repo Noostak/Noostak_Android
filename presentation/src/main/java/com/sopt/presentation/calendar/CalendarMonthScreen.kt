@@ -21,7 +21,8 @@ fun CalendarMonthScreen(
     pagerState: PagerState,
     scheduleMap: Map<String, List<CalendarSchedule>>,
     modifier: Modifier = Modifier,
-    calendarViewModel: CalendarViewModel = hiltViewModel()
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
+    onItemClick: () -> Unit = {}
 ) {
     LaunchedEffect(key1 = pagerState.currentPage) {
         snapshotFlow { pagerState.currentPage }
@@ -35,7 +36,8 @@ fun CalendarMonthScreen(
             .fillMaxSize()
             .background(NoostakTheme.colors.white),
         pagerState = pagerState,
-        scheduleMap = scheduleMap
+        scheduleMap = scheduleMap,
+        onItemClick = { onItemClick() }
     )
 }
 
