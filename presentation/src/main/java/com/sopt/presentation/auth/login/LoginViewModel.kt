@@ -36,14 +36,6 @@ class LoginViewModel @Inject constructor(
     private val _showDialog = MutableStateFlow(Pair(DialogType.LOGIN_GOOGLE, false))
     val showDialog: StateFlow<Pair<DialogType, Boolean>> get() = _showDialog
 
-    init {
-        viewModelScope.launch {
-            if (userInfoRepository.getIsAutoLogin().first()) {
-                emitSideEffect(LoginSideEffect.NavigateToHome)
-            }
-        }
-    }
-
     fun showDialog(dialogType: DialogType, isVisible: Boolean) {
         _showDialog.update { it.copy(first = dialogType, second = isVisible) }
     }
