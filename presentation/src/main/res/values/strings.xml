@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Noostak-Android</string>
+    <string name="app_name">ScheTook</string>
 
     <!-- Bottom Navigation -->
     <string name="bottom_nav_calendar">캘린더</string>
