@@ -31,7 +31,7 @@ fun GroupItem(
             .padding(vertical = 14.dp, horizontal = 6.dp)
     ) {
         GroupImage(
-            imageUrl = "https://item.elandrs.com/r/image/item/2023-03-29/21e48456-d3bf-4dee-9f3f-8e516f344175.jpg?w=750&h=&q=100",
+            imageUrl = if (!data.groupProfileImageUrl.isNullOrEmpty()) data.groupProfileImageUrl else "https://item.elandrs.com/r/image/item/2023-03-29/21e48456-d3bf-4dee-9f3f-8e516f344175.jpg?w=750&h=&q=100",
             modifier = Modifier
                 .size(44.dp)
                 .aspectRatio(1f)
@@ -45,7 +45,7 @@ fun GroupItem(
         )
         Spacer(modifier = Modifier.width(6.dp))
         Text(
-            text = data.groupPersonnel.toString(),
+            text = data.groupMemberCount.toString(),
             color = NoostakTheme.colors.gray700,
             style = NoostakTheme.typography.b4Regular,
             modifier = Modifier.align(Alignment.CenterVertically)

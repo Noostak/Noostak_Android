@@ -152,14 +152,14 @@ fun GroupScreenPreview() {
     NoostakAndroidTheme {
         GroupScreen(
             groupItems = listOf(
-                GroupEntity(groupId = 1, groupName = "누스탁", groupPersonnel = 15, newsImage = null),
+                GroupEntity(groupId = 1, groupName = "누스탁", groupMemberCount = 15, groupProfileImageUrl = null),
                 GroupEntity(
                     groupId = 2,
                     groupName = "유니보이스",
-                    groupPersonnel = 16,
-                    newsImage = null
+                    groupMemberCount = 16,
+                    groupProfileImageUrl = null
                 ),
-                GroupEntity(groupId = 3, groupName = "솝트", groupPersonnel = 191, newsImage = null)
+                GroupEntity(groupId = 3, groupName = "솝트", groupMemberCount = 191, groupProfileImageUrl = null)
             ),
             isFabClicked = remember { MutableStateFlow(false) },
             onItemClick = {},
