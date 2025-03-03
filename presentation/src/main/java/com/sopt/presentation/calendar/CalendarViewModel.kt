@@ -5,9 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
-import com.sopt.domain.entity.ConfirmedDetailEntity
 import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.entity.ScheduleDetailEntity
+import com.sopt.domain.entity.ScheduleListDetailEntity
 import com.sopt.domain.entity.ScheduleEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -142,7 +142,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
     val mockScheduleList = ScheduleEntity(
         date = "1월 13일 (월)",
         scheduleList = listOf(
-            ScheduleDetailEntity(
+            ScheduleListDetailEntity(
                 id = 1,
                 name = "누스탁 회의",
                 category = "중요",
@@ -150,7 +150,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 endTime = "1/13 21:00",
                 duration = 5
             ),
-            ScheduleDetailEntity(
+            ScheduleListDetailEntity(
                 id = 2,
                 name = "누스탁 모각작",
                 category = "일정",
@@ -158,7 +158,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 endTime = "1/13 21:00",
                 duration = 10
             ),
-            ScheduleDetailEntity(
+            ScheduleListDetailEntity(
                 id = 3,
                 name = "누스탁 회식",
                 category = "취미",
@@ -166,7 +166,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 endTime = "1/13 21:00",
                 duration = 6
             ),
-            ScheduleDetailEntity(
+            ScheduleListDetailEntity(
                 id = 4,
                 name = "누스탁 MT",
                 category = "기타",
@@ -174,7 +174,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 endTime = "1/13 21:00",
                 duration = 9
             ),
-            ScheduleDetailEntity(
+            ScheduleListDetailEntity(
                 id = 5,
                 name = "누스탁 회의2",
                 category = "중요",
@@ -182,7 +182,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 endTime = "1/13 21:00",
                 duration = 24
             ),
-            ScheduleDetailEntity(
+            ScheduleListDetailEntity(
                 id = 6,
                 name = "누스탁 모각작2",
                 category = "일정",
@@ -190,7 +190,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 endTime = "1/13 21:00",
                 duration = 1
             ),
-            ScheduleDetailEntity(
+            ScheduleListDetailEntity(
                 id = 7,
                 name = "누스탁 회식2",
                 category = "취미",
@@ -198,7 +198,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 endTime = "1/13 21:00",
                 duration = 4
             ),
-            ScheduleDetailEntity(
+            ScheduleListDetailEntity(
                 id = 8,
                 name = "누스탁 MT2",
                 category = "기타",
@@ -209,18 +209,17 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
         )
     )
 
-    val mockScheduleDetail = ConfirmedDetailEntity(
+    val mockScheduleDetail = ScheduleDetailEntity(
         myIdentity = IdentityEntity(
             availability = "available",
             position = 0,
             name = "김언지"
         ),
+        appointmentName = "누스탁이올시다 으아아아아아아아아아아아아아",
         date = "1월 13일 (월)",
         startTime = "1/13 21:00",
         endTime = "1/13 21:00",
         category = "기타",
-        likes = 15,
-        liked = true,
         availableMembersCount = 81,
         availableMembers = listOf(
             "하루", "야마다", "이누마키", "츠키시마",
