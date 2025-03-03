@@ -22,8 +22,8 @@ import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.screen.NoostakEmptyScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.domain.entity.ScheduleListDetailEntity
 import com.sopt.domain.entity.ScheduleEntity
+import com.sopt.domain.entity.ScheduleListDetailEntity
 import com.sopt.presentation.R
 
 @Composable

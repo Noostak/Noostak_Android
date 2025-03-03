@@ -7,8 +7,8 @@ import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.entity.ScheduleDetailEntity
-import com.sopt.domain.entity.ScheduleListDetailEntity
 import com.sopt.domain.entity.ScheduleEntity
+import com.sopt.domain.entity.ScheduleListDetailEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

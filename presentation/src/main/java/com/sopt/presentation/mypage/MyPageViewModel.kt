@@ -4,7 +4,6 @@ import androidx.lifecycle.viewModelScope
 import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.ProfileEntity
-import com.sopt.domain.entity.UserEntity
 import com.sopt.domain.repository.UserInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
