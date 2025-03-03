@@ -3,6 +3,7 @@ package com.sopt.presentation.mypage
 import androidx.lifecycle.viewModelScope
 import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
+import com.sopt.domain.entity.ProfileEntity
 import com.sopt.domain.entity.UserEntity
 import com.sopt.domain.repository.UserInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,8 +18,8 @@ import javax.inject.Inject
 class MyPageViewModel @Inject constructor(
     private val userInfoRepository: UserInfoRepository
 ) : BaseViewModel<MyPageSideEffect>() {
-    private val _userInfoState = MutableStateFlow(UserEntity())
-    val userInfoState: StateFlow<UserEntity> = _userInfoState
+    private val _userInfoState = MutableStateFlow(ProfileEntity())
+    val userInfoState: StateFlow<ProfileEntity> = _userInfoState
 
     private val _showLogoutDialog = MutableStateFlow(false)
     val showLogoutDialog: StateFlow<Boolean> get() = _showLogoutDialog
@@ -38,7 +39,7 @@ class MyPageViewModel @Inject constructor(
     private fun loadNickname() {
         viewModelScope.launch {
             userInfoRepository.getNickname().collectLatest { newNickname ->
-                _userInfoState.update { it.copy(nickname = newNickname) }
+                _userInfoState.update { it.copy(memberName = newNickname) }
             }
         }
     }
@@ -46,7 +47,7 @@ class MyPageViewModel @Inject constructor(
     private fun loadProfileImage() {
         viewModelScope.launch {
             userInfoRepository.getProfileImage().collectLatest { newImageUrl ->
-                _userInfoState.update { it.copy(profileImage = newImageUrl) }
+                _userInfoState.update { it.copy(memberProfileImage = newImageUrl) }
             }
         }
     }
@@ -60,8 +61,8 @@ class MyPageViewModel @Inject constructor(
     fun navigateToEditProfile() {
         emitSideEffect(
             MyPageSideEffect.NavigateToEditProfile(
-                nickname = _userInfoState.value.nickname,
-                profileImage = _userInfoState.value.profileImage
+                nickname = _userInfoState.value.memberName,
+                profileImage = _userInfoState.value.memberProfileImage
             )
         )
     }
