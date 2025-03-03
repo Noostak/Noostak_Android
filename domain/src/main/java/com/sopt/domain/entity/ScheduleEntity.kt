@@ -15,5 +15,5 @@ data class ScheduleListDetailEntity(
     val category: String = "",
     val startTime: String = "", // H:m - ex) 1:10, 13:01
     val endTime: String = "", // H:m - ex) 1:10, 13:01
-    val duration: Int = 0
+    val duration: Long = 0
 ) : Parcelable
