@@ -62,7 +62,7 @@
     <string name="tv_group_detail_no_complete">현재 확정된 약속이 없어요</string>
     <string name="text_group_detail_progress_date">%1$s %2$s %3$s~%4$s</string>
     <string name="text_group_detail_progress_participants">%1$s명/%2$s명</string>
-    <string name="text_group_detail_confirmed_date">%1$s %2$s %3$s ~ %4$s</string>
+    <string name="text_group_detail_confirmed_date">%1$s %2$s %3$s~%4$s</string>
 
     <!-- 확정된 약속 정보 -->
     <string name="header_complete_detail">약속 정보</string>
