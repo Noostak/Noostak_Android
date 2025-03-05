@@ -16,7 +16,13 @@ fun ResponseGetTimeTableDto.toTimeTableEntity() = TimeTableEntity(
 
 fun ResponseAppointmentScheduleDto.toAppointmentScheduleEntity() = AppointmentScheduleEntity(
     appointmentHostSelectionTimes = appointmentHostSelectionTimes.map { it.toTimeEntity() },
-    appointmentMembersInfo = appointmentMembersInfo.map { it.toAppointmentMembersInfoEntity() }
+    appointmentMembersInfo = appointmentMembersInfo.map {
+        it?.toAppointmentMembersInfoEntity() ?: AppointmentMembersInfoEntity(
+            memberId = -1,
+            memberName = "나",
+            appointmentMemberAvailableTimes = emptyList()
+        )
+    }
 )
 
 fun ResponseAppointmentMembersInfoDto.toAppointmentMembersInfoEntity() =

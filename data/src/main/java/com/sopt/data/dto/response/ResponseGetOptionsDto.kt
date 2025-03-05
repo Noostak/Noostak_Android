@@ -26,7 +26,7 @@ data class ResponseGetOptionsOptionDto(
     @SerialName("groupMemberCount") val groupMemberCount: Int,
     @SerialName("availableMemberCount") val availableMemberCount: Int,
     @SerialName("appointmentOptionTime") val appointmentOptionTime: BaseTimeDto,
-    @SerialName("myInfo") val myInfo: BaseMyInfoDto,
-    @SerialName("availableFriends") val availableFriends: BaseFriendsDto,
-    @SerialName("unavailableFriends") val unavailableFriends: BaseFriendsDto
+    @SerialName("myInfo") val myInfo: BaseMyInfoDto?,
+    @SerialName("availableFriends") val availableFriends: BaseFriendsDto?,
+    @SerialName("unavailableFriends") val unavailableFriends: BaseFriendsDto?
 )

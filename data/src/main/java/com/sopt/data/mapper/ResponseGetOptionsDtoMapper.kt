@@ -39,16 +39,16 @@ fun ResponseGetOptionsPrioritiesDto.toRecommendationPriorityEntity() = Recommend
 fun ResponseGetOptionsOptionDto.toOptionEntity() = OptionEntity(
     id = optionId.toLong(),
     totalMemberCount = groupMemberCount,
-    myIdentity = myInfo.toIdentityEntity(),
+    myIdentity = myInfo?.toIdentityEntity() ?: IdentityEntity("unavailable", -1, "나"),
     date = appointmentOptionTime.date,
     startTime = appointmentOptionTime.startTime,
     endTime = appointmentOptionTime.endTime,
     likes = likes,
     liked = liked,
     availableMemberCount = availableMemberCount,
-    availableMembers = availableFriends.names,
-    unavailableMemberCount = unavailableFriends.count,
-    unavailableMembers = unavailableFriends.names
+    availableMembers = availableFriends?.names ?: emptyList(),
+    unavailableMemberCount = unavailableFriends?.count ?: 0,
+    unavailableMembers = unavailableFriends?.names ?: emptyList()
 )
 
 fun BaseMyInfoDto.toIdentityEntity() = IdentityEntity(
