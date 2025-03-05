@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -339,11 +340,12 @@ fun RecommendationHeaderItem(
                 },
                 shape = RoundedCornerShape(12.dp)
             )
+            .width(116.dp)
             .padding(
                 top = 10.dp,
                 start = 16.dp,
                 bottom = 10.dp,
-                end = 34.dp
+                end = 21.dp
             )
             .noRippleClickable {
                 if (priority == selectedItemIndex) {

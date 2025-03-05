@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -52,34 +53,6 @@ fun CurrentStatusScreen(
                 color = NoostakTheme.colors.black,
                 style = NoostakTheme.typography.b1SemiBold
             )
-            Button(
-                interactionSource = NoRippleInteractionSource,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = NoostakTheme.colors.blue200,
-                    contentColor = NoostakTheme.colors.gray700
-                ),
-                onClick = { /*TODO*/ },
-                contentPadding = PaddingValues(
-                    start = 8.dp,
-                    bottom = 6.dp,
-                    end = 10.dp,
-                    top = 6.dp
-                )
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(1.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = ImageVector.vectorResource(id = R.drawable.ic_appointment_add),
-                        contentDescription = null
-                    )
-                    Text(
-                        text = stringResource(R.string.btn_appointment_modify),
-                        style = NoostakTheme.typography.c4Regular
-                    )
-                }
-            }
         }
         NoostakTimeTable(
             availablePeriods = availablePeriods,
