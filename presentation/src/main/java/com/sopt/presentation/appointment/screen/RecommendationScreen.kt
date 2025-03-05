@@ -82,7 +82,7 @@ fun RecommendationScreen(
                             if (selectedItemId == recommendation.id) null else recommendation.id
                     },
                     onLikeClick = { isLiked ->
-                        onLikeClick(recommendation.id, isLiked) // ✅ 부모로 전달
+                        onLikeClick(recommendation.id, isLiked)
                     }
                 )
                 Spacer(modifier = Modifier.height(16.dp))

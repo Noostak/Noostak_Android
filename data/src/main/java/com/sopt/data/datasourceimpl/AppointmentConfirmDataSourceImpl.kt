@@ -14,19 +14,17 @@ class AppointmentConfirmDataSourceImpl @Inject constructor(
     private val appointmentConfirmApiService: AppointmentConfirmApiService
 ) : AppointmentConfirmDataSource {
     override suspend fun postLike(
-        groupId: Long,
         appointmentId: Long,
-        optionId: Long
+        appointmentOptionId: Long
     ): BaseResponse<ResponseLikesDto> {
-        return appointmentConfirmApiService.postLike(groupId, appointmentId, optionId)
+        return appointmentConfirmApiService.postLike(appointmentId, appointmentOptionId)
     }
 
     override suspend fun deleteLike(
-        groupId: Long,
         appointmentId: Long,
-        optionId: Long
+        appointmentOptionId: Long
     ): BaseResponse<ResponseLikesDto> {
-        return appointmentConfirmApiService.deleteLike(groupId, appointmentId, optionId)
+        return appointmentConfirmApiService.deleteLike(appointmentId, appointmentOptionId)
     }
 
     override suspend fun getOptions(

@@ -52,10 +52,10 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    fun postLike(groupId: Long, appointmentId: Long, optionId: Long) {
+    fun postLike(appointmentId: Long, appointmentOptionId: Long) {
         viewModelScope.launch {
             _postLikeState.emit(UiState.Loading)
-            appointmentConfirmRepository.postLike(groupId, appointmentId, optionId).fold(
+            appointmentConfirmRepository.postLike(appointmentId, appointmentOptionId).fold(
                 onSuccess = {
                     _postLikeState.emit(UiState.Success(it))
                     Timber.d("postLike success: $it")
@@ -68,10 +68,10 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    fun deleteLike(groupId: Long, appointmentId: Long, optionId: Long) {
+    fun deleteLike(appointmentId: Long, appointmentOptionId: Long) {
         viewModelScope.launch {
             _deleteLikeState.emit(UiState.Loading)
-            appointmentConfirmRepository.deleteLike(groupId, appointmentId, optionId).fold(
+            appointmentConfirmRepository.deleteLike(appointmentId, appointmentOptionId).fold(
                 onSuccess = {
                     _deleteLikeState.emit(UiState.Success(it))
                     Timber.d("deleteLike success: $it")

@@ -12,13 +12,10 @@ import com.sopt.data.service.ApiKeyStorage.APPOINTMENT_ID
 import com.sopt.data.service.ApiKeyStorage.APPOINTMENT_MEMBERS
 import com.sopt.data.service.ApiKeyStorage.APPOINTMENT_OPTIONS
 import com.sopt.data.service.ApiKeyStorage.APPOINTMENT_OPTION_ID
+import com.sopt.data.service.ApiKeyStorage.CONFIRM
 import com.sopt.data.service.ApiKeyStorage.CONFIRMED
-import com.sopt.data.service.ApiKeyStorage.GROUPS
-import com.sopt.data.service.ApiKeyStorage.GROUP_ID
-import com.sopt.data.service.ApiKeyStorage.LIKES
+import com.sopt.data.service.ApiKeyStorage.LIKE
 import com.sopt.data.service.ApiKeyStorage.OPTIONS
-import com.sopt.data.service.ApiKeyStorage.OPTION_ID
-import com.sopt.data.service.ApiKeyStorage.PROGRESS
 import com.sopt.data.service.ApiKeyStorage.TIMETABLE
 import com.sopt.data.service.ApiKeyStorage.V1
 import retrofit2.http.Body
@@ -28,18 +25,16 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface AppointmentConfirmApiService {
-    @POST("/$API/$V1/$GROUPS/{$GROUP_ID}/$APPOINTMENTS/{$APPOINTMENT_ID}/$PROGRESS/$OPTIONS/{$OPTION_ID}/$LIKES")
+    @POST("/$API/$V1/$APPOINTMENTS/{$APPOINTMENT_ID}/$APPOINTMENT_OPTIONS/{$APPOINTMENT_OPTION_ID}/$LIKE")
     suspend fun postLike(
-        @Path(GROUP_ID) groupId: Long,
         @Path(APPOINTMENT_ID) appointmentId: Long,
-        @Path(OPTION_ID) optionId: Long
+        @Path(APPOINTMENT_OPTION_ID) appointmentOptionId: Long
     ): BaseResponse<ResponseLikesDto>
 
-    @DELETE("/$API/$V1/$GROUPS/{$GROUP_ID}/$APPOINTMENTS/{$APPOINTMENT_ID}/$PROGRESS/$OPTIONS/{$OPTION_ID}/$LIKES")
+    @DELETE("/$API/$V1/$APPOINTMENTS/{$APPOINTMENT_ID}/$APPOINTMENT_OPTIONS/{$APPOINTMENT_OPTION_ID}/$LIKE")
     suspend fun deleteLike(
-        @Path(GROUP_ID) groupId: Long,
         @Path(APPOINTMENT_ID) appointmentId: Long,
-        @Path(OPTION_ID) optionId: Long
+        @Path(APPOINTMENT_OPTION_ID) appointmentOptionId: Long
     ): BaseResponse<ResponseLikesDto>
 
     @GET("/$API/$V1/$APPOINTMENTS/{$APPOINTMENT_ID}/$OPTIONS")
@@ -52,7 +47,7 @@ interface AppointmentConfirmApiService {
         @Path(APPOINTMENT_OPTION_ID) appointmentOptionId: Long
     ): BaseResponse<ResponseGetConfirmedDto>
 
-    @POST("/$API/$V1/$APPOINTMENT_OPTIONS/{$APPOINTMENT_OPTION_ID}/$CONFIRMED")
+    @POST("/$API/$V1/$APPOINTMENT_OPTIONS/{$APPOINTMENT_OPTION_ID}/$CONFIRM")
     suspend fun postConfirmed(
         @Path(APPOINTMENT_OPTION_ID) appointmentOptionId: Long
     ): BaseResponse<Unit>

@@ -6,8 +6,8 @@ import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.entity.TimeTableEntity
 
 interface AppointmentConfirmRepository {
-    suspend fun postLike(groupId: Long, appointmentId: Long, optionId: Long): Result<Unit>
-    suspend fun deleteLike(groupId: Long, appointmentId: Long, optionId: Long): Result<Unit>
+    suspend fun postLike(appointmentId: Long, appointmentOptionId: Long): Result<Unit>
+    suspend fun deleteLike(appointmentId: Long, appointmentOptionId: Long): Result<Unit>
     suspend fun getOptions(appointmentId: Long): Result<AppointmentEntity>
     suspend fun getConfirmed(appointmentOptionId: Long): Result<AppointmentDetailEntity>
     suspend fun postConfirmed(appointmentOptionId: Long): Result<Unit>

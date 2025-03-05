@@ -15,8 +15,7 @@ object ApiKeyStorage {
     const val APPOINTMENT_OPTION_ID = "appointmentOptionId"
     const val PROGRESS = "progress"
     const val OPTIONS = "options"
-    const val OPTION_ID = "optionId"
-    const val LIKES = "likes"
+    const val LIKE = "like"
     const val AUTH = "auth"
     const val WITHDRAW = "withdraw"
     const val VALIDATE = "validate"
@@ -27,6 +26,7 @@ object ApiKeyStorage {
     const val LOGOUT = "logout"
     const val MEMBERS = "members"
     const val CONFIRMED = "confirmed"
+    const val CONFIRM = "confirm"
     const val APPOINTMENT_MEMBERS = "appointment-members"
     const val TIMETABLE = "timetable"
 }

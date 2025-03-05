@@ -9,15 +9,13 @@ import com.sopt.data.dto.response.ResponseLikesDto
 
 interface AppointmentConfirmDataSource {
     suspend fun postLike(
-        groupId: Long,
         appointmentId: Long,
-        optionId: Long
+        appointmentOptionId: Long
     ): BaseResponse<ResponseLikesDto>
 
     suspend fun deleteLike(
-        groupId: Long,
         appointmentId: Long,
-        optionId: Long
+        appointmentOptionId: Long
     ): BaseResponse<ResponseLikesDto>
 
     suspend fun getOptions(appointmentId: Long): BaseResponse<ResponseGetOptionsDto>

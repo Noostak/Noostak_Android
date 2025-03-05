@@ -147,11 +147,11 @@ fun AppointmentRoute(
             availablePeriods = (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentHostSelectionTimes,
             availableTimes = (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentMembersInfo,
             recommendations = (getOptionsState as UiState.Success).data,
-            onLikeClick = { optionId, isLiked ->
+            onLikeClick = { appointmentOptionId, isLiked ->
                 if (isLiked) {
-                    appointmentViewModel.postLike(groupId, appointmentId, optionId)
+                    appointmentViewModel.postLike(appointmentId, appointmentOptionId)
                 } else {
-                    appointmentViewModel.deleteLike(groupId, appointmentId, optionId)
+                    appointmentViewModel.deleteLike(appointmentId, appointmentOptionId)
                 }
             }
         )
@@ -169,9 +169,9 @@ fun AppointmentRoute(
             recommendations = appointmentViewModel.mockRecommendations,
             onLikeClick = { optionId, isLiked ->
                 if (isLiked) {
-                    appointmentViewModel.postLike(groupId, appointmentId, optionId)
+                    appointmentViewModel.postLike(appointmentId, optionId)
                 } else {
-                    appointmentViewModel.deleteLike(groupId, appointmentId, optionId)
+                    appointmentViewModel.deleteLike(appointmentId, optionId)
                 }
             }
         )
