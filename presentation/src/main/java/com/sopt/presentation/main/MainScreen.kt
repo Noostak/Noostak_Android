@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -45,6 +44,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
+import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
@@ -62,6 +62,7 @@ import com.sopt.presentation.groupCreate.groupCreateSuccess.navigation.groupCrea
 import com.sopt.presentation.groupCreate.navigation.groupCreateNavGraph
 import com.sopt.presentation.groupDetail.navigation.groupDetailNavGraph
 import com.sopt.presentation.mypage.navigation.myPageNavGraph
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -96,10 +97,9 @@ fun MainScreen(
         } else {
             backPressedState = true
             coroutineScope.launch {
-                snackBarHostState.showSnackbar(
-                    message = "버튼을 한 번 더 누르면 종료돼요",
-                    duration = SnackbarDuration.Short
-                )
+                val job = launch { snackBarHostState.showSnackbar(message = "버튼을 한 번 더 누르면 종료돼요") }
+                delay(SNACK_BAR_DURATION)
+                job.cancel()
             }
         }
         backPressedTime = System.currentTimeMillis()
