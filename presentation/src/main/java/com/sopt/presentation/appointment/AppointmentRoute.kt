@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -245,7 +246,8 @@ fun AppointmentScreen(
                 Row(
                     modifier = Modifier
                         .showIf(selectedItemIndex == -1)
-                        .noRippleClickable { selectedItemIndex = 0 }
+                        .noRippleClickable { selectedItemIndex = 0 },
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = stringResource(R.string.btn_appointment_total),
@@ -253,6 +255,7 @@ fun AppointmentScreen(
                         style = NoostakTheme.typography.c3Regular
                     )
                     Icon(
+                        modifier = Modifier.size(16.dp),
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_appointment_right_arrow),
                         contentDescription = null,
                         tint = NoostakTheme.colors.gray800
