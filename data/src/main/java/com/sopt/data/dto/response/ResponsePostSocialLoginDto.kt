@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseSocialLoginDto(
+data class ResponsePostSocialLoginDto(
     @SerialName("accessToken") val accessToken: String,
     @SerialName("refreshToken") val refreshToken: String,
     @SerialName("memberId") val memberId: Int,
