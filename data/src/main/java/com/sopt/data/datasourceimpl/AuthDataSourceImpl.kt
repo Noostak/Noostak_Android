@@ -3,8 +3,6 @@ package com.sopt.data.datasourceimpl
 import com.sopt.data.datasource.AuthDataSource
 import com.sopt.data.dto.BaseResponse
 import com.sopt.data.dto.request.RequestPostSocialLoginDto
-import com.sopt.data.dto.request.RequestRefreshTokenDto
-import com.sopt.data.dto.response.ResponseRefreshTokenDto
 import com.sopt.data.dto.response.ResponseReissueTokenDto
 import com.sopt.data.dto.response.ResponseSignUpDto
 import com.sopt.data.dto.response.ResponseSocialLoginDto
@@ -28,12 +26,6 @@ class AuthDataSourceImpl @Inject constructor(
         refreshToken: String
     ): BaseResponse<ResponseReissueTokenDto> {
         return authApiService.postReissueToken(refreshToken)
-    }
-
-    override suspend fun postRefreshToken(
-        request: RequestRefreshTokenDto
-    ): BaseResponse<ResponseRefreshTokenDto> {
-        return authApiService.postRefreshToken(request)
     }
 
     override suspend fun postSignUp(

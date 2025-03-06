@@ -2,14 +2,11 @@ package com.sopt.data.repositoryimpl
 
 import com.sopt.data.datasource.AuthDataSource
 import com.sopt.data.dto.request.RequestPostSocialLoginDto
-import com.sopt.data.dto.request.RequestRefreshTokenDto
 import com.sopt.data.mapper.toAuthEntity
-import com.sopt.data.mapper.toRefreshTokenEntity
 import com.sopt.data.mapper.toReissueTokenEntity
 import com.sopt.data.mapper.toUserEntity
 import com.sopt.domain.entity.AuthEntity
 import com.sopt.domain.entity.AuthTypeEntity
-import com.sopt.domain.entity.RefreshTokenEntity
 import com.sopt.domain.entity.ReissueTokenEntity
 import com.sopt.domain.repository.AuthRepository
 import okhttp3.MultipartBody
@@ -39,19 +36,6 @@ class AuthRepositoryImpl @Inject constructor(
             val response = authDataSource.postReissueToken(refreshToken)
             response.result?.toReissueTokenEntity()
                 ?: throw Exception("postReissueToken failed")
-        }
-    }
-
-    override suspend fun postRefreshToken(
-        code: String,
-        authType: String
-    ): Result<RefreshTokenEntity> {
-        return runCatching {
-            val response = authDataSource.postRefreshToken(
-                RequestRefreshTokenDto(code, authType)
-            )
-            response.result?.toRefreshTokenEntity()
-                ?: throw Exception("postRefreshToken failed")
         }
     }
 

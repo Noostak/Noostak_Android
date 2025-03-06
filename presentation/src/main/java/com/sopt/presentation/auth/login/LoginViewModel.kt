@@ -16,7 +16,6 @@ import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AuthTypeEntity
 import com.sopt.domain.repository.UserInfoRepository
-import com.sopt.domain.usecase.PostRefreshTokenUseCase
 import com.sopt.domain.usecase.PostReissueTokenUseCase
 import com.sopt.domain.usecase.PostSocialLoginUseCase
 import com.sopt.presentation.R
@@ -35,8 +34,7 @@ class LoginViewModel @Inject constructor(
     @Named("GoogleClientId") private val googleClientId: String,
     private val userInfoRepository: UserInfoRepository,
     private val postSocialLoginUseCase: PostSocialLoginUseCase,
-    private val postReissueTokenUseCase: PostReissueTokenUseCase,
-    private val postRefreshTokenUseCase: PostRefreshTokenUseCase
+    private val postReissueTokenUseCase: PostReissueTokenUseCase
 ) : BaseViewModel<LoginSideEffect>() {
 
     private val _showDialog = MutableStateFlow(Pair(DialogType.LOGIN_GOOGLE, false))
@@ -150,20 +148,16 @@ class LoginViewModel @Inject constructor(
     }
 
     // 소셜 로그인
-    private fun postSocialLogin(authCode: String, socialType: String) {
+    private fun postSocialLogin(accessToken: String, socialType: String) {
         viewModelScope.launch {
-            postSocialLoginUseCase(authCode, AuthTypeEntity(socialType)).fold(
+            postSocialLoginUseCase(accessToken, AuthTypeEntity(socialType)).fold(
                 onSuccess = { response ->
                     saveTokens(response.accessToken, response.refreshToken)
                     userInfoRepository.saveMemberId(response.memberId)
                     emitSideEffect(LoginSideEffect.NavigateToHome)
                 },
                 onFailure = { error ->
-                    if (userInfoRepository.getRefreshToken().first().isEmpty()) {
-                        postRefreshToken(authCode, socialType)
-                    } else {
-                        postReissueToken(authCode, socialType)
-                    }
+                    postReissueToken()
                     Timber.e("postSocialLogin Failed: ${error.message}")
                 }
             )
@@ -171,40 +165,14 @@ class LoginViewModel @Inject constructor(
     }
 
     // 토큰 재발급
-    private fun postReissueToken(authCode: String, socialType: String) {
+    private fun postReissueToken() {
         viewModelScope.launch {
             postReissueTokenUseCase(userInfoRepository.getRefreshToken().first()).fold(
                 onSuccess = { response ->
                     saveTokens(response.accessToken, response.refreshToken)
                 },
                 onFailure = { error ->
-                    postRefreshToken(authCode, socialType)
                     Timber.e("postReissueToken Failed: ${error.message}")
-                }
-            )
-        }
-    }
-
-    // RefreshToken 발급
-    private fun postRefreshToken(authCode: String, authType: String) {
-        viewModelScope.launch {
-            postRefreshTokenUseCase(authCode, authType).fold(
-                onSuccess = { response ->
-                    saveTokens(response.accessToken, response.refreshToken)
-                    userInfoRepository.saveIsAutoLogin(response.isMember)
-                    if (response.isMember) {
-                        emitSideEffect(LoginSideEffect.NavigateToHome)
-                    } else {
-                        emitSideEffect(
-                            LoginSideEffect.NavigateToOnboarding(
-                                response.authId,
-                                response.authType
-                            )
-                        )
-                    }
-                },
-                onFailure = { error ->
-                    Timber.e("postRefreshToken Failed: ${error.message}")
                 }
             )
         }
