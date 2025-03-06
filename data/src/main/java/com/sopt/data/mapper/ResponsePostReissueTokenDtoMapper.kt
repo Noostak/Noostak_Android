@@ -1,9 +1,9 @@
 package com.sopt.data.mapper
 
-import com.sopt.data.dto.response.ResponseReissueTokenDto
+import com.sopt.data.dto.response.ResponsePostReissueTokenDto
 import com.sopt.domain.entity.ReissueTokenEntity
 
-fun ResponseReissueTokenDto.toReissueTokenEntity() = ReissueTokenEntity(
+fun ResponsePostReissueTokenDto.toReissueTokenEntity() = ReissueTokenEntity(
     accessToken = accessToken,
     refreshToken = refreshToken,
     authType = authType

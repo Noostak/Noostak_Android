@@ -2,9 +2,9 @@ package com.sopt.data.service
 
 import com.sopt.data.dto.BaseResponse
 import com.sopt.data.dto.request.RequestPostSocialLoginDto
-import com.sopt.data.dto.response.ResponseReissueTokenDto
-import com.sopt.data.dto.response.ResponseSignUpDto
-import com.sopt.data.dto.response.ResponseSocialLoginDto
+import com.sopt.data.dto.response.ResponsePostReissueTokenDto
+import com.sopt.data.dto.response.ResponsePostSignUpDto
+import com.sopt.data.dto.response.ResponsePostSocialLoginDto
 import com.sopt.data.service.ApiKeyStorage.API
 import com.sopt.data.service.ApiKeyStorage.AUTH
 import com.sopt.data.service.ApiKeyStorage.AUTHORIZATION
@@ -29,12 +29,12 @@ interface AuthApiService {
     suspend fun postSocialLogin(
         @Header(AUTHORIZATION) token: String,
         @Body requestPostSocialLoginDto: RequestPostSocialLoginDto
-    ): BaseResponse<ResponseSocialLoginDto>
+    ): BaseResponse<ResponsePostSocialLoginDto>
 
     @POST("/$API/$V1/$AUTH/$TOKEN_REISSUE")
     suspend fun postReissueToken(
         @Header(AUTHORIZATION) refreshToken: String
-    ): BaseResponse<ResponseReissueTokenDto>
+    ): BaseResponse<ResponsePostReissueTokenDto>
 
     @Multipart
     @POST("/$API/$V1/$AUTH/$SIGN_UP")
@@ -43,7 +43,7 @@ interface AuthApiService {
         @Part memberProfileImage: MultipartBody.Part?,
         @Part("authType") authType: RequestBody,
         @Part("authId") authId: RequestBody
-    ): BaseResponse<ResponseSignUpDto>
+    ): BaseResponse<ResponsePostSignUpDto>
 
     @POST("/$API/$V1/$AUTH/$LOGOUT")
     suspend fun postLogout(

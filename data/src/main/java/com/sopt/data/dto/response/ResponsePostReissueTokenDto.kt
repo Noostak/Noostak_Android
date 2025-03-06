@@ -4,9 +4,8 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseSignUpDto(
+data class ResponsePostReissueTokenDto(
     @SerialName("accessToken") val accessToken: String,
     @SerialName("refreshToken") val refreshToken: String,
-    @SerialName("memberId") val memberId: Int,
     @SerialName("authType") val authType: String
 )
