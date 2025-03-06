@@ -1,5 +1,6 @@
 package com.sopt.noostak.di
 
+import com.sopt.data.service.AuthApiService
 import com.sopt.data.service.ExampleApiService
 import dagger.Module
 import dagger.Provides
@@ -17,4 +18,10 @@ object ServiceModule {
     fun provideExampleService(
         @ExampleRetrofit retrofit: Retrofit
     ): ExampleApiService = retrofit.create(ExampleApiService::class.java)
+
+    @Singleton
+    @Provides
+    fun provideAuthService(
+        @WithoutTokenInterceptor retrofit: Retrofit
+    ): AuthApiService = retrofit.create(AuthApiService::class.java)
 }
