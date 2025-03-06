@@ -1,10 +1,14 @@
 package com.sopt.presentation.calendar
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -21,8 +25,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import com.sopt.core.designsystem.component.bottomsheet.NoostakBottomSheet
 import com.sopt.core.designsystem.component.calendar.WeekDaysHeader
 import com.sopt.core.designsystem.component.calendar.YearMonthHeader
-import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.component.topappbar.NoostakLogoAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.getYearMonthByPage
@@ -168,11 +173,7 @@ fun CalendarScreen(
             .statusBarsPadding()
             .navigationBarsPadding(),
         topBar = {
-            NoostakTopAppBar(
-                title = stringResource(R.string.appbar_calendar),
-                isIconVisible = false,
-                isMainAppBar = true
-            )
+            NoostakLogoAppBar()
         }
     ) { innerPadding ->
         Column(
