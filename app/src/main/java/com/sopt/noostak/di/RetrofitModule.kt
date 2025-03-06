@@ -62,4 +62,22 @@ object RetrofitModule {
         .client(okHttpClient)
         .baseUrl(BASE_URL)
         .build()
+
+    @Provides
+    @Singleton
+    @WithoutTokenInterceptor
+    fun provideOkHttpClientWithoutTokenInterceptor(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+    @Provides
+    @Singleton
+    @WithoutTokenInterceptor
+    fun provideRetrofitWithoutTokenInterceptor(@WithoutTokenInterceptor okHttpClient: OkHttpClient): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+            .build()
 }
