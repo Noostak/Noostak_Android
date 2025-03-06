@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -221,13 +222,14 @@ private fun MainBottomBar(
                                 tint = Color.Unspecified
                             )
                             Text(
+                                modifier = Modifier.padding(top = 2.dp),
                                 text = stringResource(id = tab.contentDescription),
                                 style = if (currentTab == tab) {
-                                    NoostakTheme.typography.c4Regular.copy(
+                                    NoostakTheme.typography.c3Regular.copy(
                                         color = NoostakTheme.colors.gray900
                                     )
                                 } else {
-                                    NoostakTheme.typography.c4Regular.copy(
+                                    NoostakTheme.typography.c3Regular.copy(
                                         color = NoostakTheme.colors.gray500
                                     )
                                 }
