@@ -106,8 +106,8 @@ fun MyPageRoute(
 
     MyPageScreen(
         paddingValues = paddingValues,
-        nickname = userInfoState.nickname,
-        profileImage = userInfoState.profileImage,
+        nickname = userInfoState.memberName,
+        profileImage = userInfoState.memberProfileImage,
         onProfileEditBtnClick = { myPageViewModel.navigateToEditProfile() },
         onPolicyBtnClick = {
             Intent(
