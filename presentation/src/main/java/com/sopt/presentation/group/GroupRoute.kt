@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.viewModelScope
 import com.sopt.core.designsystem.component.button.NoostakFloatingActionButton
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.screen.NoostakEmptyScreen
@@ -32,7 +33,9 @@ import com.sopt.domain.entity.GroupEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.group.component.GroupFloatingActionDialog
 import com.sopt.presentation.group.component.GroupItem
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun GroupRoute(
@@ -66,12 +69,18 @@ fun GroupRoute(
             onClick = { groupViewModel.showFABDialog(false) },
             onDismissRequest = { groupViewModel.showFABDialog(false) },
             onCreateGroupClick = {
-                groupViewModel.navigateToGroupCreate()
-                groupViewModel.showFABDialog(false)
+                groupViewModel.viewModelScope.launch {
+                    groupViewModel.navigateToGroupCreate()
+                    delay(200)
+                    groupViewModel.showFABDialog(false)
+                }
             },
             onEnterGroupClick = {
-                groupViewModel.navigateToGroupEnter()
-                groupViewModel.showFABDialog(false)
+                groupViewModel.viewModelScope.launch {
+                    groupViewModel.navigateToGroupEnter()
+                    delay(200)
+                    groupViewModel.showFABDialog(false)
+                }
             }
         )
     }
@@ -117,7 +126,7 @@ fun GroupScreen(
                 title = stringResource(R.string.fab_group_create),
                 modifier = Modifier
                     .offset(x = 0.dp, y = (-22).dp)
-                    .showIf(!showFABDialog),
+                    .showIf(!showFABDialog)
             ) {
                 onFabClick()
             }
