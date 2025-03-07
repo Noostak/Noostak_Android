@@ -37,7 +37,7 @@ class SignUpViewModel @Inject constructor(
         if (_signUpState.value.isPermissionGranted) {
             emitSideEffect(SignUpSideEffect.RequestImagePicker)
         } else {
-            emitSideEffect(SignUpSideEffect.ShowPermissionDeniedDialog)
+            emitSideEffect(SignUpSideEffect.ShowSnackBar)
         }
     }
 
