@@ -57,11 +57,11 @@ import timber.log.Timber
 fun SignUpRoute(
     authId: String,
     navigateToCheckInvite: (String) -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
+    signUpViewModel: SignUpViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val signUpState by viewModel.signUpState.collectAsStateWithLifecycle()
+    val signUpState by signUpViewModel.signUpState.collectAsStateWithLifecycle()
 
     var isGalleryPermission by remember { mutableStateOf(false) }
 
@@ -84,7 +84,7 @@ fun SignUpRoute(
     ) { isGranted ->
         try {
             if (isGranted) {
-                viewModel.updateGalleryPermissionState(true)
+                signUpViewModel.updateGalleryPermissionState(true)
             } else {
                 isGalleryPermission = true
             }
@@ -99,15 +99,15 @@ fun SignUpRoute(
     }
 
     val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
-        viewModel.updateProfileImage(uri.toString())
+        signUpViewModel.updateProfileImage(uri.toString())
     }
 
     val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
-        viewModel.updateProfileImage(uri.toString())
+        signUpViewModel.updateProfileImage(uri.toString())
     }
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
+        signUpViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
                     is SignUpSideEffect.NavigateToCheckInvite -> navigateToCheckInvite(sideEffect.name)
@@ -150,10 +150,10 @@ fun SignUpRoute(
     SignUpScreen(
         signUpState = signUpState,
         onProfileSettingBtnClick = {
-            handleProfileBtnClick(viewModel, permissionLauncher)
+            handleProfileBtnClick(signUpViewModel, permissionLauncher)
         },
-        onNameChange = { viewModel.onNicknameChanged(it) },
-        onSignUpClick = { viewModel.navigateToCheckInvite() }
+        onNameChange = { signUpViewModel.onNicknameChanged(it) },
+        onSignUpClick = { signUpViewModel.navigateToCheckInvite() }
     )
 }
 
