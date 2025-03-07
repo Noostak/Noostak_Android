@@ -179,7 +179,7 @@ fun EditProfileScreen(
             }
             NoostakBottomButton(
                 modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.vertical_padding)),
-                text = stringResource(R.string.btn_group_create_next),
+                text = stringResource(R.string.btn_my_page_profile_edit_confirm),
                 activateColor = NoostakTheme.colors.blue600,
                 deactivateColor = NoostakTheme.colors.gray500,
                 isEnabled = editProfileState.isNameCheck,
