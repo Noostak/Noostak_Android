@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -71,7 +72,9 @@ fun CheckInviteScreen(
             text = stringResource(R.string.tv_invite_description, name),
             textAlign = TextAlign.Center,
             color = NoostakTheme.colors.gray900,
-            style = NoostakTheme.typography.t1SemiBold
+            style = NoostakTheme.typography.t1SemiBold.copy(
+                lineHeight = 29.sp
+            )
         )
         Image(
             painter = painterResource(id = R.drawable.ic_invite_code),
@@ -79,7 +82,7 @@ fun CheckInviteScreen(
             modifier = Modifier
                 .offset(y = offsetY.value.dp)
                 .size(265.dp)
-                .padding(top = 24.dp)
+                .padding(top = 39.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
