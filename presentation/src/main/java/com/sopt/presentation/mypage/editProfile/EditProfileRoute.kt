@@ -160,12 +160,11 @@ fun EditProfileScreen(
                         })
                     }
             ) {
-                Spacer(modifier = Modifier.height(37.dp))
                 ProfileImagePicker(
                     selectedImageUri = userInfoState.profileImage,
                     onCameraBtnClick = onProfileCameraBtnClick,
                     modifier = Modifier
-                        .padding(top = 46.dp)
+                        .padding(top = 37.dp)
                         .align(Alignment.CenterHorizontally)
                 )
                 Spacer(modifier = Modifier.height(32.dp))
