@@ -50,6 +50,7 @@
     <string name="tv_invite_empty">아니요, 초대받은 그룹이 없어요.</string>
     <string name="btn_invite_code">그룹코드 입력하기</string>
     <string name="tv_input_code_description">초대를 받으셨다면,\n그룹코드를 입력해주세요.</string>
+    <string name="btn_invite_code_confirm">확인</string>
 
     <!-- 그룹 상세 -->
     <string name="tab_group_detail_progress">진행 중</string>
@@ -169,6 +170,7 @@
     <string name="icon_my_page_item_arrow_description">Icon Arrow On MyPage</string>
     <string name="appbar_mu_page_title">내 정보</string>
     <string name="btn_my_page_profile_edit">프로필 수정</string>
+    <string name="btn_my_page_profile_edit_confirm">확인</string>
     <string name="text_my_page_item_policy">약관 및 정책</string>
     <string name="text_my_page_item_logout">로그아웃</string>
     <string name="text_my_page_item_withdrawal">탈퇴하기</string>
