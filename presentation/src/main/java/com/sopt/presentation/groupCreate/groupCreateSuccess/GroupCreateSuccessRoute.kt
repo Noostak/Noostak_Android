@@ -31,7 +31,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat.startActivity
@@ -44,8 +43,8 @@ import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.component.topappbar.NoostakCloseAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.extension.noRippleClickable
 import com.sopt.presentation.R
+import com.sopt.presentation.groupCreate.groupCreateSuccess.component.GroupCreateSuccessCopyButton
 import com.sopt.presentation.groupCreate.groupCreateSuccess.regex.Regex
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -162,6 +161,7 @@ fun GroupCreateSuccessScreen(
     ) { innerPadding ->
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -205,20 +205,10 @@ fun GroupCreateSuccessScreen(
                         .align(Alignment.CenterHorizontally)
                 )
             }
-            Text(
-                text = stringResource(R.string.text_group_create_success_code_copy),
-                color = NoostakTheme.colors.gray800,
-                style = NoostakTheme.typography.c3Regular.copy(
-                    textDecoration = TextDecoration.Underline
-                ),
-                modifier = Modifier
-                    .noRippleClickable {
-                        clipboardManager.setText(AnnotatedString(groupCode))
-                        onCopyBtnClick()
-                    }
-                    .padding(12.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
+            GroupCreateSuccessCopyButton {
+                clipboardManager.setText(AnnotatedString(groupCode))
+                onCopyBtnClick()
+            }
             NoostakBottomButton(
                 modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.vertical_padding)),
                 text = stringResource(R.string.btn_group_create_success_code_send),
