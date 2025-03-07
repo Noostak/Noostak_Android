@@ -103,7 +103,7 @@ fun InputGroupCodeScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             NoostakBottomButton(
-                text = stringResource(R.string.btn_next),
+                text = stringResource(R.string.btn_invite_code_confirm),
                 isEnabled = groupCode.length == 6,
                 onButtonClick = onCheckGroupCodeClick
             )
