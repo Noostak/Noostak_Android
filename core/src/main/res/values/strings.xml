@@ -50,6 +50,12 @@
     <string name="text_dialog_type_appointment_content">아직 등록된 일정이 없어요.\n일정을 등록하러 갈까요?</string>
     <string name="text_dialog_type_appointment_dismiss">나중에 등록하기</string>
     <string name="text_dialog_type_appointment_confirm">일정 등록하기</string>
+    <string name="text_dialog_type_data_failure_content">데이터를 불러오지 못했어요.\n다시 시도할까요?</string>
+    <string name="text_dialog_type_data_failure_dismiss">취소</string>
+    <string name="text_dialog_type_data_failure_confirm">다시 시도하기</string>
+    <string name="text_dialog_type_network_failure_content">네트워크 연결에 실패했어요.\n다시 시도할까요?</string>
+    <string name="text_dialog_type_network_failure_dismiss">취소</string>
+    <string name="text_dialog_type_network_failure_confirm">다시 시도하기</string>
 
     <!-- Noostak Time Picker -->
     <string name="text_noostak_time_picker_start">약속 시작 시간</string>

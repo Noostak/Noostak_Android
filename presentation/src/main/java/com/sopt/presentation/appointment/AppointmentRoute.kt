@@ -157,24 +157,6 @@ fun AppointmentRoute(
         )
     } else if (getOptionsState is UiState.Loading || getTimeTableState is UiState.Loading) {
         NoostakLoadingScreen()
-    } else {
-        AppointmentScreen(
-            groupId = groupId,
-            appointmentsId = appointmentId,
-            appointmentName = appointmentName,
-            onBackButtonClick = appointmentViewModel::navigateUp,
-            onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
-            availablePeriods = appointmentViewModel.mockAvailablePeriods,
-            availableTimes = appointmentViewModel.mockAvailableTimes,
-            recommendations = appointmentViewModel.mockRecommendations,
-            onLikeClick = { optionId, isLiked ->
-                if (isLiked) {
-                    appointmentViewModel.postLike(appointmentId, optionId)
-                } else {
-                    appointmentViewModel.deleteLike(appointmentId, optionId)
-                }
-            }
-        )
     }
 }
 
