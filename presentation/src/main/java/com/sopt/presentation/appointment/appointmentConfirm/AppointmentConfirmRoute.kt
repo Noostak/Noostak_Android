@@ -31,13 +31,16 @@ import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.chip.AvailableUserChips
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
 import com.sopt.core.designsystem.component.chip.UnavailableUserChips
+import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakFailureScreen
 import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
 import com.sopt.core.extension.toast
 import com.sopt.core.state.UiState
+import com.sopt.core.type.DialogType
 import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.AppointmentDetailEntity
@@ -55,6 +58,7 @@ fun AppointmentConfirmRoute(
     navigateToGroupDetail: (Long) -> Unit,
     appointmentConfirmViewModel: AppointmentConfirmViewModel = hiltViewModel()
 ) {
+    val showErrorDialog by appointmentConfirmViewModel.showErrorDialog.collectAsStateWithLifecycle()
     val getConfirmedState by appointmentConfirmViewModel.getConfirmedState.collectAsStateWithLifecycle()
     val postConfirmedState by appointmentConfirmViewModel.postConfirmedState.collectAsStateWithLifecycle()
     val context = LocalContext.current
@@ -67,6 +71,9 @@ fun AppointmentConfirmRoute(
                 }
 
                 is AppointmentConfirmSideEffect.ShowToast -> context.toast(sideEffect.message)
+                is AppointmentConfirmSideEffect.ShowErrorDialog -> appointmentConfirmViewModel.showErrorDialog(
+                    sideEffect.show
+                )
             }
         }
     }
@@ -101,6 +108,12 @@ fun AppointmentConfirmRoute(
 
         is UiState.Failure -> {
             Timber.e("getConfirmedState is failure $getConfirmedState")
+//            NoostakFailureScreen(
+//                onBackButtonClick = appointmentConfirmViewModel::navigateUp,
+//                onRetryButtonClick = {
+//                    appointmentConfirmViewModel.getConfirmed(optionId)
+//                }
+//            )
             AppointmentConfirmScreen(
                 groupId = groupId,
                 appointmentName = appointmentName,
@@ -113,6 +126,19 @@ fun AppointmentConfirmRoute(
         }
 
         else -> {}
+    }
+
+    if (showErrorDialog) {
+        NoostakDialog(
+            dialogType = DialogType.NETWORK_FAILURE,
+            onClick = {
+                appointmentConfirmViewModel.showErrorDialog(false)
+                appointmentConfirmViewModel.postConfirmed(optionId)
+            },
+            onDismissRequest = {
+                appointmentConfirmViewModel.showErrorDialog(false)
+            }
+        )
     }
 }
 

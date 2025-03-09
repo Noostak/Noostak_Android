@@ -44,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakFailureScreen
 import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -157,6 +158,31 @@ fun AppointmentRoute(
         )
     } else if (getOptionsState is UiState.Loading || getTimeTableState is UiState.Loading) {
         NoostakLoadingScreen()
+    } else if (getOptionsState is UiState.Failure || getTimeTableState is UiState.Failure) {
+//        NoostakFailureScreen(
+//            onBackButtonClick = appointmentViewModel::navigateUp,
+//            onRetryButtonClick = {
+//                appointmentViewModel.getOptions(appointmentId = appointmentId)
+//                appointmentViewModel.getTimeTable(appointmentId = appointmentId)
+//            }
+//        )
+        AppointmentScreen(
+            groupId = groupId,
+            appointmentsId = appointmentId,
+            appointmentName = appointmentName,
+            onBackButtonClick = appointmentViewModel::navigateUp,
+            onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
+            availablePeriods = appointmentViewModel.mockAvailablePeriods,
+            availableTimes = appointmentViewModel.mockAvailableTimes,
+            recommendations = appointmentViewModel.mockRecommendations,
+            onLikeClick = { appointmentOptionId, isLiked ->
+                if (isLiked) {
+                    appointmentViewModel.postLike(appointmentId, appointmentOptionId)
+                } else {
+                    appointmentViewModel.deleteLike(appointmentId, appointmentOptionId)
+                }
+            }
+        )
     }
 }
 

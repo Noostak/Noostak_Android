@@ -9,6 +9,8 @@ import com.sopt.domain.repository.AppointmentConfirmRepository
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,6 +18,9 @@ import javax.inject.Inject
 class AppointmentConfirmViewModel @Inject constructor(
     private val appointmentConfirmRepository: AppointmentConfirmRepository
 ) : BaseViewModel<AppointmentConfirmSideEffect>() {
+    private val _showErrorDialog = MutableStateFlow(false)
+    val showErrorDialog: StateFlow<Boolean> get() = _showErrorDialog
+
     private val _getConfirmedState: MutableStateFlow<UiState<AppointmentDetailEntity>> =
         MutableStateFlow(UiState.Empty)
     val getConfirmedState: MutableStateFlow<UiState<AppointmentDetailEntity>> = _getConfirmedState
@@ -45,10 +50,14 @@ class AppointmentConfirmViewModel @Inject constructor(
                     _postConfirmedState.emit(UiState.Success(it))
                 }.onFailure {
                     _postConfirmedState.emit(UiState.Failure(it.message.toString()))
-                    emitSideEffect(AppointmentConfirmSideEffect.ShowToast(R.string.appointment_confirm_failure))
+                    emitSideEffect(AppointmentConfirmSideEffect.ShowErrorDialog(true))
                 }
             }
         }
+    }
+
+    fun showErrorDialog(show: Boolean) {
+        _showErrorDialog.update { show }
     }
 
     fun navigateUp() {
@@ -88,4 +97,5 @@ sealed class AppointmentConfirmSideEffect {
     ) : AppointmentConfirmSideEffect()
 
     data class ShowToast(val message: Int) : AppointmentConfirmSideEffect()
+    data class ShowErrorDialog(val show: Boolean) : AppointmentConfirmSideEffect()
 }
