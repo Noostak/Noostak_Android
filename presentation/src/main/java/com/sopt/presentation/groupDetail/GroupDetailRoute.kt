@@ -143,7 +143,7 @@ fun GroupDetailScreen(
         floatingActionButton = {
             NoostakFloatingActionButton(
                 title = stringResource(R.string.fab_group_detail),
-                modifier = Modifier.offset(x = 0.dp, y = (-74).dp)
+                modifier = Modifier.offset(x = 0.dp, y = (-51).dp)
             ) {
                 onAppointmentCreateClick(groupId)
             }
