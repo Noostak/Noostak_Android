@@ -270,3 +270,19 @@ fun CalendarScreenPreview() {
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun CalendarScreenEmptyPreview() {
+    NoostakAndroidTheme {
+        CalendarScreen(
+            groups = emptyList(),
+            scheduleMap = emptyMap(),
+            pagerState = rememberPagerState(
+                initialPage = initialPage,
+                pageCount = { pageCount }
+            ),
+            currentYearMonth = getYearMonthByPage(initialPage)
+        )
+    }
+}
