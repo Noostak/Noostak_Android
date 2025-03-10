@@ -11,7 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -91,7 +90,7 @@ class MyPageViewModel @Inject constructor(
     // 로그아웃
     fun postLogout() {
         viewModelScope.launch {
-            postLogoutUseCase(userInfoRepository.getAccessToken().first()).fold(
+            postLogoutUseCase().fold(
                 onSuccess = {
                     clearInfo()
                     emitSideEffect(MyPageSideEffect.NavigateToLogin)
@@ -106,7 +105,7 @@ class MyPageViewModel @Inject constructor(
     // 회원탈퇴
     fun deleteWithdraw() {
         viewModelScope.launch {
-            deleteWithdrawUseCase(userInfoRepository.getAccessToken().first()).fold(
+            deleteWithdrawUseCase().fold(
                 onSuccess = {
                     clearInfo()
                     emitSideEffect(MyPageSideEffect.NavigateToLogin)
