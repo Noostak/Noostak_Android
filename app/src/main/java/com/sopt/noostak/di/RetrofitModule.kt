@@ -56,7 +56,7 @@ object RetrofitModule {
 
     @Singleton
     @Provides
-    @ExampleRetrofit
+    @AccessToken
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .client(okHttpClient)
