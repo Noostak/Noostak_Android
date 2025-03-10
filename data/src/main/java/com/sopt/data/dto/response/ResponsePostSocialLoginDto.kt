@@ -8,6 +8,5 @@ data class ResponsePostSocialLoginDto(
     @SerialName("accessToken") val accessToken: String,
     @SerialName("refreshToken") val refreshToken: String,
     @SerialName("memberId") val memberId: Int,
-    @SerialName("socialId") val socialId: String,
     @SerialName("authType") val authType: String
 )
