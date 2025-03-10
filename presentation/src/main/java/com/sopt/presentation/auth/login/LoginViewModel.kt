@@ -66,20 +66,16 @@ class LoginViewModel @Inject constructor(
 
     private fun handleKakaoLoginResult(token: OAuthToken?, error: Throwable?) {
         viewModelScope.launch {
-            when {
-                token != null -> {
-                    handleLoginSuccess(
-                        accessToken = BEARER + token.accessToken,
-                        refreshToken = BEARER + token.refreshToken,
-                        socialType = KAKAO,
-                        R.string.toast_kakao_login_success
-                    )
-                }
-
-                error != null -> {
-                    handleError(error, R.string.toast_kakao_login_failed)
-                    showDialog(DialogType.LOGIN_KAKAO, true)
-                }
+            token?.let {
+                postSocialLogin(
+                    BEARER + it.accessToken,
+                    BEARER + it.refreshToken,
+                    KAKAO
+                )
+                showToast(R.string.toast_kakao_login_success)
+            } ?: run {
+                handleError(error, R.string.toast_kakao_login_failed)
+                showDialog(DialogType.LOGIN_KAKAO, true)
             }
         }
     }
@@ -112,40 +108,26 @@ class LoginViewModel @Inject constructor(
     private fun handleGoogleLoginResult(credential: Credential) {
         if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-            handleLoginSuccess(
-                googleIdTokenCredential.id,
-                googleIdTokenCredential.id,
-                GOOGLE,
-                R.string.toast_google_login_success
-            )
+            postSocialLogin(googleIdTokenCredential.id, googleIdTokenCredential.id, GOOGLE)
+            showToast(R.string.toast_google_login_success)
         } else {
             showDialog(DialogType.LOGIN_GOOGLE, true)
         }
     }
 
-    private fun handleLoginSuccess(
-        accessToken: String,
-        refreshToken: String,
-        socialType: String,
-        successToast: Int
-    ) {
-        showToast(successToast)
-        postSocialLogin(accessToken, refreshToken, socialType)
-    }
-
-    private fun handleError(error: Throwable, @StringRes errorMessageResId: Int) {
+    private fun handleError(error: Throwable?, @StringRes errorMessageResId: Int) {
         when {
             // 카카오 로그인 취소
             error is ClientError && error.reason == ClientErrorCause.Cancelled -> {
                 showToast(R.string.toast_login_cancelled)
             }
             // 구글 로그인 취소
-            error.message?.contains(CANCELLED, ignoreCase = true) == true -> {
+            error?.message?.contains(CANCELLED, ignoreCase = true) == true -> {
                 showToast(R.string.toast_login_cancelled)
             }
 
             else -> {
-                val errorMessage = error.localizedMessage.orEmpty()
+                val errorMessage = error?.localizedMessage.orEmpty()
                 showToast(errorMessageResId, errorMessage)
             }
         }
