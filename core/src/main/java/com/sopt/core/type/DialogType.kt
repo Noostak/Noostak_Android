@@ -47,5 +47,5 @@ enum class DialogType(
         content = R.string.text_dialog_type_network_failure_content,
         dismissText = R.string.text_dialog_type_network_failure_dismiss,
         confirmText = R.string.text_dialog_type_network_failure_confirm
-    ),
+    )
 }

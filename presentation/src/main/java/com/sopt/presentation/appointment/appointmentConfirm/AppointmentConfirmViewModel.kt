@@ -6,7 +6,6 @@ import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AppointmentDetailEntity
 import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.repository.AppointmentConfirmRepository
-import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
