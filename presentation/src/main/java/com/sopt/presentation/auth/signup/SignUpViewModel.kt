@@ -86,7 +86,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun postSignUp(
-        authId: String,
+        accessToken: String,
         socialType: String
     ) {
         viewModelScope.launch {
@@ -99,13 +99,12 @@ class SignUpViewModel @Inject constructor(
 
             val nameRequestBody = memberName.toRequestBody("text/plain".toMediaTypeOrNull())
             val authTypeRequestBody = socialType.toRequestBody("text/plain".toMediaTypeOrNull())
-            val authIdRequestBody = authId.toRequestBody("text/plain".toMediaTypeOrNull())
 
             postSignUpUseCase(
+                accessToken = accessToken,
                 memberName = nameRequestBody,
                 memberProfileImage = memberProfileImage,
-                authType = authTypeRequestBody,
-                authId = authIdRequestBody
+                authType = authTypeRequestBody
             ).fold(
                 onSuccess = { authEntity ->
                     saveUserInfo(authEntity)

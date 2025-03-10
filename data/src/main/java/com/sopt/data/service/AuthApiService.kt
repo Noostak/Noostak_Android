@@ -39,10 +39,10 @@ interface AuthApiService {
     @Multipart
     @POST("/$API/$V1/$AUTH/$SIGN_UP")
     suspend fun postSignUp(
+        @Header(AUTHORIZATION) accessToken: String,
         @Part("memberName") memberName: RequestBody,
         @Part memberProfileImage: MultipartBody.Part?,
-        @Part("authType") authType: RequestBody,
-        @Part("authId") authId: RequestBody
+        @Part("authType") authType: RequestBody
     ): BaseResponse<ResponsePostSignUpDto>
 
     @POST("/$API/$V1/$AUTH/$LOGOUT")

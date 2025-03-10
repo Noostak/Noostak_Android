@@ -17,10 +17,10 @@ interface AuthRepository {
     ): Result<ReissueTokenEntity>
 
     suspend fun postSignUp(
+        accessToken: String,
         memberName: RequestBody,
         memberProfileImage: MultipartBody.Part?,
-        authType: RequestBody,
-        authId: RequestBody
+        authType: RequestBody
     ): Result<AuthEntity>
 
     suspend fun postLogout(accessToken: String): Result<Unit>

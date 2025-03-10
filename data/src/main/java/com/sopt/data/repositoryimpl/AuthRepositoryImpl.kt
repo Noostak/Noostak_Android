@@ -40,13 +40,13 @@ class AuthRepositoryImpl @Inject constructor(
     }
 
     override suspend fun postSignUp(
+        accessToken: String,
         memberName: RequestBody,
         memberProfileImage: MultipartBody.Part?,
-        authType: RequestBody,
-        authId: RequestBody
+        authType: RequestBody
     ): Result<AuthEntity> {
         return runCatching {
-            authDataSource.postSignUp(memberName, memberProfileImage, authType, authId)
+            authDataSource.postSignUp(accessToken, memberName, memberProfileImage, authType)
                 .result?.toAuthEntity()
                 ?: throw Exception("postSignUp failed")
         }

@@ -9,9 +9,9 @@ class PostSignUpUseCase @Inject constructor(
     private val authRepository: AuthRepository
 ) {
     suspend operator fun invoke(
+        accessToken: String,
         memberName: RequestBody,
         memberProfileImage: MultipartBody.Part?,
-        authType: RequestBody,
-        authId: RequestBody
-    ) = authRepository.postSignUp(memberName, memberProfileImage, authType, authId)
+        authType: RequestBody
+    ) = authRepository.postSignUp(accessToken, memberName, memberProfileImage, authType)
 }

@@ -19,10 +19,10 @@ interface AuthDataSource {
     ): BaseResponse<ResponsePostReissueTokenDto>
 
     suspend fun postSignUp(
+        accessToken: String,
         memberName: RequestBody,
         memberProfileImage: MultipartBody.Part?,
-        authType: RequestBody,
-        authId: RequestBody
+        authType: RequestBody
     ): BaseResponse<ResponsePostSignUpDto>
 
     suspend fun postLogout(accessToken: String): BaseResponse<Unit>

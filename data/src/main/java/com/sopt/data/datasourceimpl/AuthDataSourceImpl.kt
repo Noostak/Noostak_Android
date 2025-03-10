@@ -29,12 +29,12 @@ class AuthDataSourceImpl @Inject constructor(
     }
 
     override suspend fun postSignUp(
+        accessToken: String,
         memberName: RequestBody,
         memberProfileImage: MultipartBody.Part?,
-        authType: RequestBody,
-        authId: RequestBody
+        authType: RequestBody
     ): BaseResponse<ResponsePostSignUpDto> {
-        return authApiService.postSignUp(memberName, memberProfileImage, authType, authId)
+        return authApiService.postSignUp(accessToken, memberName, memberProfileImage, authType)
     }
 
     override suspend fun postLogout(accessToken: String): BaseResponse<Unit> {

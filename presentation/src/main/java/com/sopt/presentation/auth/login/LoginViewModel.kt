@@ -23,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -66,11 +67,14 @@ class LoginViewModel @Inject constructor(
     private fun handleKakaoLoginResult(token: OAuthToken?, error: Throwable?) {
         viewModelScope.launch {
             when {
-                token != null -> handleLoginSuccess(
-                    token.accessToken,
-                    KAKAO,
-                    R.string.toast_kakao_login_success
-                )
+                token != null -> {
+                    handleLoginSuccess(
+                        accessToken = BEARER + token.accessToken,
+                        refreshToken = BEARER + token.refreshToken,
+                        socialType = KAKAO,
+                        R.string.toast_kakao_login_success
+                    )
+                }
 
                 error != null -> {
                     handleError(error, R.string.toast_kakao_login_failed)
@@ -110,6 +114,7 @@ class LoginViewModel @Inject constructor(
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
             handleLoginSuccess(
                 googleIdTokenCredential.id,
+                googleIdTokenCredential.id,
                 GOOGLE,
                 R.string.toast_google_login_success
             )
@@ -119,14 +124,13 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun handleLoginSuccess(
-        authCode: String,
+        accessToken: String,
+        refreshToken: String,
         socialType: String,
         successToast: Int
     ) {
         showToast(successToast)
-        viewModelScope.launch {
-            postSocialLogin(authCode, socialType)
-        }
+        postSocialLogin(accessToken, refreshToken, socialType)
     }
 
     private fun handleError(error: Throwable, @StringRes errorMessageResId: Int) {
@@ -148,7 +152,7 @@ class LoginViewModel @Inject constructor(
     }
 
     // 소셜 로그인
-    private fun postSocialLogin(accessToken: String, socialType: String) {
+    private fun postSocialLogin(accessToken: String, refreshToken: String, socialType: String) {
         viewModelScope.launch {
             postSocialLoginUseCase(accessToken, AuthTypeEntity(socialType)).fold(
                 onSuccess = { response ->
@@ -157,7 +161,9 @@ class LoginViewModel @Inject constructor(
                     emitSideEffect(LoginSideEffect.NavigateToHome)
                 },
                 onFailure = { error ->
-                    postReissueToken()
+                    userInfoRepository.getRefreshToken().firstOrNull()?.let {
+                        postReissueToken(refreshToken)
+                    } ?: emitSideEffect(LoginSideEffect.NavigateToOnboarding(accessToken, socialType))
                     Timber.e("postSocialLogin Failed: ${error.message}")
                 }
             )
@@ -165,9 +171,9 @@ class LoginViewModel @Inject constructor(
     }
 
     // 토큰 재발급
-    private fun postReissueToken() {
+    private fun postReissueToken(refreshToken: String) {
         viewModelScope.launch {
-            postReissueTokenUseCase(userInfoRepository.getRefreshToken().first()).fold(
+            postReissueTokenUseCase(refreshToken).fold(
                 onSuccess = { response ->
                     saveTokens(response.accessToken, response.refreshToken)
                 },
