@@ -10,9 +10,3 @@ data class AuthEntity(
 data class AuthTypeEntity(
     val authType: String
 )
-
-data class ReissueTokenEntity(
-    val accessToken: String,
-    val refreshToken: String,
-    val authType: String
-)

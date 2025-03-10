@@ -16,11 +16,13 @@ import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AuthTypeEntity
 import com.sopt.domain.repository.UserInfoRepository
-import com.sopt.domain.usecase.PostReissueTokenUseCase
 import com.sopt.domain.usecase.PostSocialLoginUseCase
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -30,8 +32,7 @@ import javax.inject.Named
 class LoginViewModel @Inject constructor(
     @Named("GoogleClientId") private val googleClientId: String,
     private val userInfoRepository: UserInfoRepository,
-    private val postSocialLoginUseCase: PostSocialLoginUseCase,
-    private val postReissueTokenUseCase: PostReissueTokenUseCase
+    private val postSocialLoginUseCase: PostSocialLoginUseCase
 ) : BaseViewModel<LoginSideEffect>() {
 
     private val _showDialog = MutableStateFlow(Pair(DialogType.LOGIN_GOOGLE, false))
@@ -67,7 +68,6 @@ class LoginViewModel @Inject constructor(
             token?.let {
                 postSocialLogin(
                     BEARER + it.accessToken,
-                    BEARER + it.refreshToken,
                     KAKAO
                 )
                 showToast(R.string.toast_kakao_login_success)
@@ -106,7 +106,7 @@ class LoginViewModel @Inject constructor(
     private fun handleGoogleLoginResult(credential: Credential) {
         if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-            postSocialLogin(googleIdTokenCredential.id, googleIdTokenCredential.id, GOOGLE)
+            postSocialLogin(googleIdTokenCredential.id, GOOGLE)
             showToast(R.string.toast_google_login_success)
         } else {
             showDialog(DialogType.LOGIN_GOOGLE, true)
@@ -132,7 +132,7 @@ class LoginViewModel @Inject constructor(
     }
 
     // 소셜 로그인
-    private fun postSocialLogin(accessToken: String, oauthRefreshToken: String, socialType: String) {
+    private fun postSocialLogin(accessToken: String, socialType: String) {
         viewModelScope.launch {
             postSocialLoginUseCase(accessToken, AuthTypeEntity(socialType)).fold(
                 onSuccess = { response ->
@@ -141,24 +141,8 @@ class LoginViewModel @Inject constructor(
                     emitSideEffect(LoginSideEffect.NavigateToHome)
                 },
                 onFailure = { error ->
-                    userInfoRepository.getRefreshToken().firstOrNull()?.let {
-                        postReissueToken(oauthRefreshToken)
-                    } ?: emitSideEffect(LoginSideEffect.NavigateToOnboarding(accessToken, socialType))
+                    emitSideEffect(LoginSideEffect.NavigateToOnboarding(accessToken, socialType))
                     Timber.e("postSocialLogin Failed: ${error.message}")
-                }
-            )
-        }
-    }
-
-    // 토큰 재발급
-    private fun postReissueToken(refreshToken: String) {
-        viewModelScope.launch {
-            postReissueTokenUseCase(refreshToken).fold(
-                onSuccess = { response ->
-                    saveTokens(response.accessToken, response.refreshToken)
-                },
-                onFailure = { error ->
-                    Timber.e("postReissueToken Failed: ${error.message}")
                 }
             )
         }
