@@ -132,7 +132,7 @@ class LoginViewModel @Inject constructor(
     }
 
     // 소셜 로그인
-    private fun postSocialLogin(accessToken: String, refreshToken: String, socialType: String) {
+    private fun postSocialLogin(accessToken: String, oauthRefreshToken: String, socialType: String) {
         viewModelScope.launch {
             postSocialLoginUseCase(accessToken, AuthTypeEntity(socialType)).fold(
                 onSuccess = { response ->
@@ -142,7 +142,7 @@ class LoginViewModel @Inject constructor(
                 },
                 onFailure = { error ->
                     userInfoRepository.getRefreshToken().firstOrNull()?.let {
-                        postReissueToken(refreshToken)
+                        postReissueToken(oauthRefreshToken)
                     } ?: emitSideEffect(LoginSideEffect.NavigateToOnboarding(accessToken, socialType))
                     Timber.e("postSocialLogin Failed: ${error.message}")
                 }
