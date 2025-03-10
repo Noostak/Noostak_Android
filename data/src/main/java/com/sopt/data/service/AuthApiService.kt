@@ -8,16 +8,13 @@ import com.sopt.data.dto.response.ResponsePostSocialLoginDto
 import com.sopt.data.service.ApiKeyStorage.API
 import com.sopt.data.service.ApiKeyStorage.AUTH
 import com.sopt.data.service.ApiKeyStorage.AUTHORIZATION
-import com.sopt.data.service.ApiKeyStorage.LOGOUT
 import com.sopt.data.service.ApiKeyStorage.SIGN_IN
 import com.sopt.data.service.ApiKeyStorage.SIGN_UP
 import com.sopt.data.service.ApiKeyStorage.TOKEN_REISSUE
 import com.sopt.data.service.ApiKeyStorage.V1
-import com.sopt.data.service.ApiKeyStorage.WITHDRAW
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -44,14 +41,4 @@ interface AuthApiService {
         @Part memberProfileImage: MultipartBody.Part?,
         @Part("authType") authType: RequestBody
     ): BaseResponse<ResponsePostSignUpDto>
-
-    @POST("/$API/$V1/$AUTH/$LOGOUT")
-    suspend fun postLogout(
-        @Header(AUTHORIZATION) accessToken: String
-    ): BaseResponse<Unit>
-
-    @DELETE("/$API/$V1/$AUTH/$WITHDRAW")
-    suspend fun deleteWithdraw(
-        @Header(AUTHORIZATION) accessToken: String
-    ): BaseResponse<Unit>
 }

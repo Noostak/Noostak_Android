@@ -17,8 +17,4 @@ interface AuthRepository {
         memberProfileImage: MultipartBody.Part?,
         authType: RequestBody
     ): Result<AuthEntity>
-
-    suspend fun postLogout(accessToken: String): Result<Unit>
-
-    suspend fun deleteWithdraw(accessToken: String): Result<Unit>
 }

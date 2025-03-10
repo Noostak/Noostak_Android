@@ -39,16 +39,4 @@ class AuthRepositoryImpl @Inject constructor(
                 ?: throw Exception("postSignUp failed")
         }
     }
-
-    override suspend fun postLogout(accessToken: String): Result<Unit> {
-        return runCatching {
-            authDataSource.postLogout(accessToken)
-        }
-    }
-
-    override suspend fun deleteWithdraw(accessToken: String): Result<Unit> {
-        return runCatching {
-            authDataSource.deleteWithdraw(accessToken)
-        }
-    }
 }

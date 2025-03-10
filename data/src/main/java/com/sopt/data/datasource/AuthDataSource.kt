@@ -24,8 +24,4 @@ interface AuthDataSource {
         memberProfileImage: MultipartBody.Part?,
         authType: RequestBody
     ): BaseResponse<ResponsePostSignUpDto>
-
-    suspend fun postLogout(accessToken: String): BaseResponse<Unit>
-
-    suspend fun deleteWithdraw(accessToken: String): BaseResponse<Unit>
 }

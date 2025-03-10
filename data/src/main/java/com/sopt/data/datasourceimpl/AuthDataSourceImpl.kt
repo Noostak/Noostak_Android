@@ -36,12 +36,4 @@ class AuthDataSourceImpl @Inject constructor(
     ): BaseResponse<ResponsePostSignUpDto> {
         return authApiService.postSignUp(accessToken, memberName, memberProfileImage, authType)
     }
-
-    override suspend fun postLogout(accessToken: String): BaseResponse<Unit> {
-        return authApiService.postLogout(accessToken)
-    }
-
-    override suspend fun deleteWithdraw(accessToken: String): BaseResponse<Unit> {
-        return authApiService.deleteWithdraw(accessToken)
-    }
 }
