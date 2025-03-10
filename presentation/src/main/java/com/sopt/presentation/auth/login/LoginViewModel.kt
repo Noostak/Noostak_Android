@@ -20,11 +20,7 @@ import com.sopt.domain.usecase.PostReissueTokenUseCase
 import com.sopt.domain.usecase.PostSocialLoginUseCase
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -57,10 +53,12 @@ class LoginViewModel @Inject constructor(
     fun kakaoLogin(context: Context) {
         val loginCallback: (OAuthToken?, Throwable?) -> Unit = this::handleKakaoLoginResult
 
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-            UserApiClient.instance.loginWithKakaoTalk(context, callback = loginCallback)
-        } else {
-            UserApiClient.instance.loginWithKakaoAccount(context, callback = loginCallback)
+        with(UserApiClient.instance) {
+            if (isKakaoTalkLoginAvailable(context)) {
+                loginWithKakaoTalk(context, callback = loginCallback)
+            } else {
+                loginWithKakaoAccount(context, callback = loginCallback)
+            }
         }
     }
 
