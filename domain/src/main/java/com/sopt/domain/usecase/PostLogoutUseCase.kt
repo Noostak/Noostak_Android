@@ -1,10 +1,10 @@
 package com.sopt.domain.usecase
 
-import com.sopt.domain.repository.AuthRepository
+import com.sopt.domain.repository.AccountRepository
 import javax.inject.Inject
 
 class PostLogoutUseCase @Inject constructor(
-    private val authRepository: AuthRepository
+    private val accountRepository: AccountRepository
 ) {
-    suspend operator fun invoke(accessToken: String) = authRepository.postLogout(accessToken)
+    suspend operator fun invoke() = accountRepository.postLogout()
 }
