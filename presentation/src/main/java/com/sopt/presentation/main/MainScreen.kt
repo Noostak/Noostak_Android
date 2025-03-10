@@ -97,7 +97,7 @@ fun MainScreen(
         } else {
             backPressedState = true
             coroutineScope.launch {
-                val job = launch { snackBarHostState.showSnackbar(message = "버튼을 한 번 더 누르면 종료돼요") }
+                val job = launch { snackBarHostState.showSnackbar(message = context.getString(R.string.snackbar_back_handler)) }
                 delay(SNACK_BAR_DURATION)
                 job.cancel()
             }

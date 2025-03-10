@@ -178,5 +178,6 @@
 
     <!-- Schedule List -->
     <string name="text_schedule_list_empty_content">아직 약속이 없어요!\n그룹 약속을 만들러 가볼까요?</string>
+    <string name="snackbar_back_handler">\'뒤로\' 버튼을 한 번 더 누르면 종료돼요</string>
 
 </resources>
