@@ -17,7 +17,7 @@ object ServiceModule {
     @Provides
     @Singleton
     fun provideExampleService(
-        @ExampleRetrofit retrofit: Retrofit
+        @AccessToken retrofit: Retrofit
     ): ExampleApiService = retrofit.create(ExampleApiService::class.java)
 
     @Singleton
