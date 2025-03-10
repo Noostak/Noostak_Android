@@ -1,10 +1,10 @@
 package com.sopt.domain.usecase
 
-import com.sopt.domain.repository.AuthRepository
+import com.sopt.domain.repository.AccountRepository
 import javax.inject.Inject
 
 class DeleteWithdrawUseCase @Inject constructor(
-    private val authRepository: AuthRepository
+    private val accountRepository: AccountRepository
 ) {
-    suspend operator fun invoke(accessToken: String) = authRepository.deleteWithdraw(accessToken)
+    suspend operator fun invoke() = accountRepository.deleteWithdraw()
 }
