@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ktlint)
 
     id("kotlin-parcelize")
@@ -22,6 +23,9 @@ dependencies {
     implementation(libs.kotlin)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.collections)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
 
     // Hilt
     ksp(libs.hilt.compiler)
