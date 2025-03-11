@@ -184,7 +184,7 @@ junit = { group = "junit", name = "junit", version.ref = "junit" } # JUnit 테�
 ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" } # Compose UI 테스트 매니페스트 라이브러리
 ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" } # Compose UI JUnit4 테스트 라이브러리
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" } # AndroidX Test JUnit 확장 라이브러리
-androidx-test-runner = { group = "andrfoidx.test", name = "runner", version.ref = "androidx-test-runner" } # AndroidX Test Runner 라이브러리
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidx-test-runner" } # AndroidX Test Runner 라이브러리
 androidx-test-core = { group = "androidx.test", name = "core", version.ref = "androidx-test" } # AndroidX Test Core 라이브러리
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
