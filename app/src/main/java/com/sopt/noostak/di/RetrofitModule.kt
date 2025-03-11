@@ -42,17 +42,14 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
-        val loggingInterceptor = HttpLoggingInterceptor { message ->
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor { message ->
             when {
                 message.isJsonObject() -> Timber.d(JSONObject(message).toString(4))
                 message.isJsonArray() -> Timber.d(JSONArray(message).toString(4))
                 else -> Timber.d("CONNECTION INFO -> $message")
             }
-        }
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        return loggingInterceptor
-    }
+        }.apply { level = HttpLoggingInterceptor.Level.BODY }
 
     @Singleton
     @Provides
