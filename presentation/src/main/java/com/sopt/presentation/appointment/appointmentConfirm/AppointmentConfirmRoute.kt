@@ -39,7 +39,6 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
 import com.sopt.core.extension.toast
 import com.sopt.core.state.UiState
-import com.sopt.core.type.DialogType
 import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.AppointmentDetailEntity
@@ -71,7 +70,7 @@ fun AppointmentConfirmRoute(
 
                 is AppointmentConfirmSideEffect.ShowToast -> context.toast(sideEffect.message)
                 is AppointmentConfirmSideEffect.ShowErrorDialog -> appointmentConfirmViewModel.showErrorDialog(
-                    sideEffect.show
+                    sideEffect.show, sideEffect.dialogType
                 )
             }
         }
@@ -127,15 +126,15 @@ fun AppointmentConfirmRoute(
         else -> {}
     }
 
-    if (showErrorDialog) {
+    if (showErrorDialog.first) {
         NoostakDialog(
-            dialogType = DialogType.NETWORK_FAILURE,
+            dialogType = showErrorDialog.second,
             onClick = {
-                appointmentConfirmViewModel.showErrorDialog(false)
+                appointmentConfirmViewModel.showErrorDialog(false, showErrorDialog.second)
                 appointmentConfirmViewModel.postConfirmed(optionId)
             },
             onDismissRequest = {
-                appointmentConfirmViewModel.showErrorDialog(false)
+                appointmentConfirmViewModel.showErrorDialog(false, showErrorDialog.second)
             }
         )
     }

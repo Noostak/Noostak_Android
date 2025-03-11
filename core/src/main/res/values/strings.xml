@@ -62,6 +62,9 @@
     <string name="text_noostak_time_picker_end">약속 종료 시간</string>
     <string name="text_noostak_time_picker_wave">~</string>
     <string name="user_chip_me">나</string>
+
+    <!-- Noostak Screen -->
     <string name="text_failure_header">데이터를 불러오지 못했어요</string>
     <string name="btn_failure_retry">다시 불러오기</string>
+    <string name="text_loading_screen">잠시만 기다려주세요</string>
 </resources>
