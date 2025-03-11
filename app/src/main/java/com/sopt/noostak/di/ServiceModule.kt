@@ -36,6 +36,6 @@ object ServiceModule {
     @Provides
     @Singleton
     fun provideAppointmentConfirmService(
-        @ExampleRetrofit retrofit: Retrofit
+        @AccessToken retrofit: Retrofit
     ): AppointmentConfirmApiService = retrofit.create(AppointmentConfirmApiService::class.java)
 }
