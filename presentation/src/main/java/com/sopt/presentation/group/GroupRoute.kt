@@ -49,7 +49,7 @@ fun GroupRoute(
 
     val isEmpty = groupItems.isEmpty()
 
-    val showDialog by groupViewModel.showDialog.collectAsStateWithLifecycle()
+    val showFABDialog by groupViewModel.showFABDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleOwner) {
         groupViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
@@ -58,28 +58,29 @@ fun GroupRoute(
                     is GroupSideEffect.NavigateToGroupDetail -> navigateToGroupDetail(sideEffect.groupId)
                     is GroupSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
                     is GroupSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
+                    is GroupSideEffect.ShowFABDialog -> groupViewModel.showFABDialog(true)
                 }
             }
     }
 
-    if (showDialog) {
+    if (showFABDialog) {
         GroupFloatingActionDialog(
-            onClick = { groupViewModel.showFloatingActionButtonDialog(false) },
-            onDismissRequest = { groupViewModel.showFloatingActionButtonDialog(false) },
+            onClick = { groupViewModel.showFABDialog(false) },
+            onDismissRequest = { groupViewModel.showFABDialog(false) },
             onCreateGroupClick = {
                 groupViewModel.navigateToGroupCreate()
-                groupViewModel.showFloatingActionButtonDialog(false)
+                groupViewModel.showFABDialog(false)
             },
             onEnterGroupClick = {
                 groupViewModel.navigateToGroupEnter()
-                groupViewModel.showFloatingActionButtonDialog(false)
+                groupViewModel.showFABDialog(false)
             }
         )
     }
 
     when {
         isEmpty -> NoostakEmptyScreen(
-            emptyText = R.string.text_group_empty,
+            emptyText = R.string.text_group_empty_content,
             color = NoostakTheme.colors.gray600,
             style = NoostakTheme.typography.b4Regular
         )
@@ -87,9 +88,9 @@ fun GroupRoute(
         else -> GroupScreen(
             paddingValues = paddingValues,
             groupItems = groupItems,
-            isFabClicked = groupViewModel.showDialog,
+            isFabClicked = groupViewModel.showFABDialog,
             onItemClick = groupViewModel::navigateToGroupDetail,
-            onFabClick = { groupViewModel.showFloatingActionButtonDialog(true) }
+            onFabClick = { groupViewModel.showFABDialog(true) }
         )
     }
 }
@@ -151,14 +152,14 @@ fun GroupScreenPreview() {
     NoostakAndroidTheme {
         GroupScreen(
             groupItems = listOf(
-                GroupEntity(groupId = 1, groupName = "누스탁", groupPersonnel = 15, newsImage = null),
+                GroupEntity(groupId = 1, groupName = "누스탁", groupMemberCount = 15, groupProfileImageUrl = null),
                 GroupEntity(
                     groupId = 2,
                     groupName = "유니보이스",
-                    groupPersonnel = 16,
-                    newsImage = null
+                    groupMemberCount = 16,
+                    groupProfileImageUrl = null
                 ),
-                GroupEntity(groupId = 3, groupName = "솝트", groupPersonnel = 191, newsImage = null)
+                GroupEntity(groupId = 3, groupName = "솝트", groupMemberCount = 191, groupProfileImageUrl = null)
             ),
             isFabClicked = remember { MutableStateFlow(false) },
             onItemClick = {},

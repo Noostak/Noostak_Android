@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +27,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.sopt.core.designsystem.component.bottomsheet.NoostakBottomSheet
 import com.sopt.core.designsystem.component.calendar.WeekDaysHeader
 import com.sopt.core.designsystem.component.calendar.YearMonthHeader
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
@@ -39,8 +44,11 @@ import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.presentation.R
 import com.sopt.presentation.calendar.component.CalendarFloatingActionDialog
 import com.sopt.presentation.calendar.component.CalendarGroup
+import com.sopt.presentation.calendar.component.bottomsheet.ScheduleDetailScreen
+import com.sopt.presentation.calendar.component.bottomsheet.ScheduleListScreen
 import java.time.YearMonth
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarRoute(
     paddingValues: PaddingValues,
@@ -49,6 +57,10 @@ fun CalendarRoute(
     navigateToGroupEnter: () -> Unit
 ) {
     val showAddDialog by calendarViewModel.showAddDialog.collectAsStateWithLifecycle()
+
+    val showSheet by calendarViewModel.showBottomSheet.collectAsStateWithLifecycle()
+    val navController = rememberNavController()
+
     val scheduleMap by calendarViewModel.scheduleMap.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(
@@ -70,9 +82,8 @@ fun CalendarRoute(
             when (sideEffect) {
                 is CalendarSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
                 is CalendarSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
-                is CalendarSideEffect.ShowAddDialog -> {
-                    calendarViewModel.showAddDialog(true)
-                }
+                is CalendarSideEffect.ShowAddDialog -> calendarViewModel.showAddDialog(true)
+                is CalendarSideEffect.ShowBottomSheet -> calendarViewModel.showBottomSheet(true)
             }
         }
     }
@@ -92,6 +103,41 @@ fun CalendarRoute(
         )
     }
 
+    if (showSheet) {
+        NoostakBottomSheet(
+            onDismissRequest = {
+                calendarViewModel.showBottomSheet(false)
+                navController.popBackStack(SCHEDULE_LIST, inclusive = false)
+            },
+            content = {
+                NavHost(navController, startDestination = SCHEDULE_LIST) {
+                    composable(SCHEDULE_LIST) { backStackEntry ->
+                        ScheduleListScreen(
+                            data = calendarViewModel.mockScheduleList,
+                            onItemClick = { schedule ->
+                                backStackEntry.savedStateHandle[SCHEDULE] = schedule.id // 바꿔야 함
+                                navController.navigate(SCHEDULE_DETAIL)
+                            },
+                            onConfirmBtnClick = { calendarViewModel.showBottomSheet(false) }
+                        )
+                    }
+                    composable(SCHEDULE_DETAIL) {
+                        val schedule =
+                            navController.previousBackStackEntry?.savedStateHandle?.get<Long>(
+                                SCHEDULE
+                            )
+                        schedule?.let { id ->
+                            ScheduleDetailScreen(
+                                data = calendarViewModel.mockScheduleDetail,
+                                onBackBtnClick = { navController.popBackStack() }
+                            )
+                        }
+                    }
+                }
+            }
+        )
+    }
+
     CalendarScreen(
         paddingValues = paddingValues,
         groups = calendarViewModel.mockGroups,
@@ -99,7 +145,8 @@ fun CalendarRoute(
         pagerState = pagerState,
         currentYearMonth = currentYearMonth,
         showAddDialog = showAddDialog,
-        onAddBtnClick = { calendarViewModel.showAddDialog(true) }
+        onAddBtnClick = { calendarViewModel.showAddDialog(true) },
+        onItemClick = { calendarViewModel.showBottomSheet(true) } // 바꿔야 함
     )
 }
 
@@ -111,7 +158,8 @@ fun CalendarScreen(
     pagerState: PagerState,
     currentYearMonth: YearMonth,
     showAddDialog: Boolean = false,
-    onAddBtnClick: () -> Unit = {}
+    onAddBtnClick: () -> Unit = {},
+    onItemClick: () -> Unit = {}
 ) {
     Scaffold(
         modifier = Modifier
@@ -141,7 +189,8 @@ fun CalendarScreen(
             CalendarContent(
                 scheduleMap = scheduleMap,
                 pagerState = pagerState,
-                currentYearMonth = currentYearMonth
+                currentYearMonth = currentYearMonth,
+                onItemClick = { onItemClick() }
             )
         }
     }
@@ -152,7 +201,8 @@ private fun CalendarContent(
     scheduleMap: Map<String, List<CalendarSchedule>>,
     pagerState: PagerState,
     currentYearMonth: YearMonth,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onItemClick: () -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -167,10 +217,15 @@ private fun CalendarContent(
         WeekDaysHeader()
         CalendarMonthScreen(
             pagerState = pagerState,
-            scheduleMap = scheduleMap
+            scheduleMap = scheduleMap,
+            onItemClick = { onItemClick() }
         )
     }
 }
+
+const val SCHEDULE = "schedule"
+const val SCHEDULE_LIST = "schedule_list"
+const val SCHEDULE_DETAIL = "schedule_detail"
 
 @Preview(showBackground = true)
 @Composable

@@ -1,9 +1,14 @@
 package com.sopt.presentation.calendar
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
+import com.sopt.domain.entity.IdentityEntity
+import com.sopt.domain.entity.ScheduleDetailEntity
+import com.sopt.domain.entity.ScheduleEntity
+import com.sopt.domain.entity.ScheduleListDetailEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,9 +19,13 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor() : BaseViewModel<CalendarSideEffect>() {
+class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) :
+    BaseViewModel<CalendarSideEffect>() {
     private val _showAddDialog = MutableStateFlow(false)
     val showAddDialog get() = _showAddDialog
+
+    private val _showBottomSheet = MutableStateFlow(false)
+    val showBottomSheet: StateFlow<Boolean> get() = _showBottomSheet
 
     private val _scheduleMap = MutableStateFlow<Map<String, List<CalendarSchedule>>>(emptyMap())
     val scheduleMap: StateFlow<Map<String, List<CalendarSchedule>>> get() = _scheduleMap
@@ -27,6 +36,10 @@ class CalendarViewModel @Inject constructor() : BaseViewModel<CalendarSideEffect
 
     fun showAddDialog(show: Boolean) {
         _showAddDialog.update { show }
+    }
+
+    fun showBottomSheet(show: Boolean) {
+        _showBottomSheet.update { show }
     }
 
     fun navigateToGroupCreate() {
@@ -124,5 +137,105 @@ class CalendarViewModel @Inject constructor() : BaseViewModel<CalendarSideEffect
             groupName = "누스탁5",
             groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
         )
+    )
+
+    val mockScheduleList = ScheduleEntity(
+        date = "1월 13일 (월)",
+        scheduleList = listOf(
+            ScheduleListDetailEntity(
+                id = 1,
+                name = "누스탁 회의",
+                category = "중요",
+                startTime = "1/13 21:00",
+                endTime = "1/13 21:00",
+                duration = 5
+            ),
+            ScheduleListDetailEntity(
+                id = 2,
+                name = "누스탁 모각작",
+                category = "일정",
+                startTime = "1/13 21:00",
+                endTime = "1/13 21:00",
+                duration = 10
+            ),
+            ScheduleListDetailEntity(
+                id = 3,
+                name = "누스탁 회식",
+                category = "취미",
+                startTime = "1/13 21:00",
+                endTime = "1/13 21:00",
+                duration = 6
+            ),
+            ScheduleListDetailEntity(
+                id = 4,
+                name = "누스탁 MT",
+                category = "기타",
+                startTime = "1/13 21:00",
+                endTime = "1/13 21:00",
+                duration = 9
+            ),
+            ScheduleListDetailEntity(
+                id = 5,
+                name = "누스탁 회의2",
+                category = "중요",
+                startTime = "1/13 21:00",
+                endTime = "1/13 21:00",
+                duration = 24
+            ),
+            ScheduleListDetailEntity(
+                id = 6,
+                name = "누스탁 모각작2",
+                category = "일정",
+                startTime = "1/13 21:00",
+                endTime = "1/13 21:00",
+                duration = 1
+            ),
+            ScheduleListDetailEntity(
+                id = 7,
+                name = "누스탁 회식2",
+                category = "취미",
+                startTime = "1/13 21:00",
+                endTime = "1/13 21:00",
+                duration = 4
+            ),
+            ScheduleListDetailEntity(
+                id = 8,
+                name = "누스탁 MT2",
+                category = "기타",
+                startTime = "1/13 21:00",
+                endTime = "1/13 21:00",
+                duration = 3
+            )
+        )
+    )
+
+    val mockScheduleDetail = ScheduleDetailEntity(
+        myIdentity = IdentityEntity(
+            availability = "available",
+            position = 0,
+            name = "김언지"
+        ),
+        appointmentName = "누스탁이올시다 으아아아아아아아아아아아아아",
+        date = "1월 13일 (월)",
+        startTime = "1/13 21:00",
+        endTime = "1/13 21:00",
+        category = "기타",
+        availableMembersCount = 81,
+        availableMembers = listOf(
+            "하루", "야마다", "이누마키", "츠키시마",
+            "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이",
+            "하루", "야마다", "이누마키", "츠키시마",
+            "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이",
+            "하루", "야마다", "이누마키", "츠키시마",
+            "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이",
+            "하루", "야마다", "이누마키", "츠키시마",
+            "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이",
+            "하루", "야마다", "이누마키", "츠키시마",
+            "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이",
+            "하루", "야마다", "이누마키", "츠키시마",
+            "마이키", "호크스", "토도로키", "아이자와", "리바이", "이구로", "호시나", "신에이"
+        ),
+        unavailableMembersCount = 3,
+        unavailableMembers = listOf("박보검", "정해인", "권지용")
     )
 }
