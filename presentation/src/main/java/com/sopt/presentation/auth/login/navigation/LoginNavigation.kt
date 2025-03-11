@@ -9,6 +9,7 @@ import com.sopt.core.navigation.Route
 import com.sopt.presentation.auth.login.LoginRoute
 import com.sopt.presentation.auth.login.OnboardingRoute
 import com.sopt.presentation.auth.signup.navigation.navigateSignUp
+import com.sopt.presentation.auth.splash.SplashRoute
 import com.sopt.presentation.group.navigation.navigateGroup
 import kotlinx.serialization.Serializable
 
@@ -17,7 +18,9 @@ fun NavController.navigateToLogin(
 ) {
     navigate(
         route = Login,
-        navOptions = navOptions
+        navOptions = navOptions ?: NavOptions.Builder()
+            .setPopUpTo(0, inclusive = false)
+            .build()
     )
 }
 
@@ -37,6 +40,13 @@ fun NavController.navigateOnboarding(
 fun NavGraphBuilder.loginNavGraph(
     navHostController: NavController
 ) {
+    composable<Splash> {
+        SplashRoute(
+            navigateToLogin = { navHostController.navigateToLogin() },
+            navigateToHome = { navHostController.navigateGroup() }
+        )
+    }
+
     composable<Login> {
         LoginRoute(
             navigateToHome = { navHostController.navigateGroup() },
@@ -58,6 +68,9 @@ fun NavGraphBuilder.loginNavGraph(
         )
     }
 }
+
+@Serializable
+data object Splash : Route
 
 @Serializable
 data object Login : Route

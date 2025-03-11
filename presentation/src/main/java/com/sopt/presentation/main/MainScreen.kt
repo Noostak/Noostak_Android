@@ -18,7 +18,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -45,6 +44,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.NavHost
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
+import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
@@ -62,6 +62,7 @@ import com.sopt.presentation.groupCreate.groupCreateSuccess.navigation.groupCrea
 import com.sopt.presentation.groupCreate.navigation.groupCreateNavGraph
 import com.sopt.presentation.groupDetail.navigation.groupDetailNavGraph
 import com.sopt.presentation.mypage.navigation.myPageNavGraph
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -96,10 +97,9 @@ fun MainScreen(
         } else {
             backPressedState = true
             coroutineScope.launch {
-                snackBarHostState.showSnackbar(
-                    message = "버튼을 한 번 더 누르면 종료돼요",
-                    duration = SnackbarDuration.Short
-                )
+                val job = launch { snackBarHostState.showSnackbar(message = context.getString(R.string.snackbar_back_handler)) }
+                delay(SNACK_BAR_DURATION)
+                job.cancel()
             }
         }
         backPressedTime = System.currentTimeMillis()
@@ -221,13 +221,14 @@ private fun MainBottomBar(
                                 tint = Color.Unspecified
                             )
                             Text(
+                                modifier = Modifier.padding(top = 2.dp),
                                 text = stringResource(id = tab.contentDescription),
                                 style = if (currentTab == tab) {
-                                    NoostakTheme.typography.c4Regular.copy(
+                                    NoostakTheme.typography.c3Regular.copy(
                                         color = NoostakTheme.colors.gray900
                                     )
                                 } else {
-                                    NoostakTheme.typography.c4Regular.copy(
+                                    NoostakTheme.typography.c3Regular.copy(
                                         color = NoostakTheme.colors.gray500
                                     )
                                 }

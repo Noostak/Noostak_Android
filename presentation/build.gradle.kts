@@ -78,6 +78,7 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(libs.javax.inject)
     implementation(libs.hilt.navigation.compose)
+    androidTestImplementation(libs.hilt.testing)
 
     // Retrofit (Networking)
     implementation(libs.bundles.retrofit)

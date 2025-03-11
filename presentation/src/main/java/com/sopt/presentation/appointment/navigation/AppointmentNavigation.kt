@@ -7,23 +7,25 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
+import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.appointment.AppointmentRoute
 import com.sopt.presentation.appointment.appointmentCheck.AppointmentCheckRoute
 import com.sopt.presentation.appointment.appointmentConfirm.AppointmentConfirmRoute
 import com.sopt.presentation.groupDetail.navigation.GroupDetail
 import com.sopt.presentation.groupDetail.navigation.navigateGroupDetail
 import kotlinx.serialization.Serializable
+import timber.log.Timber
 
 fun NavController.navigateAppointment(
     groupId: Long,
-    appointmentsId: Long,
+    appointmentId: Long,
     appointmentName: String,
     navOptions: NavOptions? = null
 ) {
     navigate(
         route = Appointment(
             groupId = groupId,
-            appointmentsId = appointmentsId,
+            appointmentId = appointmentId,
             appointmentName = appointmentName
         ),
         navOptions = navOptions ?: NavOptions.Builder()
@@ -37,14 +39,14 @@ fun NavController.navigateAppointment(
 
 fun NavController.navigateAppointmentCheck(
     groupId: Long,
-    appointmentsId: Long,
+    appointmentId: Long,
     appointmentName: String,
     navOptions: NavOptions? = null
 ) {
     navigate(
         route = AppointmentCheck(
             groupId = groupId,
-            appointmentsId = appointmentsId,
+            appointmentId = appointmentId,
             appointmentName = appointmentName
         ),
         navOptions = navOptions
@@ -53,7 +55,7 @@ fun NavController.navigateAppointmentCheck(
 
 fun NavController.navigateAppointmentConfirm(
     groupId: Long,
-    appointmentsId: Long,
+    appointmentId: Long,
     appointmentName: String,
     optionId: Long,
     navOptions: NavOptions? = null
@@ -61,7 +63,7 @@ fun NavController.navigateAppointmentConfirm(
     navigate(
         route = AppointmentConfirm(
             groupId = groupId,
-            appointmentsId = appointmentsId,
+            appointmentId = appointmentId,
             appointmentName = appointmentName,
             optionId = optionId
         ),
@@ -76,20 +78,24 @@ fun NavGraphBuilder.appointmentNavGraph(
         val args = it.toRoute<Appointment>()
         AppointmentRoute(
             groupId = args.groupId,
-            appointmentsId = args.appointmentsId,
+            appointmentId = args.appointmentId,
             appointmentName = args.appointmentName,
             navigateUp = navHostController::navigateUp,
-            navigateToAppointmentCheck = { groupId, appointmentsId, appointmentName ->
+            navigateToAppointmentCheck = { groupId, appointmentId, appointmentName, availablePeriods ->
+                navHostController.currentBackStackEntry?.savedStateHandle?.set(
+                    "availablePeriods",
+                    availablePeriods
+                )
                 navHostController.navigateAppointmentCheck(
                     groupId = groupId,
-                    appointmentsId = appointmentsId,
+                    appointmentId = appointmentId,
                     appointmentName = appointmentName
                 )
             },
-            navigateToAppointmentConfirm = { groupId, appointmentsId, optionId, appointmentName ->
+            navigateToAppointmentConfirm = { groupId, appointmentId, optionId, appointmentName ->
                 navHostController.navigateAppointmentConfirm(
                     groupId = groupId,
-                    appointmentsId = appointmentsId,
+                    appointmentId = appointmentId,
                     optionId = optionId,
                     appointmentName = appointmentName
                 )
@@ -99,15 +105,20 @@ fun NavGraphBuilder.appointmentNavGraph(
 
     composable<AppointmentCheck> {
         val args = it.toRoute<AppointmentCheck>()
+        val availablePeriods = navHostController.previousBackStackEntry?.savedStateHandle?.get<List<TimeEntity>>(
+            "availablePeriods"
+        ) ?: emptyList()
+        Timber.d("availablePeriods: $availablePeriods")
         AppointmentCheckRoute(
             groupId = args.groupId,
-            appointmentsId = args.appointmentsId,
+            appointmentId = args.appointmentId,
             appointmentName = args.appointmentName,
+            availablePeriods = availablePeriods,
             navigateUp = navHostController::navigateUp,
-            navigateToAppointment = { groupId, appointmentsId, appointmentName ->
+            navigateToAppointment = { groupId, appointmentId, appointmentName ->
                 navHostController.navigateAppointment(
                     groupId = groupId,
-                    appointmentsId = appointmentsId,
+                    appointmentId = appointmentId,
                     appointmentName = appointmentName
                 )
             },
@@ -121,7 +132,7 @@ fun NavGraphBuilder.appointmentNavGraph(
         val args = it.toRoute<AppointmentConfirm>()
         AppointmentConfirmRoute(
             groupId = args.groupId,
-            appointmentsId = args.appointmentsId,
+            appointmentId = args.appointmentId,
             optionId = args.optionId,
             appointmentName = args.appointmentName,
             navigateUp = navHostController::navigateUp,
@@ -135,21 +146,21 @@ fun NavGraphBuilder.appointmentNavGraph(
 @Serializable
 data class Appointment(
     val groupId: Long,
-    val appointmentsId: Long,
+    val appointmentId: Long,
     val appointmentName: String
 ) : Route
 
 @Serializable
 data class AppointmentCheck(
     val groupId: Long,
-    val appointmentsId: Long,
+    val appointmentId: Long,
     val appointmentName: String
 ) : Route
 
 @Serializable
 data class AppointmentConfirm(
     val groupId: Long,
-    val appointmentsId: Long,
+    val appointmentId: Long,
     val optionId: Long,
     val appointmentName: String
 ) : Route

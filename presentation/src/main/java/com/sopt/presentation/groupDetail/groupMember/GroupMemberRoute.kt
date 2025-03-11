@@ -176,8 +176,8 @@ fun GroupMemberItem(
                 .size(size),
             model = profileImage,
             contentDescription = null,
-            placeholder = painterResource(id = R.drawable.ic_profile),
-            error = painterResource(id = R.drawable.ic_profile),
+            placeholder = painterResource(id = R.drawable.ic_user_placeholder),
+            error = painterResource(id = R.drawable.ic_user_placeholder),
             contentScale = ContentScale.FillBounds
         )
         Text(

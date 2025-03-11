@@ -6,7 +6,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sopt.core.navigation.MainTabRoute
-import com.sopt.presentation.auth.login.navigation.Login
 import com.sopt.presentation.auth.signup.inputGroupCode.navigation.navigateInputGroupCode
 import com.sopt.presentation.group.GroupRoute
 import com.sopt.presentation.groupCreate.navigation.navigateToGroupCreate
@@ -17,7 +16,7 @@ fun NavController.navigateGroup(navOptions: NavOptions? = null) {
     navigate(
         route = Group,
         navOptions = navOptions ?: NavOptions.Builder()
-            .setPopUpTo(Login, inclusive = true)
+            .setPopUpTo(0, inclusive = true)
             .build()
     )
 }

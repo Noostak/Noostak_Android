@@ -1,21 +1,26 @@
 package com.sopt.domain.entity
 
+import kotlinx.serialization.Serializable
+
 data class TimeTableEntity(
-    val members: List<MemberAvailableTimeEntity>
+    val isAppointMemberTimeSet: Boolean,
+    val appointmentSchedule: AppointmentScheduleEntity
 )
 
-data class MemberAvailableTimeEntity(
+data class AppointmentScheduleEntity(
+    val appointmentHostSelectionTimes: List<TimeEntity>,
+    val appointmentMembersInfo: List<AppointmentMembersInfoEntity>
+)
+
+data class AppointmentMembersInfoEntity(
     val memberId: Int,
     val memberName: String,
-    val times: List<AvailableTimeEntity>
+    val appointmentMemberAvailableTimes: List<TimeEntity>
 )
 
-data class AvailableTimeEntity(
-    val date: String,
-    val times: List<TimeEntity>
-)
-
+@Serializable
 data class TimeEntity(
-    val memberStartTime: String,
-    val memberEndTime: String
+    val date: String,
+    val startTime: String,
+    val endTime: String
 )

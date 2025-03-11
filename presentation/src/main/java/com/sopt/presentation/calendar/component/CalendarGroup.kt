@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -26,7 +27,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
@@ -90,31 +93,43 @@ fun CalendarGroup(
                     shape = RectangleShape
                 )
         )
-        LazyRow(
-            state = listState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(end = 42.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            itemsIndexed(items = groups, key = { _, item -> item.id }) { index, group ->
-                if (index == 0) {
-                    Spacer(
-                        modifier = Modifier.width(16.dp)
-                    )
-                }
-                CalendarGroupItem(
-                    data = group,
-                    isSelected = index == selectedGroup,
-                    onClick = {
-                        selectedGroup = index
-                        listState.scrollToItem(coroutineScope, density, index)
+        if (groups.isEmpty()) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(top = 14.dp, start = 24.dp),
+                text = stringResource(R.string.text_calendar_group_empty),
+                color = NoostakTheme.colors.gray700,
+                style = NoostakTheme.typography.b5Regular,
+                textAlign = TextAlign.Start
+            )
+        } else {
+            LazyRow(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(end = 42.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                itemsIndexed(items = groups, key = { _, item -> item.id }) { index, group ->
+                    if (index == 0) {
+                        Spacer(
+                            modifier = Modifier.width(16.dp)
+                        )
                     }
-                )
-                if (index == groups.lastIndex) {
-                    Spacer(
-                        modifier = Modifier.width(41.dp)
+                    CalendarGroupItem(
+                        data = group,
+                        isSelected = index == selectedGroup,
+                        onClick = {
+                            selectedGroup = index
+                            listState.scrollToItem(coroutineScope, density, index)
+                        }
                     )
+                    if (index == groups.lastIndex) {
+                        Spacer(
+                            modifier = Modifier.width(41.dp)
+                        )
+                    }
                 }
             }
         }
@@ -173,6 +188,16 @@ fun CalendarGroupPreview() {
                     groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
                 )
             )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CalendarGroupPreviewEmpty() {
+    NoostakAndroidTheme {
+        CalendarGroup(
+            groups = emptyList()
         )
     }
 }
