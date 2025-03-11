@@ -5,6 +5,7 @@ object ApiKeyStorage {
     const val V1 = "v1"
     const val USERS = "users"
     const val PAGE = "page"
+    const val AUTHORIZATION = "Authorization"
     const val PROFILE = "profile"
     const val GROUPS = "groups"
     const val JOIN = "join"
@@ -27,4 +28,5 @@ object ApiKeyStorage {
     const val CONFIRMED = "confirmed"
     const val APPOINTMENT_MEMBERS = "appointment-members"
     const val TIMETABLE = "timetable"
+    const val AUTHORIZE = "authorize"
 }

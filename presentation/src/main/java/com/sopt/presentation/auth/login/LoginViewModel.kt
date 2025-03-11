@@ -13,10 +13,10 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.sopt.core.type.DialogType
-import com.sopt.core.type.SocialType
 import com.sopt.core.util.BaseViewModel
-import com.sopt.domain.entity.UserEntity
+import com.sopt.domain.entity.AuthTypeEntity
 import com.sopt.domain.repository.UserInfoRepository
+import com.sopt.domain.usecase.PostSocialLoginUseCase
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,13 +24,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     @Named("GoogleClientId") private val googleClientId: String,
-    private val userInfoRepository: UserInfoRepository
+    private val userInfoRepository: UserInfoRepository,
+    private val postSocialLoginUseCase: PostSocialLoginUseCase
 ) : BaseViewModel<LoginSideEffect>() {
 
     private val _showDialog = MutableStateFlow(Pair(DialogType.LOGIN_GOOGLE, false))
@@ -52,26 +54,26 @@ class LoginViewModel @Inject constructor(
     fun kakaoLogin(context: Context) {
         val loginCallback: (OAuthToken?, Throwable?) -> Unit = this::handleKakaoLoginResult
 
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-            UserApiClient.instance.loginWithKakaoTalk(context, callback = loginCallback)
-        } else {
-            UserApiClient.instance.loginWithKakaoAccount(context, callback = loginCallback)
+        with(UserApiClient.instance) {
+            if (isKakaoTalkLoginAvailable(context)) {
+                loginWithKakaoTalk(context, callback = loginCallback)
+            } else {
+                loginWithKakaoAccount(context, callback = loginCallback)
+            }
         }
     }
 
     private fun handleKakaoLoginResult(token: OAuthToken?, error: Throwable?) {
         viewModelScope.launch {
-            when {
-                token != null -> handleLoginSuccess(
-                    token.accessToken,
-                    SocialType.KAKAO,
-                    R.string.toast_kakao_login_success
+            token?.let {
+                postSocialLogin(
+                    BEARER + it.accessToken,
+                    KAKAO
                 )
-
-                error != null -> {
-                    handleError(error, R.string.toast_kakao_login_failed)
-                    showDialog(DialogType.LOGIN_KAKAO, true)
-                }
+                showToast(R.string.toast_kakao_login_success)
+            } ?: run {
+                handleError(error, R.string.toast_kakao_login_failed)
+                showDialog(DialogType.LOGIN_KAKAO, true)
             }
         }
     }
@@ -104,72 +106,52 @@ class LoginViewModel @Inject constructor(
     private fun handleGoogleLoginResult(credential: Credential) {
         if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-            handleLoginSuccess(
-                googleIdTokenCredential.id,
-                SocialType.GOOGLE,
-                R.string.toast_google_login_success
-            )
+            postSocialLogin(googleIdTokenCredential.id, GOOGLE)
+            showToast(R.string.toast_google_login_success)
         } else {
             showDialog(DialogType.LOGIN_GOOGLE, true)
         }
     }
 
-    private fun handleLoginSuccess(
-        token: String,
-        socialType: SocialType,
-        successToast: Int
-    ) {
-        showToast(successToast)
-        viewModelScope.launch {
-            postLogin(token, socialType)
-        }
-    }
-
-    private fun handleError(error: Throwable, @StringRes errorMessageResId: Int) {
+    private fun handleError(error: Throwable?, @StringRes errorMessageResId: Int) {
         when {
             // 카카오 로그인 취소
             error is ClientError && error.reason == ClientErrorCause.Cancelled -> {
                 showToast(R.string.toast_login_cancelled)
             }
-
             // 구글 로그인 취소
-            error.message?.contains(CANCELLED, ignoreCase = true) == true -> {
+            error?.message?.contains(CANCELLED, ignoreCase = true) == true -> {
                 showToast(R.string.toast_login_cancelled)
             }
 
-            // 기타 에러
             else -> {
-                val errorMessage = error.localizedMessage.orEmpty()
+                val errorMessage = error?.localizedMessage.orEmpty()
                 showToast(errorMessageResId, errorMessage)
             }
         }
     }
 
-    private fun postLogin(token: String, socialType: SocialType) {
+    // 소셜 로그인
+    private fun postSocialLogin(accessToken: String, socialType: String) {
         viewModelScope.launch {
-            // TODO : 서버 연결
-            checkIsNewUser(token)
+            postSocialLoginUseCase(accessToken, AuthTypeEntity(socialType)).fold(
+                onSuccess = { response ->
+                    saveTokens(response.accessToken, response.refreshToken)
+                    userInfoRepository.saveMemberId(response.memberId)
+                    emitSideEffect(LoginSideEffect.NavigateToHome)
+                },
+                onFailure = { error ->
+                    emitSideEffect(LoginSideEffect.NavigateToOnboarding(accessToken, socialType))
+                    Timber.e("postSocialLogin Failed: ${error.message}")
+                }
+            )
         }
     }
 
-    // 기존 사용자 확인
-    private fun checkIsNewUser(authId: String) {
+    private fun saveTokens(accessToken: String, refreshToken: String) {
         viewModelScope.launch {
-            if (userInfoRepository.getIsAutoLogin().first()) {
-                emitSideEffect(LoginSideEffect.NavigateToHome)
-            } else {
-                emitSideEffect(LoginSideEffect.NavigateToOnboarding(authId))
-            }
-        }
-    }
-
-    // TODO : 서버 연결 시 사용
-    private fun saveUserInfo(response: UserEntity) {
-        viewModelScope.launch {
-            response.accessToken?.let { userInfoRepository.saveAccessToken(BEARER + it) }
-            response.refreshToken?.let { userInfoRepository.saveRefreshToken(BEARER + it) }
-            response.userId?.let { userInfoRepository.saveUserId(it) }
-            userInfoRepository.saveIsAutoLogin(!response.accessToken.isNullOrEmpty())
+            userInfoRepository.saveAccessToken(BEARER + accessToken)
+            userInfoRepository.saveRefreshToken(BEARER + refreshToken)
         }
     }
 
@@ -185,7 +167,7 @@ class LoginViewModel @Inject constructor(
     companion object {
         private const val BEARER = "Bearer "
         private const val CANCELLED = "CANCELLED"
-        private const val KAKAO = "카카오톡"
-        private const val GOOGLE = "구글"
+        private const val KAKAO = "KAKAO"
+        private const val GOOGLE = "GOOGLE"
     }
 }
