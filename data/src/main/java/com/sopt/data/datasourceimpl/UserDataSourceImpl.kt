@@ -21,7 +21,7 @@ class UserDataSourceImpl @Inject constructor(
     private object PreferencesKeys {
         val accessToken = stringPreferencesKey("accessToken")
         val refreshToken = stringPreferencesKey("refreshToken")
-        val userId = intPreferencesKey("userId")
+        val memberId = intPreferencesKey("memberId")
         val isAutoLogin = booleanPreferencesKey("isAutoLogin")
         val nickname = stringPreferencesKey("nickname")
         val profileImage = stringPreferencesKey("profileImage")
@@ -39,10 +39,10 @@ class UserDataSourceImpl @Inject constructor(
             preferences[PreferencesKeys.refreshToken].orEmpty()
         }
 
-    override val userId: Flow<Int> = dataStore.data
+    override val memberId: Flow<Int> = dataStore.data
         .catch { handleError(it) }
         .map { preferences ->
-            preferences[PreferencesKeys.userId] ?: -1
+            preferences[PreferencesKeys.memberId] ?: -1
         }
 
     override val isAutoLogin: Flow<Boolean> = dataStore.data
@@ -75,9 +75,9 @@ class UserDataSourceImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateUserId(userId: Int) {
+    override suspend fun updateMemberId(memberId: Int) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.userId] = userId
+            preferences[PreferencesKeys.memberId] = memberId
         }
     }
 

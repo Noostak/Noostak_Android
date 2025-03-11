@@ -1,9 +1,15 @@
 package com.sopt.noostak.di
 
+import com.sopt.data.repositoryimpl.AccountRepositoryImpl
+import com.sopt.data.repositoryimpl.AuthRepositoryImpl
 import com.sopt.data.repositoryimpl.AppointmentConfirmRepositoryImpl
 import com.sopt.data.repositoryimpl.ExampleRepositoryImpl
+import com.sopt.data.repositoryimpl.UserInfoRepositoryImpl
+import com.sopt.domain.repository.AccountRepository
+import com.sopt.domain.repository.AuthRepository
 import com.sopt.domain.repository.AppointmentConfirmRepository
 import com.sopt.domain.repository.ExampleRepository
+import com.sopt.domain.repository.UserInfoRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,6 +23,18 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindExampleRepository(exampleRepositoryImpl: ExampleRepositoryImpl): ExampleRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindUserInfoRepository(userInfoRepositoryImpl: UserInfoRepositoryImpl): UserInfoRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAuthRepository(authRepositoryImpl: AuthRepositoryImpl): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindAccountRepository(accountRepositoryImpl: AccountRepositoryImpl): AccountRepository
 
     @Binds
     @Singleton
