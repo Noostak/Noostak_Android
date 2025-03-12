@@ -87,8 +87,7 @@ fun MyPageRoute(
         NoostakDialog(
             dialogType = DialogType.LOGOUT,
             onClick = {
-                myPageViewModel.clearInfo()
-                navigateToLogin()
+                myPageViewModel.postLogout()
             },
             onDismissRequest = { myPageViewModel.showDialog(DialogType.LOGOUT, false) }
         )
@@ -98,7 +97,7 @@ fun MyPageRoute(
         NoostakDialog(
             dialogType = DialogType.WITHDRAWAL,
             onClick = {
-                // 추가해야 함
+                myPageViewModel.deleteWithdraw()
             },
             onDismissRequest = { myPageViewModel.showDialog(DialogType.WITHDRAWAL, false) }
         )
@@ -106,8 +105,8 @@ fun MyPageRoute(
 
     MyPageScreen(
         paddingValues = paddingValues,
-        nickname = userInfoState.nickname,
-        profileImage = userInfoState.profileImage,
+        nickname = userInfoState.memberName,
+        profileImage = userInfoState.memberProfileImage,
         onProfileEditBtnClick = { myPageViewModel.navigateToEditProfile() },
         onPolicyBtnClick = {
             Intent(

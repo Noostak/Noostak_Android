@@ -22,14 +22,14 @@ import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.screen.NoostakEmptyScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.domain.entity.ScheduleDetailEntity
 import com.sopt.domain.entity.ScheduleEntity
+import com.sopt.domain.entity.ScheduleListDetailEntity
 import com.sopt.presentation.R
 
 @Composable
 fun ScheduleListScreen(
     data: ScheduleEntity,
-    onItemClick: (ScheduleDetailEntity) -> Unit = {},
+    onItemClick: (ScheduleListDetailEntity) -> Unit = {},
     onConfirmBtnClick: () -> Unit = {}
 ) {
     Column(
@@ -99,7 +99,7 @@ fun ScheduleListScreenPreview() {
             data = ScheduleEntity(
                 date = "1월 13일 (월)",
                 scheduleList = listOf(
-                    ScheduleDetailEntity(
+                    ScheduleListDetailEntity(
                         id = 1,
                         name = "누스탁 회의dasfdsafsafdafdafsdfsafdsafdsadsdafsadfsdfsdafadafdsafsdafsaf",
                         category = "중요",
@@ -107,7 +107,7 @@ fun ScheduleListScreenPreview() {
                         endTime = "1월 13일(월)",
                         duration = 24
                     ),
-                    ScheduleDetailEntity(
+                    ScheduleListDetailEntity(
                         id = 2,
                         name = "누스탁 모각작",
                         category = "일정",
@@ -115,7 +115,7 @@ fun ScheduleListScreenPreview() {
                         endTime = "1월 15일(수)",
                         duration = 5
                     ),
-                    ScheduleDetailEntity(
+                    ScheduleListDetailEntity(
                         id = 3,
                         name = "누스탁 회식",
                         category = "취미",

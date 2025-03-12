@@ -45,7 +45,8 @@ import timber.log.Timber
 
 @Composable
 fun SignUpRoute(
-    authId: String,
+    accessToken: String,
+    socialType: String,
     navigateToCheckInvite: (String) -> Unit,
     viewModel: SignUpViewModel = hiltViewModel()
 ) {
@@ -102,7 +103,7 @@ fun SignUpRoute(
             handleProfileBtnClick(viewModel, permissionLauncher)
         },
         onNameChange = { viewModel.onNicknameChanged(it) },
-        onSignUpClick = { viewModel.navigateToCheckInvite() }
+        onSignUpClick = { viewModel.postSignUp(accessToken, socialType) }
     )
 }
 

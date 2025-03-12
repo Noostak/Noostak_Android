@@ -11,6 +11,7 @@ import com.sopt.presentation.appointmentCreate.appointmentCreatePeriod.Appointme
 import com.sopt.presentation.appointmentCreate.appointmentCreateTimePicker.AppointmentCreateTimePickerRoute
 import com.sopt.presentation.appointmentCreate.appointmentSubmit.AppointmentSubmitRoute
 import com.sopt.presentation.appointmentCreate.appointmentSubmitComplete.AppointmentSubmitCompleteRoute
+import com.sopt.presentation.groupDetail.navigation.GroupDetail
 import com.sopt.presentation.groupDetail.navigation.navigateGroupDetail
 import kotlinx.serialization.Serializable
 
@@ -108,7 +109,9 @@ fun NavController.navigateAppointmentSubmitComplete(
             appointmentCategory = appointmentCategory,
             appointmentDuration = appointmentDuration
         ),
-        navOptions = navOptions
+        navOptions = navOptions ?: NavOptions.Builder()
+            .setPopUpTo(GroupDetail(groupId), inclusive = true)
+            .build()
     )
 }
 

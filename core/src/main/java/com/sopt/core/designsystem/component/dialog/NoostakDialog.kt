@@ -63,7 +63,7 @@ fun NoostakDialog(
                     modifier = Modifier.height(
                         when (dialogType) {
                             DialogType.LOGOUT -> 41.dp
-                            DialogType.APPOINTMENT, DialogType.WITHDRAWAL -> 30.dp
+                            DialogType.APPOINTMENT, DialogType.WITHDRAWAL, DialogType.DATA_FAILURE, DialogType.NETWORK_FAILURE -> 30.dp
                             else -> 24.dp
                         }
                     )
@@ -72,7 +72,7 @@ fun NoostakDialog(
                     text = stringResource(dialogType.content),
                     textAlign = TextAlign.Center,
                     style = when (dialogType) {
-                        DialogType.LOGOUT, DialogType.WITHDRAWAL, DialogType.APPOINTMENT -> NoostakTheme.typography.b4Regular
+                        DialogType.LOGOUT, DialogType.WITHDRAWAL, DialogType.APPOINTMENT, DialogType.DATA_FAILURE, DialogType.NETWORK_FAILURE -> NoostakTheme.typography.b4Regular
                         else -> NoostakTheme.typography.c3Regular
                     }
                 )
@@ -80,7 +80,7 @@ fun NoostakDialog(
                     modifier = Modifier.height(
                         when (dialogType) {
                             DialogType.LOGOUT -> 36.dp
-                            DialogType.APPOINTMENT, DialogType.WITHDRAWAL -> 26.dp
+                            DialogType.APPOINTMENT, DialogType.WITHDRAWAL, DialogType.DATA_FAILURE, DialogType.NETWORK_FAILURE -> 26.dp
                             else -> 20.dp
                         }
                     )

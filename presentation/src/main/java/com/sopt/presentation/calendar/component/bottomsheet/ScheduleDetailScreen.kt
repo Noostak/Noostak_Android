@@ -21,22 +21,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.sopt.core.designsystem.component.chip.AvailableUserChips
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
+import com.sopt.core.designsystem.component.chip.UnavailableUserChips
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.RearrangeList
-import com.sopt.domain.entity.ConfirmedDetailEntity
 import com.sopt.domain.entity.IdentityEntity
+import com.sopt.domain.entity.ScheduleDetailEntity
 import com.sopt.presentation.R
-import com.sopt.presentation.groupDetail.confirmedDetail.AvailableUserChips
 import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
-import com.sopt.presentation.groupDetail.confirmedDetail.UnavailableUserChips
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ScheduleDetailScreen(
-    data: ConfirmedDetailEntity,
+    data: ScheduleDetailEntity,
     onBackBtnClick: () -> Unit = {}
 ) {
     val rearrangeList = RearrangeList()
@@ -57,7 +57,7 @@ fun ScheduleDetailScreen(
             contentAlignment = Alignment.Center
         ) {
             NoostakTopAppBar(
-                title = "누스탁 전체회의 호이호이호이호이호이호이호이호이".chunked(10).joinToString("\n"), // 수정해야함
+                title = data.appointmentName.chunked(10).joinToString("\n"),
                 style = NoostakTheme.typography.b1SemiBold,
                 isIconVisible = true,
                 onBackButtonClick = onBackBtnClick,
@@ -135,18 +135,17 @@ fun ScheduleDetailScreen(
 fun ScheduleDetailScreenPreview() {
     NoostakAndroidTheme {
         ScheduleDetailScreen(
-            ConfirmedDetailEntity(
+            ScheduleDetailEntity(
                 myIdentity = IdentityEntity(
                     availability = "available",
                     position = 0,
                     name = "김언지"
                 ),
+                appointmentName = "누스탁 전체회의 호이호이호이호이호이호이호이호이",
                 date = "1월 13일 (월)",
                 startTime = "1/13 21:00",
                 endTime = "1/13 21:00",
                 category = "기타",
-                likes = 15,
-                liked = true,
                 availableMembersCount = 81,
                 availableMembers = listOf(
                     "김언지", "하루", "야마다", "이누마키", "츠키시마",

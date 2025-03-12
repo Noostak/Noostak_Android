@@ -46,9 +46,6 @@ fun GroupRoute(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val groupItems = groupViewModel.groupItems
-
-    val isEmpty = groupItems.isEmpty()
-
     val showFABDialog by groupViewModel.showFABDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleOwner) {
@@ -78,21 +75,13 @@ fun GroupRoute(
         )
     }
 
-    when {
-        isEmpty -> NoostakEmptyScreen(
-            emptyText = R.string.text_group_empty_content,
-            color = NoostakTheme.colors.gray600,
-            style = NoostakTheme.typography.b4Regular
-        )
-
-        else -> GroupScreen(
-            paddingValues = paddingValues,
-            groupItems = groupItems,
-            isFabClicked = groupViewModel.showFABDialog,
-            onItemClick = groupViewModel::navigateToGroupDetail,
-            onFabClick = { groupViewModel.showFABDialog(true) }
-        )
-    }
+    GroupScreen(
+        paddingValues = paddingValues,
+        groupItems = groupItems,
+        isFabClicked = groupViewModel.showFABDialog,
+        onItemClick = groupViewModel::navigateToGroupDetail,
+        onFabClick = { groupViewModel.showFABDialog(true) }
+    )
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
@@ -126,20 +115,41 @@ fun GroupScreen(
         },
         floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->
-        Box {
-            LazyColumn(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
-            ) {
-                itemsIndexed(items = groupItems, key = { _, item -> item.groupId }) { index, item ->
-                    GroupItem(item, onItemClick)
-                    if (index != groupItems.lastIndex) {
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = NoostakTheme.colors.gray100
-                        )
-                    }
+        if (groupItems.isEmpty()) {
+            NoostakEmptyScreen(
+                emptyText = R.string.text_group_empty_content,
+                color = NoostakTheme.colors.gray600,
+                style = NoostakTheme.typography.b4Regular
+            )
+        } else {
+            GroupItemScreen(
+                innerPadding = innerPadding,
+                groupItems = groupItems,
+                onItemClick = onItemClick
+            )
+        }
+    }
+}
+
+@Composable
+fun GroupItemScreen(
+    innerPadding: PaddingValues = PaddingValues(),
+    groupItems: List<GroupEntity>,
+    onItemClick: (Long) -> Unit
+) {
+    Box {
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
+        ) {
+            itemsIndexed(items = groupItems, key = { _, item -> item.groupId }) { index, item ->
+                GroupItem(item, onItemClick)
+                if (index != groupItems.lastIndex) {
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = NoostakTheme.colors.gray100
+                    )
                 }
             }
         }
@@ -152,14 +162,14 @@ fun GroupScreenPreview() {
     NoostakAndroidTheme {
         GroupScreen(
             groupItems = listOf(
-                GroupEntity(groupId = 1, groupName = "누스탁", groupPersonnel = 15, newsImage = null),
+                GroupEntity(groupId = 1, groupName = "누스탁", groupMemberCount = 15, groupProfileImageUrl = null),
                 GroupEntity(
                     groupId = 2,
                     groupName = "유니보이스",
-                    groupPersonnel = 16,
-                    newsImage = null
+                    groupMemberCount = 16,
+                    groupProfileImageUrl = null
                 ),
-                GroupEntity(groupId = 3, groupName = "솝트", groupPersonnel = 191, newsImage = null)
+                GroupEntity(groupId = 3, groupName = "솝트", groupMemberCount = 191, groupProfileImageUrl = null)
             ),
             isFabClicked = remember { MutableStateFlow(false) },
             onItemClick = {},

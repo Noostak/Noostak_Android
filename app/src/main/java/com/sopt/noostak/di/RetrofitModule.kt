@@ -9,6 +9,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -25,8 +26,10 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
+        @AccessToken tokenInterceptor: Interceptor,
         loggingInterceptor: HttpLoggingInterceptor
     ): OkHttpClient = OkHttpClient.Builder()
+        .addInterceptor(tokenInterceptor)
         .addInterceptor(loggingInterceptor)
         .connectTimeout(30, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
@@ -34,24 +37,44 @@ object RetrofitModule {
 
     @Provides
     @Singleton
-    fun provideLoggingInterceptor(): HttpLoggingInterceptor {
-        val loggingInterceptor = HttpLoggingInterceptor { message ->
+    @AccessToken
+    fun provideAuthInterceptor(interceptor: TokenInterceptor): Interceptor = interceptor
+
+    @Provides
+    @Singleton
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor { message ->
             when {
                 message.isJsonObject() -> Timber.d(JSONObject(message).toString(4))
                 message.isJsonArray() -> Timber.d(JSONArray(message).toString(4))
                 else -> Timber.d("CONNECTION INFO -> $message")
             }
-        }
-        loggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
-        return loggingInterceptor
-    }
+        }.apply { level = HttpLoggingInterceptor.Level.BODY }
 
     @Singleton
     @Provides
-    @ExampleRetrofit
+    @AccessToken
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
         .client(okHttpClient)
         .baseUrl(BASE_URL)
         .build()
+
+    @Provides
+    @Singleton
+    @WithoutTokenInterceptor
+    fun provideOkHttpClientWithoutTokenInterceptor(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .build()
+
+    @Provides
+    @Singleton
+    @WithoutTokenInterceptor
+    fun provideRetrofitWithoutTokenInterceptor(@WithoutTokenInterceptor okHttpClient: OkHttpClient): Retrofit =
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+            .build()
 }

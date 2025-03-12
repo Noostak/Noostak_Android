@@ -17,12 +17,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
-import com.sopt.domain.entity.ScheduleDetailEntity
+import com.sopt.domain.entity.ScheduleListDetailEntity
 
 @Composable
 fun ScheduleItem(
-    data: ScheduleDetailEntity,
-    onItemClick: (ScheduleDetailEntity) -> Unit = {}
+    data: ScheduleListDetailEntity,
+    onItemClick: (ScheduleListDetailEntity) -> Unit = {}
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -49,7 +49,7 @@ fun ScheduleItem(
                 modifier = Modifier.padding(bottom = 3.dp)
             )
             Text(
-                text = if (data.duration == 24) "하루종일" else data.duration.toString(),
+                text = if (data.duration.toInt() == 24) "하루종일" else data.duration.toString(),
                 style = NoostakTheme.typography.c4Regular,
                 color = NoostakTheme.colors.gray700
             )

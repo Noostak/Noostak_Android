@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -21,12 +22,14 @@ import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.timetable.NoostakEditableTimeTable
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.domain.entity.PeriodEntity
+import com.sopt.core.extension.toast
+import com.sopt.core.state.UiState
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
 import timber.log.Timber
@@ -34,13 +37,18 @@ import timber.log.Timber
 @Composable
 fun AppointmentCheckRoute(
     groupId: Long,
-    appointmentsId: Long,
+    appointmentId: Long,
     appointmentName: String,
+    availablePeriods: List<TimeEntity>,
     navigateUp: () -> Unit,
     navigateToAppointment: (Long, Long, String) -> Unit,
     navigateToGroupDetail: (Long) -> Unit,
     appointmentCheckViewModel: AppointmentCheckViewModel = hiltViewModel()
 ) {
+    val postTimeTableState by appointmentCheckViewModel.postTimeTableState.collectAsStateWithLifecycle()
+    var selectedData by remember { mutableStateOf(emptyList<TimeEntity>()) }
+    val context = LocalContext.current
+    val rememberedAvailablePeriods = remember { availablePeriods }
     LaunchedEffect(key1 = appointmentCheckViewModel.sideEffects) {
         appointmentCheckViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -48,7 +56,7 @@ fun AppointmentCheckRoute(
                 is AppointmentCheckSideEffect.NavigateToAppointment -> {
                     navigateToAppointment(
                         sideEffect.groupId,
-                        sideEffect.appointmentsId,
+                        sideEffect.appointmentId,
                         sideEffect.appointmentName
                     )
                 }
@@ -56,29 +64,51 @@ fun AppointmentCheckRoute(
                 is AppointmentCheckSideEffect.NavigateToGroupDetail -> {
                     navigateToGroupDetail(sideEffect.groupId)
                 }
+
+                is AppointmentCheckSideEffect.ShowToast -> {
+                    context.toast(sideEffect.message)
+                }
             }
         }
     }
+
+    LaunchedEffect(key1 = postTimeTableState) {
+        when (postTimeTableState) {
+            is UiState.Success -> appointmentCheckViewModel.navigateToAppointment(
+                groupId,
+                appointmentId,
+                appointmentName
+            )
+
+            is UiState.Failure -> {
+                Timber.e("postTimeTable 실패: ${(postTimeTableState as UiState.Failure).msg}")
+            }
+
+            else -> {}
+        }
+    }
+
     AppointmentCheckScreen(
         groupId = groupId,
-        appointmentsId = appointmentsId,
         appointmentName = appointmentName,
-        availablePeriods = appointmentCheckViewModel.mockAvailablePeriods,
+        availablePeriods = rememberedAvailablePeriods,
+        onSelectedDataChange = { selectedData = it },
         onBackButtonClick = appointmentCheckViewModel::navigateToGroupDetail,
-        onConfirmButtonClick = appointmentCheckViewModel::navigateToAppointment
+        onConfirmButtonClick = {
+            appointmentCheckViewModel.postTimeTable(appointmentId, selectedData)
+        }
     )
 }
 
 @Composable
 fun AppointmentCheckScreen(
     groupId: Long,
-    appointmentsId: Long,
     appointmentName: String,
-    availablePeriods: PeriodEntity,
+    availablePeriods: List<TimeEntity>,
+    onSelectedDataChange: (List<TimeEntity>) -> Unit = {},
     onBackButtonClick: (Long) -> Unit,
-    onConfirmButtonClick: (Long, Long, String) -> Unit
+    onConfirmButtonClick: () -> Unit
 ) {
-    var selectedData by remember { mutableStateOf(emptyList<TimeEntity>()) }
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
@@ -98,8 +128,6 @@ fun AppointmentCheckScreen(
                 .padding(horizontal = dimensionResource(id = R.dimen.default_padding))
         ) {
             val (title, timeTable, button) = createRefs()
-
-            // 제목
             Text(
                 modifier = Modifier
                     .padding(top = 11.dp, start = 6.dp, bottom = 16.dp)
@@ -112,8 +140,6 @@ fun AppointmentCheckScreen(
                 style = NoostakTheme.typography.h4Bold,
                 textAlign = TextAlign.Start
             )
-
-            // 타임테이블 (스크롤 가능)
             NoostakEditableTimeTable(
                 availablePeriods = availablePeriods,
                 modifier = Modifier
@@ -124,10 +150,9 @@ fun AppointmentCheckScreen(
                         height = Dimension.fillToConstraints
                     }
             ) {
+                onSelectedDataChange(it)
                 Timber.d("selectedData: $it")
             }
-
-            // 버튼 (항상 하단 고정)
             NoostakBottomButton(
                 modifier = Modifier
                     .constrainAs(button) {
@@ -140,7 +165,7 @@ fun AppointmentCheckScreen(
                         bottom = dimensionResource(id = R.dimen.vertical_padding)
                     ),
                 text = stringResource(R.string.btn_appointment_check),
-                onButtonClick = { onConfirmButtonClick(groupId, appointmentsId, appointmentName) },
+                onButtonClick = onConfirmButtonClick,
                 isEnabled = true,
                 activateColor = NoostakTheme.colors.gray900
             )
@@ -151,15 +176,29 @@ fun AppointmentCheckScreen(
 @Preview(showBackground = true)
 @Composable
 fun PreviewAppointmentConfirmScreen() {
-    val appointmentCheckViewModel: AppointmentCheckViewModel = hiltViewModel()
     NoostakAndroidTheme {
         AppointmentCheckScreen(
             groupId = 1,
-            appointmentsId = 1,
             appointmentName = "3차 회의",
-            availablePeriods = appointmentCheckViewModel.mockAvailablePeriods,
+            availablePeriods = listOf(
+                TimeEntity(
+                    date = "2024-09-05T10:00:00",
+                    startTime = "2024-09-05T10:00:00",
+                    endTime = "2024-09-05T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-06T10:00:00",
+                    startTime = "2024-09-06T10:00:00",
+                    endTime = "2024-09-06T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-07T10:00:00",
+                    startTime = "2024-09-07T10:00:00",
+                    endTime = "2024-09-07T18:00:00"
+                )
+            ),
             onBackButtonClick = {},
-            onConfirmButtonClick = { _, _, _ -> }
+            onConfirmButtonClick = {}
         )
     }
 }

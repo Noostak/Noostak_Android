@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -42,15 +44,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.extension.scrollToItem
 import com.sopt.core.extension.showIf
+import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.AppointmentEntity
-import com.sopt.domain.entity.PeriodEntity
-import com.sopt.domain.entity.TimeTableEntity
+import com.sopt.domain.entity.AppointmentMembersInfoEntity
+import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
 import com.sopt.presentation.appointment.screen.RecommendationScreen
@@ -58,14 +62,16 @@ import com.sopt.presentation.appointment.screen.RecommendationScreen
 @Composable
 fun AppointmentRoute(
     groupId: Long,
-    appointmentsId: Long,
+    appointmentId: Long,
     appointmentName: String,
     navigateUp: () -> Unit,
-    navigateToAppointmentCheck: (Long, Long, String) -> Unit,
+    navigateToAppointmentCheck: (Long, Long, String, List<TimeEntity>) -> Unit,
     navigateToAppointmentConfirm: (Long, Long, Long, String) -> Unit,
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
     val showDialog by appointmentViewModel.showDialog.collectAsStateWithLifecycle()
+    val getOptionsState by appointmentViewModel.getOptionsState.collectAsStateWithLifecycle()
+    val getTimeTableState by appointmentViewModel.getTimeTableState.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = appointmentViewModel.sideEffects) {
         appointmentViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -74,7 +80,8 @@ fun AppointmentRoute(
                     navigateToAppointmentCheck(
                         sideEffect.groupId,
                         sideEffect.appointmentsId,
-                        sideEffect.appointmentName
+                        sideEffect.appointmentName,
+                        sideEffect.availablePeriods
                     )
                 }
 
@@ -88,14 +95,15 @@ fun AppointmentRoute(
                 }
 
                 is AppointmentSideEffect.ShowDialog -> {
-                    appointmentViewModel.showDialog(true)
+                    appointmentViewModel.showDialog(sideEffect.show)
                 }
             }
         }
     }
 
     LaunchedEffect(key1 = Unit) {
-        appointmentViewModel.showDialog(!appointmentViewModel.mockRecommendations.isSubmitted)
+        appointmentViewModel.getOptions(appointmentId = appointmentId)
+        appointmentViewModel.getTimeTable(appointmentId = appointmentId)
     }
 
     if (showDialog) {
@@ -104,7 +112,21 @@ fun AppointmentRoute(
             onClick = {
                 appointmentViewModel.apply {
                     showDialog(false)
-                    navigateToAppointmentCheck(groupId, appointmentsId, appointmentName)
+                    if (getTimeTableState is UiState.Success) {
+                        navigateToAppointmentCheck(
+                            groupId,
+                            appointmentId,
+                            appointmentName,
+                            (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentHostSelectionTimes
+                        )
+                    } else {
+                        navigateToAppointmentCheck(
+                            groupId,
+                            appointmentId,
+                            appointmentName,
+                            mockAvailablePeriods
+                        )
+                    }
                 }
             },
             onDismissRequest = {
@@ -115,17 +137,52 @@ fun AppointmentRoute(
             }
         )
     }
-
-    AppointmentScreen(
-        groupId = groupId,
-        appointmentsId = appointmentsId,
-        appointmentName = appointmentName,
-        onBackButtonClick = appointmentViewModel::navigateUp,
-        onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
-        availablePeriods = appointmentViewModel.mockAvailablePeriods,
-        availableTimes = appointmentViewModel.mockAvailableTimes,
-        recommendations = appointmentViewModel.mockRecommendations
-    )
+    if (getOptionsState is UiState.Success && getTimeTableState is UiState.Success) {
+        AppointmentScreen(
+            groupId = groupId,
+            appointmentsId = appointmentId,
+            appointmentName = appointmentName,
+            onBackButtonClick = appointmentViewModel::navigateUp,
+            onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
+            availablePeriods = (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentHostSelectionTimes,
+            availableTimes = (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentMembersInfo,
+            recommendations = (getOptionsState as UiState.Success).data,
+            onLikeClick = { appointmentOptionId, isLiked ->
+                if (isLiked) {
+                    appointmentViewModel.postLike(appointmentId, appointmentOptionId)
+                } else {
+                    appointmentViewModel.deleteLike(appointmentId, appointmentOptionId)
+                }
+            }
+        )
+    } else if (getOptionsState is UiState.Loading || getTimeTableState is UiState.Loading) {
+        NoostakLoadingScreen()
+    } else if (getOptionsState is UiState.Failure || getTimeTableState is UiState.Failure) {
+//        NoostakFailureScreen(
+//            onBackButtonClick = appointmentViewModel::navigateUp,
+//            onRetryButtonClick = {
+//                appointmentViewModel.getOptions(appointmentId = appointmentId)
+//                appointmentViewModel.getTimeTable(appointmentId = appointmentId)
+//            }
+//        )
+        AppointmentScreen(
+            groupId = groupId,
+            appointmentsId = appointmentId,
+            appointmentName = appointmentName,
+            onBackButtonClick = appointmentViewModel::navigateUp,
+            onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
+            availablePeriods = appointmentViewModel.mockAvailablePeriods,
+            availableTimes = appointmentViewModel.mockAvailableTimes,
+            recommendations = appointmentViewModel.mockRecommendations,
+            onLikeClick = { appointmentOptionId, isLiked ->
+                if (isLiked) {
+                    appointmentViewModel.postLike(appointmentId, appointmentOptionId)
+                } else {
+                    appointmentViewModel.deleteLike(appointmentId, appointmentOptionId)
+                }
+            }
+        )
+    }
 }
 
 @Composable
@@ -135,9 +192,10 @@ fun AppointmentScreen(
     appointmentName: String,
     onBackButtonClick: () -> Unit,
     onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
-    availablePeriods: PeriodEntity,
-    availableTimes: TimeTableEntity,
-    recommendations: AppointmentEntity
+    availablePeriods: List<TimeEntity>,
+    availableTimes: List<AppointmentMembersInfoEntity>,
+    recommendations: AppointmentEntity,
+    onLikeClick: (Long, Boolean) -> Unit = { _, _ -> }
 ) {
     val listState = rememberLazyListState()
     val density = LocalDensity.current
@@ -195,7 +253,8 @@ fun AppointmentScreen(
                 Row(
                     modifier = Modifier
                         .showIf(selectedItemIndex == -1)
-                        .noRippleClickable { selectedItemIndex = 0 }
+                        .noRippleClickable { selectedItemIndex = 0 },
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = stringResource(R.string.btn_appointment_total),
@@ -203,6 +262,7 @@ fun AppointmentScreen(
                         style = NoostakTheme.typography.c3Regular
                     )
                     Icon(
+                        modifier = Modifier.size(16.dp),
                         imageVector = ImageVector.vectorResource(id = R.drawable.ic_appointment_right_arrow),
                         contentDescription = null,
                         tint = NoostakTheme.colors.gray800
@@ -255,7 +315,8 @@ fun AppointmentScreen(
                     data = recommendations.recommendationPriority,
                     onConfirmButtonClick = { optionId ->
                         onConfirmButtonClick(groupId, appointmentsId, optionId, appointmentName)
-                    }
+                    },
+                    onLikeClick = onLikeClick
                 )
             }
         }
@@ -289,11 +350,12 @@ fun RecommendationHeaderItem(
                 },
                 shape = RoundedCornerShape(12.dp)
             )
+            .width(116.dp)
             .padding(
                 top = 10.dp,
                 start = 16.dp,
                 bottom = 10.dp,
-                end = 34.dp
+                end = 21.dp
             )
             .noRippleClickable {
                 if (priority == selectedItemIndex) {
