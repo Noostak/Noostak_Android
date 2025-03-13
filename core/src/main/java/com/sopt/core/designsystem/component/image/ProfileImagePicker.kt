@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,12 +20,14 @@ import com.skydoves.landscapist.glide.GlideImage
 import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.type.ProfileType
 
 @Composable
 fun ProfileImagePicker(
     selectedImageUri: String?,
     onCameraBtnClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    profileType: ProfileType = ProfileType.PROFILE
 ) {
     Box(
         modifier = modifier.noRippleClickable {
@@ -32,16 +35,23 @@ fun ProfileImagePicker(
         }
     ) {
         GlideImage(
-            imageModel = { selectedImageUri?.takeIf { it.isNotBlank() } ?: R.drawable.ic_profile },
+            imageModel = {
+                selectedImageUri?.takeIf { it.isNotBlank() } ?: profileType.defaultImage
+            },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
             ),
             modifier = Modifier
-                .size(112.dp)
+                .size(profileType.imageSize)
                 .aspectRatio(1f)
-                .clip(CircleShape),
-            previewPlaceholder = painterResource(id = R.drawable.ic_profile)
+                .clip(
+                    when (profileType) {
+                        ProfileType.PROFILE -> CircleShape
+                        ProfileType.GROUP -> RoundedCornerShape(23.86.dp)
+                    }
+                ),
+            previewPlaceholder = painterResource(id = profileType.defaultImage)
         )
         Image(
             painter = painterResource(id = R.drawable.ic_profile_camera),
@@ -53,10 +63,26 @@ fun ProfileImagePicker(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun ProfileImagePickerPreview() {
     NoostakAndroidTheme {
-        ProfileImagePicker(selectedImageUri = null, onCameraBtnClick = {})
+        ProfileImagePicker(
+            selectedImageUri = null,
+            onCameraBtnClick = {},
+            profileType = ProfileType.PROFILE
+        )
+    }
+}
+
+@Preview
+@Composable
+fun GroupImagePickerPreview() {
+    NoostakAndroidTheme {
+        ProfileImagePicker(
+            selectedImageUri = null,
+            onCameraBtnClick = {},
+            profileType = ProfileType.GROUP
+        )
     }
 }
