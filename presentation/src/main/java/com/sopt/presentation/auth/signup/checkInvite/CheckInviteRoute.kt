@@ -81,8 +81,8 @@ fun CheckInviteScreen(
             contentDescription = stringResource(R.string.btn_invite_code),
             modifier = Modifier
                 .offset(y = offsetY.value.dp)
-                .size(265.dp)
-                .padding(top = 39.dp)
+                .size(width = 202.dp, height = 210.dp)
+                .padding(top = 47.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(
