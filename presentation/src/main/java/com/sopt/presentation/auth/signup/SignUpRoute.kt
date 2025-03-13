@@ -46,6 +46,7 @@ import com.sopt.core.designsystem.component.textfield.NoostakTextField
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
+import com.sopt.core.type.ProfileType
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
 import com.sopt.presentation.R
@@ -200,6 +201,7 @@ fun SignUpScreen(
             modifier = Modifier.padding(top = 70.dp)
         )
         ProfileImagePicker(
+            profileType = ProfileType.PROFILE,
             selectedImageUri = signUpState.profileImageUri,
             onCameraBtnClick = onProfileSettingBtnClick,
             modifier = Modifier

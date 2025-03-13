@@ -37,6 +37,7 @@ import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
+import com.sopt.core.type.ProfileType
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
 import com.sopt.core.util.permission.RequestGalleryPermission
@@ -161,6 +162,7 @@ fun EditProfileScreen(
                     }
             ) {
                 ProfileImagePicker(
+                    profileType = ProfileType.PROFILE,
                     selectedImageUri = userInfoState.profileImage,
                     onCameraBtnClick = onProfileCameraBtnClick,
                     modifier = Modifier
