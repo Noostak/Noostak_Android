@@ -27,15 +27,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.sopt.core.designsystem.component.chip.AvailableUserChips
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
-import com.sopt.core.designsystem.component.chip.NoostakUserChip
+import com.sopt.core.designsystem.component.chip.UnavailableUserChips
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.ConfirmedDetailEntity
-import com.sopt.domain.entity.IdentityEntity
 import com.sopt.presentation.R
 
 @Composable
@@ -192,38 +192,6 @@ fun CompleteDetailInfo(
             style = NoostakTheme.typography.c3Regular
         )
         content()
-    }
-}
-
-@Composable
-fun AvailableUserChips(
-    members: List<String>,
-    myIdentity: IdentityEntity
-) {
-    members.forEachIndexed { index, member ->
-        val isMeAvailable = index == 0 && myIdentity.availability == "available"
-        NoostakUserChip(
-            text = if (isMeAvailable) stringResource(id = R.string.user_chip_me) else member,
-            textColor = NoostakTheme.colors.black,
-            backgroundColor = if (isMeAvailable) NoostakTheme.colors.blue200 else NoostakTheme.colors.white,
-            borderColor = NoostakTheme.colors.blue200
-        )
-    }
-}
-
-@Composable
-fun UnavailableUserChips(
-    members: List<String>,
-    myIdentity: IdentityEntity
-) {
-    members.forEachIndexed { index, member ->
-        val isMeUnavailable = index == 0 && myIdentity.availability == "unavailable"
-        NoostakUserChip(
-            text = if (isMeUnavailable) stringResource(R.string.user_chip_me) else member,
-            textColor = NoostakTheme.colors.gray800,
-            backgroundColor = if (isMeUnavailable) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200,
-            borderColor = if (isMeUnavailable) NoostakTheme.colors.blue200 else NoostakTheme.colors.gray200
-        )
     }
 }
 

@@ -6,15 +6,13 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.type.AvailabilityLevel
 import com.sopt.core.type.CellType
 import com.sopt.core.util.CalculateTime
-import com.sopt.domain.entity.AvailableTimeEntity
-import com.sopt.domain.entity.PeriodEntity
+import com.sopt.domain.entity.AppointmentMembersInfoEntity
 import com.sopt.domain.entity.TimeEntity
-import com.sopt.domain.entity.TimeTableEntity
 
 class TimeTable {
     fun calculateTimeSlots(startTime: String, endTime: String): Int {
-        val startHour = extractHour(extractTime(startTime))
-        val endHour = extractHour(extractTime(endTime))
+        val startHour = extractHour(startTime)
+        val endHour = extractHour(endTime)
         return endHour - startHour
     }
 
@@ -30,32 +28,35 @@ class TimeTable {
         cellType: CellType,
         rowIndex: Int,
         columnIndex: Int,
-        availablePeriods: PeriodEntity,
-        availableTimes: TimeTableEntity
+        availablePeriods: List<TimeEntity>,
+        availableTimes: List<AppointmentMembersInfoEntity>
     ): Color {
         return when (cellType) {
             CellType.Blank, CellType.DateHeader, CellType.TimeHeader -> Color.Transparent
             CellType.Data -> {
-                val startHour = extractHour(extractTime(availablePeriods.startTime))
+                val startHour = extractHour(availablePeriods.first().startTime)
                 val currentHour = startHour + (rowIndex - 1)
 
                 val date =
-                    availablePeriods.dates.getOrNull(columnIndex - 1) ?: return Color.Transparent
+                    availablePeriods.getOrNull(columnIndex - 1)?.date ?: return Color.Transparent
                 // 해당 열(columnIndex) 날짜 데이터 가져오기
                 val formattedDate = extractDate(date)
-                val availableTimesForDate = availableTimes.members.flatMap { member ->
-                    member.times.filter { extractDate(it.date) == formattedDate }
+                // 해당 날짜에 해당하는 사용자의 가능 시간 데이터 필터링
+                val availableTimesForDate = availableTimes.flatMap { member ->
+                    member.appointmentMemberAvailableTimes.filter { timeEntity ->
+                        extractDate(timeEntity.date) == formattedDate
+                    }
                 }
 
                 // 현재 시간에 해당하는 가능 레벨 계산
-                val totalMembers = availableTimes.members.size
-                val availableMembers = availableTimesForDate.count { availableTime ->
-                    availableTime.times.any { timeEntity ->
-                        val entityStartHour = extractHour(extractTime(timeEntity.memberStartTime))
-                        val entityEndHour = extractHour(extractTime(timeEntity.memberEndTime))
-                        currentHour in entityStartHour until entityEndHour
-                    }
+                val totalMembers = availableTimes.size
+                val availableMembers = availableTimesForDate.count { timeEntity ->
+                    val entityStartHour = extractHour(timeEntity.startTime)
+                    val entityEndHour = extractHour(timeEntity.endTime)
+                    currentHour in entityStartHour until entityEndHour
                 }
+
+                // 전체 멤버 중 몇 %가 가능 여부 반환
                 val percentage =
                     if (totalMembers == 0) 0 else (availableMembers * 100 / totalMembers)
                 getColorByLevel(percentage)
@@ -87,9 +88,9 @@ class TimeTable {
         cellType: CellType,
         rowIndex: Int,
         columnIndex: Int,
-        data: PeriodEntity
+        data: List<TimeEntity>
     ): String {
-        val startHour = extractHour(extractTime(data.startTime))
+        val startHour = extractHour(data.first().startTime)
 
         return when (cellType) {
             CellType.Blank -> "\n"
@@ -97,7 +98,7 @@ class TimeTable {
                 if (columnIndex == 0) {
                     ""
                 } else {
-                    formatDateTimeToCustomFormat(data.dates[columnIndex - 1])
+                    formatDateTimeToCustomFormat(data[columnIndex - 1].date)
                 }
             }
 
@@ -108,23 +109,28 @@ class TimeTable {
 
     fun getSelectedTimes(
         selectedCells: List<Pair<Int, Int>>,
-        availablePeriods: PeriodEntity
-    ): List<AvailableTimeEntity> {
-        val selectedTimes = mutableListOf<AvailableTimeEntity>()
+        availablePeriods: List<TimeEntity>
+    ): List<TimeEntity> {
+        val selectedTimes = mutableListOf<TimeEntity>()
         val selectedCellsByDate = selectedCells.groupBy { it.second }
+
         selectedCellsByDate.forEach { (dateColumnIndex, cells) ->
-            val date = availablePeriods.dates.getOrNull(dateColumnIndex - 1) ?: return@forEach
-            val times = cells.map { (rowIndex, _) ->
-                val startHour =
-                    extractHour(extractTime(availablePeriods.startTime)) + (rowIndex - 1)
+            val date = availablePeriods.getOrNull(dateColumnIndex - 1)?.date ?: return@forEach
+            cells.forEach { (rowIndex, _) ->
+                val startHour = extractHour(availablePeriods.first().startTime) + (rowIndex - 1)
                 val endHour = startHour + 1
-                TimeEntity(
-                    memberStartTime = "${extractDate(date)}T${String.format("%02d", startHour)}:00:00",
-                    memberEndTime = "${extractDate(date)}T${String.format("%02d", endHour)}:00:00"
+                selectedTimes.add(
+                    TimeEntity(
+                        date = "${extractDate(date)}T${String.format("%02d", startHour)}:00:00",
+                        startTime = "${extractDate(date)}T${
+                        String.format(
+                            "%02d",
+                            startHour
+                        )
+                        }:00:00",
+                        endTime = "${extractDate(date)}T${String.format("%02d", endHour)}:00:00"
+                    )
                 )
-            }
-            if (times.isNotEmpty()) {
-                selectedTimes.add(AvailableTimeEntity(date = date, times = times))
             }
         }
 
@@ -137,9 +143,8 @@ class TimeTable {
         return "$dayOfWeek\n$date"
     }
 
-    private fun extractTime(dateTime: String): String = dateTime.substringAfter('T')
-
     private fun extractDate(dateTime: String): String = dateTime.substringBefore('T')
 
-    private fun extractHour(time: String): Int = time.substringBefore(':').toInt()
+    private fun extractHour(dateTime: String): Int =
+        dateTime.substringAfter('T').substringBefore(':').toInt()
 }

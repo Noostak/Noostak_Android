@@ -17,7 +17,9 @@ import kotlinx.serialization.Serializable
 fun NavController.navigateMyPage(navOptions: NavOptions? = null) {
     navigate(
         route = MyPage,
-        navOptions = navOptions
+        navOptions = navOptions ?: NavOptions.Builder()
+            .setPopUpTo(0, inclusive = true)
+            .build()
     )
 }
 

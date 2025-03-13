@@ -36,6 +36,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.chip.AvailableUserChips
+import com.sopt.core.designsystem.component.chip.UnavailableUserChips
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
@@ -46,15 +48,14 @@ import com.sopt.domain.entity.OptionEntity
 import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.AppointmentViewModel
-import com.sopt.presentation.groupDetail.confirmedDetail.AvailableUserChips
-import com.sopt.presentation.groupDetail.confirmedDetail.UnavailableUserChips
 
 @Composable
 fun RecommendationScreen(
     isHost: Boolean,
     selectedItemIndex: Int,
     data: List<RecommendationPriorityEntity>,
-    onConfirmButtonClick: (Long) -> Unit
+    onConfirmButtonClick: (Long) -> Unit,
+    onLikeClick: (Long, Boolean) -> Unit = { _, _ -> }
 ) {
     val filteredData = data[selectedItemIndex].options
     var selectedItemId by remember { mutableStateOf<Long?>(null) }
@@ -75,10 +76,13 @@ fun RecommendationScreen(
             items(filteredData, key = { it.id }) { recommendation ->
                 RecommendationItem(
                     data = recommendation,
-                    isSelected = selectedItemId == recommendation.id,
+                    isSelected = if (isHost) selectedItemId == recommendation.id else false,
                     onItemClick = {
                         selectedItemId =
                             if (selectedItemId == recommendation.id) null else recommendation.id
+                    },
+                    onLikeClick = { isLiked ->
+                        onLikeClick(recommendation.id, isLiked)
                     }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -101,7 +105,8 @@ fun RecommendationScreen(
 fun RecommendationItem(
     data: OptionEntity,
     isSelected: Boolean,
-    onItemClick: () -> Unit
+    onItemClick: () -> Unit,
+    onLikeClick: (Boolean) -> Unit
 ) {
     var isLiked by remember { mutableStateOf(data.liked) }
     var likes by remember { mutableIntStateOf(data.likes) }
@@ -171,6 +176,7 @@ fun RecommendationItem(
                     modifier = Modifier.noRippleClickable {
                         isLiked = !isLiked
                         likes = if (isLiked) likes + 1 else likes - 1
+                        onLikeClick(isLiked)
                     },
                     imageVector = if (isLiked) {
                         ImageVector.vectorResource(id = R.drawable.ic_heart_on)
