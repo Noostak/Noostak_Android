@@ -49,6 +49,7 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
 import com.sopt.core.type.DialogType
+import com.sopt.core.type.ProfileType
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
 import com.sopt.domain.entity.GroupProfileEntity
@@ -222,6 +223,7 @@ fun GroupCreateScreen(
                 modifier = Modifier.padding(top = 70.dp)
             )
             ProfileImagePicker(
+                profileType = ProfileType.GROUP,
                 selectedImageUri = groupProfileState.selectedImageUri,
                 onCameraBtnClick = onProfileCameraBtnClick,
                 modifier = Modifier
