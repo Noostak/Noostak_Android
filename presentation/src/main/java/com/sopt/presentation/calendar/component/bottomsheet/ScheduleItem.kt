@@ -49,7 +49,7 @@ fun ScheduleItem(
                 modifier = Modifier.padding(bottom = 3.dp)
             )
             Text(
-                text = if (data.duration == 24) "하루종일" else data.duration.toString(),
+                text = if (data.duration.toInt() == 24) "하루종일" else data.duration.toString(),
                 style = NoostakTheme.typography.c4Regular,
                 color = NoostakTheme.colors.gray700
             )

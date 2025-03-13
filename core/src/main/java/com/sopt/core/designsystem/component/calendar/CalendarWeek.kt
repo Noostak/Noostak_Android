@@ -76,7 +76,7 @@ private fun CalendarWeekGroupNoScrapPreview() {
                 CalendarSchedule(title = "출근", categoryType = "일정")
             ),
             LocalDate.now().minusDays(2).toDateString() to listOf(
-                CalendarSchedule(title = "친구 만남", categoryType = "일정")
+                CalendarSchedule(title = "친구", categoryType = "일정")
             )
         )
 

@@ -87,8 +87,7 @@ fun MyPageRoute(
         NoostakDialog(
             dialogType = DialogType.LOGOUT,
             onClick = {
-                myPageViewModel.clearInfo()
-                navigateToLogin()
+                myPageViewModel.postLogout()
             },
             onDismissRequest = { myPageViewModel.showDialog(DialogType.LOGOUT, false) }
         )
@@ -98,7 +97,7 @@ fun MyPageRoute(
         NoostakDialog(
             dialogType = DialogType.WITHDRAWAL,
             onClick = {
-                // 추가해야 함
+                myPageViewModel.deleteWithdraw()
             },
             onDismissRequest = { myPageViewModel.showDialog(DialogType.WITHDRAWAL, false) }
         )

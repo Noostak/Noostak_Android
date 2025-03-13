@@ -37,11 +37,12 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun OnboardingRoute(
-    authId: String,
-    navigateToSignUp: (String) -> Unit
+    accessToken: String,
+    socialType: String,
+    navigateToSignUp: (String, String) -> Unit
 ) {
     OnboardingScreen(
-        onNextButtonClick = { navigateToSignUp(authId) }
+        onNextButtonClick = { navigateToSignUp(accessToken, socialType) }
     )
 }
 

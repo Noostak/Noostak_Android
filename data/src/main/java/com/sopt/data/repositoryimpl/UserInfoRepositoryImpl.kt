@@ -12,7 +12,7 @@ class UserInfoRepositoryImpl @Inject constructor(
 
     override fun getRefreshToken(): Flow<String> = authDataSource.refreshToken
 
-    override fun getUserId(): Flow<Int> = authDataSource.userId
+    override fun getMemberId(): Flow<Int> = authDataSource.memberId
 
     override fun getIsAutoLogin(): Flow<Boolean> = authDataSource.isAutoLogin
 
@@ -28,8 +28,8 @@ class UserInfoRepositoryImpl @Inject constructor(
         authDataSource.updateRefreshToken(refreshToken)
     }
 
-    override suspend fun saveUserId(userId: Int) {
-        authDataSource.updateUserId(userId)
+    override suspend fun saveMemberId(memberId: Int) {
+        authDataSource.updateMemberId(memberId)
     }
 
     override suspend fun saveIsAutoLogin(isAutoLogin: Boolean) {

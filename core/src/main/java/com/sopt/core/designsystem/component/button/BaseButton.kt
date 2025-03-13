@@ -33,7 +33,7 @@ fun BaseButton(
             modifier = modifier,
             shape = shape,
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (isEnabled) NoostakTheme.colors.black else NoostakTheme.colors.gray500,
+                containerColor = if (isEnabled) NoostakTheme.colors.gray900 else NoostakTheme.colors.gray500,
                 contentColor = NoostakTheme.colors.white
             ),
             contentPadding = PaddingValues(

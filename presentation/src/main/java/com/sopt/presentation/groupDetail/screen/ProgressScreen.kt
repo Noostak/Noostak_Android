@@ -69,10 +69,10 @@ fun ProgressItem(
     onItemClicked: (Long, Long, String) -> Unit
 ) {
     val calculateTime = CalculateTime()
-    val startDate = calculateTime.extractFullDateWithSlash(progressEntity.startDate)
+    val startDate = calculateTime.extractDateWithKorean(progressEntity.startDate)
     val dayOfWeek = calculateTime.extractDayOfWeekWithBraces(progressEntity.startDate)
-    val startHour = calculateTime.extractHourWithKorean(progressEntity.startDate)
-    val endHour = calculateTime.extractHourWithKorean(progressEntity.endDate)
+    val startHour = calculateTime.extractHourWithZero(progressEntity.startDate)
+    val endHour = calculateTime.extractHourWithZero(progressEntity.endDate)
 
     Column(
         modifier = Modifier
