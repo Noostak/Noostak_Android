@@ -13,7 +13,7 @@ enum class ImagePickerType(@DrawableRes val profileImage: Int, val shape: Shape,
     GROUP(
         R.drawable.ic_group_profile,
         RoundedCornerShape(
-            23.dp
+            24.dp
         ),
         105.dp
     )
