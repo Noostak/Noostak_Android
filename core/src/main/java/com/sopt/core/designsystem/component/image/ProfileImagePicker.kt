@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,9 +18,11 @@ import com.skydoves.landscapist.glide.GlideImage
 import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.type.ImagePickerType
 
 @Composable
 fun ProfileImagePicker(
+    imagePickerType: ImagePickerType,
     selectedImageUri: String?,
     onCameraBtnClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -32,16 +33,18 @@ fun ProfileImagePicker(
         }
     ) {
         GlideImage(
-            imageModel = { selectedImageUri?.takeIf { it.isNotBlank() } ?: R.drawable.ic_profile },
+            imageModel = {
+                selectedImageUri?.takeIf { it.isNotBlank() } ?: imagePickerType.profileImage
+            },
             imageOptions = ImageOptions(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
             ),
             modifier = Modifier
-                .size(112.dp)
+                .size(imagePickerType.size)
                 .aspectRatio(1f)
-                .clip(CircleShape),
-            previewPlaceholder = painterResource(id = R.drawable.ic_profile)
+                .clip(imagePickerType.shape),
+            previewPlaceholder = painterResource(id = imagePickerType.profileImage)
         )
         Image(
             painter = painterResource(id = R.drawable.ic_profile_camera),
@@ -57,6 +60,10 @@ fun ProfileImagePicker(
 @Composable
 fun ProfileImagePickerPreview() {
     NoostakAndroidTheme {
-        ProfileImagePicker(selectedImageUri = null, onCameraBtnClick = {})
+        ProfileImagePicker(
+            imagePickerType = ImagePickerType.USER,
+            selectedImageUri = null,
+            onCameraBtnClick = {}
+        )
     }
 }
