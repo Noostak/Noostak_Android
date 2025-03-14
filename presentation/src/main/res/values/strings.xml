@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Noostak-Android</string>
+    <string name="app_name">ScheTook</string>
 
     <!-- Bottom Navigation -->
     <string name="bottom_nav_calendar">캘린더</string>
@@ -62,7 +62,7 @@
     <string name="tv_group_detail_no_complete">현재 확정된 약속이 없어요</string>
     <string name="text_group_detail_progress_date">%1$s %2$s %3$s~%4$s</string>
     <string name="text_group_detail_progress_participants">%1$s명/%2$s명</string>
-    <string name="text_group_detail_confirmed_date">%1$s %2$s %3$s ~ %4$s</string>
+    <string name="text_group_detail_confirmed_date">%1$s %2$s %3$s~%4$s</string>
 
     <!-- 확정된 약속 정보 -->
     <string name="header_complete_detail">약속 정보</string>
@@ -85,6 +85,7 @@
     <string name="btn_appointment_confirm">약속 확정하기</string>
     <string name="title_appointment_check">가능한 시간을\n모두 선택해주세요</string>
     <string name="btn_appointment_check">확인</string>
+    <string name="appointment_check_failure">시간 입력에 실패했어요</string>
     <string name="header_appointment_recommendation">추천 시간</string>
     <string name="btn_appointment_total">전체보기</string>
     <string name="title_appointment_confirm">이대로 약속을 확정 할까요?</string>
@@ -95,6 +96,7 @@
     <string name="tv_appointment_availableMembersCount">%1$s명</string>
     <string name="tv_appointment_totalMembersCount">" / %1$s명"</string>
     <string name="text_appointment_recommendations_blank">현재 추천 가능한 시간이 없어요.</string>
+    <string name="appointment_confirm_failure">약속 확정에 실패했어요</string>
 
     <!-- Group -->
     <string name="fab_group_create">그룹추가</string>
@@ -159,9 +161,6 @@
     <string name="text_appointment_submit_complete_date_consecutive">%1$s ~ %2$s</string>
     <string name="text_appointment_submit_complete_separator">", "</string>
 
-    <!-- 유저 칩 -->
-    <string name="user_chip_me">나</string>
-
     <!-- 날짜 형식 -->
     <string name="text_brace_between_hours">%1$s ~ %2$s</string>
 
@@ -175,8 +174,11 @@
 
     <!-- 캘린더 -->
     <string name="appbar_calendar">ScheTook</string>
+    <string name="text_calendar_group_empty">아직 그룹이 없어요.\n오른쪽 버튼을 눌러 추가해보세요!</string>
 
     <!-- Schedule List -->
+    <string name="text_schedule_list_empty_content">아직 약속이 없어요!\n그룹 약속을 만들러 가볼까요?</string>
+    <string name="snackbar_back_handler">\'뒤로\' 버튼을 한 번 더 누르면 종료돼요</string>
     <string name="text_calendar_schedule_list_empty_content">아직 약속이 없어요!\n그룹 약속을 만들러 가볼까요?</string>
     <string name="btn_calendar_schedule_list_create_appointment">약속 생성하기</string>
     <string name="text_calendar_schedule_item_all_day">하루종일</string>

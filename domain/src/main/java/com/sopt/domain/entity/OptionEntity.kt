@@ -1,12 +1,12 @@
 package com.sopt.domain.entity
 
 data class AppointmentEntity(
-    val isSubmitted: Boolean,
     val isHost: Boolean,
     val recommendationPriority: List<RecommendationPriorityEntity>
 )
 
 data class RecommendationPriorityEntity(
+    val priority: Int,
     val options: List<OptionEntity>
 )
 

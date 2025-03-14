@@ -29,18 +29,20 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.type.CellType
 import com.sopt.core.util.timetable.TimeTable
-import com.sopt.domain.entity.AvailableTimeEntity
-import com.sopt.domain.entity.PeriodEntity
+import com.sopt.domain.entity.TimeEntity
 
 @Composable
 fun NoostakEditableTimeTable(
-    availablePeriods: PeriodEntity,
+    availablePeriods: List<TimeEntity>,
     modifier: Modifier = Modifier,
-    onSelectedTimesChanged: (List<AvailableTimeEntity>) -> Unit
+    onSelectedTimesChanged: (List<TimeEntity>) -> Unit
 ) {
-    val days = availablePeriods.dates.size
+    val days = availablePeriods.size
     val timeSlots =
-        TimeTable().calculateTimeSlots(availablePeriods.startTime, availablePeriods.endTime)
+        TimeTable().calculateTimeSlots(
+            availablePeriods.first().startTime,
+            availablePeriods.first().endTime
+        )
     val selectedCells = remember { mutableStateListOf<Pair<Int, Int>>() }
 
     LazyColumn(
@@ -153,10 +155,22 @@ fun NoostakEditableTimeTable(
 @Composable
 fun NoostakEditableTimeTable1Preview() {
     NoostakAndroidTheme {
-        val mockAvailablePeriods = PeriodEntity(
-            dates = listOf("2024-09-05T10:00:00", "2024-09-06T10:00:00", "2024-09-07T10:00:00"),
-            startTime = "2024-09-05T10:00:00",
-            endTime = "2024-09-07T18:00:00"
+        val mockAvailablePeriods = listOf(
+            TimeEntity(
+                date = "2024-09-05T10:00:00",
+                startTime = "2024-09-05T10:00:00",
+                endTime = "2024-09-05T18:00:00"
+            ),
+            TimeEntity(
+                date = "2024-09-06T10:00:00",
+                startTime = "2024-09-06T10:00:00",
+                endTime = "2024-09-06T18:00:00"
+            ),
+            TimeEntity(
+                date = "2024-09-07T10:00:00",
+                startTime = "2024-09-07T10:00:00",
+                endTime = "2024-09-07T18:00:00"
+            )
         )
         Column(
             modifier = Modifier

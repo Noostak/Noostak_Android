@@ -205,7 +205,7 @@ fun noostakTypography(): NoostakTypography {
             fontWeight = FontWeight.Medium,
             fontSize = 56.sp,
             lineHeight = 67.sp,
-            letterSpacing = 13.sp
+            letterSpacing = 8.sp
         ),
         h1Bold = noostakTextStyle(
             fontFamily = PretendardBold,

@@ -22,7 +22,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +32,7 @@ import androidx.navigation.compose.rememberNavController
 import com.sopt.core.designsystem.component.bottomsheet.NoostakBottomSheet
 import com.sopt.core.designsystem.component.calendar.WeekDaysHeader
 import com.sopt.core.designsystem.component.calendar.YearMonthHeader
-import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.component.topappbar.NoostakLogoAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.getYearMonthByPage
@@ -177,11 +176,7 @@ fun CalendarScreen(
             .statusBarsPadding()
             .navigationBarsPadding(),
         topBar = {
-            NoostakTopAppBar(
-                title = stringResource(R.string.appbar_calendar),
-                isIconVisible = false,
-                isMainAppBar = true
-            )
+            NoostakLogoAppBar()
         }
     ) { innerPadding ->
         Column(
@@ -280,6 +275,22 @@ fun CalendarScreenPreview() {
             ),
             scheduleMap = emptyMap(),
             pagerState = pagerState,
+            currentYearMonth = getYearMonthByPage(initialPage)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CalendarScreenEmptyPreview() {
+    NoostakAndroidTheme {
+        CalendarScreen(
+            groups = emptyList(),
+            scheduleMap = emptyMap(),
+            pagerState = rememberPagerState(
+                initialPage = initialPage,
+                pageCount = { pageCount }
+            ),
             currentYearMonth = getYearMonthByPage(initialPage)
         )
     }

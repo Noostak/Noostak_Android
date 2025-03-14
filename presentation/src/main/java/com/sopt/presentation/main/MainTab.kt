@@ -22,7 +22,7 @@ enum class MainTab(
         contentDescription = R.string.bottom_nav_calendar,
         route = Calendar
     ),
-    APPOINTMENT(
+    GROUP(
         selectedIcon = R.drawable.ic_bnv_group_on,
         unselectedIcon = R.drawable.ic_bnv_group_off,
         contentDescription = R.string.bottom_nav_group,

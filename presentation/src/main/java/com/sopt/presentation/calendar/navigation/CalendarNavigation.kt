@@ -17,7 +17,9 @@ fun NavController.navigateCalendar(
 ) {
     navigate(
         route = Calendar,
-        navOptions = navOptions
+        navOptions = navOptions ?: NavOptions.Builder()
+            .setPopUpTo(0, inclusive = true)
+            .build()
     )
 }
 

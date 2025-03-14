@@ -47,9 +47,6 @@ fun GroupRoute(
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val groupItems = groupViewModel.groupItems
-
-    val isEmpty = groupItems.isEmpty()
-
     val showFABDialog by groupViewModel.showFABDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleOwner) {
@@ -85,21 +82,13 @@ fun GroupRoute(
         )
     }
 
-    when {
-        isEmpty -> NoostakEmptyScreen(
-            emptyText = R.string.text_group_empty_content,
-            color = NoostakTheme.colors.gray600,
-            style = NoostakTheme.typography.b4Regular
-        )
-
-        else -> GroupScreen(
-            paddingValues = paddingValues,
-            groupItems = groupItems,
-            onItemClick = groupViewModel::navigateToGroupDetail,
-            onFabClick = { groupViewModel.showFABDialog(true) },
-            showFABDialog = showFABDialog
-        )
-    }
+    GroupScreen(
+        paddingValues = paddingValues,
+        groupItems = groupItems,
+        onItemClick = groupViewModel::navigateToGroupDetail,
+        onFabClick = { groupViewModel.showFABDialog(true) },
+        showFABDialog = showFABDialog
+    )
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
@@ -133,20 +122,41 @@ fun GroupScreen(
         },
         floatingActionButtonPosition = FabPosition.End
     ) { innerPadding ->
-        Box {
-            LazyColumn(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
-            ) {
-                itemsIndexed(items = groupItems, key = { _, item -> item.groupId }) { index, item ->
-                    GroupItem(item, onItemClick)
-                    if (index != groupItems.lastIndex) {
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            color = NoostakTheme.colors.gray100
-                        )
-                    }
+        if (groupItems.isEmpty()) {
+            NoostakEmptyScreen(
+                emptyText = R.string.text_group_empty_content,
+                color = NoostakTheme.colors.gray600,
+                style = NoostakTheme.typography.b4Regular
+            )
+        } else {
+            GroupItemScreen(
+                innerPadding = innerPadding,
+                groupItems = groupItems,
+                onItemClick = onItemClick
+            )
+        }
+    }
+}
+
+@Composable
+fun GroupItemScreen(
+    innerPadding: PaddingValues = PaddingValues(),
+    groupItems: List<GroupEntity>,
+    onItemClick: (Long) -> Unit
+) {
+    Box {
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
+        ) {
+            itemsIndexed(items = groupItems, key = { _, item -> item.groupId }) { index, item ->
+                GroupItem(item, onItemClick)
+                if (index != groupItems.lastIndex) {
+                    HorizontalDivider(
+                        thickness = 1.dp,
+                        color = NoostakTheme.colors.gray100
+                    )
                 }
             }
         }
