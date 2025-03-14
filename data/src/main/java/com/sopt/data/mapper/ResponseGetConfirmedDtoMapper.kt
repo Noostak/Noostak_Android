@@ -12,7 +12,7 @@ fun ResponseGetConfirmedDto.toAppointmentDetailEntity() = AppointmentDetailEntit
     endTime = appointmentTime.endTime,
     category = category,
     availableMembersCount = availableFriends?.count ?: 0,
-    availableMembers = availableFriends?.names ?: emptyList(),
+    availableMembers = availableFriends?.names?.filterNotNull() ?: emptyList(),
     unavailableMembersCount = unavailableFriends?.count ?: 0,
-    unavailableMembers = unavailableFriends?.names ?: emptyList()
+    unavailableMembers = unavailableFriends?.names ?.filterNotNull() ?: emptyList()
 )

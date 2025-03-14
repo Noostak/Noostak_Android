@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class BaseFriendsDto(
     @SerialName("count") val count: Int,
-    @SerialName("names") val names: List<String>
+    @SerialName("names") val names: List<String?> = emptyList()
 )

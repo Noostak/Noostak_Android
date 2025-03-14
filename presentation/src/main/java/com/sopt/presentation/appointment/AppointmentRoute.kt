@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -44,6 +45,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakFailureScreen
 import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -58,6 +60,7 @@ import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
 import com.sopt.presentation.appointment.screen.RecommendationScreen
+import timber.log.Timber
 
 @Composable
 fun AppointmentRoute(
@@ -102,8 +105,8 @@ fun AppointmentRoute(
     }
 
     LaunchedEffect(key1 = Unit) {
-        appointmentViewModel.getOptions(appointmentId = appointmentId)
-        appointmentViewModel.getTimeTable(appointmentId = appointmentId)
+        appointmentViewModel.getOptions(appointmentId = 4)
+        appointmentViewModel.getTimeTable(appointmentId = 4)
     }
 
     if (showDialog) {
@@ -137,51 +140,43 @@ fun AppointmentRoute(
             }
         )
     }
-    if (getOptionsState is UiState.Success && getTimeTableState is UiState.Success) {
-        AppointmentScreen(
-            groupId = groupId,
-            appointmentsId = appointmentId,
-            appointmentName = appointmentName,
-            onBackButtonClick = appointmentViewModel::navigateUp,
-            onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
-            availablePeriods = (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentHostSelectionTimes,
-            availableTimes = (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentMembersInfo,
-            recommendations = (getOptionsState as UiState.Success).data,
-            onLikeClick = { appointmentOptionId, isLiked ->
-                if (isLiked) {
-                    appointmentViewModel.postLike(appointmentId, appointmentOptionId)
-                } else {
-                    appointmentViewModel.deleteLike(appointmentId, appointmentOptionId)
+    Timber.d("getOptionsState: $getOptionsState")
+    Timber.d("getTimeTableState: $getTimeTableState")
+    when {
+        getOptionsState is UiState.Success && getTimeTableState is UiState.Success -> {
+            val timeTableSuccess = getTimeTableState as UiState.Success
+            val optionsSuccess = getOptionsState as UiState.Success
+
+            AppointmentScreen(
+                groupId = groupId,
+                appointmentsId = appointmentId,
+                appointmentName = appointmentName,
+                onBackButtonClick = appointmentViewModel::navigateUp,
+                onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
+                availablePeriods = timeTableSuccess.data.appointmentSchedule.appointmentHostSelectionTimes,
+                availableTimes = timeTableSuccess.data.appointmentSchedule.appointmentMembersInfo,
+                recommendations = optionsSuccess.data,
+                onLikeClick = { appointmentOptionId, isLiked ->
+                    if (isLiked) {
+                        appointmentViewModel.postLike(4, appointmentOptionId)
+                    } else {
+                        appointmentViewModel.deleteLike(4, appointmentOptionId)
+                    }
                 }
-            }
-        )
-    } else if (getOptionsState is UiState.Loading || getTimeTableState is UiState.Loading) {
-        NoostakLoadingScreen()
-    } else if (getOptionsState is UiState.Failure || getTimeTableState is UiState.Failure) {
-//        NoostakFailureScreen(
-//            onBackButtonClick = appointmentViewModel::navigateUp,
-//            onRetryButtonClick = {
-//                appointmentViewModel.getOptions(appointmentId = appointmentId)
-//                appointmentViewModel.getTimeTable(appointmentId = appointmentId)
-//            }
-//        )
-        AppointmentScreen(
-            groupId = groupId,
-            appointmentsId = appointmentId,
-            appointmentName = appointmentName,
-            onBackButtonClick = appointmentViewModel::navigateUp,
-            onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
-            availablePeriods = appointmentViewModel.mockAvailablePeriods,
-            availableTimes = appointmentViewModel.mockAvailableTimes,
-            recommendations = appointmentViewModel.mockRecommendations,
-            onLikeClick = { appointmentOptionId, isLiked ->
-                if (isLiked) {
-                    appointmentViewModel.postLike(appointmentId, appointmentOptionId)
-                } else {
-                    appointmentViewModel.deleteLike(appointmentId, appointmentOptionId)
+            )
+        }
+        getOptionsState is UiState.Loading || getTimeTableState is UiState.Loading -> {
+            NoostakLoadingScreen()
+        }
+        getOptionsState is UiState.Failure && getTimeTableState is UiState.Failure -> {
+            NoostakFailureScreen(
+                onBackButtonClick = appointmentViewModel::navigateUp,
+                onRetryButtonClick = {
+                    appointmentViewModel.getOptions(appointmentId = appointmentId)
+                    appointmentViewModel.getTimeTable(appointmentId = appointmentId)
                 }
-            }
-        )
+            )
+        }
     }
 }
 

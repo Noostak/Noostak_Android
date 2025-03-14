@@ -95,7 +95,7 @@ fun AppointmentCheckRoute(
         onSelectedDataChange = { selectedData = it },
         onBackButtonClick = appointmentCheckViewModel::navigateToGroupDetail,
         onConfirmButtonClick = {
-            appointmentCheckViewModel.postTimeTable(appointmentId, selectedData)
+            appointmentCheckViewModel.postTimeTable(4, selectedData)
         }
     )
 }

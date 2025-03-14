@@ -15,7 +15,7 @@ import com.sopt.data.service.ApiKeyStorage.APPOINTMENT_OPTION_ID
 import com.sopt.data.service.ApiKeyStorage.CONFIRM
 import com.sopt.data.service.ApiKeyStorage.CONFIRMED
 import com.sopt.data.service.ApiKeyStorage.LIKE
-import com.sopt.data.service.ApiKeyStorage.OPTIONS
+import com.sopt.data.service.ApiKeyStorage.RECOMMENDED_OPTIONS
 import com.sopt.data.service.ApiKeyStorage.TIMETABLE
 import com.sopt.data.service.ApiKeyStorage.V1
 import retrofit2.http.Body
@@ -37,7 +37,7 @@ interface AppointmentConfirmApiService {
         @Path(APPOINTMENT_OPTION_ID) appointmentOptionId: Long
     ): BaseResponse<ResponseLikesDto>
 
-    @GET("/$API/$V1/$APPOINTMENTS/{$APPOINTMENT_ID}/$OPTIONS")
+    @GET("/$API/$V1/$APPOINTMENTS/{$APPOINTMENT_ID}/$RECOMMENDED_OPTIONS")
     suspend fun getOptions(
         @Path(APPOINTMENT_ID) appointmentId: Long
     ): BaseResponse<ResponseGetOptionsDto>

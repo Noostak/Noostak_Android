@@ -46,9 +46,9 @@ fun ResponseGetOptionsOptionDto.toOptionEntity() = OptionEntity(
     likes = likes,
     liked = liked,
     availableMemberCount = availableMemberCount,
-    availableMembers = availableFriends?.names ?: emptyList(),
+    availableMembers = availableFriends?.names?.filterNotNull() ?: emptyList(),
     unavailableMemberCount = unavailableFriends?.count ?: 0,
-    unavailableMembers = unavailableFriends?.names ?: emptyList()
+    unavailableMembers = unavailableFriends?.names?.filterNotNull() ?: emptyList()
 )
 
 fun BaseMyInfoDto.toIdentityEntity() = IdentityEntity(

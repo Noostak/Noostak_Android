@@ -6,19 +6,29 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseGetTimeTableDto(
-    @SerialName("isAppointmentMemberTimeSet") val isAppointmentMemberTimeSet: Boolean,
-    @SerialName("appointmentSchedule") val appointmentSchedule: ResponseAppointmentScheduleDto
+    @SerialName("isAppointMemberTimeSet") val isAppointmentMemberTimeSet: Boolean,
+    @SerialName("appointmentScheduleResponse") val appointmentSchedule: ResponseAppointmentScheduleDto
 )
 
 @Serializable
 data class ResponseAppointmentScheduleDto(
-    @SerialName("appointmentHostSelectionTimes") val appointmentHostSelectionTimes: List<BaseTimeDto>,
-    @SerialName("appointmentMembersInfo") val appointmentMembersInfo: List<ResponseAppointmentMembersInfoDto?>
+    @SerialName("appointmentHostSelectionTimesResponse") val appointmentHostSelectionTimesWrapper: AppointmentHostSelectionTimesWrapper,
+    @SerialName("appointmentMemberInfoResponse") val appointmentMembersInfo: List<ResponseAppointmentMembersInfoDto?>
+)
+
+@Serializable
+data class AppointmentHostSelectionTimesWrapper(
+    @SerialName("appointmentHostSelectionTimeResponses") val appointmentHostSelectionTimes: List<BaseTimeDto>
 )
 
 @Serializable
 data class ResponseAppointmentMembersInfoDto(
     @SerialName("memberId") val memberId: Int,
     @SerialName("memberName") val memberName: String,
-    @SerialName("appointmentMemberAvailableTimes") val appointmentMemberAvailableTimes: List<BaseTimeDto>
+    @SerialName("appointmentMemberAvailableTimesResponse") val appointmentMemberAvailableTimesWrapper: AppointmentMemberAvailableTimesWrapper
+)
+
+@Serializable
+data class AppointmentMemberAvailableTimesWrapper(
+    @SerialName("appointmentMemberAvailableTimesResponseResponse") val appointmentMemberAvailableTimes: List<BaseTimeDto>
 )
