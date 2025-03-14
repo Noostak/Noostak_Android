@@ -145,7 +145,7 @@ fun GroupCreateSuccessScreen(
                 exit = slideOutVertically(targetOffsetY = { it })
             ) {
                 SnackbarHost(
-                    modifier = Modifier.padding(bottom = 78.dp),
+                    modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.bottom_padding_snack_bar_copy_code)),
                     hostState = snackBarHostState,
                     snackbar = { snackBarData ->
                         NoostakSnackBar(
@@ -176,7 +176,7 @@ fun GroupCreateSuccessScreen(
                     painter = painterResource(id = R.drawable.ic_group_create_success),
                     contentDescription = stringResource(R.string.image_group_create_success_description),
                     modifier = Modifier
-                        .padding(top = 51.dp)
+                        .padding(top = 34.dp)
                         .align(Alignment.CenterHorizontally)
                 )
                 Text(
@@ -184,7 +184,7 @@ fun GroupCreateSuccessScreen(
                     color = NoostakTheme.colors.gray900,
                     style = NoostakTheme.typography.t1SemiBold,
                     modifier = Modifier
-                        .padding(top = 16.dp)
+                        .padding(top = 24.dp)
                         .align(Alignment.CenterHorizontally)
                 )
                 Text(
