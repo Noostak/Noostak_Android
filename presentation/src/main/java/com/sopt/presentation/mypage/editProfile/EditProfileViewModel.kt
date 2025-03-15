@@ -76,7 +76,7 @@ class EditProfileViewModel @Inject constructor(
         if (_editProfileState.value.isPermissionGranted) {
             emitSideEffect(EditProfileSideEffect.RequestImagePicker)
         } else {
-            emitSideEffect(EditProfileSideEffect.ShowGalleryToast)
+            emitSideEffect(EditProfileSideEffect.ShowGallerySnackBar)
         }
     }
 

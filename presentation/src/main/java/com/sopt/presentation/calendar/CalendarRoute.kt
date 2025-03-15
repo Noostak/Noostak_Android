@@ -53,11 +53,12 @@ fun CalendarRoute(
     paddingValues: PaddingValues,
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     navigateToGroupCreate: () -> Unit,
-    navigateToGroupEnter: () -> Unit
+    navigateToGroupEnter: () -> Unit,
+    navigateToAppointmentCreate: (Long) -> Unit
 ) {
     val showAddDialog by calendarViewModel.showAddDialog.collectAsStateWithLifecycle()
 
-    val showSheet by calendarViewModel.showBottomSheet.collectAsStateWithLifecycle()
+    val showBottomSheet by calendarViewModel.showBottomSheet.collectAsStateWithLifecycle()
     val navController = rememberNavController()
 
     val scheduleMap by calendarViewModel.scheduleMap.collectAsStateWithLifecycle()
@@ -81,6 +82,10 @@ fun CalendarRoute(
             when (sideEffect) {
                 is CalendarSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
                 is CalendarSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
+                is CalendarSideEffect.NavigateToAppointmentCreate -> navigateToAppointmentCreate(
+                    calendarViewModel.mockScheduleList.groupId
+                )
+
                 is CalendarSideEffect.ShowAddDialog -> calendarViewModel.showAddDialog(true)
                 is CalendarSideEffect.ShowBottomSheet -> calendarViewModel.showBottomSheet(true)
             }
@@ -102,7 +107,7 @@ fun CalendarRoute(
         )
     }
 
-    if (showSheet) {
+    if (showBottomSheet) {
         NoostakBottomSheet(
             onDismissRequest = {
                 calendarViewModel.showBottomSheet(false)
@@ -114,10 +119,14 @@ fun CalendarRoute(
                         ScheduleListScreen(
                             data = calendarViewModel.mockScheduleList,
                             onItemClick = { schedule ->
-                                backStackEntry.savedStateHandle[SCHEDULE] = schedule.id // 바꿔야 함
+                                backStackEntry.savedStateHandle[SCHEDULE] =
+                                    schedule.scheduleId // 바꿔야 함
                                 navController.navigate(SCHEDULE_DETAIL)
                             },
-                            onConfirmBtnClick = { calendarViewModel.showBottomSheet(false) }
+                            onCreateAppointmentBtnClick = {
+                                calendarViewModel.navigateToAppointmentCreate()
+                                calendarViewModel.showBottomSheet(false)
+                            }
                         )
                     }
                     composable(SCHEDULE_DETAIL) {

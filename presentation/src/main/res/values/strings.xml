@@ -111,9 +111,9 @@
     <!-- Group Create Success -->
     <string name="text_group_create_success_title">그룹 만들기가 완료되었습니다</string>
     <string name="text_group_create_success_content">그룹코드를 복사해\n그룹원을 초대해주세요!</string>
-    <string name="text_group_create_success_code_copy">그룹 코드 복사하기</string>
-    <string name="btn_group_create_success_code_send">그룹 코드 보내기</string>
-    <string name="sb_group_create_success_code_copy">그룹 코드가 복사되었습니다</string>
+    <string name="text_group_create_success_code_copy">그룹코드 복사하기</string>
+    <string name="btn_group_create_success_code_send">그룹코드 보내기</string>
+    <string name="sb_group_create_success_code_copy">그룹코드가 복사되었습니다</string>
 
     <!-- Calendar -->
     <string name="text_calendar_appointment">약속 만들기</string>
@@ -179,5 +179,8 @@
     <!-- Schedule List -->
     <string name="text_schedule_list_empty_content">아직 약속이 없어요!\n그룹 약속을 만들러 가볼까요?</string>
     <string name="snackbar_back_handler">\'뒤로\' 버튼을 한 번 더 누르면 종료돼요</string>
+    <string name="text_calendar_schedule_list_empty_content">아직 약속이 없어요!\n그룹 약속을 만들러 가볼까요?</string>
+    <string name="btn_calendar_schedule_list_create_appointment">약속 생성하기</string>
+    <string name="text_calendar_schedule_item_all_day">하루종일</string>
 
 </resources>

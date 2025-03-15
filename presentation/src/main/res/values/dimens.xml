@@ -3,8 +3,8 @@
     <dimen name="horizontal_padding">16dp</dimen>
     <dimen name="vertical_padding">16dp</dimen>
     <dimen name="default_padding">16dp</dimen>
-
     <dimen name="image_radius">10dp</dimen>
-
     <dimen name="bnv_vertical_padding">6dp</dimen>
+    <dimen name="bottom_padding_snack_bar_gallery_permission">96dp</dimen>
+    <dimen name="bottom_padding_snack_bar_copy_code">78dp</dimen>
 </resources>

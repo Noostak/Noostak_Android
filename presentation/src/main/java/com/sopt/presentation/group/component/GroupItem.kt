@@ -31,7 +31,7 @@ fun GroupItem(
             .padding(vertical = 14.dp, horizontal = 6.dp)
     ) {
         GroupImage(
-            imageUrl = if (!data.groupProfileImageUrl.isNullOrEmpty()) data.groupProfileImageUrl else "https://item.elandrs.com/r/image/item/2023-03-29/21e48456-d3bf-4dee-9f3f-8e516f344175.jpg?w=750&h=&q=100",
+            imageUrl = data.groupProfileImageUrl,
             modifier = Modifier
                 .size(44.dp)
                 .aspectRatio(1f)
