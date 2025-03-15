@@ -95,7 +95,7 @@ fun GroupRoute(
 
     if (showErrorDialog) {
         NoostakDialog(
-            dialogType = DialogType.NETWORK_GROUP_CREATE_FAILURE,
+            dialogType = DialogType.NETWORK_FAILURE,
             onClick = {
                 groupViewModel.getGroups()
             },
