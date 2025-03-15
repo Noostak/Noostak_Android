@@ -51,6 +51,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun GroupCreateSuccessRoute(
+    groupId: Long,
     groupInviteCode: String,
     groupCreateSuccessViewModel: GroupCreateSuccessViewModel = hiltViewModel(),
     navigateToGroupDetail: (Long) -> Unit
@@ -96,7 +97,8 @@ fun GroupCreateSuccessRoute(
     }
 
     GroupCreateSuccessScreen(
-        groupCode = groupInviteCode,
+        groupId = groupId,
+        groupInviteCode = groupInviteCode,
         snackBarHostState = snackBarHostState,
         snackBarVisible = snackBarVisible,
         onCloseBtnClick = groupCreateSuccessViewModel::navigateToGroupDetail,
@@ -114,7 +116,8 @@ fun GroupCreateSuccessRoute(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun GroupCreateSuccessScreen(
-    groupCode: String,
+    groupId: Long,
+    groupInviteCode: String,
     snackBarHostState: SnackbarHostState,
     snackBarVisible: MutableState<Boolean>,
     onCloseBtnClick: (Long) -> Unit,
@@ -128,12 +131,7 @@ fun GroupCreateSuccessScreen(
         topBar = {
             NoostakCloseAppBar(
                 modifier = Modifier,
-                onBackButtonClick = {
-                    onCloseBtnClick(
-                        // 임의 id - api 통신에서 변경해야 함
-                        0
-                    )
-                }
+                onBackButtonClick = { onCloseBtnClick(groupId) }
             )
         },
         snackbarHost = {
@@ -195,7 +193,7 @@ fun GroupCreateSuccessScreen(
                         .align(Alignment.CenterHorizontally)
                 )
                 Text(
-                    text = groupCode,
+                    text = groupInviteCode,
                     color = NoostakTheme.colors.gray800,
                     style = NoostakTheme.typography.codeMedium,
                     modifier = Modifier
@@ -204,7 +202,7 @@ fun GroupCreateSuccessScreen(
                 )
             }
             GroupCreateSuccessCopyButton {
-                clipboardManager.setText(AnnotatedString(groupCode))
+                clipboardManager.setText(AnnotatedString(groupInviteCode))
                 onCopyBtnClick()
             }
             NoostakBottomButton(
@@ -226,7 +224,8 @@ fun GroupCreateSuccessScreen(
 fun GroupCreateSuccessScreenPreview() {
     NoostakAndroidTheme {
         GroupCreateSuccessScreen(
-            groupCode = "G8DLUV",
+            groupId = 1,
+            groupInviteCode = "G8DLUV",
             snackBarHostState = SnackbarHostState(),
             snackBarVisible = remember { mutableStateOf(true) },
             onCloseBtnClick = {},
