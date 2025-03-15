@@ -3,9 +3,11 @@ package com.sopt.data.repositoryimpl
 import android.content.ContentResolver
 import com.sopt.data.datasource.GroupDataSource
 import com.sopt.data.mapper.toGroupEntity
+import com.sopt.data.mapper.toGroupSuccessEntity
 import com.sopt.data.util.createImagePart
 import com.sopt.data.util.handleThrowable
 import com.sopt.domain.entity.GroupEntity
+import com.sopt.domain.entity.GroupSuccessEntity
 import com.sopt.domain.repository.GroupRepository
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -26,12 +28,12 @@ class GroupRepositoryImpl @Inject constructor(
     override suspend fun postGroup(
         groupName: String,
         groupProfileImageUrl: String?
-    ): Result<String> {
+    ): Result<GroupSuccessEntity> {
         return runCatching {
             val textRequestBody = createContentRequestBody(groupName)
             val imagePart = contentResolver.createImagePart(groupProfileImageUrl, FILE_NAME)
 
-            groupDataSource.postGroup(textRequestBody, imagePart).result?.groupInviteCode ?: ""
+            groupDataSource.postGroup(textRequestBody, imagePart).result?.toGroupSuccessEntity() ?: GroupSuccessEntity()
         }.onFailure { return it.handleThrowable() }
     }
 
