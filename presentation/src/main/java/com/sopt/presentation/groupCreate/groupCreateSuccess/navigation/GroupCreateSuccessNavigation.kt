@@ -12,11 +12,12 @@ import com.sopt.presentation.groupDetail.navigation.navigateGroupDetail
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateToGroupCreateSuccess(
+    groupId: Long,
     groupInviteCode: String,
     navOptions: NavOptions? = null
 ) {
     navigate(
-        route = GroupCreateSuccess(groupInviteCode = groupInviteCode),
+        route = GroupCreateSuccess(groupId = groupId, groupInviteCode = groupInviteCode),
         navOptions = navOptions ?: NavOptions.Builder()
             .setPopUpTo(GroupCreate, inclusive = true)
             .build()
@@ -29,6 +30,7 @@ fun NavGraphBuilder.groupCreateSuccessNavGraph(
     composable<GroupCreateSuccess> {
         val args = it.toRoute<GroupCreateSuccess>()
         GroupCreateSuccessRoute(
+            groupId = args.groupId,
             groupInviteCode = args.groupInviteCode,
             navigateToGroupDetail = { groupId ->
                 navHostController.popBackStack()
@@ -39,4 +41,4 @@ fun NavGraphBuilder.groupCreateSuccessNavGraph(
 }
 
 @Serializable
-data class GroupCreateSuccess(val groupInviteCode: String) : Route
+data class GroupCreateSuccess(val groupId: Long, val groupInviteCode: String) : Route
