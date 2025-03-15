@@ -45,13 +45,13 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
 import com.sopt.presentation.groupCreate.groupCreateSuccess.component.GroupCreateSuccessCopyButton
-import com.sopt.presentation.groupCreate.groupCreateSuccess.regex.Regex
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
 fun GroupCreateSuccessRoute(
+    groupInviteCode: String,
     groupCreateSuccessViewModel: GroupCreateSuccessViewModel = hiltViewModel(),
     navigateToGroupDetail: (Long) -> Unit
 ) {
@@ -62,10 +62,8 @@ fun GroupCreateSuccessRoute(
     val coroutineScope = rememberCoroutineScope()
     val snackBarVisible = remember { mutableStateOf(false) }
 
-    val groupCode = Regex().generateRandomCode()
-
     val sendIntent = Intent(Intent.ACTION_SEND).apply {
-        putExtra(Intent.EXTRA_TEXT, groupCode)
+        putExtra(Intent.EXTRA_TEXT, groupInviteCode)
         type = "text/plain"
     }
     val shareIntent = Intent.createChooser(sendIntent, null)
@@ -98,7 +96,7 @@ fun GroupCreateSuccessRoute(
     }
 
     GroupCreateSuccessScreen(
-        groupCode = groupCode,
+        groupCode = groupInviteCode,
         snackBarHostState = snackBarHostState,
         snackBarVisible = snackBarVisible,
         onCloseBtnClick = groupCreateSuccessViewModel::navigateToGroupDetail,
@@ -228,7 +226,7 @@ fun GroupCreateSuccessScreen(
 fun GroupCreateSuccessScreenPreview() {
     NoostakAndroidTheme {
         GroupCreateSuccessScreen(
-            groupCode = Regex().generateRandomCode(),
+            groupCode = "G8DLUV",
             snackBarHostState = SnackbarHostState(),
             snackBarVisible = remember { mutableStateOf(true) },
             onCloseBtnClick = {},
