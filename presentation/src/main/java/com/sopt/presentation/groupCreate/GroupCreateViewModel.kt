@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.sopt.core.state.UiState
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.GroupProfileEntity
+import com.sopt.domain.entity.GroupSuccessEntity
 import com.sopt.domain.repository.GroupRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,7 @@ class GroupCreateViewModel @Inject constructor(
     private val _showErrorDialog = MutableStateFlow(false)
     val showErrorDialog: StateFlow<Boolean> get() = _showErrorDialog
 
-    private val _postGroupState: MutableStateFlow<UiState<String>> = MutableStateFlow(UiState.Empty)
+    private val _postGroupState: MutableStateFlow<UiState<GroupSuccessEntity>> = MutableStateFlow(UiState.Empty)
 
     fun postGroup(groupName: String, groupProfileImageUrl: String?) {
         viewModelScope.launch {
@@ -46,8 +47,8 @@ class GroupCreateViewModel @Inject constructor(
         emitSideEffect(GroupCreateSideEffect.ShowErrorDialog)
     }
 
-    private fun navigateToGroupCreateSuccess(groupInviteCode: String) {
-        emitSideEffect(GroupCreateSideEffect.NavigateToGroupCreateSuccess(groupInviteCode))
+    private fun navigateToGroupCreateSuccess(groupSuccessData: GroupSuccessEntity) {
+        emitSideEffect(GroupCreateSideEffect.NavigateToGroupCreateSuccess(groupSuccessData.groupId, groupSuccessData.groupInviteCode))
     }
 
     fun requestGalleryPicker() {
