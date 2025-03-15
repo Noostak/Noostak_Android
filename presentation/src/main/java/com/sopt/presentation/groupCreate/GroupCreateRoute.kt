@@ -1,9 +1,9 @@
 package com.sopt.presentation.groupCreate
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -35,6 +35,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,21 +57,20 @@ import com.sopt.domain.entity.GroupProfileEntity
 import com.sopt.presentation.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun GroupCreateRoute(
     paddingValues: PaddingValues,
-    navigateToGroupCreateSuccess: () -> Unit,
+    navigateToGroupCreateSuccess: (String) -> Unit,
     groupCreateViewModel: GroupCreateViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+
     val groupProfileState by groupCreateViewModel.groupProfileState.collectAsStateWithLifecycle()
 
-    var isGalleryPermission by remember { mutableStateOf(false) }
-
-    val showDialog by groupCreateViewModel.showDialog.collectAsStateWithLifecycle()
+    val showErrorDialog by groupCreateViewModel.showErrorDialog.collectAsStateWithLifecycle()
 
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -86,34 +86,15 @@ fun GroupCreateRoute(
         }
     }
 
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        try {
-            if (isGranted) {
-                groupCreateViewModel.updateGalleryPermissionState(true)
-            } else {
-                isGalleryPermission = true
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        val permission = when {
-            Build.VERSION.SDK_INT == Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_MEDIA_IMAGES
-            Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU -> Manifest.permission.READ_EXTERNAL_STORAGE
-            else -> return@LaunchedEffect
-        }
-
-        permissionLauncher.launch(permission)
-    }
+    var isVisibleSnackBar by remember { mutableStateOf(false) }
+    val permissions = arrayOf(
+        Manifest.permission.READ_MEDIA_IMAGES,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
 
     val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
         groupCreateViewModel.onImageSelected(uri.toString())
     }
-
     val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
         groupCreateViewModel.onImageSelected(uri.toString())
     }
@@ -122,12 +103,14 @@ fun GroupCreateRoute(
         groupCreateViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
-                    is GroupCreateSideEffect.NavigateToGroupCreateSuccess -> navigateToGroupCreateSuccess()
+                    is GroupCreateSideEffect.NavigateToGroupCreateSuccess -> navigateToGroupCreateSuccess(
+                        sideEffect.groupInviteCode
+                    )
 
-                    is GroupCreateSideEffect.ShowSnackBar ->
-                        isGalleryPermission = true
-
-                    is GroupCreateSideEffect.ShowDialog -> groupCreateViewModel.showDialog(true)
+                    is GroupCreateSideEffect.ShowSnackBar -> isVisibleSnackBar = true
+                    is GroupCreateSideEffect.ShowErrorDialog -> groupCreateViewModel.showErrorDialog(
+                        true
+                    )
 
                     is GroupCreateSideEffect.RequestImagePicker -> context.launchImagePicker(
                         galleryLauncher,
@@ -137,18 +120,21 @@ fun GroupCreateRoute(
             }
     }
 
-    if (isGalleryPermission) {
+    if (isVisibleSnackBar) {
         onShowPermissionGallerySnackBar(context.getString(R.string.sb_permission_gallery))
-        isGalleryPermission = false
+        isVisibleSnackBar = false
     }
 
-    if (showDialog) {
+    if (showErrorDialog) {
         NoostakDialog(
             dialogType = DialogType.NETWORK_GROUP_CREATE_FAILURE,
             onClick = {
-                groupCreateViewModel.navigateToGroupCreateSuccess()
+                groupCreateViewModel.postGroup(
+                    groupProfileState.groupName,
+                    groupProfileState.selectedImageUri
+                )
             },
-            onDismissRequest = { groupCreateViewModel.showDialog(false) }
+            onDismissRequest = { groupCreateViewModel.showErrorDialog(false) }
         )
     }
 
@@ -180,12 +166,26 @@ fun GroupCreateRoute(
     GroupCreateScreen(
         paddingValues = paddingValues,
         groupProfileState = groupProfileState,
-        onProfileCameraBtnClick = { groupCreateViewModel.requestGalleryPicker() },
+        onProfileCameraBtnClick = {
+            if (permissions.any {
+                ContextCompat.checkSelfPermission(
+                        context,
+                        it
+                    ) == PackageManager.PERMISSION_GRANTED
+            }
+            ) {
+                groupCreateViewModel.updateGalleryPermissionState(true)
+            } else {
+                isVisibleSnackBar = true
+            }
+
+            groupCreateViewModel.requestGalleryPicker()
+        },
         onNameChange = { newName ->
             groupCreateViewModel.onGroupNameChanged(newName)
         },
-        onNextBtnClick = { nickname, imageUri ->
-            groupCreateViewModel.navigateToGroupCreateSuccess()
+        onNextBtnClick = { groupName, groupProfileImageUrl ->
+            groupCreateViewModel.postGroup(groupName, groupProfileImageUrl)
         }
     )
 }
