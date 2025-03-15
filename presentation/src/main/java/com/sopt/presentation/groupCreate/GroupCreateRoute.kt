@@ -62,7 +62,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun GroupCreateRoute(
     paddingValues: PaddingValues,
-    navigateToGroupCreateSuccess: (String) -> Unit,
+    navigateToGroupCreateSuccess: (Long, String) -> Unit,
     groupCreateViewModel: GroupCreateViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
@@ -104,6 +104,7 @@ fun GroupCreateRoute(
             .collect { sideEffect ->
                 when (sideEffect) {
                     is GroupCreateSideEffect.NavigateToGroupCreateSuccess -> navigateToGroupCreateSuccess(
+                        sideEffect.groupId,
                         sideEffect.groupInviteCode
                     )
 
