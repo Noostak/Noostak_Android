@@ -46,7 +46,7 @@ import com.sopt.core.designsystem.component.textfield.NoostakTextField
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
-import com.sopt.core.type.ProfileType
+import com.sopt.core.type.ImagePickerType
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
 import com.sopt.presentation.R
@@ -71,7 +71,7 @@ fun SignUpRoute(
     val coroutineScope = rememberCoroutineScope()
     val snackBarVisible = remember { mutableStateOf(false) }
 
-    val onShowGalleryPermissionSnackBar: (message: String) -> Unit = {
+    val onShowPermissionGallerySnackBar: (message: String) -> Unit = {
         coroutineScope.launch {
             snackBarVisible.value = true
             val job = launch { snackBarHostState.showSnackbar(message = it) }
@@ -95,11 +95,6 @@ fun SignUpRoute(
         }
     }
 
-    if (isGalleryPermission) {
-        onShowGalleryPermissionSnackBar(context.getString(R.string.sb_permission_gallery))
-        isGalleryPermission = false
-    }
-
     val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
         signUpViewModel.updateProfileImage(uri.toString())
     }
@@ -114,7 +109,9 @@ fun SignUpRoute(
                 when (sideEffect) {
                     is SignUpSideEffect.NavigateToCheckInvite -> navigateToCheckInvite(sideEffect.name)
 
-                    SignUpSideEffect.ShowSnackBar -> isGalleryPermission = true
+                    is SignUpSideEffect.ShowPermissionDeniedDialog ->
+                        isGalleryPermission =
+                            true
 
                     is SignUpSideEffect.RequestImagePicker -> context.launchImagePicker(
                         galleryLauncher,
@@ -123,6 +120,12 @@ fun SignUpRoute(
                 }
             }
     }
+
+    if (isGalleryPermission) {
+        onShowPermissionGallerySnackBar(context.getString(R.string.sb_permission_gallery))
+        isGalleryPermission = false
+    }
+
     AnimatedVisibility(
         visible = snackBarVisible.value,
         enter = slideInVertically(initialOffsetY = { it }),
@@ -134,7 +137,7 @@ fun SignUpRoute(
             SnackbarHost(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 96.dp),
+                    .padding(bottom = dimensionResource(id = R.dimen.bottom_padding_snack_bar_gallery_permission)),
                 hostState = snackBarHostState,
                 snackbar = { snackBarData ->
                     NoostakSnackBar(
@@ -147,6 +150,7 @@ fun SignUpRoute(
             )
         }
     }
+
     SignUpScreen(
         signUpState = signUpState,
         onProfileSettingBtnClick = {
@@ -200,7 +204,7 @@ fun SignUpScreen(
             modifier = Modifier.padding(top = 70.dp)
         )
         ProfileImagePicker(
-            profileType = ProfileType.PROFILE,
+            imagePickerType = ImagePickerType.USER,
             selectedImageUri = signUpState.profileImageUri,
             onCameraBtnClick = onProfileSettingBtnClick,
             modifier = Modifier

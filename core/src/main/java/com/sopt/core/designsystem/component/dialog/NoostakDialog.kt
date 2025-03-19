@@ -59,15 +59,7 @@ fun NoostakDialog(
                     ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(
-                    modifier = Modifier.height(
-                        when (dialogType) {
-                            DialogType.LOGOUT -> 41.dp
-                            DialogType.APPOINTMENT, DialogType.WITHDRAWAL, DialogType.DATA_FAILURE, DialogType.NETWORK_FAILURE -> 30.dp
-                            else -> 24.dp
-                        }
-                    )
-                )
+                Spacer(modifier = Modifier.height(dialogType.paddingTop))
                 Text(
                     text = stringResource(dialogType.content),
                     textAlign = TextAlign.Center,
@@ -76,15 +68,7 @@ fun NoostakDialog(
                         else -> NoostakTheme.typography.c3Regular
                     }
                 )
-                Spacer(
-                    modifier = Modifier.height(
-                        when (dialogType) {
-                            DialogType.LOGOUT -> 36.dp
-                            DialogType.APPOINTMENT, DialogType.WITHDRAWAL, DialogType.DATA_FAILURE, DialogType.NETWORK_FAILURE -> 26.dp
-                            else -> 20.dp
-                        }
-                    )
-                )
+                Spacer(modifier = Modifier.height(dialogType.paddingBottom))
                 HorizontalDivider(
                     modifier = Modifier.fillMaxWidth(),
                     color = NoostakTheme.colors.gray200,

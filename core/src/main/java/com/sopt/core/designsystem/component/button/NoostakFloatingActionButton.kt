@@ -33,7 +33,7 @@ fun NoostakFloatingActionButton(
         interactionSource = NoRippleInteractionSource
     ) {
         Icon(
-            imageVector = ImageVector.vectorResource(id = R.drawable.ic_add),
+            imageVector = ImageVector.vectorResource(id = R.drawable.ic_fab_add),
             contentDescription = null,
             tint = NoostakTheme.colors.white
         )

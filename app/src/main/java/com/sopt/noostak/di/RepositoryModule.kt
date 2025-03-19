@@ -1,13 +1,13 @@
 package com.sopt.noostak.di
 
 import com.sopt.data.repositoryimpl.AccountRepositoryImpl
-import com.sopt.data.repositoryimpl.AuthRepositoryImpl
 import com.sopt.data.repositoryimpl.AppointmentConfirmRepositoryImpl
+import com.sopt.data.repositoryimpl.AuthRepositoryImpl
 import com.sopt.data.repositoryimpl.ExampleRepositoryImpl
 import com.sopt.data.repositoryimpl.UserInfoRepositoryImpl
 import com.sopt.domain.repository.AccountRepository
-import com.sopt.domain.repository.AuthRepository
 import com.sopt.domain.repository.AppointmentConfirmRepository
+import com.sopt.domain.repository.AuthRepository
 import com.sopt.domain.repository.ExampleRepository
 import com.sopt.domain.repository.UserInfoRepository
 import dagger.Binds

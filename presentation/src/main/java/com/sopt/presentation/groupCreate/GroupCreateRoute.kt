@@ -49,7 +49,7 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
 import com.sopt.core.type.DialogType
-import com.sopt.core.type.ProfileType
+import com.sopt.core.type.ImagePickerType
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
 import com.sopt.domain.entity.GroupProfileEntity
@@ -144,7 +144,7 @@ fun GroupCreateRoute(
 
     if (showDialog) {
         NoostakDialog(
-            dialogType = DialogType.GROUP,
+            dialogType = DialogType.NETWORK_GROUP_CREATE_FAILURE,
             onClick = {
                 groupCreateViewModel.navigateToGroupCreateSuccess()
             },
@@ -163,7 +163,7 @@ fun GroupCreateRoute(
             SnackbarHost(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 96.dp),
+                    .padding(bottom = dimensionResource(id = R.dimen.bottom_padding_snack_bar_gallery_permission)),
                 hostState = snackBarHostState,
                 snackbar = { snackBarData ->
                     NoostakSnackBar(
@@ -223,7 +223,7 @@ fun GroupCreateScreen(
                 modifier = Modifier.padding(top = 70.dp)
             )
             ProfileImagePicker(
-                profileType = ProfileType.GROUP,
+                imagePickerType = ImagePickerType.GROUP,
                 selectedImageUri = groupProfileState.selectedImageUri,
                 onCameraBtnClick = onProfileCameraBtnClick,
                 modifier = Modifier
