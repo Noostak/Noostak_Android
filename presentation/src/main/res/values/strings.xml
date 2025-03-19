@@ -46,10 +46,12 @@
     <string name="sb_permission_gallery">설정에서 갤러리 권한을 확인해 주세요</string>
 
     <!-- 그룹 초대 입력 -->
-    <string name="tv_invite_description">환영해요 %1$s님!\n그룹코드를 받으셨나요?</string>
+    <string name="tv_invite_description_1">환영해요 %1$s님!</string>
+    <string name="tv_invite_description_2">그룹코드를 받으셨나요?</string>
     <string name="tv_invite_empty">아니요, 초대받은 그룹이 없어요.</string>
     <string name="btn_invite_code">그룹코드 입력하기</string>
-    <string name="tv_input_code_description">초대를 받으셨다면,\n그룹코드를 입력해주세요.</string>
+    <string name="tv_input_code_description_1">초대를 받으셨다면,</string>
+    <string name="tv_input_code_description_2">그룹코드를 입력해주세요.</string>
     <string name="btn_invite_code_confirm">확인</string>
 
     <!-- 그룹 상세 -->

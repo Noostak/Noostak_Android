@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -69,12 +69,17 @@ fun CheckInviteScreen(
     ) {
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = stringResource(R.string.tv_invite_description, name),
+            text = stringResource(R.string.tv_invite_description_1, name),
             textAlign = TextAlign.Center,
             color = NoostakTheme.colors.gray900,
-            style = NoostakTheme.typography.t1SemiBold.copy(
-                lineHeight = 29.sp
-            )
+            style = NoostakTheme.typography.t1SemiBold
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = stringResource(R.string.tv_invite_description_2, name),
+            textAlign = TextAlign.Center,
+            color = NoostakTheme.colors.gray900,
+            style = NoostakTheme.typography.t1SemiBold
         )
         Image(
             painter = painterResource(id = R.drawable.ic_invite_code),

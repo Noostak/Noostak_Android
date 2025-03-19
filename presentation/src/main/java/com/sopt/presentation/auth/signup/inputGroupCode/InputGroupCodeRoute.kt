@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.textfield.OtpInputField
@@ -90,14 +89,18 @@ fun InputGroupCodeScreen(
         ) {
             Spacer(modifier = Modifier.height(147.dp))
             Text(
-                text = stringResource(R.string.tv_input_code_description),
+                text = stringResource(R.string.tv_input_code_description_1),
                 color = NoostakTheme.colors.gray900,
-                style = NoostakTheme.typography.t1SemiBold.copy(
-                    lineHeight = 29.sp
-                ),
+                style = NoostakTheme.typography.t1SemiBold,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(R.string.tv_input_code_description_2),
+                color = NoostakTheme.colors.gray900,
+                style = NoostakTheme.typography.t1SemiBold,
                 textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(bottom = 24.dp)
+                modifier = Modifier.padding(bottom = 24.dp)
             )
             OtpInputField(
                 otpText = groupCode,
