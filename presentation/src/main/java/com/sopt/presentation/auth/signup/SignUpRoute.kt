@@ -69,15 +69,15 @@ fun SignUpRoute(
 
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val snackBarVisible = remember { mutableStateOf(false) }
+    var snackBarVisible by remember { mutableStateOf(false) }
 
     val onShowPermissionGallerySnackBar: (message: String) -> Unit = {
         coroutineScope.launch {
-            snackBarVisible.value = true
+            snackBarVisible = true
             val job = launch { snackBarHostState.showSnackbar(message = it) }
             delay(SNACK_BAR_DURATION)
             job.cancel()
-            snackBarVisible.value = false
+            snackBarVisible = false
         }
     }
 
@@ -127,7 +127,7 @@ fun SignUpRoute(
     }
 
     AnimatedVisibility(
-        visible = snackBarVisible.value,
+        visible = snackBarVisible,
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
