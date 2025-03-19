@@ -109,7 +109,7 @@ fun SignUpRoute(
                 when (sideEffect) {
                     is SignUpSideEffect.NavigateToCheckInvite -> navigateToCheckInvite(sideEffect.name)
 
-                    is SignUpSideEffect.ShowPermissionDeniedDialog ->
+                    is SignUpSideEffect.ShowSnackBar ->
                         isGalleryPermission =
                             true
 
