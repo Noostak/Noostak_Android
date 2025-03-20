@@ -149,12 +149,12 @@ fun MyPageScreen(
                     top = 24.dp,
                     start = dimensionResource(id = com.sopt.presentation.R.dimen.horizontal_padding),
                     end = dimensionResource(id = com.sopt.presentation.R.dimen.horizontal_padding),
-                    bottom = 20.dp
+                    bottom = 19.dp
                 )
             ) {
                 GlideImage(
                     imageModel = {
-                        profileImage?.takeIf { it.isNotBlank() } ?: R.drawable.ic_profile
+                        profileImage?.takeIf { it.isNotBlank() } ?: R.drawable.ic_user_profile
                     },
                     imageOptions = ImageOptions(
                         contentScale = ContentScale.Crop,
@@ -162,10 +162,10 @@ fun MyPageScreen(
                     ),
                     modifier = Modifier
                         .padding(end = 12.dp)
-                        .size(60.dp)
+                        .size(61.dp)
                         .aspectRatio(1f)
                         .clip(CircleShape),
-                    previewPlaceholder = painterResource(id = R.drawable.ic_profile)
+                    previewPlaceholder = painterResource(id = R.drawable.ic_user_profile)
                 )
                 Text(
                     text = nickname,

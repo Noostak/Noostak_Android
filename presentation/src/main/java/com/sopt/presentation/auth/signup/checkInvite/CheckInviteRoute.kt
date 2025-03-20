@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -68,7 +69,14 @@ fun CheckInviteScreen(
     ) {
         Spacer(modifier = Modifier.weight(1f))
         Text(
-            text = stringResource(R.string.tv_invite_description, name),
+            text = stringResource(R.string.tv_invite_description_1, name),
+            textAlign = TextAlign.Center,
+            color = NoostakTheme.colors.gray900,
+            style = NoostakTheme.typography.t1SemiBold
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+        Text(
+            text = stringResource(R.string.tv_invite_description_2, name),
             textAlign = TextAlign.Center,
             color = NoostakTheme.colors.gray900,
             style = NoostakTheme.typography.t1SemiBold
@@ -78,8 +86,8 @@ fun CheckInviteScreen(
             contentDescription = stringResource(R.string.btn_invite_code),
             modifier = Modifier
                 .offset(y = offsetY.value.dp)
-                .size(265.dp)
-                .padding(top = 24.dp)
+                .size(width = 202.dp, height = 210.dp)
+                .padding(top = 47.dp)
         )
         Spacer(modifier = Modifier.weight(1f))
         Text(

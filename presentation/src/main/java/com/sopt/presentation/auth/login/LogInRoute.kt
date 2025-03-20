@@ -62,8 +62,8 @@ fun LoginRoute(
                 onClick = {
                     loginViewModel.showDialog(dialogType, false)
                     when (dialogType) {
-                        DialogType.LOGIN_KAKAO -> loginViewModel.kakaoLogin(context)
-                        DialogType.LOGIN_GOOGLE -> loginViewModel.googleLogin(context)
+                        DialogType.NETWORK_LOGIN_KAKAO_FAILURE -> loginViewModel.kakaoLogin(context)
+                        DialogType.NETWORK_LOGIN_GOOGLE_FAILURE -> loginViewModel.googleLogin(context)
                         else -> Unit
                     }
                 },
