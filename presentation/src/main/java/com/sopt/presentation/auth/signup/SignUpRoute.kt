@@ -59,25 +59,25 @@ fun SignUpRoute(
     accessToken: String,
     socialType: String,
     navigateToCheckInvite: (String) -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
+    signUpViewModel: SignUpViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val signUpState by viewModel.signUpState.collectAsStateWithLifecycle()
+    val signUpState by signUpViewModel.signUpState.collectAsStateWithLifecycle()
 
     var isGalleryPermission by remember { mutableStateOf(false) }
 
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val snackBarVisible = remember { mutableStateOf(false) }
+    var snackBarVisible by remember { mutableStateOf(false) }
 
     val onShowPermissionGallerySnackBar: (message: String) -> Unit = {
         coroutineScope.launch {
-            snackBarVisible.value = true
+            snackBarVisible = true
             val job = launch { snackBarHostState.showSnackbar(message = it) }
             delay(SNACK_BAR_DURATION)
             job.cancel()
-            snackBarVisible.value = false
+            snackBarVisible = false
         }
     }
 
@@ -86,7 +86,7 @@ fun SignUpRoute(
     ) { isGranted ->
         try {
             if (isGranted) {
-                viewModel.updateGalleryPermissionState(true)
+                signUpViewModel.updateGalleryPermissionState(true)
             } else {
                 isGalleryPermission = true
             }
@@ -96,20 +96,20 @@ fun SignUpRoute(
     }
 
     val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
-        viewModel.updateProfileImage(uri.toString())
+        signUpViewModel.updateProfileImage(uri.toString())
     }
 
     val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
-        viewModel.updateProfileImage(uri.toString())
+        signUpViewModel.updateProfileImage(uri.toString())
     }
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
+        signUpViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
                     is SignUpSideEffect.NavigateToCheckInvite -> navigateToCheckInvite(sideEffect.name)
 
-                    is SignUpSideEffect.ShowPermissionDeniedDialog ->
+                    is SignUpSideEffect.ShowSnackBar ->
                         isGalleryPermission =
                             true
 
@@ -127,7 +127,7 @@ fun SignUpRoute(
     }
 
     AnimatedVisibility(
-        visible = snackBarVisible.value,
+        visible = snackBarVisible,
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
@@ -154,10 +154,10 @@ fun SignUpRoute(
     SignUpScreen(
         signUpState = signUpState,
         onProfileSettingBtnClick = {
-            handleProfileBtnClick(viewModel, permissionLauncher)
+            handleProfileBtnClick(signUpViewModel, permissionLauncher)
         },
-        onNameChange = { viewModel.onNicknameChanged(it) },
-        onSignUpClick = { viewModel.postSignUp(accessToken, socialType) }
+        onNameChange = { signUpViewModel.onNicknameChanged(it) },
+        onSignUpClick = { signUpViewModel.postSignUp(accessToken, socialType) }
     )
 }
 
