@@ -1,6 +1,5 @@
 package com.sopt.presentation.calendar
 
-import androidx.lifecycle.viewModelScope
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
@@ -12,9 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,7 +26,6 @@ class CalendarViewModel @Inject constructor() :
     val scheduleMap: StateFlow<Map<String, List<CalendarSchedule>>> get() = _scheduleMap
 
     init {
-        loadSampleSchedule()
     }
 
     fun showAddDialog(show: Boolean) {
@@ -51,47 +46,6 @@ class CalendarViewModel @Inject constructor() :
 
     fun navigateToAppointmentCreate() {
         emitSideEffect(CalendarSideEffect.NavigateToAppointmentCreate)
-    }
-
-    private fun loadSampleSchedule() {
-        viewModelScope.launch {
-            _scheduleMap.value = mapOf(
-                "2025-02-04" to listOf(
-                    CalendarSchedule(title = "회의", categoryType = "중요"),
-                    CalendarSchedule(title = "책 읽기", categoryType = "취미"),
-                    CalendarSchedule(title = "영화 관람", categoryType = "일정"),
-                    CalendarSchedule(title = "스터디 모임", categoryType = "중요"),
-                    CalendarSchedule(title = "저녁 식사", categoryType = "일정")
-                ),
-                "2025-02-12" to listOf(
-                    CalendarSchedule(title = "회의", categoryType = "중요"),
-                    CalendarSchedule(title = "운동", categoryType = "취미")
-                ),
-                "2025-02-13" to listOf(
-                    CalendarSchedule(title = "회의", categoryType = "중요")
-                ),
-                "2025-02-14" to listOf(
-                    CalendarSchedule(title = "출근", categoryType = "일정"),
-                    CalendarSchedule(title = "이름이 긴 약속", categoryType = "기타")
-                )
-            )
-        }
-    }
-
-    // 특정 월의 데이터 불러오기
-    fun getScheduleMonth(date: LocalDate) {
-        val monthKey = date.format(DateTimeFormatter.ofPattern("yyyy-MM"))
-        viewModelScope.launch {
-            val newScheduleMap = _scheduleMap.value.toMutableMap()
-
-            newScheduleMap[monthKey] = listOf(
-                CalendarSchedule(title = "월간 미팅", categoryType = "중요"),
-                CalendarSchedule(title = "팀 회의", categoryType = "중요"),
-                CalendarSchedule(title = "운동", categoryType = "취미")
-            )
-
-            _scheduleMap.value = newScheduleMap
-        }
     }
 
     val mockGroups = listOf(
