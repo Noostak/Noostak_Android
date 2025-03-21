@@ -1,5 +1,6 @@
 package com.sopt.presentation.calendar
 
+import androidx.lifecycle.viewModelScope
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
@@ -7,14 +8,20 @@ import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.entity.ScheduleDetailEntity
 import com.sopt.domain.entity.ScheduleEntity
 import com.sopt.domain.entity.ScheduleListDetailEntity
+import com.sopt.domain.usecase.GetCalendarAppointmentsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.time.YearMonth
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor() :
+class CalendarViewModel @Inject constructor(
+    private val getCalendarAppointmentsUseCase: GetCalendarAppointmentsUseCase
+) :
     BaseViewModel<CalendarSideEffect>() {
     private val _showAddDialog = MutableStateFlow(false)
     val showAddDialog get() = _showAddDialog
@@ -25,7 +32,10 @@ class CalendarViewModel @Inject constructor() :
     private val _scheduleMap = MutableStateFlow<Map<String, List<CalendarSchedule>>>(emptyMap())
     val scheduleMap: StateFlow<Map<String, List<CalendarSchedule>>> get() = _scheduleMap
 
+    private var currentYearMonth: YearMonth = YearMonth.now()
+
     init {
+        getCalendarAppointments(currentYearMonth.year, currentYearMonth.monthValue)
     }
 
     fun showAddDialog(show: Boolean) {
@@ -46,6 +56,30 @@ class CalendarViewModel @Inject constructor() :
 
     fun navigateToAppointmentCreate() {
         emitSideEffect(CalendarSideEffect.NavigateToAppointmentCreate)
+    }
+
+    // 캘린더 약속 정보 가져오기
+    private fun getCalendarAppointments(year: Int, month: Int) {
+        viewModelScope.launch {
+            getCalendarAppointmentsUseCase(1, year, month)
+                .fold(
+                    onSuccess = { response ->
+                        val newScheduleMap = response.currentMonthAppointments.associate {
+                            it.day.toString() to it.appointments.map { appointment ->
+                                CalendarSchedule(
+                                    scrapId = appointment.id,
+                                    title = appointment.name,
+                                    categoryType = appointment.category
+                                )
+                            }
+                        }
+                        _scheduleMap.value = newScheduleMap
+                    },
+                    onFailure = { error ->
+                        Timber.e("getCalendarAppointments Failed: ${error.message}")
+                    }
+                )
+        }
     }
 
     val mockGroups = listOf(
