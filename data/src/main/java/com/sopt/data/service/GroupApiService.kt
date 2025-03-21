@@ -21,6 +21,6 @@ interface GroupApiService {
     @POST("/$API/$V1/$GROUPS")
     suspend fun postGroup(
         @Part("groupName") groupName: RequestBody,
-        @Part groupProfileImageUrl: MultipartBody.Part?
+        @Part groupProfileImage: MultipartBody.Part?
     ): BaseResponse<ResponsePostGroupDto>
 }

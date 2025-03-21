@@ -185,8 +185,8 @@ fun GroupCreateRoute(
         onNameChange = { newName ->
             groupCreateViewModel.onGroupNameChanged(newName)
         },
-        onNextBtnClick = { groupName, groupProfileImageUrl ->
-            groupCreateViewModel.postGroup(groupName, groupProfileImageUrl)
+        onNextBtnClick = { groupName, groupProfileImage ->
+            groupCreateViewModel.postGroup(groupName, groupProfileImage)
         }
     )
 }

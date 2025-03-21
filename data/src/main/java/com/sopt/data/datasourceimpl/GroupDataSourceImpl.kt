@@ -17,8 +17,8 @@ class GroupDataSourceImpl @Inject constructor(private val groupApiService: Group
 
     override suspend fun postGroup(
         groupName: RequestBody,
-        groupProfileImageUrl: MultipartBody.Part?
+        groupProfileImage: MultipartBody.Part?
     ): BaseResponse<ResponsePostGroupDto> {
-        return groupApiService.postGroup(groupName, groupProfileImageUrl)
+        return groupApiService.postGroup(groupName, groupProfileImage)
     }
 }

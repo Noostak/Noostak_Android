@@ -25,10 +25,10 @@ class GroupCreateViewModel @Inject constructor(
 
     private val _postGroupState: MutableStateFlow<UiState<GroupSuccessEntity>> = MutableStateFlow(UiState.Empty)
 
-    fun postGroup(groupName: String, groupProfileImageUrl: String?) {
+    fun postGroup(groupName: String, groupProfileImage: String?) {
         viewModelScope.launch {
             _postGroupState.emit(UiState.Loading)
-            groupRepository.postGroup(groupName, groupProfileImageUrl)
+            groupRepository.postGroup(groupName, groupProfileImage)
                 .onSuccess {
                     _postGroupState.emit(UiState.Success(it))
                     navigateToGroupCreateSuccess(it)

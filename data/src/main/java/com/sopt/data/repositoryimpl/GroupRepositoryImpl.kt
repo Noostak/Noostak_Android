@@ -27,11 +27,11 @@ class GroupRepositoryImpl @Inject constructor(
 
     override suspend fun postGroup(
         groupName: String,
-        groupProfileImageUrl: String?
+        groupProfileImage: String?
     ): Result<GroupSuccessEntity> {
         return runCatching {
             val textRequestBody = createContentRequestBody(groupName)
-            val imagePart = contentResolver.createImagePart(groupProfileImageUrl, FILE_NAME)
+            val imagePart = contentResolver.createImagePart(groupProfileImage, FILE_NAME)
 
             groupDataSource.postGroup(textRequestBody, imagePart).result?.toGroupSuccessEntity() ?: GroupSuccessEntity()
         }.onFailure { return it.handleThrowable() }
