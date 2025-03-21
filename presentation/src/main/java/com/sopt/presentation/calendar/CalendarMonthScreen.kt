@@ -13,7 +13,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.calendar.CalendarMonthPager
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.extension.getLocalDateByPage
+import com.sopt.core.extension.getYearMonthByPage
 import com.sopt.domain.entity.CalendarSchedule
 
 @Composable
@@ -24,10 +24,10 @@ fun CalendarMonthScreen(
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     onItemClick: () -> Unit = {}
 ) {
-    LaunchedEffect(key1 = pagerState.currentPage) {
+    LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
-            .collect { currentPage ->
-                calendarViewModel.getScheduleMonth(getLocalDateByPage(currentPage))
+            .collect { page ->
+                calendarViewModel.onMonthChanged(getYearMonthByPage(page))
             }
     }
 

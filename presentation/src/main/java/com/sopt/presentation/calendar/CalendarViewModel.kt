@@ -82,6 +82,14 @@ class CalendarViewModel @Inject constructor(
         }
     }
 
+    // 현재 월 변경 시 캘린더 API 재호출
+    fun onMonthChanged(newYearMonth: YearMonth) {
+        if (currentYearMonth != newYearMonth) {
+            currentYearMonth = newYearMonth
+            getCalendarAppointments(newYearMonth.year, newYearMonth.monthValue)
+        }
+    }
+
     val mockGroups = listOf(
         CalendarGroupEntity(
             id = 1,

@@ -73,7 +73,7 @@ fun CalendarRoute(
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
             .collect { page ->
-                calendarViewModel.getScheduleMonth(getYearMonthByPage(page).atDay(1))
+                calendarViewModel.onMonthChanged(getYearMonthByPage(page))
             }
     }
 
