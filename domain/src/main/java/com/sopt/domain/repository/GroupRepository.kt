@@ -7,6 +7,6 @@ interface GroupRepository {
     suspend fun getGroups(): Result<List<GroupEntity>>
     suspend fun postGroup(
         groupName: String,
-        groupProfileImageUrl: String?
+        groupProfileImage: String?
     ): Result<GroupSuccessEntity>
 }
