@@ -10,6 +10,6 @@ interface GroupDataSource {
     suspend fun getGroups(): BaseResponse<ResponseGetGroupsDto>
     suspend fun postGroup(
         groupName: RequestBody,
-        groupProfileImageUrl: MultipartBody.Part?
+        groupProfileImage: MultipartBody.Part?
     ): BaseResponse<ResponsePostGroupDto>
 }
