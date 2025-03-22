@@ -8,5 +8,5 @@ data class ResponsePostGroupDto(
     @SerialName("groupId") val groupId: Long,
     @SerialName("groupName") val groupName: String,
     @SerialName("groupProfileImageUrl") val groupProfileImageUrl: String? = null,
-    @SerialName("groupInviteCode") val groupInviteCode: String
+    @SerialName("groupInvitationCode") val groupInvitationCode: String
 )
