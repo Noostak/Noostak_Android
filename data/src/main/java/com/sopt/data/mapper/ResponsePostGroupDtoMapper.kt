@@ -5,5 +5,5 @@ import com.sopt.domain.entity.GroupSuccessEntity
 
 fun ResponsePostGroupDto.toGroupSuccessEntity() = GroupSuccessEntity(
     groupId = groupId,
-    groupInviteCode = groupInviteCode
+    groupInvitationCode = groupInvitationCode
 )
