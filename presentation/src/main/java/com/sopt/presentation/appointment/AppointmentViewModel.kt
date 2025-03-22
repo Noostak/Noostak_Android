@@ -148,7 +148,7 @@ class AppointmentViewModel @Inject constructor(
     val mockAvailableTimes = listOf(
         AppointmentMembersInfoEntity(
             memberId = 1,
-            memberName = "권장순",
+            memberName = "범태하",
             appointmentMemberAvailableTimes = listOf(
                 TimeEntity(
                     date = "2024-09-05T00:00:00",

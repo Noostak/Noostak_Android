@@ -25,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -121,13 +120,6 @@ fun AppointmentRoute(
                             appointmentId,
                             appointmentName,
                             (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentHostSelectionTimes
-                        )
-                    } else {
-                        navigateToAppointmentCheck(
-                            groupId,
-                            appointmentId,
-                            appointmentName,
-                            mockAvailablePeriods
                         )
                     }
                 }

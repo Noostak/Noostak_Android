@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,7 +58,6 @@ fun AppointmentConfirmRoute(
     val showErrorDialog by appointmentConfirmViewModel.showErrorDialog.collectAsStateWithLifecycle()
     val getConfirmedState by appointmentConfirmViewModel.getConfirmedState.collectAsStateWithLifecycle()
     val postConfirmedState by appointmentConfirmViewModel.postConfirmedState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
     LaunchedEffect(key1 = appointmentConfirmViewModel.sideEffects) {
         appointmentConfirmViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -69,7 +67,8 @@ fun AppointmentConfirmRoute(
                 }
 
                 is AppointmentConfirmSideEffect.ShowErrorDialog -> appointmentConfirmViewModel.showErrorDialog(
-                    sideEffect.show, sideEffect.dialogType
+                    sideEffect.show,
+                    sideEffect.dialogType
                 )
             }
         }

@@ -65,7 +65,8 @@ fun AppointmentCheckRoute(
                 }
 
                 is AppointmentCheckSideEffect.ShowErrorDialog -> appointmentCheckViewModel.showErrorDialog(
-                    sideEffect.show, sideEffect.dialogType
+                    sideEffect.show,
+                    sideEffect.dialogType
                 )
             }
         }
