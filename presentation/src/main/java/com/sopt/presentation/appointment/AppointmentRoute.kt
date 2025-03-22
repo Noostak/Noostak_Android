@@ -105,8 +105,8 @@ fun AppointmentRoute(
     }
 
     LaunchedEffect(key1 = Unit) {
-        appointmentViewModel.getOptions(appointmentId = 4)
-        appointmentViewModel.getTimeTable(appointmentId = 4)
+        appointmentViewModel.getOptions(appointmentId = appointmentId)
+        appointmentViewModel.getTimeTable(appointmentId = appointmentId)
     }
 
     if (showDialog) {
@@ -158,9 +158,9 @@ fun AppointmentRoute(
                 recommendations = optionsSuccess.data,
                 onLikeClick = { appointmentOptionId, isLiked ->
                     if (isLiked) {
-                        appointmentViewModel.postLike(4, appointmentOptionId)
+                        appointmentViewModel.postLike(appointmentId, appointmentOptionId)
                     } else {
-                        appointmentViewModel.deleteLike(4, appointmentOptionId)
+                        appointmentViewModel.deleteLike(appointmentId, appointmentOptionId)
                     }
                 }
             )

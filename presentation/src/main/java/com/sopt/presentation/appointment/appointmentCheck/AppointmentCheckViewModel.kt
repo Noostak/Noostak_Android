@@ -2,21 +2,26 @@ package com.sopt.presentation.appointment.appointmentCheck
 
 import androidx.lifecycle.viewModelScope
 import com.sopt.core.state.UiState
+import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.repository.AppointmentConfirmRepository
-import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 @HiltViewModel
 class AppointmentCheckViewModel @Inject constructor(
     private val appointmentConfirmRepository: AppointmentConfirmRepository
 ) : BaseViewModel<AppointmentCheckSideEffect>() {
+    private val _showErrorDialog = MutableStateFlow(Pair(false, DialogType.DATA_FAILURE))
+    val showErrorDialog: StateFlow<Pair<Boolean, DialogType>> get() = _showErrorDialog.asStateFlow()
+
     private val _postTimeTableState: MutableStateFlow<UiState<Unit>> =
         MutableStateFlow(UiState.Empty)
     val postTimeTableState: StateFlow<UiState<Unit>> get() = _postTimeTableState.asStateFlow()
@@ -28,12 +33,35 @@ class AppointmentCheckViewModel @Inject constructor(
                 onSuccess = {
                     _postTimeTableState.emit(UiState.Success(it))
                 },
-                onFailure = {
-                    _postTimeTableState.emit(UiState.Failure(it.message.toString()))
-                    emitSideEffect(AppointmentCheckSideEffect.ShowToast(R.string.appointment_check_failure))
+                onFailure = { throwable ->
+                    when (throwable) {
+                        is IOException -> {
+                            _postTimeTableState.emit(UiState.Failure(throwable.message.toString()))
+                            emitSideEffect(
+                                AppointmentCheckSideEffect.ShowErrorDialog(
+                                    true,
+                                    DialogType.NETWORK_FAILURE
+                                )
+                            )
+                        }
+
+                        else -> {
+                            _postTimeTableState.emit(UiState.Failure(throwable.message.toString()))
+                            emitSideEffect(
+                                AppointmentCheckSideEffect.ShowErrorDialog(
+                                    true,
+                                    DialogType.DATA_FAILURE
+                                )
+                            )
+                        }
+                    }
                 }
             )
         }
+    }
+
+    fun showErrorDialog(show: Boolean, dialogType: DialogType) {
+        _showErrorDialog.update { it.copy(first = show, second = dialogType) }
     }
 
     fun navigateUp() {
@@ -64,5 +92,6 @@ sealed class AppointmentCheckSideEffect {
     ) : AppointmentCheckSideEffect()
 
     data class NavigateToGroupDetail(val groupId: Long) : AppointmentCheckSideEffect()
-    data class ShowToast(val message: Int) : AppointmentCheckSideEffect()
+    data class ShowErrorDialog(val show: Boolean, val dialogType: DialogType) :
+        AppointmentCheckSideEffect()
 }

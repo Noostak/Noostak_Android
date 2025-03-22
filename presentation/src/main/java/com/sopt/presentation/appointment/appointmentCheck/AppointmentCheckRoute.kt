@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -24,11 +23,11 @@ import androidx.constraintlayout.compose.Dimension
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.timetable.NoostakEditableTimeTable
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.extension.toast
 import com.sopt.core.state.UiState
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
@@ -46,8 +45,8 @@ fun AppointmentCheckRoute(
     appointmentCheckViewModel: AppointmentCheckViewModel = hiltViewModel()
 ) {
     val postTimeTableState by appointmentCheckViewModel.postTimeTableState.collectAsStateWithLifecycle()
+    val showErrorDialog by appointmentCheckViewModel.showErrorDialog.collectAsStateWithLifecycle()
     var selectedData by remember { mutableStateOf(emptyList<TimeEntity>()) }
-    val context = LocalContext.current
     val rememberedAvailablePeriods = remember { availablePeriods }
     LaunchedEffect(key1 = appointmentCheckViewModel.sideEffects) {
         appointmentCheckViewModel.sideEffects.collect { sideEffect ->
@@ -65,9 +64,9 @@ fun AppointmentCheckRoute(
                     navigateToGroupDetail(sideEffect.groupId)
                 }
 
-                is AppointmentCheckSideEffect.ShowToast -> {
-                    context.toast(sideEffect.message)
-                }
+                is AppointmentCheckSideEffect.ShowErrorDialog -> appointmentCheckViewModel.showErrorDialog(
+                    sideEffect.show, sideEffect.dialogType
+                )
             }
         }
     }
@@ -95,9 +94,22 @@ fun AppointmentCheckRoute(
         onSelectedDataChange = { selectedData = it },
         onBackButtonClick = appointmentCheckViewModel::navigateToGroupDetail,
         onConfirmButtonClick = {
-            appointmentCheckViewModel.postTimeTable(4, selectedData)
+            appointmentCheckViewModel.postTimeTable(appointmentId, selectedData)
         }
     )
+
+    if (showErrorDialog.first) {
+        NoostakDialog(
+            dialogType = showErrorDialog.second,
+            onClick = {
+                appointmentCheckViewModel.showErrorDialog(false, showErrorDialog.second)
+                appointmentCheckViewModel.postTimeTable(appointmentId, selectedData)
+            },
+            onDismissRequest = {
+                appointmentCheckViewModel.showErrorDialog(false, showErrorDialog.second)
+            }
+        )
+    }
 }
 
 @Composable

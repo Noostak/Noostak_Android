@@ -10,6 +10,7 @@ import com.sopt.domain.repository.AppointmentConfirmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -20,15 +21,16 @@ class AppointmentConfirmViewModel @Inject constructor(
     private val appointmentConfirmRepository: AppointmentConfirmRepository
 ) : BaseViewModel<AppointmentConfirmSideEffect>() {
     private val _showErrorDialog = MutableStateFlow(Pair(false, DialogType.DATA_FAILURE))
-    val showErrorDialog: StateFlow<Pair<Boolean, DialogType>> get() = _showErrorDialog
+    val showErrorDialog: StateFlow<Pair<Boolean, DialogType>> get() = _showErrorDialog.asStateFlow()
 
     private val _getConfirmedState: MutableStateFlow<UiState<AppointmentDetailEntity>> =
         MutableStateFlow(UiState.Empty)
-    val getConfirmedState: MutableStateFlow<UiState<AppointmentDetailEntity>> = _getConfirmedState
+    val getConfirmedState: StateFlow<UiState<AppointmentDetailEntity>> =
+        _getConfirmedState.asStateFlow()
 
     private val _postConfirmedState: MutableStateFlow<UiState<Unit>> =
         MutableStateFlow(UiState.Empty)
-    val postConfirmedState: MutableStateFlow<UiState<Unit>> = _postConfirmedState
+    val postConfirmedState: StateFlow<UiState<Unit>> = _postConfirmedState.asStateFlow()
 
     fun getConfirmed(appointmentOptionId: Long) {
         viewModelScope.launch {
@@ -55,11 +57,22 @@ class AppointmentConfirmViewModel @Inject constructor(
                     when (throwable) {
                         is IOException -> { // 네트워크 에러
                             _postConfirmedState.emit(UiState.Failure(throwable.message.toString()))
-                            emitSideEffect(AppointmentConfirmSideEffect.ShowErrorDialog(true, DialogType.NETWORK_FAILURE))
+                            emitSideEffect(
+                                AppointmentConfirmSideEffect.ShowErrorDialog(
+                                    true,
+                                    DialogType.NETWORK_FAILURE
+                                )
+                            )
                         }
+
                         else -> { // 서버 통신 에러
                             _postConfirmedState.emit(UiState.Failure(throwable.message.toString()))
-                            emitSideEffect(AppointmentConfirmSideEffect.ShowErrorDialog(true, DialogType.DATA_FAILURE))
+                            emitSideEffect(
+                                AppointmentConfirmSideEffect.ShowErrorDialog(
+                                    true,
+                                    DialogType.DATA_FAILURE
+                                )
+                            )
                         }
                     }
                 }
@@ -107,6 +120,6 @@ sealed class AppointmentConfirmSideEffect {
         val groupId: Long
     ) : AppointmentConfirmSideEffect()
 
-    data class ShowToast(val message: Int) : AppointmentConfirmSideEffect()
-    data class ShowErrorDialog(val show: Boolean, val dialogType: DialogType) : AppointmentConfirmSideEffect()
+    data class ShowErrorDialog(val show: Boolean, val dialogType: DialogType) :
+        AppointmentConfirmSideEffect()
 }

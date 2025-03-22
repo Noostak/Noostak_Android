@@ -33,11 +33,11 @@ import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
 import com.sopt.core.designsystem.component.chip.UnavailableUserChips
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakFailureScreen
 import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
-import com.sopt.core.extension.toast
 import com.sopt.core.state.UiState
 import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
@@ -68,7 +68,6 @@ fun AppointmentConfirmRoute(
                     navigateToGroupDetail(sideEffect.groupId)
                 }
 
-                is AppointmentConfirmSideEffect.ShowToast -> context.toast(sideEffect.message)
                 is AppointmentConfirmSideEffect.ShowErrorDialog -> appointmentConfirmViewModel.showErrorDialog(
                     sideEffect.show, sideEffect.dialogType
                 )
@@ -106,20 +105,11 @@ fun AppointmentConfirmRoute(
 
         is UiState.Failure -> {
             Timber.e("getConfirmedState is failure $getConfirmedState")
-//            NoostakFailureScreen(
-//                onBackButtonClick = appointmentConfirmViewModel::navigateUp,
-//                onRetryButtonClick = {
-//                    appointmentConfirmViewModel.getConfirmed(optionId)
-//                }
-//            )
-            AppointmentConfirmScreen(
-                groupId = groupId,
-                appointmentName = appointmentName,
+            NoostakFailureScreen(
                 onBackButtonClick = appointmentConfirmViewModel::navigateUp,
-                onConfirmButtonClick = {
-                    appointmentConfirmViewModel.postConfirmed(optionId)
-                },
-                data = appointmentConfirmViewModel.mockAppointmentDetail
+                onRetryButtonClick = {
+                    appointmentConfirmViewModel.getConfirmed(optionId)
+                }
             )
         }
 
