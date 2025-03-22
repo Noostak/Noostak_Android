@@ -1,5 +1,6 @@
 package com.sopt.presentation.groupDetail.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,7 +11,9 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,8 +34,13 @@ fun ConfirmedScreen(
     onItemClicked: (Long, Long, String) -> Unit
 ) {
     if (confirmedEntities.isEmpty()) {
+        Image(
+            modifier = Modifier
+                .padding(top = 103.dp, bottom = 4.dp),
+            imageVector = ImageVector.vectorResource(R.drawable.ic_group_detail_empty),
+            contentDescription = null
+        )
         Text(
-            modifier = Modifier.padding(top = 119.dp),
             text = stringResource(R.string.tv_group_detail_no_complete),
             color = NoostakTheme.colors.gray900,
             style = NoostakTheme.typography.b2Regular
