@@ -9,10 +9,7 @@ import com.sopt.data.util.handleThrowable
 import com.sopt.domain.entity.GroupEntity
 import com.sopt.domain.entity.GroupSuccessEntity
 import com.sopt.domain.repository.GroupRepository
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONObject
 import javax.inject.Inject
 
 class GroupRepositoryImpl @Inject constructor(
@@ -30,22 +27,16 @@ class GroupRepositoryImpl @Inject constructor(
         groupProfileImage: String?
     ): Result<GroupSuccessEntity> {
         return runCatching {
-            val textRequestBody = createContentRequestBody(groupName)
             val imagePart = contentResolver.createImagePart(groupProfileImage, FILE_NAME)
 
-            groupDataSource.postGroup(textRequestBody, imagePart).result?.toGroupSuccessEntity() ?: GroupSuccessEntity()
+            groupDataSource.postGroup(
+                groupName.toRequestBody(),
+                imagePart
+            ).result?.toGroupSuccessEntity() ?: GroupSuccessEntity()
         }.onFailure { return it.handleThrowable() }
     }
 
-    private fun createContentRequestBody(groupName: String): RequestBody {
-        val contentJson = JSONObject().apply {
-            put(GROUP_NAME, groupName)
-        }.toString()
-        return contentJson.toRequestBody("application/json".toMediaTypeOrNull())
-    }
-
     companion object {
-        private const val FILE_NAME = "groupProfileImageUrl"
-        private const val GROUP_NAME = "groupName"
+        private const val FILE_NAME = "groupProfileImage"
     }
 }
