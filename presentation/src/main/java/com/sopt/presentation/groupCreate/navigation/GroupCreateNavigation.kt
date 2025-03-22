@@ -27,10 +27,10 @@ fun NavGraphBuilder.groupCreateNavGraph(
     composable<GroupCreate> {
         GroupCreateRoute(
             paddingValues = paddingValues,
-            navigateToGroupCreateSuccess = { groupId, groupInviteCode ->
+            navigateToGroupCreateSuccess = { groupId, groupInvitationCode ->
                 navHostController.navigateToGroupCreateSuccess(
                     groupId = groupId,
-                    groupInviteCode = groupInviteCode
+                    groupInvitationCode = groupInvitationCode
                 )
             }
         )

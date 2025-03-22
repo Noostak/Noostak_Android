@@ -48,7 +48,7 @@ class GroupCreateViewModel @Inject constructor(
     }
 
     private fun navigateToGroupCreateSuccess(groupSuccessData: GroupSuccessEntity) {
-        emitSideEffect(GroupCreateSideEffect.NavigateToGroupCreateSuccess(groupSuccessData.groupId, groupSuccessData.groupInviteCode))
+        emitSideEffect(GroupCreateSideEffect.NavigateToGroupCreateSuccess(groupSuccessData.groupId, groupSuccessData.groupInvitationCode))
     }
 
     fun requestGalleryPicker() {
