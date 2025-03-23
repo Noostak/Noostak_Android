@@ -15,7 +15,7 @@ fun ResponseGetTimeTableDto.toTimeTableEntity() = TimeTableEntity(
 )
 
 fun ResponseAppointmentScheduleDto.toAppointmentScheduleEntity() = AppointmentScheduleEntity(
-    appointmentHostSelectionTimes = appointmentHostSelectionTimesWrapper.appointmentHostSelectionTimes.map { it.toTimeEntity() },
+    appointmentHostSelectionTimes = appointmentHostSelectionTimes.map { it.toTimeEntity() },
     appointmentMembersInfo = appointmentMembersInfo.map {
         it?.toAppointmentMembersInfoEntity() ?: AppointmentMembersInfoEntity(
             memberId = -1,
@@ -29,7 +29,7 @@ fun ResponseAppointmentMembersInfoDto.toAppointmentMembersInfoEntity() =
     AppointmentMembersInfoEntity(
         memberId = memberId,
         memberName = memberName,
-        appointmentMemberAvailableTimes = appointmentMemberAvailableTimesWrapper.appointmentMemberAvailableTimes.map { it.toTimeEntity() }
+        appointmentMemberAvailableTimes = appointmentMemberAvailableTimes.map { it.toTimeEntity() }
     )
 
 fun BaseTimeDto.toTimeEntity() = TimeEntity(
