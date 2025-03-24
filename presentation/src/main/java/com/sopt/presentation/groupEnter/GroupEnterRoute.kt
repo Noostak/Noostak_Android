@@ -1,4 +1,4 @@
-package com.sopt.presentation.auth.signup.inputGroupCode
+package com.sopt.presentation.groupEnter
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
@@ -34,28 +34,28 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
 
 @Composable
-fun InputGroupCodeRoute(
+fun GroupEnterRoute(
     navigateToGroup: () -> Unit,
     navigateUp: () -> Unit,
-    inputGroupCodeViewModel: InputGroupCodeViewModel = hiltViewModel()
+    groupEnterViewModel: GroupEnterViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(inputGroupCodeViewModel.sideEffects) {
-        inputGroupCodeViewModel.sideEffects.collect { sideEffect ->
+    LaunchedEffect(groupEnterViewModel.sideEffects) {
+        groupEnterViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
-                is InputGroupCodeSideEffect.NavigateUp -> navigateUp()
-                is InputGroupCodeSideEffect.NavigateToGroup -> navigateToGroup()
+                is GroupEnterSideEffect.NavigateUp -> navigateUp()
+                is GroupEnterSideEffect.NavigateToGroup -> navigateToGroup()
             }
         }
     }
 
-    InputGroupCodeScreen(
-        onBackButtonClick = inputGroupCodeViewModel::navigateUp,
-        onCheckGroupCodeClick = inputGroupCodeViewModel::navigateToGroup
+    GroupEnterScreen(
+        onBackButtonClick = groupEnterViewModel::navigateUp,
+        onCheckGroupCodeClick = groupEnterViewModel::navigateToGroup
     )
 }
 
 @Composable
-fun InputGroupCodeScreen(
+fun GroupEnterScreen(
     onBackButtonClick: () -> Unit,
     onCheckGroupCodeClick: () -> Unit
 ) {
@@ -89,14 +89,14 @@ fun InputGroupCodeScreen(
         ) {
             Spacer(modifier = Modifier.height(147.dp))
             Text(
-                text = stringResource(R.string.tv_input_code_description_1),
+                text = stringResource(R.string.tv_group_enter_description_1),
                 color = NoostakTheme.colors.gray900,
                 style = NoostakTheme.typography.t1SemiBold,
                 textAlign = TextAlign.Center
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                text = stringResource(R.string.tv_input_code_description_2),
+                text = stringResource(R.string.tv_group_enter_description_2),
                 color = NoostakTheme.colors.gray900,
                 style = NoostakTheme.typography.t1SemiBold,
                 textAlign = TextAlign.Center,
@@ -110,7 +110,7 @@ fun InputGroupCodeScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             NoostakBottomButton(
-                text = stringResource(R.string.btn_invite_code_confirm),
+                text = stringResource(R.string.btn_group_enter_confirm),
                 isEnabled = groupCode.length == 6,
                 onButtonClick = onCheckGroupCodeClick
             )
@@ -120,9 +120,9 @@ fun InputGroupCodeScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun InputGroupCodePreview() {
+fun GroupEnterPreview() {
     NoostakAndroidTheme {
-        InputGroupCodeScreen(
+        GroupEnterScreen(
             onBackButtonClick = {},
             onCheckGroupCodeClick = {}
         )
