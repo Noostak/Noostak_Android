@@ -1,5 +1,7 @@
 package com.sopt.presentation.groupCreate.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -17,6 +19,7 @@ fun NavController.navigateToGroupCreate(navOptions: NavOptions? = null) {
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun NavGraphBuilder.groupCreateNavGraph(
     paddingValues: PaddingValues,
     navHostController: NavController
@@ -24,8 +27,11 @@ fun NavGraphBuilder.groupCreateNavGraph(
     composable<GroupCreate> {
         GroupCreateRoute(
             paddingValues = paddingValues,
-            navigateToGroupCreateSuccess = {
-                navHostController.navigateToGroupCreateSuccess()
+            navigateToGroupCreateSuccess = { groupId, groupInvitationCode ->
+                navHostController.navigateToGroupCreateSuccess(
+                    groupId = groupId,
+                    groupInvitationCode = groupInvitationCode
+                )
             }
         )
     }
