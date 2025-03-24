@@ -55,6 +55,9 @@ import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.AppointmentEntity
 import com.sopt.domain.entity.AppointmentMembersInfoEntity
+import com.sopt.domain.entity.IdentityEntity
+import com.sopt.domain.entity.OptionEntity
+import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
@@ -158,9 +161,11 @@ fun AppointmentRoute(
                 }
             )
         }
+
         getOptionsState is UiState.Loading || getTimeTableState is UiState.Loading -> {
             NoostakLoadingScreen()
         }
+
         getOptionsState is UiState.Failure && getTimeTableState is UiState.Failure -> {
             NoostakFailureScreen(
                 onBackButtonClick = appointmentViewModel::navigateUp,
@@ -302,7 +307,13 @@ fun AppointmentScreen(
                     selectedItemIndex = selectedItemIndex,
                     data = recommendations.recommendationPriority,
                     onConfirmButtonClick = { optionId ->
-                        onConfirmButtonClick(groupId, appointmentsId, optionId, appointmentName, recommendations.isHost)
+                        onConfirmButtonClick(
+                            groupId,
+                            appointmentsId,
+                            optionId,
+                            appointmentName,
+                            recommendations.isHost
+                        )
                     },
                     onLikeClick = onLikeClick
                 )
@@ -407,16 +418,162 @@ fun RecommendationHeaderItem(
 @Composable
 fun AppointmentScreenPreview() {
     NoostakAndroidTheme {
-        val appointmentViewModel: AppointmentViewModel = hiltViewModel()
         AppointmentScreen(
             groupId = 1,
             appointmentsId = 1,
             appointmentName = "3차 회의",
             onBackButtonClick = {},
             onConfirmButtonClick = { _, _, _, _, _ -> },
-            availablePeriods = appointmentViewModel.mockAvailablePeriods,
-            availableTimes = appointmentViewModel.mockAvailableTimes,
-            recommendations = appointmentViewModel.mockRecommendations
+            availablePeriods = listOf(
+                TimeEntity(
+                    date = "2024-09-05T10:00:00",
+                    startTime = "2024-09-05T10:00:00",
+                    endTime = "2024-09-05T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-06T10:00:00",
+                    startTime = "2024-09-06T10:00:00",
+                    endTime = "2024-09-06T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-07T10:00:00",
+                    startTime = "2024-09-07T10:00:00",
+                    endTime = "2024-09-07T18:00:00"
+                )
+            ),
+            availableTimes = listOf(
+                AppointmentMembersInfoEntity(
+                    memberId = 1,
+                    memberName = "범태하",
+                    appointmentMemberAvailableTimes = listOf(
+                        TimeEntity(
+                            date = "2024-09-05T00:00:00",
+                            startTime = "2024-09-05T10:00:00",
+                            endTime = "2024-09-05T11:00:00"
+                        ),
+                        TimeEntity(
+                            date = "2024-09-05T00:00:00",
+                            startTime = "2024-09-06T14:00:00",
+                            endTime = "2024-09-06T15:00:00"
+                        ),
+                        TimeEntity(
+                            date = "2024-09-06T00:00:00",
+                            startTime = "2024-09-06T10:00:00",
+                            endTime = "2024-09-06T11:00:00"
+                        ),
+                        TimeEntity(
+                            date = "2024-09-07T00:00:00",
+                            startTime = "2024-09-07T10:00:00",
+                            endTime = "2024-09-07T11:00:00"
+                        )
+                    )
+                ),
+                AppointmentMembersInfoEntity(
+                    memberId = 2,
+                    memberName = "김민수",
+                    appointmentMemberAvailableTimes = listOf(
+                        TimeEntity(
+                            date = "2024-09-05T00:00:00",
+                            startTime = "2024-09-05T10:00:00",
+                            endTime = "2024-09-05T11:00:00"
+                        ),
+                        TimeEntity(
+                            date = "2024-09-05T00:00:00",
+                            startTime = "2024-09-05T11:00:00",
+                            endTime = "2024-09-05T12:00:00"
+                        )
+                    )
+                )
+            ),
+            recommendations = AppointmentEntity(
+                isHost = true,
+                recommendationPriority = listOf(
+                    RecommendationPriorityEntity(
+                        priority = 1,
+                        options = listOf(
+                            OptionEntity(
+                                id = 1,
+                                totalMemberCount = 20,
+                                myIdentity = IdentityEntity(
+                                    availability = "AVAILABLE",
+                                    position = 0,
+                                    name = "이가을"
+                                ),
+                                date = "2024-09-27T00:00:00",
+                                startTime = "2024-09-27T11:00:00",
+                                endTime = "2024-09-27T14:00:00",
+                                likes = 15,
+                                liked = true,
+                                availableMemberCount = 10,
+                                availableMembers = listOf(
+                                    "이가을", "선우정아", "대한민국만세", "최영희", "정영수",
+                                    "이가을", "김언지", "박유진", "임하늘", "변우석"
+                                ),
+                                unavailableMemberCount = 5,
+                                unavailableMembers = listOf("한강", "이영희", "박영수", "최영희", "정영수")
+                            )
+                        )
+                    ),
+                    RecommendationPriorityEntity(
+                        priority = 2,
+                        options = listOf(
+                            OptionEntity(
+                                id = 3,
+                                totalMemberCount = 10,
+                                myIdentity = IdentityEntity(
+                                    availability = "AVAILABLE",
+                                    position = 0,
+                                    name = "이가을"
+                                ),
+                                date = "2024-09-27T00:00:00",
+                                startTime = "2024-09-27T11:00:00",
+                                endTime = "2024-09-27T14:00:00",
+                                likes = 15,
+                                liked = true,
+                                availableMemberCount = 5,
+                                availableMembers = listOf(
+                                    "이가을",
+                                    "선우정아",
+                                    "대한민국만세",
+                                    "최영희",
+                                    "정영수"
+                                ),
+                                unavailableMemberCount = 5,
+                                unavailableMembers = listOf("한강", "이영희", "박영수", "최영희", "정영수")
+                            )
+                        )
+                    ),
+                    RecommendationPriorityEntity(
+                        priority = 3,
+                        options = listOf(
+                            OptionEntity(
+                                id = 5,
+                                totalMemberCount = 10,
+                                myIdentity = IdentityEntity(
+                                    availability = "AVAILABLE",
+                                    position = 0,
+                                    name = "이가을"
+                                ),
+                                date = "2024-09-27T00:00:00",
+                                startTime = "2024-09-27T11:00:00",
+                                endTime = "2024-09-27T14:00:00",
+                                likes = 15,
+                                liked = true,
+                                availableMemberCount = 5,
+                                availableMembers = listOf(
+                                    "이가을",
+                                    "선우정아",
+                                    "대한민국만세",
+                                    "최영희",
+                                    "정영수"
+                                ),
+                                unavailableMemberCount = 5,
+                                unavailableMembers = listOf("한강", "이영희", "박영수", "최영희", "정영수")
+                            )
+                        )
+                    )
+                )
+            )
         )
     }
 }

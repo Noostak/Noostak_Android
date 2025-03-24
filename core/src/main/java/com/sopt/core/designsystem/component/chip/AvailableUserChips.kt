@@ -12,7 +12,7 @@ fun AvailableUserChips(
     myIdentity: IdentityEntity
 ) {
     members.forEachIndexed { index, member ->
-        val isMeAvailable = index == 0 && myIdentity.availability == "available" && myIdentity.name == member
+        val isMeAvailable = index == 0 && myIdentity.availability == "AVAILABLE" && myIdentity.name == member
         NoostakUserChip(
             text = if (isMeAvailable) stringResource(id = R.string.user_chip_me) else member,
             textColor = NoostakTheme.colors.black,
