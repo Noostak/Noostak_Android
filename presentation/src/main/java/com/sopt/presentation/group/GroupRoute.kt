@@ -27,6 +27,7 @@ import com.sopt.core.designsystem.component.button.NoostakFloatingActionButton
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.screen.NoostakEmptyScreen
+import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
@@ -103,16 +104,23 @@ fun GroupRoute(
         )
     }
 
-    GroupScreen(
-        paddingValues = paddingValues,
-        groupItems = when (val state = getGroupsState.value) {
-            is UiState.Success -> state.data
-            else -> emptyList()
-        },
-        onItemClick = groupViewModel::navigateToGroupDetail,
-        onFabClick = { groupViewModel.showFABDialog(true) },
-        showFABDialog = showFABDialog
-    )
+    when (getGroupsState.value) {
+        is UiState.Loading -> NoostakLoadingScreen()
+        is UiState.Success -> {
+            GroupScreen(
+                paddingValues = paddingValues,
+                groupItems = when (val state = getGroupsState.value) {
+                    is UiState.Success -> state.data
+                    else -> emptyList()
+                },
+                onItemClick = groupViewModel::navigateToGroupDetail,
+                onFabClick = { groupViewModel.showFABDialog(true) },
+                showFABDialog = showFABDialog
+            )
+        }
+
+        else -> {}
+    }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
