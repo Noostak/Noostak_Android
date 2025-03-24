@@ -2,6 +2,7 @@ package com.sopt.data.datasource
 
 import com.sopt.data.dto.BaseResponse
 import com.sopt.data.dto.response.ResponseGetGroupsDto
+import com.sopt.data.dto.response.ResponsePostGroupCodeDto
 import com.sopt.data.dto.response.ResponsePostGroupDto
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -12,4 +13,6 @@ interface GroupDataSource {
         groupName: RequestBody,
         groupProfileImage: MultipartBody.Part?
     ): BaseResponse<ResponsePostGroupDto>
+
+    suspend fun postGroupCode(groupInviteCode: String): BaseResponse<ResponsePostGroupCodeDto>
 }
