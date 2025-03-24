@@ -1,7 +1,6 @@
 package com.sopt.core.extension
 
 import com.sopt.domain.entity.DayEntity
-import java.time.LocalDate
 import java.time.YearMonth
 
 private val monthsInRange =
@@ -12,10 +11,6 @@ val pageCount: Int = monthsInRange.size
 
 fun getYearMonthByPage(page: Int): YearMonth {
     return monthsInRange[page]
-}
-
-fun getLocalDateByPage(page: Int): LocalDate {
-    return getYearMonthByPage(page).atDay(1)
 }
 
 fun getMonthDays(yearMonth: YearMonth): List<List<DayEntity>> {
