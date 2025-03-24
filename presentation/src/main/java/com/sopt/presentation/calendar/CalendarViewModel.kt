@@ -1,6 +1,7 @@
 package com.sopt.presentation.calendar
 
 import androidx.lifecycle.viewModelScope
+import com.sopt.core.extension.toDateString
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
+import java.time.LocalDate
 import java.time.YearMonth
 import javax.inject.Inject
 
@@ -64,15 +66,17 @@ class CalendarViewModel @Inject constructor(
             getCalendarAppointmentsUseCase(1, year, month)
                 .fold(
                     onSuccess = { response ->
-                        val newScheduleMap = response.currentMonthAppointments.associate {
-                            it.day.toString() to it.appointments.map { appointment ->
-                                CalendarSchedule(
-                                    scrapId = appointment.id,
-                                    title = appointment.name,
-                                    categoryType = appointment.category
-                                )
+                        val newScheduleMap =
+                            response.currentMonthAppointments.associate { dayAppointments ->
+                                LocalDate.of(year, month, dayAppointments.day)
+                                    .toDateString() to dayAppointments.appointments.map { appointment ->
+                                    CalendarSchedule(
+                                        scrapId = appointment.id,
+                                        title = appointment.name,
+                                        categoryType = appointment.category
+                                    )
+                                }
                             }
-                        }
                         _scheduleMap.value = newScheduleMap
                     },
                     onFailure = { error ->
