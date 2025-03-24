@@ -18,13 +18,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
-import com.sopt.domain.entity.ScheduleListDetailEntity
+import com.sopt.domain.entity.CalendarAppointmentEntity
 import com.sopt.presentation.R
 
 @Composable
 fun ScheduleItem(
-    data: ScheduleListDetailEntity,
-    onItemClick: (ScheduleListDetailEntity) -> Unit = {}
+    data: CalendarAppointmentEntity,
+    onItemClick: (CalendarAppointmentEntity) -> Unit = {}
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
