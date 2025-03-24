@@ -123,7 +123,7 @@ class CalendarViewModel @Inject constructor(
     fun getSelectedScheduleEntity(): ScheduleEntity {
         return ScheduleEntity(
             groupId = 1,
-            date = _selectedDayAppointments.value.first().date,
+            date = _selectedDayAppointments.value.first().date.toFormattedKoreanDate(),
             scheduleList = _selectedDayAppointments.value.map {
                 CalendarAppointmentEntity(
                     id = it.id,
