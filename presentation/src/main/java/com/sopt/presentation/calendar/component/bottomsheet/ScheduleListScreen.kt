@@ -23,14 +23,14 @@ import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.screen.NoostakEmptyScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.domain.entity.CalendarAppointmentEntity
 import com.sopt.domain.entity.ScheduleEntity
-import com.sopt.domain.entity.ScheduleListDetailEntity
 import com.sopt.presentation.R
 
 @Composable
 fun ScheduleListScreen(
     data: ScheduleEntity,
-    onItemClick: (ScheduleListDetailEntity) -> Unit = {},
+    onItemClick: (CalendarAppointmentEntity) -> Unit = {},
     onCreateAppointmentBtnClick: () -> Unit = {}
 ) {
     Column(
@@ -63,7 +63,7 @@ fun ScheduleListScreen(
                 ) {
                     itemsIndexed(
                         items = data.scheduleList,
-                        key = { _, item -> item.scheduleId }
+                        key = { _, item -> item.id }
                     ) { index, item ->
                         ScheduleItem(data = item, onItemClick = onItemClick)
                     }
@@ -101,29 +101,32 @@ fun ScheduleListScreenPreview() {
                 groupId = 1,
                 date = "1월 13일 (월)",
                 scheduleList = listOf(
-                    ScheduleListDetailEntity(
-                        scheduleId = 1,
+                    CalendarAppointmentEntity(
+                        id = 1,
                         name = "누스탁 회의dasfdsafsafdafdafsdfsafdsafdsadsdafsadfsdfsdafadafdsafsdafsaf",
                         category = "중요",
                         startTime = "1월 13일(월)",
                         endTime = "1월 13일(월)",
-                        duration = 24
+                        duration = 24,
+                        date = ""
                     ),
-                    ScheduleListDetailEntity(
-                        scheduleId = 2,
+                    CalendarAppointmentEntity(
+                        id = 2,
                         name = "누스탁 모각작",
                         category = "일정",
                         startTime = "1월 15일(수)",
                         endTime = "1월 15일(수)",
-                        duration = 5
+                        duration = 5,
+                        date = ""
                     ),
-                    ScheduleListDetailEntity(
-                        scheduleId = 3,
+                    CalendarAppointmentEntity(
+                        id = 3,
                         name = "누스탁 회식",
                         category = "취미",
                         startTime = "1월 20일(화)",
                         endTime = "1월 20일(화)",
-                        duration = 2
+                        duration = 2,
+                        date = ""
                     )
                 )
             )

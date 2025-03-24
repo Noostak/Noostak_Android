@@ -3,12 +3,14 @@ package com.sopt.noostak.di
 import com.sopt.data.datasource.AccountDataSource
 import com.sopt.data.datasource.AppointmentConfirmDataSource
 import com.sopt.data.datasource.AuthDataSource
+import com.sopt.data.datasource.CalendarDataSource
 import com.sopt.data.datasource.ExampleDataSource
 import com.sopt.data.datasource.GroupDataSource
 import com.sopt.data.datasource.UserDataSource
 import com.sopt.data.datasourceimpl.AccountDataSourceImpl
 import com.sopt.data.datasourceimpl.AppointmentConfirmDataSourceImpl
 import com.sopt.data.datasourceimpl.AuthDataSourceImpl
+import com.sopt.data.datasourceimpl.CalendarDataSourceImpl
 import com.sopt.data.datasourceimpl.ExampleDataSourceImpl
 import com.sopt.data.datasourceimpl.GroupDataSourceImpl
 import com.sopt.data.datasourceimpl.UserDataSourceImpl
@@ -41,6 +43,10 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindAppointmentConfirmDataSource(appointmentConfirmDataSourceImpl: AppointmentConfirmDataSourceImpl): AppointmentConfirmDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindCalendarDataSource(calendarDataSourceImpl: CalendarDataSourceImpl): CalendarDataSource
 
     @Binds
     @Singleton

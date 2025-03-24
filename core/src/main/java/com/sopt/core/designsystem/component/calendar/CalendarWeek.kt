@@ -27,7 +27,7 @@ internal fun CalendarWeek(
     dayInfo: List<DayEntity>,
     modifier: Modifier = Modifier,
     scheduleMap: Map<String, List<CalendarSchedule>> = emptyMap(),
-    onItemClick: () -> Unit = {}
+    onItemClick: (LocalDate) -> Unit = {}
 ) {
     Row(
         modifier = modifier.background(NoostakTheme.colors.white),
@@ -41,7 +41,7 @@ internal fun CalendarWeek(
                 modifier = Modifier
                     .height(84.dp)
                     .weight(1f)
-                    .noRippleClickable { onItemClick() },
+                    .noRippleClickable { onItemClick(day.day) },
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CalendarDay(
