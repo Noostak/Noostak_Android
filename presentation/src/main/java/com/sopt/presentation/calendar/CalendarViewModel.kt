@@ -1,6 +1,5 @@
 package com.sopt.presentation.calendar
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.CalendarGroupEntity
@@ -19,7 +18,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedStateHandle) :
+class CalendarViewModel @Inject constructor() :
     BaseViewModel<CalendarSideEffect>() {
     private val _showAddDialog = MutableStateFlow(false)
     val showAddDialog get() = _showAddDialog
@@ -48,6 +47,10 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
 
     fun navigateToGroupEnter() {
         emitSideEffect(CalendarSideEffect.NavigateToGroupEnter)
+    }
+
+    fun navigateToAppointmentCreate() {
+        emitSideEffect(CalendarSideEffect.NavigateToAppointmentCreate)
     }
 
     private fun loadSampleSchedule() {
@@ -140,10 +143,11 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
     )
 
     val mockScheduleList = ScheduleEntity(
+        groupId = 1,
         date = "1월 13일 (월)",
         scheduleList = listOf(
             ScheduleListDetailEntity(
-                id = 1,
+                scheduleId = 1,
                 name = "누스탁 회의",
                 category = "중요",
                 startTime = "1/13 21:00",
@@ -151,7 +155,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 duration = 5
             ),
             ScheduleListDetailEntity(
-                id = 2,
+                scheduleId = 2,
                 name = "누스탁 모각작",
                 category = "일정",
                 startTime = "1/13 21:00",
@@ -159,7 +163,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 duration = 10
             ),
             ScheduleListDetailEntity(
-                id = 3,
+                scheduleId = 3,
                 name = "누스탁 회식",
                 category = "취미",
                 startTime = "1/13 21:00",
@@ -167,7 +171,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 duration = 6
             ),
             ScheduleListDetailEntity(
-                id = 4,
+                scheduleId = 4,
                 name = "누스탁 MT",
                 category = "기타",
                 startTime = "1/13 21:00",
@@ -175,7 +179,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 duration = 9
             ),
             ScheduleListDetailEntity(
-                id = 5,
+                scheduleId = 5,
                 name = "누스탁 회의2",
                 category = "중요",
                 startTime = "1/13 21:00",
@@ -183,7 +187,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 duration = 24
             ),
             ScheduleListDetailEntity(
-                id = 6,
+                scheduleId = 6,
                 name = "누스탁 모각작2",
                 category = "일정",
                 startTime = "1/13 21:00",
@@ -191,7 +195,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 duration = 1
             ),
             ScheduleListDetailEntity(
-                id = 7,
+                scheduleId = 7,
                 name = "누스탁 회식2",
                 category = "취미",
                 startTime = "1/13 21:00",
@@ -199,7 +203,7 @@ class CalendarViewModel @Inject constructor(private val savedStateHandle: SavedS
                 duration = 4
             ),
             ScheduleListDetailEntity(
-                id = 8,
+                scheduleId = 8,
                 name = "누스탁 MT2",
                 category = "기타",
                 startTime = "1/13 21:00",

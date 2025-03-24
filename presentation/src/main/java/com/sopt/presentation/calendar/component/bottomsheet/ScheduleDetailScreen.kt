@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.component.chip.AvailableUserChips
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
 import com.sopt.core.designsystem.component.chip.UnavailableUserChips
-import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.RearrangeList
@@ -52,17 +51,12 @@ fun ScheduleDetailScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(63.dp),
+                .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            NoostakTopAppBar(
+            ScheduleDetailTopAppBar(
                 title = data.appointmentName.chunked(10).joinToString("\n"),
-                style = NoostakTheme.typography.b1SemiBold,
-                isIconVisible = true,
-                onBackButtonClick = onBackBtnClick,
-                iconResource = R.drawable.ic_back_48,
-                paddingHorizontal = 4.dp
+                onBackButtonClick = onBackBtnClick
             )
         }
         HorizontalDivider(color = NoostakTheme.colors.gray100)
@@ -141,7 +135,7 @@ fun ScheduleDetailScreenPreview() {
                     position = 0,
                     name = "김언지"
                 ),
-                appointmentName = "누스탁 전체회의 호이호이호이호이호이호이호이호이",
+                appointmentName = "누스탁 전체회의 호이호이호이호이호이",
                 date = "1월 13일 (월)",
                 startTime = "1/13 21:00",
                 endTime = "1/13 21:00",

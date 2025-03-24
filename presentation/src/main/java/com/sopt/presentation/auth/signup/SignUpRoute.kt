@@ -5,18 +5,25 @@ import android.os.Build
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,14 +40,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.image.ProfileImagePicker
+import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
+import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.component.textfield.NoostakTextField
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
-import com.sopt.core.extension.toast
+import com.sopt.core.type.ImagePickerType
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
 import com.sopt.presentation.R
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @Composable
@@ -48,23 +59,36 @@ fun SignUpRoute(
     accessToken: String,
     socialType: String,
     navigateToCheckInvite: (String) -> Unit,
-    viewModel: SignUpViewModel = hiltViewModel()
+    signUpViewModel: SignUpViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val signUpState by viewModel.signUpState.collectAsStateWithLifecycle()
+    val signUpState by signUpViewModel.signUpState.collectAsStateWithLifecycle()
 
     var isGalleryPermission by remember { mutableStateOf(false) }
+
+    val snackBarHostState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+    var snackBarVisible by remember { mutableStateOf(false) }
+
+    val onShowPermissionGallerySnackBar: (message: String) -> Unit = {
+        coroutineScope.launch {
+            snackBarVisible = true
+            val job = launch { snackBarHostState.showSnackbar(message = it) }
+            delay(SNACK_BAR_DURATION)
+            job.cancel()
+            snackBarVisible = false
+        }
+    }
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         try {
             if (isGranted) {
-                viewModel.updateGalleryPermissionState(true)
+                signUpViewModel.updateGalleryPermissionState(true)
             } else {
-                isGalleryPermission = false
-                context.toast(R.string.sb_permission_gallery)
+                isGalleryPermission = true
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -72,20 +96,20 @@ fun SignUpRoute(
     }
 
     val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
-        viewModel.updateProfileImage(uri.toString())
+        signUpViewModel.updateProfileImage(uri.toString())
     }
 
     val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
-        viewModel.updateProfileImage(uri.toString())
+        signUpViewModel.updateProfileImage(uri.toString())
     }
 
     LaunchedEffect(lifecycleOwner) {
-        viewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
+        signUpViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
             .collect { sideEffect ->
                 when (sideEffect) {
                     is SignUpSideEffect.NavigateToCheckInvite -> navigateToCheckInvite(sideEffect.name)
 
-                    is SignUpSideEffect.ShowPermissionDeniedDialog ->
+                    is SignUpSideEffect.ShowSnackBar ->
                         isGalleryPermission =
                             true
 
@@ -97,13 +121,43 @@ fun SignUpRoute(
             }
     }
 
+    if (isGalleryPermission) {
+        onShowPermissionGallerySnackBar(context.getString(R.string.sb_permission_gallery))
+        isGalleryPermission = false
+    }
+
+    AnimatedVisibility(
+        visible = snackBarVisible,
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it })
+    ) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            SnackbarHost(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = dimensionResource(id = R.dimen.bottom_padding_snack_bar_gallery_permission)),
+                hostState = snackBarHostState,
+                snackbar = { snackBarData ->
+                    NoostakSnackBar(
+                        message = snackBarData.visuals.message,
+                        textStyle = NoostakTheme.typography.c3SemiBold,
+                        textColor = NoostakTheme.colors.red01,
+                        backgroundColor = NoostakTheme.colors.pink
+                    )
+                }
+            )
+        }
+    }
+
     SignUpScreen(
         signUpState = signUpState,
         onProfileSettingBtnClick = {
-            handleProfileBtnClick(viewModel, permissionLauncher)
+            handleProfileBtnClick(signUpViewModel, permissionLauncher)
         },
-        onNameChange = { viewModel.onNicknameChanged(it) },
-        onSignUpClick = { viewModel.postSignUp(accessToken, socialType) }
+        onNameChange = { signUpViewModel.onNicknameChanged(it) },
+        onSignUpClick = { signUpViewModel.postSignUp(accessToken, socialType) }
     )
 }
 
@@ -150,6 +204,7 @@ fun SignUpScreen(
             modifier = Modifier.padding(top = 70.dp)
         )
         ProfileImagePicker(
+            imagePickerType = ImagePickerType.USER,
             selectedImageUri = signUpState.profileImageUri,
             onCameraBtnClick = onProfileSettingBtnClick,
             modifier = Modifier

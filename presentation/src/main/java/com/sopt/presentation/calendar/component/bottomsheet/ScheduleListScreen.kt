@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
@@ -30,7 +31,7 @@ import com.sopt.presentation.R
 fun ScheduleListScreen(
     data: ScheduleEntity,
     onItemClick: (ScheduleListDetailEntity) -> Unit = {},
-    onConfirmBtnClick: () -> Unit = {}
+    onCreateAppointmentBtnClick: () -> Unit = {}
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
@@ -62,14 +63,14 @@ fun ScheduleListScreen(
                 ) {
                     itemsIndexed(
                         items = data.scheduleList,
-                        key = { _, item -> item.id }
+                        key = { _, item -> item.scheduleId }
                     ) { index, item ->
                         ScheduleItem(data = item, onItemClick = onItemClick)
                     }
                 }
             } else {
                 NoostakEmptyScreen(
-                    emptyText = R.string.text_schedule_list_empty_content,
+                    emptyText = R.string.text_calendar_schedule_list_empty_content,
                     color = NoostakTheme.colors.gray700,
                     style = NoostakTheme.typography.b4Regular
                 )
@@ -81,11 +82,11 @@ fun ScheduleListScreen(
                 start = dimensionResource(id = R.dimen.vertical_padding),
                 end = dimensionResource(id = R.dimen.vertical_padding)
             ),
-            text = "확인",
+            text = stringResource(R.string.btn_calendar_schedule_list_create_appointment),
             activateColor = NoostakTheme.colors.blue600,
             isEnabled = true,
             onButtonClick = {
-                onConfirmBtnClick()
+                onCreateAppointmentBtnClick()
             }
         )
     }
@@ -97,10 +98,11 @@ fun ScheduleListScreenPreview() {
     NoostakAndroidTheme {
         ScheduleListScreen(
             data = ScheduleEntity(
+                groupId = 1,
                 date = "1월 13일 (월)",
                 scheduleList = listOf(
                     ScheduleListDetailEntity(
-                        id = 1,
+                        scheduleId = 1,
                         name = "누스탁 회의dasfdsafsafdafdafsdfsafdsafdsadsdafsadfsdfsdafadafdsafsdafsaf",
                         category = "중요",
                         startTime = "1월 13일(월)",
@@ -108,7 +110,7 @@ fun ScheduleListScreenPreview() {
                         duration = 24
                     ),
                     ScheduleListDetailEntity(
-                        id = 2,
+                        scheduleId = 2,
                         name = "누스탁 모각작",
                         category = "일정",
                         startTime = "1월 15일(수)",
@@ -116,7 +118,7 @@ fun ScheduleListScreenPreview() {
                         duration = 5
                     ),
                     ScheduleListDetailEntity(
-                        id = 3,
+                        scheduleId = 3,
                         name = "누스탁 회식",
                         category = "취미",
                         startTime = "1월 20일(화)",

@@ -14,10 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.domain.entity.ScheduleListDetailEntity
+import com.sopt.presentation.R
 
 @Composable
 fun ScheduleItem(
@@ -49,7 +51,7 @@ fun ScheduleItem(
                 modifier = Modifier.padding(bottom = 3.dp)
             )
             Text(
-                text = if (data.duration.toInt() == 24) "하루종일" else data.duration.toString(),
+                text = if (data.duration.toInt() == 24) stringResource(R.string.text_calendar_schedule_item_all_day) else data.duration.toString(),
                 style = NoostakTheme.typography.c4Regular,
                 color = NoostakTheme.colors.gray700
             )
