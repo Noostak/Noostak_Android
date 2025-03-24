@@ -5,4 +5,5 @@ sealed interface GroupSideEffect {
     data object NavigateToGroupCreate : GroupSideEffect
     data object NavigateToGroupEnter : GroupSideEffect
     data object ShowFABDialog : GroupSideEffect
+    data object ShowErrorDialog : GroupSideEffect
 }

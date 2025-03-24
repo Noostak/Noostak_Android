@@ -45,13 +45,14 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.presentation.R
 import com.sopt.presentation.groupCreate.groupCreateSuccess.component.GroupCreateSuccessCopyButton
-import com.sopt.presentation.groupCreate.groupCreateSuccess.regex.Regex
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
 fun GroupCreateSuccessRoute(
+    groupId: Long,
+    groupInvitationCode: String,
     groupCreateSuccessViewModel: GroupCreateSuccessViewModel = hiltViewModel(),
     navigateToGroupDetail: (Long) -> Unit
 ) {
@@ -62,10 +63,8 @@ fun GroupCreateSuccessRoute(
     val coroutineScope = rememberCoroutineScope()
     val snackBarVisible = remember { mutableStateOf(false) }
 
-    val groupCode = Regex().generateRandomCode()
-
     val sendIntent = Intent(Intent.ACTION_SEND).apply {
-        putExtra(Intent.EXTRA_TEXT, groupCode)
+        putExtra(Intent.EXTRA_TEXT, groupInvitationCode)
         type = "text/plain"
     }
     val shareIntent = Intent.createChooser(sendIntent, null)
@@ -98,7 +97,8 @@ fun GroupCreateSuccessRoute(
     }
 
     GroupCreateSuccessScreen(
-        groupCode = groupCode,
+        groupId = groupId,
+        groupInvitationCode = groupInvitationCode,
         snackBarHostState = snackBarHostState,
         snackBarVisible = snackBarVisible,
         onCloseBtnClick = groupCreateSuccessViewModel::navigateToGroupDetail,
@@ -116,7 +116,8 @@ fun GroupCreateSuccessRoute(
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun GroupCreateSuccessScreen(
-    groupCode: String,
+    groupId: Long,
+    groupInvitationCode: String,
     snackBarHostState: SnackbarHostState,
     snackBarVisible: MutableState<Boolean>,
     onCloseBtnClick: (Long) -> Unit,
@@ -130,12 +131,7 @@ fun GroupCreateSuccessScreen(
         topBar = {
             NoostakCloseAppBar(
                 modifier = Modifier,
-                onBackButtonClick = {
-                    onCloseBtnClick(
-                        // 임의 id - api 통신에서 변경해야 함
-                        0
-                    )
-                }
+                onBackButtonClick = { onCloseBtnClick(groupId) }
             )
         },
         snackbarHost = {
@@ -197,7 +193,7 @@ fun GroupCreateSuccessScreen(
                         .align(Alignment.CenterHorizontally)
                 )
                 Text(
-                    text = groupCode,
+                    text = groupInvitationCode,
                     color = NoostakTheme.colors.gray800,
                     style = NoostakTheme.typography.codeMedium,
                     modifier = Modifier
@@ -206,7 +202,7 @@ fun GroupCreateSuccessScreen(
                 )
             }
             GroupCreateSuccessCopyButton {
-                clipboardManager.setText(AnnotatedString(groupCode))
+                clipboardManager.setText(AnnotatedString(groupInvitationCode))
                 onCopyBtnClick()
             }
             NoostakBottomButton(
@@ -228,7 +224,8 @@ fun GroupCreateSuccessScreen(
 fun GroupCreateSuccessScreenPreview() {
     NoostakAndroidTheme {
         GroupCreateSuccessScreen(
-            groupCode = Regex().generateRandomCode(),
+            groupId = 1,
+            groupInvitationCode = "G8DLUV",
             snackBarHostState = SnackbarHostState(),
             snackBarVisible = remember { mutableStateOf(true) },
             onCloseBtnClick = {},

@@ -129,6 +129,7 @@ class LoginViewModel @Inject constructor(
                 onSuccess = { response ->
                     saveTokens(response.accessToken, response.refreshToken)
                     userInfoRepository.saveMemberId(response.memberId)
+                    userInfoRepository.saveIsAutoLogin(true)
                     emitSideEffect(LoginSideEffect.NavigateToHome)
                 },
                 onFailure = { error ->

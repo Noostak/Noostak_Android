@@ -5,6 +5,7 @@ import com.sopt.data.service.AppointmentConfirmApiService
 import com.sopt.data.service.AuthApiService
 import com.sopt.data.service.CalendarApiService
 import com.sopt.data.service.ExampleApiService
+import com.sopt.data.service.GroupApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,4 +46,9 @@ object ServiceModule {
     fun provideCalendarService(
         @AccessToken retrofit: Retrofit
     ): CalendarApiService = retrofit.create(CalendarApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideGroupApiService(@AccessToken retrofit: Retrofit): GroupApiService =
+        retrofit.create(GroupApiService::class.java)
 }

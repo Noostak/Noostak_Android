@@ -24,11 +24,15 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.sopt.core.designsystem.component.button.NoostakFloatingActionButton
+import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.screen.NoostakEmptyScreen
+import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
+import com.sopt.core.state.UiState
+import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.GroupEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.group.component.GroupFloatingActionDialog
@@ -46,8 +50,11 @@ fun GroupRoute(
     navigateToGroupEnter: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    val groupItems = groupViewModel.groupItems
+
+    val getGroupsState = groupViewModel.getGroupsState.collectAsStateWithLifecycle()
+
     val showFABDialog by groupViewModel.showFABDialog.collectAsStateWithLifecycle()
+    val showErrorDialog by groupViewModel.showErrorDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleOwner) {
         groupViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
@@ -57,8 +64,13 @@ fun GroupRoute(
                     is GroupSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
                     is GroupSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
                     is GroupSideEffect.ShowFABDialog -> groupViewModel.showFABDialog(true)
+                    is GroupSideEffect.ShowErrorDialog -> groupViewModel.showErrorDialog(true)
                 }
             }
+    }
+
+    LaunchedEffect(Unit) {
+        groupViewModel.getGroups()
     }
 
     if (showFABDialog) {
@@ -82,13 +94,33 @@ fun GroupRoute(
         )
     }
 
-    GroupScreen(
-        paddingValues = paddingValues,
-        groupItems = groupItems,
-        onItemClick = groupViewModel::navigateToGroupDetail,
-        onFabClick = { groupViewModel.showFABDialog(true) },
-        showFABDialog = showFABDialog
-    )
+    if (showErrorDialog) {
+        NoostakDialog(
+            dialogType = DialogType.NETWORK_FAILURE,
+            onClick = {
+                groupViewModel.getGroups()
+            },
+            onDismissRequest = { groupViewModel.showErrorDialog(false) }
+        )
+    }
+
+    when (getGroupsState.value) {
+        is UiState.Loading -> NoostakLoadingScreen()
+        is UiState.Success -> {
+            GroupScreen(
+                paddingValues = paddingValues,
+                groupItems = when (val state = getGroupsState.value) {
+                    is UiState.Success -> state.data
+                    else -> emptyList()
+                },
+                onItemClick = groupViewModel::navigateToGroupDetail,
+                onFabClick = { groupViewModel.showFABDialog(true) },
+                showFABDialog = showFABDialog
+            )
+        }
+
+        else -> {}
+    }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
