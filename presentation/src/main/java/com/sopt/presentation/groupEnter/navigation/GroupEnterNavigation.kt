@@ -6,8 +6,8 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sopt.core.navigation.Route
 import com.sopt.presentation.auth.login.navigation.Login
-import com.sopt.presentation.groupEnter.GroupEnterRoute
 import com.sopt.presentation.group.navigation.navigateGroup
+import com.sopt.presentation.groupEnter.GroupEnterRoute
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateGroupEnter(
