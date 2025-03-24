@@ -36,6 +36,10 @@ class GroupRepositoryImpl @Inject constructor(
         }.onFailure { return it.handleThrowable() }
     }
 
+    override suspend fun postGroupCode(groupInviteCode: String): Result<Long> {
+        return runCatching { groupDataSource.postGroupCode(groupInviteCode).result?.groupId ?: -1 }
+    }
+
     companion object {
         private const val FILE_NAME = "groupProfileImage"
     }
