@@ -45,6 +45,7 @@ import com.sopt.presentation.calendar.component.CalendarFloatingActionDialog
 import com.sopt.presentation.calendar.component.CalendarGroup
 import com.sopt.presentation.calendar.component.bottomsheet.ScheduleDetailScreen
 import com.sopt.presentation.calendar.component.bottomsheet.ScheduleListScreen
+import java.time.LocalDate
 import java.time.YearMonth
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,7 +84,7 @@ fun CalendarRoute(
                 is CalendarSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
                 is CalendarSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
                 is CalendarSideEffect.NavigateToAppointmentCreate -> navigateToAppointmentCreate(
-                    calendarViewModel.mockScheduleList.groupId
+                    calendarViewModel.getSelectedScheduleEntity().groupId
                 )
 
                 is CalendarSideEffect.ShowAddDialog -> calendarViewModel.showAddDialog(true)
@@ -117,10 +118,10 @@ fun CalendarRoute(
                 NavHost(navController, startDestination = SCHEDULE_LIST) {
                     composable(SCHEDULE_LIST) { backStackEntry ->
                         ScheduleListScreen(
-                            data = calendarViewModel.mockScheduleList,
+                            data = calendarViewModel.getSelectedScheduleEntity(),
                             onItemClick = { schedule ->
                                 backStackEntry.savedStateHandle[SCHEDULE] =
-                                    schedule.scheduleId // 바꿔야 함
+                                    schedule.id // 바꿔야 함
                                 navController.navigate(SCHEDULE_DETAIL)
                             },
                             onCreateAppointmentBtnClick = {
@@ -154,7 +155,9 @@ fun CalendarRoute(
         currentYearMonth = currentYearMonth,
         showAddDialog = showAddDialog,
         onAddBtnClick = { calendarViewModel.showAddDialog(true) },
-        onItemClick = { calendarViewModel.showBottomSheet(true) } // 바꿔야 함
+        onItemClick = { clickedDate ->
+            calendarViewModel.onDayClicked(clickedDate)
+        }
     )
 }
 
@@ -167,7 +170,7 @@ fun CalendarScreen(
     currentYearMonth: YearMonth,
     showAddDialog: Boolean = false,
     onAddBtnClick: () -> Unit = {},
-    onItemClick: () -> Unit = {}
+    onItemClick: (LocalDate) -> Unit = {}
 ) {
     Scaffold(
         modifier = Modifier
@@ -194,7 +197,7 @@ fun CalendarScreen(
                 scheduleMap = scheduleMap,
                 pagerState = pagerState,
                 currentYearMonth = currentYearMonth,
-                onItemClick = { onItemClick() }
+                onItemClick = onItemClick
             )
         }
     }
@@ -206,7 +209,7 @@ private fun CalendarContent(
     pagerState: PagerState,
     currentYearMonth: YearMonth,
     modifier: Modifier = Modifier,
-    onItemClick: () -> Unit = {}
+    onItemClick: (LocalDate) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -222,7 +225,7 @@ private fun CalendarContent(
         CalendarMonthScreen(
             pagerState = pagerState,
             scheduleMap = scheduleMap,
-            onItemClick = { onItemClick() }
+            onItemClick = onItemClick
         )
     }
 }

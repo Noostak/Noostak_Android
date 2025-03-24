@@ -15,6 +15,7 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.getYearMonthByPage
 import com.sopt.domain.entity.CalendarSchedule
+import java.time.LocalDate
 
 @Composable
 fun CalendarMonthScreen(
@@ -22,7 +23,7 @@ fun CalendarMonthScreen(
     scheduleMap: Map<String, List<CalendarSchedule>>,
     modifier: Modifier = Modifier,
     calendarViewModel: CalendarViewModel = hiltViewModel(),
-    onItemClick: () -> Unit = {}
+    onItemClick: (LocalDate) -> Unit = {}
 ) {
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
@@ -37,7 +38,7 @@ fun CalendarMonthScreen(
             .background(NoostakTheme.colors.white),
         pagerState = pagerState,
         scheduleMap = scheduleMap,
-        onItemClick = { onItemClick() }
+        onItemClick = onItemClick
     )
 }
 
