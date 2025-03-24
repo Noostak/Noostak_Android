@@ -68,7 +68,7 @@ fun AppointmentRoute(
     appointmentName: String,
     navigateUp: () -> Unit,
     navigateToAppointmentCheck: (Long, Long, String, List<TimeEntity>) -> Unit,
-    navigateToAppointmentConfirm: (Long, Long, Long, String) -> Unit,
+    navigateToAppointmentConfirm: (Long, Long, Long, String, Boolean) -> Unit,
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
     val showDialog by appointmentViewModel.showDialog.collectAsStateWithLifecycle()
@@ -92,7 +92,8 @@ fun AppointmentRoute(
                         sideEffect.groupId,
                         sideEffect.appointmentsId,
                         sideEffect.optionId,
-                        sideEffect.appointmentName
+                        sideEffect.appointmentName,
+                        sideEffect.isHost
                     )
                 }
 
@@ -178,7 +179,7 @@ fun AppointmentScreen(
     appointmentsId: Long,
     appointmentName: String,
     onBackButtonClick: () -> Unit,
-    onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
+    onConfirmButtonClick: (Long, Long, Long, String, Boolean) -> Unit,
     availablePeriods: List<TimeEntity>,
     availableTimes: List<AppointmentMembersInfoEntity>,
     recommendations: AppointmentEntity,
@@ -301,7 +302,7 @@ fun AppointmentScreen(
                     selectedItemIndex = selectedItemIndex,
                     data = recommendations.recommendationPriority,
                     onConfirmButtonClick = { optionId ->
-                        onConfirmButtonClick(groupId, appointmentsId, optionId, appointmentName)
+                        onConfirmButtonClick(groupId, appointmentsId, optionId, appointmentName, recommendations.isHost)
                     },
                     onLikeClick = onLikeClick
                 )
@@ -412,7 +413,7 @@ fun AppointmentScreenPreview() {
             appointmentsId = 1,
             appointmentName = "3차 회의",
             onBackButtonClick = {},
-            onConfirmButtonClick = { _, _, _, _ -> },
+            onConfirmButtonClick = { _, _, _, _, _ -> },
             availablePeriods = appointmentViewModel.mockAvailablePeriods,
             availableTimes = appointmentViewModel.mockAvailableTimes,
             recommendations = appointmentViewModel.mockRecommendations

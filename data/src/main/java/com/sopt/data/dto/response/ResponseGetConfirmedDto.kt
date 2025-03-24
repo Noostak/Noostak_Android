@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseGetConfirmedDto(
-    @SerialName("isHost") val isHost: Boolean,
     @SerialName("appointmentTime") val appointmentTime: BaseTimeDto,
     @SerialName("category") val category: String,
     @SerialName("appointmentName") val appointmentName: String,

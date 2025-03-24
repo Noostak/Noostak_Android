@@ -51,6 +51,7 @@ fun AppointmentConfirmRoute(
     appointmentId: Long,
     optionId: Long,
     appointmentName: String,
+    isHost: Boolean,
     navigateUp: () -> Unit,
     navigateToGroupDetail: (Long) -> Unit,
     appointmentConfirmViewModel: AppointmentConfirmViewModel = hiltViewModel()
@@ -94,6 +95,7 @@ fun AppointmentConfirmRoute(
             AppointmentConfirmScreen(
                 groupId = groupId,
                 appointmentName = appointmentName,
+                isHost = isHost,
                 onBackButtonClick = appointmentConfirmViewModel::navigateUp,
                 onConfirmButtonClick = {
                     appointmentConfirmViewModel.postConfirmed(optionId)
@@ -134,6 +136,7 @@ fun AppointmentConfirmRoute(
 fun AppointmentConfirmScreen(
     groupId: Long,
     appointmentName: String,
+    isHost: Boolean = false,
     onBackButtonClick: () -> Unit,
     onConfirmButtonClick: (Long) -> Unit,
     data: AppointmentDetailEntity
@@ -255,7 +258,7 @@ fun AppointmentConfirmScreen(
             }
             Spacer(modifier = Modifier.weight(1f))
             NoostakBottomButton(
-                modifier = Modifier.showIf(data.isHost),
+                modifier = Modifier.showIf(isHost),
                 text = stringResource(R.string.btn_appointment_confirm_complete),
                 onButtonClick = { onConfirmButtonClick(groupId) },
                 isEnabled = true,

@@ -93,7 +93,6 @@ class AppointmentConfirmViewModel @Inject constructor(
     }
 
     val mockAppointmentDetail = AppointmentDetailEntity(
-        isHost = true,
         myIdentity = IdentityEntity(
             availability = "unavailable",
             position = 2,

@@ -111,14 +111,16 @@ class AppointmentViewModel @Inject constructor(
         groupId: Long,
         appointmentId: Long,
         optionId: Long,
-        appointmentName: String
+        appointmentName: String,
+        isHost: Boolean
     ) {
         emitSideEffect(
             AppointmentSideEffect.NavigateToAppointmentConfirm(
                 groupId,
                 appointmentId,
                 optionId,
-                appointmentName
+                appointmentName,
+                isHost
             )
         )
     }
