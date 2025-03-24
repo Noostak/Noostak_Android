@@ -70,7 +70,8 @@ fun AppointmentConfirmRoute(
 
                 is AppointmentConfirmSideEffect.ShowToast -> context.toast(sideEffect.message)
                 is AppointmentConfirmSideEffect.ShowErrorDialog -> appointmentConfirmViewModel.showErrorDialog(
-                    sideEffect.show, sideEffect.dialogType
+                    sideEffect.show,
+                    sideEffect.dialogType
                 )
             }
         }

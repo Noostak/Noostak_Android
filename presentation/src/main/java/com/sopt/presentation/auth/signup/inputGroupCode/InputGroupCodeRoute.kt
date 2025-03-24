@@ -89,12 +89,19 @@ fun InputGroupCodeScreen(
         ) {
             Spacer(modifier = Modifier.height(147.dp))
             Text(
-                text = stringResource(R.string.tv_input_code_description),
+                text = stringResource(R.string.tv_input_code_description_1),
                 color = NoostakTheme.colors.gray900,
                 style = NoostakTheme.typography.t1SemiBold,
                 textAlign = TextAlign.Center
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                text = stringResource(R.string.tv_input_code_description_2),
+                color = NoostakTheme.colors.gray900,
+                style = NoostakTheme.typography.t1SemiBold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(bottom = 24.dp)
+            )
             OtpInputField(
                 otpText = groupCode,
                 onOtpTextChange = { otp, isComplete ->
@@ -103,7 +110,7 @@ fun InputGroupCodeScreen(
             )
             Spacer(modifier = Modifier.weight(1f))
             NoostakBottomButton(
-                text = stringResource(R.string.btn_next),
+                text = stringResource(R.string.btn_invite_code_confirm),
                 isEnabled = groupCode.length == 6,
                 onButtonClick = onCheckGroupCodeClick
             )

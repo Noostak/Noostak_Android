@@ -56,7 +56,7 @@ class MyPageViewModel @Inject constructor(
         }
     }
 
-    fun clearInfo() {
+    private fun clearInfo() {
         viewModelScope.launch {
             userInfoRepository.clearAll()
         }

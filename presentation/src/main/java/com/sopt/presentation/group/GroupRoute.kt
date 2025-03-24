@@ -13,7 +13,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -23,18 +22,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.viewModelScope
 import com.sopt.core.designsystem.component.button.NoostakFloatingActionButton
+import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.screen.NoostakEmptyScreen
+import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.extension.showIf
+import com.sopt.core.state.UiState
+import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.GroupEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.group.component.GroupFloatingActionDialog
 import com.sopt.presentation.group.component.GroupItem
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @Composable
 fun GroupRoute(
@@ -45,8 +50,11 @@ fun GroupRoute(
     navigateToGroupEnter: () -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    val groupItems = groupViewModel.groupItems
+
+    val getGroupsState = groupViewModel.getGroupsState.collectAsStateWithLifecycle()
+
     val showFABDialog by groupViewModel.showFABDialog.collectAsStateWithLifecycle()
+    val showErrorDialog by groupViewModel.showErrorDialog.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleOwner) {
         groupViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
@@ -56,8 +64,13 @@ fun GroupRoute(
                     is GroupSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
                     is GroupSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
                     is GroupSideEffect.ShowFABDialog -> groupViewModel.showFABDialog(true)
+                    is GroupSideEffect.ShowErrorDialog -> groupViewModel.showErrorDialog(true)
                 }
             }
+    }
+
+    LaunchedEffect(Unit) {
+        groupViewModel.getGroups()
     }
 
     if (showFABDialog) {
@@ -65,23 +78,49 @@ fun GroupRoute(
             onClick = { groupViewModel.showFABDialog(false) },
             onDismissRequest = { groupViewModel.showFABDialog(false) },
             onCreateGroupClick = {
-                groupViewModel.navigateToGroupCreate()
-                groupViewModel.showFABDialog(false)
+                groupViewModel.viewModelScope.launch {
+                    groupViewModel.navigateToGroupCreate()
+                    delay(200)
+                    groupViewModel.showFABDialog(false)
+                }
             },
             onEnterGroupClick = {
-                groupViewModel.navigateToGroupEnter()
-                groupViewModel.showFABDialog(false)
+                groupViewModel.viewModelScope.launch {
+                    groupViewModel.navigateToGroupEnter()
+                    delay(200)
+                    groupViewModel.showFABDialog(false)
+                }
             }
         )
     }
 
-    GroupScreen(
-        paddingValues = paddingValues,
-        groupItems = groupItems,
-        isFabClicked = groupViewModel.showFABDialog,
-        onItemClick = groupViewModel::navigateToGroupDetail,
-        onFabClick = { groupViewModel.showFABDialog(true) }
-    )
+    if (showErrorDialog) {
+        NoostakDialog(
+            dialogType = DialogType.NETWORK_FAILURE,
+            onClick = {
+                groupViewModel.getGroups()
+            },
+            onDismissRequest = { groupViewModel.showErrorDialog(false) }
+        )
+    }
+
+    when (getGroupsState.value) {
+        is UiState.Loading -> NoostakLoadingScreen()
+        is UiState.Success -> {
+            GroupScreen(
+                paddingValues = paddingValues,
+                groupItems = when (val state = getGroupsState.value) {
+                    is UiState.Success -> state.data
+                    else -> emptyList()
+                },
+                onItemClick = groupViewModel::navigateToGroupDetail,
+                onFabClick = { groupViewModel.showFABDialog(true) },
+                showFABDialog = showFABDialog
+            )
+        }
+
+        else -> {}
+    }
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "StateFlowValueCalledInComposition")
@@ -89,9 +128,9 @@ fun GroupRoute(
 fun GroupScreen(
     paddingValues: PaddingValues = PaddingValues(),
     groupItems: List<GroupEntity>,
-    isFabClicked: StateFlow<Boolean>,
     onItemClick: (Long) -> Unit,
-    onFabClick: () -> Unit
+    onFabClick: () -> Unit,
+    showFABDialog: Boolean = false
 ) {
     Scaffold(
         modifier = Modifier
@@ -104,13 +143,13 @@ fun GroupScreen(
             )
         },
         floatingActionButton = {
-            if (!isFabClicked.value) {
-                NoostakFloatingActionButton(
-                    title = stringResource(R.string.fab_group_create),
-                    modifier = Modifier.offset(x = 0.dp, y = (-22).dp)
-                ) {
-                    onFabClick()
-                }
+            NoostakFloatingActionButton(
+                title = stringResource(R.string.fab_group_create),
+                modifier = Modifier
+                    .offset(x = 0.dp, y = (-22).dp)
+                    .showIf(!showFABDialog)
+            ) {
+                onFabClick()
             }
         },
         floatingActionButtonPosition = FabPosition.End
@@ -162,16 +201,25 @@ fun GroupScreenPreview() {
     NoostakAndroidTheme {
         GroupScreen(
             groupItems = listOf(
-                GroupEntity(groupId = 1, groupName = "누스탁", groupMemberCount = 15, groupProfileImageUrl = null),
+                GroupEntity(
+                    groupId = 1,
+                    groupName = "누스탁",
+                    groupMemberCount = 15,
+                    groupProfileImageUrl = null
+                ),
                 GroupEntity(
                     groupId = 2,
                     groupName = "유니보이스",
                     groupMemberCount = 16,
                     groupProfileImageUrl = null
                 ),
-                GroupEntity(groupId = 3, groupName = "솝트", groupMemberCount = 191, groupProfileImageUrl = null)
+                GroupEntity(
+                    groupId = 3,
+                    groupName = "솝트",
+                    groupMemberCount = 191,
+                    groupProfileImageUrl = null
+                )
             ),
-            isFabClicked = remember { MutableStateFlow(false) },
             onItemClick = {},
             onFabClick = {}
         )

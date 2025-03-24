@@ -21,7 +21,6 @@ import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -35,7 +34,7 @@ class LoginViewModel @Inject constructor(
     private val postSocialLoginUseCase: PostSocialLoginUseCase
 ) : BaseViewModel<LoginSideEffect>() {
 
-    private val _showDialog = MutableStateFlow(Pair(DialogType.LOGIN_GOOGLE, false))
+    private val _showDialog = MutableStateFlow(Pair(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, false))
     val showDialog: StateFlow<Pair<DialogType, Boolean>> get() = _showDialog
 
     fun showDialog(dialogType: DialogType, isVisible: Boolean) {
@@ -65,7 +64,7 @@ class LoginViewModel @Inject constructor(
                 showToast(R.string.toast_kakao_login_success)
             } ?: run {
                 handleError(error, R.string.toast_kakao_login_failed)
-                showDialog(DialogType.LOGIN_KAKAO, true)
+                showDialog(DialogType.NETWORK_LOGIN_KAKAO_FAILURE, true)
             }
         }
     }
@@ -90,7 +89,7 @@ class LoginViewModel @Inject constructor(
                 handleGoogleLoginResult(result.credential)
             }.onFailure { exception ->
                 handleError(exception, R.string.toast_google_login_failed)
-                showDialog(DialogType.LOGIN_GOOGLE, true)
+                showDialog(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, true)
             }
         }
     }
@@ -101,7 +100,7 @@ class LoginViewModel @Inject constructor(
             postSocialLogin(googleIdTokenCredential.id, GOOGLE)
             showToast(R.string.toast_google_login_success)
         } else {
-            showDialog(DialogType.LOGIN_GOOGLE, true)
+            showDialog(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, true)
         }
     }
 
@@ -130,6 +129,7 @@ class LoginViewModel @Inject constructor(
                 onSuccess = { response ->
                     saveTokens(response.accessToken, response.refreshToken)
                     userInfoRepository.saveMemberId(response.memberId)
+                    userInfoRepository.saveIsAutoLogin(true)
                     emitSideEffect(LoginSideEffect.NavigateToHome)
                 },
                 onFailure = { error ->

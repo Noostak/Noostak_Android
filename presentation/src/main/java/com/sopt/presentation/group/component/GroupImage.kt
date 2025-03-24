@@ -1,5 +1,6 @@
 package com.sopt.presentation.group.component
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,7 +30,13 @@ fun GroupImage(
                 alignment = Alignment.Center
             ),
             modifier = modifier.clip(RoundedCornerShape(cornerRadius)),
-            previewPlaceholder = painterResource(id = R.drawable.ic_launcher_background)
+            previewPlaceholder = painterResource(id = R.drawable.ic_group_profile)
+        )
+    } else {
+        Image(
+            painter = painterResource(id = R.drawable.ic_group_profile),
+            contentDescription = null,
+            modifier = modifier.clip(RoundedCornerShape(cornerRadius))
         )
     }
 }
@@ -39,7 +46,7 @@ fun GroupImage(
 fun GroupImagePreview() {
     NoostakAndroidTheme {
         GroupImage(
-            imageUrl = "https://item.elandrs.com/r/image/item/2023-03-29/21e48456-d3bf-4dee-9f3f-8e516f344175.jpg?w=750&h=&q=100",
+            imageUrl = null,
             modifier = Modifier
         )
     }
