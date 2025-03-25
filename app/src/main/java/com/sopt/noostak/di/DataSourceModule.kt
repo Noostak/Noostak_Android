@@ -7,6 +7,7 @@ import com.sopt.data.datasource.AuthDataSource
 import com.sopt.data.datasource.CalendarDataSource
 import com.sopt.data.datasource.ExampleDataSource
 import com.sopt.data.datasource.GroupDataSource
+import com.sopt.data.datasource.GroupDetailDataSource
 import com.sopt.data.datasource.UserDataSource
 import com.sopt.data.datasourceimpl.AccountDataSourceImpl
 import com.sopt.data.datasourceimpl.AppointmentConfirmDataSourceImpl
@@ -15,6 +16,7 @@ import com.sopt.data.datasourceimpl.AuthDataSourceImpl
 import com.sopt.data.datasourceimpl.CalendarDataSourceImpl
 import com.sopt.data.datasourceimpl.ExampleDataSourceImpl
 import com.sopt.data.datasourceimpl.GroupDataSourceImpl
+import com.sopt.data.datasourceimpl.GroupDetailDataSourceImpl
 import com.sopt.data.datasourceimpl.UserDataSourceImpl
 import dagger.Binds
 import dagger.Module
@@ -57,4 +59,8 @@ abstract class DataSourceModule {
     @Binds
     @Singleton
     abstract fun bindAppointmentCreateDataSource(appointmentCreateDataSourceImpl: AppointmentCreateDataSourceImpl): AppointmentCreateDataSource
+
+    @Binds
+    @Singleton
+    abstract fun bindGroupDetailDataSource(groupDetailDataSourceImpl: GroupDetailDataSourceImpl): GroupDetailDataSource
 }

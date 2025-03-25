@@ -1,21 +1,63 @@
 package com.sopt.presentation.groupDetail
 
 import android.content.Context
+import androidx.lifecycle.viewModelScope
 import com.sopt.core.extension.stringOf
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.domain.entity.GroupDetailEntity
+import com.sopt.domain.entity.GroupOngoingAppointmentsEntity
 import com.sopt.domain.entity.ProgressEntity
+import com.sopt.domain.repository.GroupDetailRepository
 import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import okhttp3.internal.immutableListOf
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class GroupDetailViewModel @Inject constructor(
-    @ApplicationContext private val context: Context
+    @ApplicationContext private val context: Context,
+    private val groupDetailRepository: GroupDetailRepository
 ) : BaseViewModel<GroupDetailSideEffect>() {
+
+    private val _groupOngoingAppointments = MutableStateFlow<GroupOngoingAppointmentsEntity?>(null)
+    val groupOngoingAppointments: StateFlow<GroupOngoingAppointmentsEntity?> = _groupOngoingAppointments
+    private val _groupConfirmedAppointments = MutableStateFlow<List<ConfirmedEntity>>(emptyList())
+    val groupConfirmedAppointments: StateFlow<List<ConfirmedEntity>> = _groupConfirmedAppointments
+
+    fun getGroupOngoingAppointments(groupId: Long) {
+        viewModelScope.launch {
+            groupDetailRepository.getGroupOngoingAppointments(groupId)
+                .onSuccess { result -> _groupOngoingAppointments.value = result }
+                .onFailure { Timber.e(it) }
+        }
+    }
+
+    fun getGroupConfirmedAppointments(groupId: Long) {
+        viewModelScope.launch {
+            groupDetailRepository.getGroupConfirmedAppointments(groupId)
+                .onSuccess { result ->
+                    _groupConfirmedAppointments.value = result.confirmedAppointments.map {
+                        ConfirmedEntity(
+                            appointmentId = it.appointmentId,
+                            appointmentName = it.appointmentName,
+                            date = it.appointmentTime.date,
+                            startTime = it.appointmentTime.startTime,
+                            endTime = it.appointmentTime.endTime,
+                            category = it.category
+                        )
+                    }
+                }
+                .onFailure {
+                    Timber.e(it)
+                }
+        }
+    }
 
     fun navigateUp() {
         emitSideEffect(GroupDetailSideEffect.NavigateUp)
@@ -53,6 +95,7 @@ class GroupDetailViewModel @Inject constructor(
         context.stringOf(R.string.tab_group_detail_progress),
         context.stringOf(R.string.tab_group_detail_confirmed)
     )
+
     val mockGroupDetail = GroupDetailEntity(
         groupName = "누스탁",
         groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4",

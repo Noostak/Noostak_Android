@@ -20,6 +20,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,16 +30,14 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
-import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
-import com.sopt.domain.entity.GroupMembersEntity
+import com.sopt.domain.entity.GroupDetailInfoEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.GroupDetailHeader
 
@@ -47,26 +47,37 @@ fun GroupMemberRoute(
     navigateUp: () -> Unit,
     groupMemberViewModel: GroupMemberViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(key1 = groupMemberViewModel.sideEffects) {
+    val groupDetailInfo by groupMemberViewModel.groupMembers.collectAsState()
+
+    LaunchedEffect(Unit) {
+        groupMemberViewModel.getGroupMembers(groupId)
+    }
+
+    LaunchedEffect(groupMemberViewModel.sideEffects) {
         groupMemberViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
                 is GroupMemberSideEffect.NavigateUp -> navigateUp()
             }
         }
     }
-    GroupMemberScreen(
-        groupId = groupId,
-        groupMembers = groupMemberViewModel.mockGroupMembers,
-        onBackButtonClick = groupMemberViewModel::navigateUp
-    )
+
+    groupDetailInfo?.let { groupDetail ->
+        GroupMemberScreen(
+            groupId = groupId,
+            groupDetailInfo = groupDetail,
+            onBackButtonClick = groupMemberViewModel::navigateUp
+        )
+    }
 }
 
 @Composable
 fun GroupMemberScreen(
     groupId: Long,
-    groupMembers: GroupMembersEntity,
+    groupDetailInfo: GroupDetailInfoEntity,
     onBackButtonClick: () -> Unit
 ) {
+    val groupInfo = groupDetailInfo.groupInfo
+
     Scaffold(
         modifier = Modifier
             .statusBarsPadding()
@@ -74,7 +85,6 @@ fun GroupMemberScreen(
         topBar = {
             NoostakTopAppBar(
                 title = stringResource(R.string.appbar_group_member),
-                modifier = Modifier,
                 isIconVisible = false,
                 onBackButtonClick = onBackButtonClick
             )
@@ -88,39 +98,44 @@ fun GroupMemberScreen(
         ) {
             GroupDetailHeader(
                 groupId = groupId,
-                groupImage = groupMembers.groupImage,
-                groupName = groupMembers.groupName
+                groupImage = groupInfo.groupProfileImageUrl,
+                groupName = groupInfo.groupName
             )
+
             Text(
                 modifier = Modifier.padding(top = 9.dp),
                 text = stringResource(
                     R.string.tv_group_detail_member,
-                    groupMembers.groupMemberCount
+                    groupInfo.groupMemberCount
                 ),
                 color = NoostakTheme.colors.gray800,
                 style = NoostakTheme.typography.b2Regular
             )
+
             GroupMemberHeader(text = stringResource(R.string.header_group_member_leader))
+
             GroupMemberItem(
                 size = 72.dp,
-                profileImage = groupMembers.groupLeader.groupLeaderImage,
-                name = groupMembers.groupLeader.groupLeaderName
+                profileImage = groupInfo.groupHostInfo.memberProfileImageUrl,
+                name = groupInfo.groupHostInfo.memberName
             )
+
             Spacer(modifier = Modifier.height(24.dp))
+
             HorizontalDivider(
                 modifier = Modifier.clip(CircleShape),
                 thickness = 1.5.dp,
                 color = NoostakTheme.colors.gray200
             )
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(3.dp)
-            ) {
+
+            Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                 GroupMemberHeader(text = stringResource(R.string.header_group_member_member))
-                GroupMemberHeader(text = "(${groupMembers.groupMembers.size}/50)")
+                GroupMemberHeader(text = "(${groupInfo.groupMemberInfo.size}/50)")
             }
+
             Text(
                 modifier = Modifier
-                    .showIf(groupMembers.groupMembers.isEmpty())
+                    .showIf(groupInfo.groupMemberInfo.isEmpty())
                     .fillMaxWidth()
                     .padding(top = 42.dp),
                 text = stringResource(R.string.placeholder_group_member),
@@ -128,19 +143,20 @@ fun GroupMemberScreen(
                 style = NoostakTheme.typography.b2Regular,
                 textAlign = TextAlign.Center
             )
+
             LazyVerticalGrid(
                 modifier = Modifier
-                    .showIf(groupMembers.groupMembers.isNotEmpty())
+                    .showIf(groupInfo.groupMemberInfo.isNotEmpty())
                     .fillMaxSize(),
                 columns = GridCells.Fixed(5),
                 verticalArrangement = Arrangement.spacedBy(17.dp),
                 horizontalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                items(groupMembers.groupMembers) {
+                items(groupInfo.groupMemberInfo) {
                     GroupMemberItem(
                         size = 61.dp,
-                        profileImage = it.groupMemberImage,
-                        name = it.groupMemberName
+                        profileImage = it.memberProfileImageUrl,
+                        name = it.memberName
                     )
                 }
             }
@@ -163,7 +179,7 @@ fun GroupMemberHeader(
 @Composable
 fun GroupMemberItem(
     size: Dp,
-    profileImage: String,
+    profileImage: String?,
     name: String
 ) {
     Column(
@@ -185,31 +201,6 @@ fun GroupMemberItem(
             color = NoostakTheme.colors.gray900,
             style = NoostakTheme.typography.c3SemiBold,
             textAlign = TextAlign.Center
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GroupMemberScreenPreview() {
-    NoostakAndroidTheme {
-        val groupMemberViewModel: GroupMemberViewModel = hiltViewModel()
-        GroupMemberScreen(
-            groupId = 1,
-            groupMembers = groupMemberViewModel.mockGroupMembers,
-            onBackButtonClick = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GroupMemberItemPreview() {
-    NoostakAndroidTheme {
-        GroupMemberItem(
-            size = 61.dp,
-            profileImage = "https://avatars.githubusercontent.com/u/91470334?v=4",
-            name = "이가을"
         )
     }
 }
