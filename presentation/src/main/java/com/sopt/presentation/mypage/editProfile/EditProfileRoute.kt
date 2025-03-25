@@ -2,6 +2,8 @@ package com.sopt.presentation.mypage.editProfile
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -40,6 +42,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
+import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.image.ProfileImagePicker
 import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
@@ -48,6 +51,7 @@ import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
+import com.sopt.core.type.DialogType
 import com.sopt.core.type.ImagePickerType
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
@@ -56,6 +60,7 @@ import com.sopt.presentation.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun EditProfileRoute(
     nickname: String,
@@ -68,6 +73,8 @@ fun EditProfileRoute(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val userProfileState by editProfileViewModel.userProfileState.collectAsStateWithLifecycle()
+
+    val showErrorDialog by editProfileViewModel.showErrorDialog.collectAsStateWithLifecycle()
 
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -108,6 +115,10 @@ fun EditProfileRoute(
                     is EditProfileSideEffect.NavigateUp -> navigateUp()
                     is EditProfileSideEffect.NavigateToMyPage -> navigateToMyPage()
                     is EditProfileSideEffect.ShowGallerySnackBar -> isVisibleSnackBar = true
+                    is EditProfileSideEffect.ShowErrorDialog -> editProfileViewModel.showErrorDialog(
+                        true
+                    )
+
                     is EditProfileSideEffect.RequestImagePicker -> context.launchImagePicker(
                         galleryLauncher,
                         photoPickerLauncher
@@ -119,6 +130,19 @@ fun EditProfileRoute(
     if (isVisibleSnackBar) {
         onShowPermissionGallerySnackBar(context.getString(R.string.sb_permission_gallery))
         isVisibleSnackBar = false
+    }
+
+    if (showErrorDialog) {
+        NoostakDialog(
+            dialogType = DialogType.NETWORK_FAILURE,
+            onClick = {
+                editProfileViewModel.patchProfile(
+                    userProfileState.memberName,
+                    userProfileState.memberProfileImage
+                )
+            },
+            onDismissRequest = { editProfileViewModel.showErrorDialog(false) }
+        )
     }
 
     EditProfileScreen(
