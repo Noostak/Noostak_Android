@@ -346,40 +346,7 @@ fun GroupDetailRoutePreview() {
                 groupName = "누스탁",
                 groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4",
                 groupMembersCount = 10,
-                progressEntities = listOf(
-                    ProgressEntity(
-                        appointmentId = 1,
-                        appointmentName = "1주차",
-                        startDate = "2025-01-06T11:00:00",
-                        endDate = "2025-01-06T14:00:00",
-                        participants = 3,
-                        maxParticipants = 5
-                    ),
-                    ProgressEntity(
-                        appointmentId = 2,
-                        appointmentName = "2주차",
-                        startDate = "2025-01-06T11:00:00",
-                        endDate = "2025-01-06T14:00:00",
-                        participants = 2,
-                        maxParticipants = 5
-                    ),
-                    ProgressEntity(
-                        appointmentId = 3,
-                        appointmentName = "3주차",
-                        startDate = "2025-01-06T11:00:00",
-                        endDate = "2025-01-06T14:00:00",
-                        participants = 5,
-                        maxParticipants = 5
-                    ),
-                    ProgressEntity(
-                        appointmentId = 4,
-                        appointmentName = "4주차",
-                        startDate = "2025-01-06T11:00:00",
-                        endDate = "2025-01-06T14:00:00",
-                        participants = 0,
-                        maxParticipants = 5
-                    )
-                ),
+                progressEntities = emptyList(),
                 confirmedEntities = listOf(
                     ConfirmedEntity(
                         appointmentId = 1,
