@@ -24,6 +24,9 @@ class EditProfileViewModel @Inject constructor(
     private val _patchProfileState: MutableStateFlow<UiState<Unit>> =
         MutableStateFlow(UiState.Empty)
 
+    private val _showErrorDialog = MutableStateFlow(false)
+    val showErrorDialog: StateFlow<Boolean> get() = _showErrorDialog
+
     fun patchProfile(memberName: String, memberProfileImage: String?) {
         viewModelScope.launch {
             _patchProfileState.emit(UiState.Loading)
@@ -36,8 +39,19 @@ class EditProfileViewModel @Inject constructor(
                     _patchProfileState.emit(UiState.Success(it))
                     emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
                 }
-                .onFailure { _patchProfileState.emit(UiState.Failure(it.message.toString())) }
+                .onFailure {
+                    _patchProfileState.emit(UiState.Failure(it.message.toString()))
+                    triggerErrorDialog()
+                }
         }
+    }
+
+    fun showErrorDialog(show: Boolean) {
+        _showErrorDialog.update { show }
+    }
+
+    private fun triggerErrorDialog() {
+        emitSideEffect(EditProfileSideEffect.ShowErrorDialog)
     }
 
     fun navigateUp() {
