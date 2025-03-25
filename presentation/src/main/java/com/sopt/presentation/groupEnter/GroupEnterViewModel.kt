@@ -8,7 +8,6 @@ import com.sopt.presentation.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okio.IOException
@@ -23,13 +22,15 @@ class GroupEnterViewModel @Inject constructor(
 
     private val _postGroupEnterState: MutableStateFlow<UiState<Long>> =
         MutableStateFlow(UiState.Empty)
-    val postGroupEnterState: StateFlow<UiState<Long>> get() = _postGroupEnterState.asStateFlow()
 
     fun postGroupCode(groupInviteCode: String) {
         viewModelScope.launch {
             _postGroupEnterState.emit(UiState.Loading)
             groupRepository.postGroupCode(groupInviteCode)
-                .onSuccess { _postGroupEnterState.emit(UiState.Success(it)) }
+                .onSuccess {
+                    _postGroupEnterState.emit(UiState.Success(it))
+                    navigateToGroup()
+                }
                 .onFailure { throwable ->
                     when (throwable) {
                         is IOException -> {
@@ -62,7 +63,7 @@ class GroupEnterViewModel @Inject constructor(
         emitSideEffect(GroupEnterSideEffect.NavigateUp)
     }
 
-    fun navigateToGroup() {
+    private fun navigateToGroup() {
         emitSideEffect(GroupEnterSideEffect.NavigateToGroup)
     }
 }

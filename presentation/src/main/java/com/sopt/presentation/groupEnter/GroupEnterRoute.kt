@@ -43,7 +43,6 @@ import com.sopt.core.designsystem.component.textfield.OtpInputField
 import com.sopt.core.designsystem.component.topappbar.NoostakCloseAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.presentation.R
 import kotlinx.coroutines.delay
@@ -58,8 +57,6 @@ fun GroupEnterRoute(
     val context = LocalContext.current
 
     val showErrorDialog by groupEnterViewModel.showErrorDialog.collectAsStateWithLifecycle()
-
-    val groupEnterState by groupEnterViewModel.postGroupEnterState.collectAsStateWithLifecycle()
 
     var groupCode by remember { mutableStateOf("") }
 
@@ -98,11 +95,6 @@ fun GroupEnterRoute(
             },
             onDismissRequest = { groupEnterViewModel.showErrorDialog(false) }
         )
-    }
-
-    when (groupEnterState) {
-        is UiState.Success -> groupEnterViewModel.navigateToGroup()
-        else -> {}
     }
 
     GroupEnterScreen(
