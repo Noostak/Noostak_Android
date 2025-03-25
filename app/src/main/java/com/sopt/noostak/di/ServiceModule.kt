@@ -2,6 +2,7 @@ package com.sopt.noostak.di
 
 import com.sopt.data.service.AccountApiService
 import com.sopt.data.service.AppointmentConfirmApiService
+import com.sopt.data.service.AppointmentCreateApiService
 import com.sopt.data.service.AuthApiService
 import com.sopt.data.service.CalendarApiService
 import com.sopt.data.service.ExampleApiService
@@ -51,4 +52,10 @@ object ServiceModule {
     @Singleton
     fun provideGroupApiService(@AccessToken retrofit: Retrofit): GroupApiService =
         retrofit.create(GroupApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideAppointmentCreateService(
+        @AccessToken retrofit: Retrofit
+    ): AppointmentCreateApiService = retrofit.create(AppointmentCreateApiService::class.java)
 }

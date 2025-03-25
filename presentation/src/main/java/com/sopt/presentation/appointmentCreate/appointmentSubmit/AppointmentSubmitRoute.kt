@@ -74,7 +74,25 @@ fun AppointmentSubmitRoute(
         appointmentCategory = appointmentCategory,
         appointmentDuration = appointmentDuration,
         onBackButtonClick = appointmentSubmitViewModel::navigateUp,
-        onConfirmButtonClick = appointmentSubmitViewModel::navigateToAppointmentSubmitConfirm
+        onConfirmButtonClick = { gId, aName, isCons, aDate, aTime, aCategory, aDuration ->
+            appointmentSubmitViewModel.postAppointmentCreate(
+                groupId = groupId,
+                appointmentName = aName,
+                appointmentCategory = aCategory,
+                appointmentDuration = aDuration,
+                appointmentDate = aDate,
+                appointmentTime = aTime ?: "00:00 ~ 23:00"
+            )
+            appointmentSubmitViewModel.navigateToAppointmentSubmitConfirm(
+                groupId = groupId,
+                appointmentName = aName,
+                appointmentCategory = aCategory,
+                appointmentDuration = aDuration,
+                appointmentDate = aDate,
+                appointmentTime = aTime ?: "00:00 ~ 23:00",
+                isConsecutive = isCons
+            )
+        }
     )
 }
 

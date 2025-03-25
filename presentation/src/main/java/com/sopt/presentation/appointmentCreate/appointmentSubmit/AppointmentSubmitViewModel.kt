@@ -1,12 +1,24 @@
 package com.sopt.presentation.appointmentCreate.appointmentSubmit
 
+import androidx.lifecycle.viewModelScope
+import com.sopt.core.state.UiState
 import com.sopt.core.util.BaseViewModel
+import com.sopt.domain.entity.TimeEntity
+import com.sopt.domain.repository.AppointmentCreateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class AppointmentSubmitViewModel @Inject constructor() :
-    BaseViewModel<AppointmentSubmitSideEffect>() {
+class AppointmentSubmitViewModel @Inject constructor(
+    private val appointmentCreateRepository: AppointmentCreateRepository
+) : BaseViewModel<AppointmentSubmitSideEffect>() {
+
+    private val _postAppointmentCreateState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Empty)
+
     fun navigateUp() {
         emitSideEffect(AppointmentSubmitSideEffect.NavigateUp)
     }
@@ -31,6 +43,52 @@ class AppointmentSubmitViewModel @Inject constructor() :
                 appointmentDuration = appointmentDuration
             )
         )
+    }
+
+    fun postAppointmentCreate(
+        groupId: Long,
+        appointmentName: String,
+        appointmentCategory: String,
+        appointmentDuration: Int,
+        appointmentDate: List<String>,
+        appointmentTime: String?
+    ) {
+        viewModelScope.launch {
+            val inputDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+            val outputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+
+            val (startTimeStr, endTimeStr) = appointmentTime
+                ?.split(" ~ ")
+                ?.map { it + ":00" } ?: listOf("00:00:00", "00:00:00")
+
+            val timeList = appointmentDate.map { date ->
+                val startDateTime = LocalDateTime.parse("$date $startTimeStr", inputDateFormatter)
+                val endDateTime = LocalDateTime.parse("$date $endTimeStr", inputDateFormatter)
+                val fullDate = LocalDateTime.parse("$date 00:00:00", inputDateFormatter)
+
+                TimeEntity(
+                    date = fullDate.format(outputFormatter),
+                    startTime = startDateTime.format(outputFormatter),
+                    endTime = endDateTime.format(outputFormatter)
+                )
+            }
+
+            _postAppointmentCreateState.emit(UiState.Loading)
+            appointmentCreateRepository.postAppointmentCreate(
+                groupId = groupId,
+                appointmentName = appointmentName,
+                category = appointmentCategory,
+                duration = appointmentDuration * 60,
+                appointmentHostSelectionTimes = timeList
+            ).fold(
+                onSuccess = {
+                    _postAppointmentCreateState.emit(UiState.Success(it))
+                },
+                onFailure = {
+                    _postAppointmentCreateState.emit(UiState.Failure(it.message.toString()))
+                }
+            )
+        }
     }
 }
 
