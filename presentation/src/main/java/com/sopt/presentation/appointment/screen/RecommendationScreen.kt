@@ -109,7 +109,11 @@ fun RecommendationItem(
     onLikeClick: (Boolean) -> Unit,
     recommendationViewModel: RecommendationViewModel = hiltViewModel()
 ) {
-    val likeState by remember { derivedStateOf { recommendationViewModel.likeStates[data.id] ?: (data.liked to data.likes) } }
+    val likeState by remember {
+        derivedStateOf {
+            recommendationViewModel.likeStates[data.id] ?: (data.liked to data.likes)
+        }
+    }
     val (isLiked, likes) = likeState
     val calculateTime = CalculateTime()
     val date = calculateTime.extractDateWithKorean(data.date)
@@ -241,7 +245,7 @@ fun RecommendationScreenPreview() {
         RecommendationScreen(
             isHost = true,
             selectedItemIndex = 1,
-            data = appointmentViewModel.mockRecommendations.recommendationPriority,
+            data = emptyList(),
             onConfirmButtonClick = {}
         )
     }
