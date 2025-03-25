@@ -27,14 +27,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.chip.AvailableUserChips
 import com.sopt.core.designsystem.component.chip.UnavailableUserChips
@@ -44,10 +42,10 @@ import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.extension.showIf
 import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
+import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.entity.OptionEntity
 import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.presentation.R
-import com.sopt.presentation.appointment.AppointmentViewModel
 
 @Composable
 fun RecommendationScreen(
@@ -128,12 +126,12 @@ fun RecommendationItem(
     Column(
         modifier = Modifier
             .background(
-                color = if (isSelected) NoostakTheme.colors.blue200 else NoostakTheme.colors.blue50,
+                color = if (isSelected) NoostakTheme.colors.gray100 else NoostakTheme.colors.blue50,
                 shape = RoundedCornerShape(20.dp)
             )
             .border(
                 width = 1.dp,
-                color = if (isSelected) Color.Transparent else NoostakTheme.colors.blue100,
+                color = if (isSelected) NoostakTheme.colors.gray500 else NoostakTheme.colors.blue100,
                 shape = RoundedCornerShape(20.dp)
             )
             .padding(dimensionResource(id = R.dimen.default_padding))
@@ -237,11 +235,58 @@ fun RecommendationItem(
 @Composable
 fun RecommendationScreenPreview() {
     NoostakAndroidTheme {
-        val appointmentViewModel: AppointmentViewModel = hiltViewModel()
         RecommendationScreen(
             isHost = true,
-            selectedItemIndex = 1,
-            data = appointmentViewModel.mockRecommendations.recommendationPriority,
+            selectedItemIndex = 0,
+            data = listOf(
+                RecommendationPriorityEntity(
+                    priority = 1,
+                    options = listOf(
+                        OptionEntity(
+                            id = 1,
+                            totalMemberCount = 20,
+                            myIdentity = IdentityEntity(
+                                availability = "available",
+                                position = 0,
+                                name = "이가을"
+                            ),
+                            date = "2024-09-27T00:00:00",
+                            startTime = "2024-09-27T11:00:00",
+                            endTime = "2024-09-27T14:00:00",
+                            likes = 15,
+                            liked = true,
+                            availableMemberCount = 10,
+                            availableMembers = listOf(
+                                "이가을", "선우정아", "대한민국만세", "최영희", "정영수",
+                                "이가을", "김언지", "박유진", "임하늘", "변우석"
+                            ),
+                            unavailableMemberCount = 5,
+                            unavailableMembers = listOf("한강", "이영희", "박영수", "최영희", "정영수")
+                        ),
+                        OptionEntity(
+                            id = 2,
+                            totalMemberCount = 20,
+                            myIdentity = IdentityEntity(
+                                availability = "available",
+                                position = 0,
+                                name = "이가을"
+                            ),
+                            date = "2024-09-27T00:00:00",
+                            startTime = "2024-09-27T11:00:00",
+                            endTime = "2024-09-27T14:00:00",
+                            likes = 15,
+                            liked = false,
+                            availableMemberCount = 10,
+                            availableMembers = listOf(
+                                "이가을", "선우정아", "대한민국만세", "최영희", "정영수",
+                                "이가을", "김언지", "박유진", "임하늘", "변우석"
+                            ),
+                            unavailableMemberCount = 5,
+                            unavailableMembers = listOf("한강", "이영희", "박영수", "최영희", "정영수")
+                        )
+                    )
+                )
+            ),
             onConfirmButtonClick = {}
         )
     }
