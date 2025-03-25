@@ -13,13 +13,14 @@ import com.sopt.core.extension.getYearMonthByPage
 import com.sopt.core.extension.initialPage
 import com.sopt.core.extension.pageCount
 import com.sopt.domain.entity.CalendarSchedule
+import java.time.LocalDate
 
 @Composable
 fun CalendarMonthPager(
     pagerState: PagerState,
     scheduleMap: Map<String, List<CalendarSchedule>>,
     modifier: Modifier = Modifier,
-    onItemClick: () -> Unit = {}
+    onItemClick: (LocalDate) -> Unit = {}
 ) {
     HorizontalPager(
         state = pagerState,
@@ -29,7 +30,7 @@ fun CalendarMonthPager(
             weeks = getMonthDays(getYearMonthByPage(page)),
             scheduleMap = scheduleMap,
             modifier = Modifier.fillMaxSize(),
-            onItemClick = { onItemClick() }
+            onItemClick = onItemClick
         )
     }
 }

@@ -1,24 +1,31 @@
 package com.sopt.presentation.calendar
 
 import androidx.lifecycle.viewModelScope
+import com.sopt.core.extension.toDateString
 import com.sopt.core.util.BaseViewModel
+import com.sopt.core.util.calendar.toFormattedKoreanDate
+import com.sopt.domain.entity.CalendarAppointmentDayEntity
+import com.sopt.domain.entity.CalendarAppointmentEntity
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
 import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.entity.ScheduleDetailEntity
 import com.sopt.domain.entity.ScheduleEntity
-import com.sopt.domain.entity.ScheduleListDetailEntity
+import com.sopt.domain.usecase.GetCalendarAppointmentsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.YearMonth
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor() :
+class CalendarViewModel @Inject constructor(
+    private val getCalendarAppointmentsUseCase: GetCalendarAppointmentsUseCase
+) :
     BaseViewModel<CalendarSideEffect>() {
     private val _showAddDialog = MutableStateFlow(false)
     val showAddDialog get() = _showAddDialog
@@ -29,8 +36,15 @@ class CalendarViewModel @Inject constructor() :
     private val _scheduleMap = MutableStateFlow<Map<String, List<CalendarSchedule>>>(emptyMap())
     val scheduleMap: StateFlow<Map<String, List<CalendarSchedule>>> get() = _scheduleMap
 
+    private var currentYearMonth: YearMonth = YearMonth.now()
+
+    private val _selectedDayAppointments = MutableStateFlow<List<CalendarAppointmentEntity>>(emptyList())
+    val selectedDayAppointments: StateFlow<List<CalendarAppointmentEntity>> get() = _selectedDayAppointments
+
+    private var _currentMonthAppointments = emptyList<CalendarAppointmentDayEntity>()
+
     init {
-        loadSampleSchedule()
+        getCalendarAppointments(currentYearMonth.year, currentYearMonth.monthValue)
     }
 
     fun showAddDialog(show: Boolean) {
@@ -53,45 +67,75 @@ class CalendarViewModel @Inject constructor() :
         emitSideEffect(CalendarSideEffect.NavigateToAppointmentCreate)
     }
 
-    private fun loadSampleSchedule() {
+    // 캘린더 약속 정보 가져오기
+    private fun getCalendarAppointments(year: Int, month: Int) {
         viewModelScope.launch {
-            _scheduleMap.value = mapOf(
-                "2025-02-04" to listOf(
-                    CalendarSchedule(title = "회의", categoryType = "중요"),
-                    CalendarSchedule(title = "책 읽기", categoryType = "취미"),
-                    CalendarSchedule(title = "영화 관람", categoryType = "일정"),
-                    CalendarSchedule(title = "스터디 모임", categoryType = "중요"),
-                    CalendarSchedule(title = "저녁 식사", categoryType = "일정")
-                ),
-                "2025-02-12" to listOf(
-                    CalendarSchedule(title = "회의", categoryType = "중요"),
-                    CalendarSchedule(title = "운동", categoryType = "취미")
-                ),
-                "2025-02-13" to listOf(
-                    CalendarSchedule(title = "회의", categoryType = "중요")
-                ),
-                "2025-02-14" to listOf(
-                    CalendarSchedule(title = "출근", categoryType = "일정"),
-                    CalendarSchedule(title = "이름이 긴 약속", categoryType = "기타")
+            getCalendarAppointmentsUseCase(1, year, month)
+                .fold(
+                    onSuccess = { response ->
+                        val newScheduleMap =
+                            response.currentMonthAppointments.associate { dayAppointments ->
+                                LocalDate.of(year, month, dayAppointments.day)
+                                    .toDateString() to dayAppointments.appointments.map { appointment ->
+                                    CalendarSchedule(
+                                        scrapId = appointment.id,
+                                        title = appointment.name,
+                                        categoryType = appointment.category
+                                    )
+                                }
+                            }
+                        _scheduleMap.value = newScheduleMap
+                        _currentMonthAppointments = response.currentMonthAppointments
+                    },
+                    onFailure = { error ->
+                        Timber.e("getCalendarAppointments Failed: ${error.message}")
+                    }
                 )
-            )
         }
     }
 
-    // 특정 월의 데이터 불러오기
-    fun getScheduleMonth(date: LocalDate) {
-        val monthKey = date.format(DateTimeFormatter.ofPattern("yyyy-MM"))
-        viewModelScope.launch {
-            val newScheduleMap = _scheduleMap.value.toMutableMap()
-
-            newScheduleMap[monthKey] = listOf(
-                CalendarSchedule(title = "월간 미팅", categoryType = "중요"),
-                CalendarSchedule(title = "팀 회의", categoryType = "중요"),
-                CalendarSchedule(title = "운동", categoryType = "취미")
-            )
-
-            _scheduleMap.value = newScheduleMap
+    // 현재 월 변경 시 캘린더 API 재호출
+    fun onMonthChanged(newYearMonth: YearMonth) {
+        if (currentYearMonth != newYearMonth) {
+            currentYearMonth = newYearMonth
+            getCalendarAppointments(newYearMonth.year, newYearMonth.monthValue)
         }
+    }
+
+    // 날짜 클릭
+    fun onDayClicked(date: LocalDate) {
+        val appointments = _currentMonthAppointments
+            .firstOrNull {
+                it.day == date.dayOfMonth &&
+                    currentYearMonth.year == date.year &&
+                    currentYearMonth.monthValue == date.monthValue
+            }?.appointments ?: emptyList()
+
+        _selectedDayAppointments.value = appointments
+
+        if (appointments.isNotEmpty()) {
+            showBottomSheet(true)
+            emitSideEffect(CalendarSideEffect.ShowBottomSheet)
+        }
+    }
+
+    // 해당 날짜 일정 가져오기
+    fun getSelectedScheduleEntity(): ScheduleEntity {
+        return ScheduleEntity(
+            groupId = 1,
+            date = _selectedDayAppointments.value.first().date.toFormattedKoreanDate(),
+            scheduleList = _selectedDayAppointments.value.map {
+                CalendarAppointmentEntity(
+                    id = it.id,
+                    name = it.name,
+                    category = it.category,
+                    startTime = it.startTime,
+                    endTime = it.endTime,
+                    duration = it.duration,
+                    date = it.date
+                )
+            }
+        )
     }
 
     val mockGroups = listOf(
@@ -139,77 +183,6 @@ class CalendarViewModel @Inject constructor() :
             id = 9,
             groupName = "누스탁5",
             groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-        )
-    )
-
-    val mockScheduleList = ScheduleEntity(
-        groupId = 1,
-        date = "1월 13일 (월)",
-        scheduleList = listOf(
-            ScheduleListDetailEntity(
-                scheduleId = 1,
-                name = "누스탁 회의",
-                category = "중요",
-                startTime = "1/13 21:00",
-                endTime = "1/13 21:00",
-                duration = 5
-            ),
-            ScheduleListDetailEntity(
-                scheduleId = 2,
-                name = "누스탁 모각작",
-                category = "일정",
-                startTime = "1/13 21:00",
-                endTime = "1/13 21:00",
-                duration = 10
-            ),
-            ScheduleListDetailEntity(
-                scheduleId = 3,
-                name = "누스탁 회식",
-                category = "취미",
-                startTime = "1/13 21:00",
-                endTime = "1/13 21:00",
-                duration = 6
-            ),
-            ScheduleListDetailEntity(
-                scheduleId = 4,
-                name = "누스탁 MT",
-                category = "기타",
-                startTime = "1/13 21:00",
-                endTime = "1/13 21:00",
-                duration = 9
-            ),
-            ScheduleListDetailEntity(
-                scheduleId = 5,
-                name = "누스탁 회의2",
-                category = "중요",
-                startTime = "1/13 21:00",
-                endTime = "1/13 21:00",
-                duration = 24
-            ),
-            ScheduleListDetailEntity(
-                scheduleId = 6,
-                name = "누스탁 모각작2",
-                category = "일정",
-                startTime = "1/13 21:00",
-                endTime = "1/13 21:00",
-                duration = 1
-            ),
-            ScheduleListDetailEntity(
-                scheduleId = 7,
-                name = "누스탁 회식2",
-                category = "취미",
-                startTime = "1/13 21:00",
-                endTime = "1/13 21:00",
-                duration = 4
-            ),
-            ScheduleListDetailEntity(
-                scheduleId = 8,
-                name = "누스탁 MT2",
-                category = "기타",
-                startTime = "1/13 21:00",
-                endTime = "1/13 21:00",
-                duration = 3
-            )
         )
     )
 
