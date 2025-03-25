@@ -28,7 +28,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
+import com.sopt.core.R
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
+import com.sopt.core.designsystem.component.image.ProfileImage
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.screen.NoostakFailureScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -38,7 +40,6 @@ import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.ProfileEntity
 import com.sopt.presentation.mypage.component.MyPageItem
 import com.sopt.presentation.mypage.component.MyPageProfileEditButton
-import com.sopt.presentation.mypage.component.MyPageProfileImage
 
 @Composable
 fun MyPageRoute(
@@ -156,12 +157,13 @@ fun MyPageScreen(
                     bottom = 19.dp
                 )
             ) {
-                MyPageProfileImage(
+                ProfileImage(
                     imageUrl = data.memberProfileImage,
                     modifier = Modifier
                         .padding(end = 12.dp)
                         .size(61.dp)
-                        .aspectRatio(1f)
+                        .aspectRatio(1f),
+                    placeholder = R.drawable.ic_user_profile
                 )
                 Text(
                     text = data.memberName,
