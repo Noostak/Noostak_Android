@@ -6,6 +6,7 @@ import com.sopt.data.service.AuthApiService
 import com.sopt.data.service.CalendarApiService
 import com.sopt.data.service.ExampleApiService
 import com.sopt.data.service.GroupApiService
+import com.sopt.data.service.ProfileApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,4 +52,9 @@ object ServiceModule {
     @Singleton
     fun provideGroupApiService(@AccessToken retrofit: Retrofit): GroupApiService =
         retrofit.create(GroupApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideProfileApiService(@AccessToken retrofit: Retrofit): ProfileApiService =
+        retrofit.create(ProfileApiService::class.java)
 }
