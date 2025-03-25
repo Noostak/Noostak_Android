@@ -1,8 +1,10 @@
 package com.sopt.presentation.mypage.editProfile
 
 import androidx.lifecycle.viewModelScope
+import com.sopt.core.state.UiState
 import com.sopt.core.util.BaseViewModel
-import com.sopt.domain.entity.UserEntity
+import com.sopt.domain.entity.ProfileEntity
+import com.sopt.domain.repository.ProfileRepository
 import com.sopt.domain.repository.UserInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,78 +15,73 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EditProfileViewModel @Inject constructor(
-    private val userInfoRepository: UserInfoRepository
+    private val userInfoRepository: UserInfoRepository,
+    private val profileRepository: ProfileRepository
 ) : BaseViewModel<EditProfileSideEffect>() {
+    private val _userProfileState = MutableStateFlow(ProfileEntity())
+    val userProfileState: StateFlow<ProfileEntity> = _userProfileState
 
-    private val _editProfileState = MutableStateFlow(EditProfileState())
-    val editProfileState: StateFlow<EditProfileState> = _editProfileState
+    private val _patchProfileState: MutableStateFlow<UiState<Unit>> =
+        MutableStateFlow(UiState.Empty)
 
-    private val _userInfoState = MutableStateFlow(UserEntity())
-    val userInfoState: StateFlow<UserEntity> = _userInfoState
-
-    private var initialNickname: String? = null
-    private var initialProfileImage: String? = null
-
-    fun setInitialUserInfo(nickname: String, profileImage: String?) {
-        initialNickname = nickname
-        initialProfileImage = profileImage
-        _userInfoState.update { it.copy(nickname = nickname, profileImage = profileImage) }
-        validateChanges()
+    fun patchProfile(memberName: String, memberProfileImage: String?) {
+        viewModelScope.launch {
+            _patchProfileState.emit(UiState.Loading)
+            profileRepository.patchProfile(memberName, memberProfileImage)
+                .onSuccess {
+                    userInfoRepository.saveNickname(userProfileState.value.memberName)
+                    userProfileState.value.memberProfileImage?.let { image ->
+                        userInfoRepository.saveProfileImage(image)
+                    }
+                    _patchProfileState.emit(UiState.Success(it))
+                    emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
+                }
+                .onFailure { _patchProfileState.emit(UiState.Failure(it.message.toString())) }
+        }
     }
 
     fun navigateUp() {
         emitSideEffect(EditProfileSideEffect.NavigateUp)
     }
 
-    fun navigateToMyPage() {
-        viewModelScope.launch {
-            saveNickname(_userInfoState.value.nickname)
-        }
-
-        emitSideEffect(EditProfileSideEffect.NavigateToMyPage)
-    }
-
-    fun onNicknameChanged(nickname: String) {
-        _userInfoState.update { it.copy(nickname = nickname) }
-        validateChanges()
-    }
-
-    private fun validateChanges() {
-        val currentState = _userInfoState.value
-        val isNameValid = validateNickname(currentState.nickname)
-        val isChanged =
-            currentState.nickname != initialNickname || currentState.profileImage != initialProfileImage
-
-        _editProfileState.update { it.copy(isNameCheck = isNameValid && isChanged) }
-    }
-
-    private fun validateNickname(nickname: String?): Boolean {
-        return !nickname.isNullOrBlank() && nickname.length in 1..10 && nickname.all { it.isLetterOrDigit() }
-    }
-
-    private fun saveNickname(nickname: String) {
-        viewModelScope.launch {
-            userInfoRepository.saveNickname(nickname)
-        }
-    }
-
-    fun updateGalleryPermissionState(isGranted: Boolean) {
-        _editProfileState.update { it.copy(isPermissionGranted = isGranted) }
-    }
-
     fun requestGalleryPicker() {
-        if (_editProfileState.value.isPermissionGranted) {
+        if (_userProfileState.value.isPermissionGranted) {
             emitSideEffect(EditProfileSideEffect.RequestImagePicker)
         } else {
             emitSideEffect(EditProfileSideEffect.ShowGallerySnackBar)
         }
     }
 
-    fun updateProfileImage(imageUri: String?) {
+    fun updateGalleryPermissionState(isGranted: Boolean) {
+        _userProfileState.update { it.copy(isPermissionGranted = isGranted) }
+    }
+
+    fun onImageSelected(imageUri: String?) {
         viewModelScope.launch {
-            _userInfoState.update { it.copy(profileImage = imageUri) }
-            imageUri?.let { userInfoRepository.saveProfileImage(it) }
-            validateChanges()
+            _userProfileState.update { it.copy(memberProfileImage = imageUri) }
         }
+    }
+
+    fun onMemberNameChanged(memberName: String) {
+        _userProfileState.update { it.copy(memberName = memberName) }
+        validateMemberName(memberName)
+    }
+
+    private fun validateMemberName(memberName: String) {
+        viewModelScope.launch {
+            _userProfileState.update {
+                it.copy(
+                    isMemberNameCheck = (
+                        !memberName.isNullOrBlank() && memberName.length in 1..10 && memberName.all { name ->
+                            name.isLetterOrDigit()
+                        }
+                        )
+                )
+            }
+        }
+    }
+
+    fun validateProfile(memberName: String, memberProfileImage: String?): Boolean {
+        return (memberName != userProfileState.value.memberName || memberProfileImage != userProfileState.value.memberProfileImage)
     }
 }
