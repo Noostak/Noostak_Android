@@ -6,6 +6,7 @@ import com.sopt.data.repositoryimpl.AuthRepositoryImpl
 import com.sopt.data.repositoryimpl.CalendarRepositoryImpl
 import com.sopt.data.repositoryimpl.ExampleRepositoryImpl
 import com.sopt.data.repositoryimpl.GroupRepositoryImpl
+import com.sopt.data.repositoryimpl.ProfileRepositoryImpl
 import com.sopt.data.repositoryimpl.UserInfoRepositoryImpl
 import com.sopt.domain.repository.AccountRepository
 import com.sopt.domain.repository.AppointmentConfirmRepository
@@ -13,6 +14,7 @@ import com.sopt.domain.repository.AuthRepository
 import com.sopt.domain.repository.CalendarRepository
 import com.sopt.domain.repository.ExampleRepository
 import com.sopt.domain.repository.GroupRepository
+import com.sopt.domain.repository.ProfileRepository
 import com.sopt.domain.repository.UserInfoRepository
 import dagger.Binds
 import dagger.Module
@@ -51,4 +53,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindGroupRepository(groupRepositoryImpl: GroupRepositoryImpl): GroupRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindProfileRepository(profileRepositoryImpl: ProfileRepositoryImpl): ProfileRepository
 }
