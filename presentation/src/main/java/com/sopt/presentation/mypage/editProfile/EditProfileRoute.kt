@@ -1,5 +1,7 @@
 package com.sopt.presentation.mypage.editProfile
 
+import android.Manifest
+import android.content.pm.PackageManager
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
@@ -32,6 +34,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,8 +51,7 @@ import com.sopt.core.extension.launchImagePicker
 import com.sopt.core.type.ImagePickerType
 import com.sopt.core.type.TextFieldType
 import com.sopt.core.util.permission.ImagePickerLaunchers
-import com.sopt.core.util.permission.RequestGalleryPermission
-import com.sopt.domain.entity.UserEntity
+import com.sopt.domain.entity.ProfileEntity
 import com.sopt.presentation.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -64,18 +66,8 @@ fun EditProfileRoute(
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-    val editProfileState by editProfileViewModel.editProfileState.collectAsStateWithLifecycle()
-    val userInfoState by editProfileViewModel.userInfoState.collectAsStateWithLifecycle()
 
-    val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
-        editProfileViewModel.updateProfileImage(uri.toString())
-    }
-
-    val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
-        editProfileViewModel.updateProfileImage(uri.toString())
-    }
-
-    var isGalleryPermissionDenied by remember { mutableStateOf(false) }
+    val userProfileState by editProfileViewModel.userProfileState.collectAsStateWithLifecycle()
 
     val snackBarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
@@ -91,16 +83,22 @@ fun EditProfileRoute(
         }
     }
 
-    LaunchedEffect(nickname) {
-        editProfileViewModel.setInitialUserInfo(nickname, profileImage)
+    var isVisibleSnackBar by remember { mutableStateOf(false) }
+    val permissions = arrayOf(
+        Manifest.permission.READ_MEDIA_IMAGES,
+        Manifest.permission.READ_EXTERNAL_STORAGE
+    )
+
+    val galleryLauncher = ImagePickerLaunchers().rememberGalleryLauncher { uri ->
+        editProfileViewModel.onImageSelected(uri.toString())
+    }
+    val photoPickerLauncher = ImagePickerLaunchers().rememberPhotoPickerLauncher { uri ->
+        editProfileViewModel.onImageSelected(uri.toString())
     }
 
-    RequestGalleryPermission { isGranted ->
-        if (isGranted) {
-            editProfileViewModel.updateGalleryPermissionState(true)
-        } else {
-            isGalleryPermissionDenied = true
-        }
+    LaunchedEffect(Unit) {
+        editProfileViewModel.onMemberNameChanged(nickname)
+        editProfileViewModel.onImageSelected(profileImage)
     }
 
     LaunchedEffect(lifecycleOwner) {
@@ -108,12 +106,8 @@ fun EditProfileRoute(
             .collect { sideEffect ->
                 when (sideEffect) {
                     is EditProfileSideEffect.NavigateUp -> navigateUp()
-
                     is EditProfileSideEffect.NavigateToMyPage -> navigateToMyPage()
-
-                    is EditProfileSideEffect.ShowGallerySnackBar ->
-                        isGalleryPermissionDenied = true
-
+                    is EditProfileSideEffect.ShowGallerySnackBar -> isVisibleSnackBar = true
                     is EditProfileSideEffect.RequestImagePicker -> context.launchImagePicker(
                         galleryLauncher,
                         photoPickerLauncher
@@ -122,39 +116,56 @@ fun EditProfileRoute(
             }
     }
 
-    if (isGalleryPermissionDenied) {
+    if (isVisibleSnackBar) {
         onShowPermissionGallerySnackBar(context.getString(R.string.sb_permission_gallery))
-        isGalleryPermissionDenied = false
+        isVisibleSnackBar = false
     }
 
     EditProfileScreen(
         snackBarHostState = snackBarHostState,
         snackBarVisible = snackBarVisible,
         onBackButtonClick = editProfileViewModel::navigateUp,
-        userInfoState = userInfoState,
-        editProfileState = editProfileState,
-        onProfileCameraBtnClick = { editProfileViewModel.requestGalleryPicker() },
-        onNameChange = { newName ->
-            editProfileViewModel.onNicknameChanged(newName)
+        userProfileState = userProfileState,
+        onProfileCameraBtnClick = {
+            if (permissions.any {
+                ContextCompat.checkSelfPermission(
+                        context,
+                        it
+                    ) == PackageManager.PERMISSION_GRANTED
+            }
+            ) {
+                editProfileViewModel.updateGalleryPermissionState(true)
+            } else {
+                isVisibleSnackBar = true
+            }
+
+            editProfileViewModel.requestGalleryPicker()
         },
-        onNextBtnClick = {
-            editProfileViewModel.navigateToMyPage()
-        }
+        onNameChange = { newName ->
+            editProfileViewModel.onMemberNameChanged(newName)
+        },
+        onNextBtnClick = { memberName, memberProfileImage ->
+            editProfileViewModel.patchProfile(memberName, memberProfileImage)
+        },
+        isNextBtnActive = (
+            userProfileState.isMemberNameCheck && editProfileViewModel.validateProfile(
+                nickname,
+                profileImage
+            )
+            )
     )
 }
 
 @Composable
 fun EditProfileScreen(
     snackBarHostState: SnackbarHostState = SnackbarHostState(),
-    snackBarVisible: MutableState<Boolean> = remember {
-        mutableStateOf(false)
-    },
+    snackBarVisible: MutableState<Boolean> = remember { mutableStateOf(false) },
     onBackButtonClick: () -> Unit,
-    userInfoState: UserEntity,
-    editProfileState: EditProfileState,
+    userProfileState: ProfileEntity,
     onProfileCameraBtnClick: () -> Unit = {},
     onNameChange: (String) -> Unit = {},
-    onNextBtnClick: () -> Unit
+    onNextBtnClick: (String, String?) -> Unit,
+    isNextBtnActive: Boolean = false
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -210,16 +221,14 @@ fun EditProfileScreen(
                 Spacer(modifier = Modifier.height(37.dp))
                 ProfileImagePicker(
                     imagePickerType = ImagePickerType.USER,
-                    selectedImageUri = userInfoState.profileImage,
+                    selectedImageUri = userProfileState.memberProfileImage,
                     onCameraBtnClick = onProfileCameraBtnClick,
-                    modifier = Modifier
-                        .padding(top = 46.dp)
-                        .align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Spacer(modifier = Modifier.height(32.dp))
                 NoostakTextField(
                     textFieldType = TextFieldType.EDITPROFILE,
-                    value = userInfoState.nickname,
+                    value = userProfileState.memberName,
                     onValueChange = { onNameChange(it) },
                     maxLength = 10,
                     lengthTextStyle = NoostakTheme.typography.c3Regular
@@ -230,8 +239,13 @@ fun EditProfileScreen(
                 text = stringResource(R.string.btn_group_create_next),
                 activateColor = NoostakTheme.colors.blue600,
                 deactivateColor = NoostakTheme.colors.gray500,
-                isEnabled = editProfileState.isNameCheck,
-                onButtonClick = onNextBtnClick
+                isEnabled = isNextBtnActive,
+                onButtonClick = {
+                    onNextBtnClick(
+                        userProfileState.memberName,
+                        userProfileState.memberProfileImage
+                    )
+                }
             )
         }
     }
@@ -243,14 +257,13 @@ fun GroupCreateScreenPreview() {
     NoostakAndroidTheme {
         EditProfileScreen(
             onBackButtonClick = {},
-            userInfoState = UserEntity(
-                nickname = "누스탁",
-                profileImage = null
+            userProfileState = ProfileEntity(
+                memberName = "호크스",
+                memberProfileImage = null
             ),
-            editProfileState = EditProfileState(),
             onProfileCameraBtnClick = {},
             onNameChange = {},
-            onNextBtnClick = {}
+            onNextBtnClick = { _, _ -> }
         )
     }
 }
