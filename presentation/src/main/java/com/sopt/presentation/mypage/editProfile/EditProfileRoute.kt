@@ -2,6 +2,7 @@ package com.sopt.presentation.mypage.editProfile
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
@@ -48,9 +49,11 @@ import com.sopt.core.designsystem.component.snackbar.NoostakSnackBar
 import com.sopt.core.designsystem.component.snackbar.SNACK_BAR_DURATION
 import com.sopt.core.designsystem.component.textfield.NoostakTextField
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
+import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.core.type.ImagePickerType
 import com.sopt.core.type.TextFieldType
@@ -73,6 +76,7 @@ fun EditProfileRoute(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val userProfileState by editProfileViewModel.userProfileState.collectAsStateWithLifecycle()
+    val patchProfileState by editProfileViewModel.patchProfileState.collectAsStateWithLifecycle()
 
     val showErrorDialog by editProfileViewModel.showErrorDialog.collectAsStateWithLifecycle()
 
@@ -103,9 +107,20 @@ fun EditProfileRoute(
         editProfileViewModel.onImageSelected(uri.toString())
     }
 
+    val profileImageUri = remember { mutableStateOf<Uri?>(null) }
+
     LaunchedEffect(Unit) {
         editProfileViewModel.onMemberNameChanged(nickname)
-        editProfileViewModel.onImageSelected(profileImage)
+
+        if (profileImage != null) {
+            val contentUri = editProfileViewModel.urlToContentUri(context, profileImage)
+            contentUri?.let { uri ->
+                profileImageUri.value = uri
+                editProfileViewModel.onImageSelected(uri.toString())
+            }
+        } else {
+            editProfileViewModel.onImageSelected(null)
+        }
     }
 
     LaunchedEffect(lifecycleOwner) {
@@ -145,6 +160,11 @@ fun EditProfileRoute(
         )
     }
 
+    when (patchProfileState) {
+        is UiState.Loading -> NoostakLoadingScreen()
+        else -> Unit
+    }
+
     EditProfileScreen(
         snackBarHostState = snackBarHostState,
         snackBarVisible = snackBarVisible,
@@ -174,7 +194,7 @@ fun EditProfileRoute(
         isNextBtnActive = (
             userProfileState.isMemberNameCheck && editProfileViewModel.validateProfile(
                 nickname,
-                profileImage
+                profileImageUri.value.toString()
             )
             )
     )
