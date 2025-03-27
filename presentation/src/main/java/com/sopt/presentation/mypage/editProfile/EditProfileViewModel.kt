@@ -31,7 +31,6 @@ class EditProfileViewModel @Inject constructor(
 
     private val _patchProfileState: MutableStateFlow<UiState<Unit>> =
         MutableStateFlow(UiState.Empty)
-    val patchProfileState: StateFlow<UiState<Unit>> get() = _patchProfileState
 
     private val _showErrorDialog = MutableStateFlow(false)
     val showErrorDialog: StateFlow<Boolean> get() = _showErrorDialog
