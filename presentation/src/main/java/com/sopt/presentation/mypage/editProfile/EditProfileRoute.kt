@@ -53,7 +53,6 @@ import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.launchImagePicker
-import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.core.type.ImagePickerType
 import com.sopt.core.type.TextFieldType
@@ -76,7 +75,6 @@ fun EditProfileRoute(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val userProfileState by editProfileViewModel.userProfileState.collectAsStateWithLifecycle()
-    val patchProfileState by editProfileViewModel.patchProfileState.collectAsStateWithLifecycle()
 
     val showErrorDialog by editProfileViewModel.showErrorDialog.collectAsStateWithLifecycle()
 
@@ -107,6 +105,8 @@ fun EditProfileRoute(
         editProfileViewModel.onImageSelected(uri.toString())
     }
 
+    var isInitialized by remember { mutableStateOf(false) }
+
     val profileImageUri = remember { mutableStateOf<Uri?>(null) }
 
     LaunchedEffect(Unit) {
@@ -121,6 +121,8 @@ fun EditProfileRoute(
         } else {
             editProfileViewModel.onImageSelected(null)
         }
+
+        isInitialized = true
     }
 
     LaunchedEffect(lifecycleOwner) {
@@ -160,44 +162,43 @@ fun EditProfileRoute(
         )
     }
 
-    when (patchProfileState) {
-        is UiState.Loading -> NoostakLoadingScreen()
-        else -> Unit
+    if (isInitialized) {
+        EditProfileScreen(
+            snackBarHostState = snackBarHostState,
+            snackBarVisible = snackBarVisible,
+            onBackButtonClick = editProfileViewModel::navigateUp,
+            userProfileState = userProfileState,
+            onProfileCameraBtnClick = {
+                if (permissions.any {
+                    ContextCompat.checkSelfPermission(
+                            context,
+                            it
+                        ) == PackageManager.PERMISSION_GRANTED
+                }
+                ) {
+                    editProfileViewModel.updateGalleryPermissionState(true)
+                } else {
+                    isVisibleSnackBar = true
+                }
+
+                editProfileViewModel.requestGalleryPicker()
+            },
+            onNameChange = { newName ->
+                editProfileViewModel.onMemberNameChanged(newName)
+            },
+            onNextBtnClick = { memberName, memberProfileImage ->
+                editProfileViewModel.patchProfile(memberName, memberProfileImage)
+            },
+            isNextBtnActive = (
+                userProfileState.isMemberNameCheck && editProfileViewModel.validateProfile(
+                    nickname,
+                    profileImageUri.value.toString()
+                )
+                )
+        )
+    } else {
+        NoostakLoadingScreen()
     }
-
-    EditProfileScreen(
-        snackBarHostState = snackBarHostState,
-        snackBarVisible = snackBarVisible,
-        onBackButtonClick = editProfileViewModel::navigateUp,
-        userProfileState = userProfileState,
-        onProfileCameraBtnClick = {
-            if (permissions.any {
-                ContextCompat.checkSelfPermission(
-                        context,
-                        it
-                    ) == PackageManager.PERMISSION_GRANTED
-            }
-            ) {
-                editProfileViewModel.updateGalleryPermissionState(true)
-            } else {
-                isVisibleSnackBar = true
-            }
-
-            editProfileViewModel.requestGalleryPicker()
-        },
-        onNameChange = { newName ->
-            editProfileViewModel.onMemberNameChanged(newName)
-        },
-        onNextBtnClick = { memberName, memberProfileImage ->
-            editProfileViewModel.patchProfile(memberName, memberProfileImage)
-        },
-        isNextBtnActive = (
-            userProfileState.isMemberNameCheck && editProfileViewModel.validateProfile(
-                nickname,
-                profileImageUri.value.toString()
-            )
-            )
-    )
 }
 
 @Composable
