@@ -17,6 +17,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -29,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
+import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -47,6 +50,8 @@ fun AppointmentSubmitRoute(
     navigateToAppointmentSubmitConfirm: (Long, String, Boolean, List<String>, String?, String, Int) -> Unit,
     appointmentSubmitViewModel: AppointmentSubmitViewModel = hiltViewModel()
 ) {
+    val showErrorDialog by appointmentSubmitViewModel.showErrorDialog.collectAsState()
+
     LaunchedEffect(key1 = appointmentSubmitViewModel.sideEffects) {
         appointmentSubmitViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -62,9 +67,16 @@ fun AppointmentSubmitRoute(
                         sideEffect.appointmentDuration
                     )
                 }
+                is AppointmentSubmitSideEffect.ShowErrorDialog -> {
+                    appointmentSubmitViewModel.showErrorDialog(
+                        show = sideEffect.show,
+                        dialogType = sideEffect.dialogType
+                    )
+                }
             }
         }
     }
+
     AppointmentSubmitScreen(
         groupId = groupId,
         appointmentName = appointmentName,
@@ -83,17 +95,20 @@ fun AppointmentSubmitRoute(
                 appointmentDate = aDate,
                 appointmentTime = aTime ?: "00:00 ~ 23:00"
             )
-            appointmentSubmitViewModel.navigateToAppointmentSubmitConfirm(
-                groupId = groupId,
-                appointmentName = aName,
-                appointmentCategory = aCategory,
-                appointmentDuration = aDuration,
-                appointmentDate = aDate,
-                appointmentTime = aTime ?: "00:00 ~ 23:00",
-                isConsecutive = isCons
-            )
         }
     )
+
+    if (showErrorDialog.first) {
+        NoostakDialog(
+            dialogType = showErrorDialog.second,
+            onClick = {
+                appointmentSubmitViewModel.showErrorDialog(false, showErrorDialog.second)
+            },
+            onDismissRequest = {
+                appointmentSubmitViewModel.showErrorDialog(false, showErrorDialog.second)
+            }
+        )
+    }
 }
 
 @Composable

@@ -3,6 +3,7 @@ package com.sopt.presentation.groupDetail
 import android.content.Context
 import androidx.lifecycle.viewModelScope
 import com.sopt.core.extension.stringOf
+import com.sopt.core.state.UiState
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.domain.entity.GroupDetailEntity
@@ -25,36 +26,45 @@ class GroupDetailViewModel @Inject constructor(
     private val groupDetailRepository: GroupDetailRepository
 ) : BaseViewModel<GroupDetailSideEffect>() {
 
-    private val _groupOngoingAppointments = MutableStateFlow<GroupOngoingAppointmentsEntity?>(null)
-    val groupOngoingAppointments: StateFlow<GroupOngoingAppointmentsEntity?> = _groupOngoingAppointments
-    private val _groupConfirmedAppointments = MutableStateFlow<List<ConfirmedEntity>>(emptyList())
-    val groupConfirmedAppointments: StateFlow<List<ConfirmedEntity>> = _groupConfirmedAppointments
+    private val _groupOngoingState = MutableStateFlow<UiState<GroupOngoingAppointmentsEntity>>(UiState.Empty)
+    val groupOngoingState: StateFlow<UiState<GroupOngoingAppointmentsEntity>> = _groupOngoingState
+
+    private val _groupConfirmedState = MutableStateFlow<UiState<List<ConfirmedEntity>>>(UiState.Empty)
+    val groupConfirmedState: StateFlow<UiState<List<ConfirmedEntity>>> = _groupConfirmedState
 
     fun getGroupOngoingAppointments(groupId: Long) {
         viewModelScope.launch {
+            _groupOngoingState.value = UiState.Loading
             groupDetailRepository.getGroupOngoingAppointments(groupId)
-                .onSuccess { result -> _groupOngoingAppointments.value = result }
-                .onFailure { Timber.e(it) }
+                .onSuccess { result -> _groupOngoingState.value = UiState.Success(result) }
+                .onFailure {
+                    Timber.e(it)
+                    _groupOngoingState.value = UiState.Failure(it.message.orEmpty())
+                }
         }
     }
 
     fun getGroupConfirmedAppointments(groupId: Long) {
         viewModelScope.launch {
+            _groupConfirmedState.value = UiState.Loading
             groupDetailRepository.getGroupConfirmedAppointments(groupId)
                 .onSuccess { result ->
-                    _groupConfirmedAppointments.value = result.confirmedAppointments.map {
-                        ConfirmedEntity(
-                            appointmentId = it.appointmentId,
-                            appointmentName = it.appointmentName,
-                            date = it.appointmentTime.date,
-                            startTime = it.appointmentTime.startTime,
-                            endTime = it.appointmentTime.endTime,
-                            category = it.category
-                        )
-                    }
+                    _groupConfirmedState.value = UiState.Success(
+                        result.confirmedAppointments.map {
+                            ConfirmedEntity(
+                                appointmentId = it.appointmentId,
+                                appointmentName = it.appointmentName,
+                                date = it.appointmentTime.date,
+                                startTime = it.appointmentTime.startTime,
+                                endTime = it.appointmentTime.endTime,
+                                category = it.category
+                            )
+                        }
+                    )
                 }
                 .onFailure {
                     Timber.e(it)
+                    _groupConfirmedState.value = UiState.Failure(it.message.orEmpty())
                 }
         }
     }

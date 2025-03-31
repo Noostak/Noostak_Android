@@ -35,8 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakFailureScreen
+import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
+import com.sopt.core.state.UiState
 import com.sopt.domain.entity.GroupDetailInfoEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.GroupDetailHeader
@@ -47,7 +50,7 @@ fun GroupMemberRoute(
     navigateUp: () -> Unit,
     groupMemberViewModel: GroupMemberViewModel = hiltViewModel()
 ) {
-    val groupDetailInfo by groupMemberViewModel.groupMembers.collectAsState()
+    val groupMemberState by groupMemberViewModel.groupMembersState.collectAsState()
 
     LaunchedEffect(Unit) {
         groupMemberViewModel.getGroupMembers(groupId)
@@ -61,12 +64,29 @@ fun GroupMemberRoute(
         }
     }
 
-    groupDetailInfo?.let { groupDetail ->
-        GroupMemberScreen(
-            groupId = groupId,
-            groupDetailInfo = groupDetail,
-            onBackButtonClick = groupMemberViewModel::navigateUp
-        )
+    when (groupMemberState) {
+        is UiState.Loading -> {
+            NoostakLoadingScreen()
+        }
+
+        is UiState.Failure -> {
+            NoostakFailureScreen(
+                onBackButtonClick = groupMemberViewModel::navigateUp,
+                onRetryButtonClick = { groupMemberViewModel.getGroupMembers(groupId) }
+            )
+        }
+
+        is UiState.Success -> {
+            GroupMemberScreen(
+                groupId = groupId,
+                groupDetailInfo = (groupMemberState as UiState.Success).data,
+                onBackButtonClick = groupMemberViewModel::navigateUp
+            )
+        }
+
+        else -> {
+            NoostakLoadingScreen()
+        }
     }
 }
 

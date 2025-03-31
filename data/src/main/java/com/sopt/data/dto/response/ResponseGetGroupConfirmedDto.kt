@@ -1,12 +1,13 @@
 package com.sopt.data.dto.response
 
+import com.sopt.data.dto.response.base.BaseTimeDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class ResponseGetGroupConfirmedDto(
-    @SerialName("groupConfirmedInfoResponse") val groupConfirmedInfo: GroupConfirmedInfoDto,
-    @SerialName("confirmedAppointmentsResponse") val confirmedAppointments: List<ConfirmedAppointmentDto>
+    @SerialName("groupConfirmedInfo") val groupConfirmedInfo: GroupConfirmedInfoDto,
+    @SerialName("confirmedAppointments") val confirmedAppointments: List<ConfirmedAppointmentDto>
 )
 
 @Serializable
@@ -22,5 +23,5 @@ data class ConfirmedAppointmentDto(
     @SerialName("appointmentOptionId") val appointmentOptionId: Long,
     @SerialName("appointmentName") val appointmentName: String,
     @SerialName("category") val category: String,
-    @SerialName("appointmentTime") val appointmentTime: AppointmentTimeDto
+    @SerialName("appointmentTime") val appointmentTime: BaseTimeDto
 )

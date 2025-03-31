@@ -1,6 +1,7 @@
 package com.sopt.presentation.groupDetail.groupMember
 
 import androidx.lifecycle.viewModelScope
+import com.sopt.core.state.UiState
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.GroupDetailInfoEntity
 import com.sopt.domain.repository.GroupDetailRepository
@@ -16,22 +17,24 @@ class GroupMemberViewModel @Inject constructor(
     private val groupDetailInfoRepository: GroupDetailRepository
 ) : BaseViewModel<GroupMemberSideEffect>() {
 
-    private val _groupMembers = MutableStateFlow<GroupDetailInfoEntity?>(null)
-    val groupMembers: StateFlow<GroupDetailInfoEntity?> = _groupMembers
-
-    fun navigateUp() {
-        emitSideEffect(GroupMemberSideEffect.NavigateUp)
-    }
+    private val _groupMembersState = MutableStateFlow<UiState<GroupDetailInfoEntity>>(UiState.Empty)
+    val groupMembersState: StateFlow<UiState<GroupDetailInfoEntity>> = _groupMembersState
 
     fun getGroupMembers(groupId: Long) {
         viewModelScope.launch {
+            _groupMembersState.value = UiState.Loading
             groupDetailInfoRepository.getGroupInfoDetail(groupId)
                 .onSuccess { entity ->
-                    _groupMembers.value = entity
+                    _groupMembersState.value = UiState.Success(entity)
                 }.onFailure {
                     Timber.e(it)
+                    _groupMembersState.value = UiState.Failure(it.message.orEmpty())
                 }
         }
+    }
+
+    fun navigateUp() {
+        emitSideEffect(GroupMemberSideEffect.NavigateUp)
     }
 }
 

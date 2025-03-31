@@ -11,7 +11,7 @@ fun ResponseGetGroupOngoingDto.toGroupOngoingAppointmentsEntity() = GroupOngoing
         groupName = groupOngoingInfo.groupName,
         groupProfileImageUrl = groupOngoingInfo.groupProfileImageUrl,
         groupMemberCount = groupOngoingInfo.groupMemberCount,
-        groupInviteCode = groupOngoingInfo.groupInviteCode
+        groupInviteCode = groupOngoingInfo.groupInvitationCode
     ),
     ongoingAppointments = ongoingAppointments.map {
         OngoingAppointmentEntity(

@@ -2,12 +2,16 @@ package com.sopt.presentation.appointmentCreate.appointmentSubmit
 
 import androidx.lifecycle.viewModelScope
 import com.sopt.core.state.UiState
+import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.domain.repository.AppointmentCreateRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.io.IOException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -17,32 +21,13 @@ class AppointmentSubmitViewModel @Inject constructor(
     private val appointmentCreateRepository: AppointmentCreateRepository
 ) : BaseViewModel<AppointmentSubmitSideEffect>() {
 
+    private val _showErrorDialog = MutableStateFlow(Pair(false, DialogType.DATA_FAILURE))
+    val showErrorDialog: StateFlow<Pair<Boolean, DialogType>> get() = _showErrorDialog
+
     private val _postAppointmentCreateState: MutableStateFlow<UiState<Unit>> = MutableStateFlow(UiState.Empty)
 
     fun navigateUp() {
         emitSideEffect(AppointmentSubmitSideEffect.NavigateUp)
-    }
-
-    fun navigateToAppointmentSubmitConfirm(
-        groupId: Long,
-        appointmentName: String,
-        isConsecutive: Boolean,
-        appointmentDate: List<String>,
-        appointmentTime: String?,
-        appointmentCategory: String,
-        appointmentDuration: Int
-    ) {
-        emitSideEffect(
-            AppointmentSubmitSideEffect.NavigateToAppointmentSubmitConfirm(
-                groupId = groupId,
-                appointmentName = appointmentName,
-                isConsecutive = isConsecutive,
-                appointmentDate = appointmentDate,
-                appointmentTime = appointmentTime,
-                appointmentCategory = appointmentCategory,
-                appointmentDuration = appointmentDuration
-            )
-        )
     }
 
     fun postAppointmentCreate(
@@ -83,12 +68,36 @@ class AppointmentSubmitViewModel @Inject constructor(
             ).fold(
                 onSuccess = {
                     _postAppointmentCreateState.emit(UiState.Success(it))
+
+                    emitSideEffect(
+                        AppointmentSubmitSideEffect.NavigateToAppointmentSubmitConfirm(
+                            groupId = groupId,
+                            appointmentName = appointmentName,
+                            isConsecutive = appointmentDate.size > 1,
+                            appointmentDate = appointmentDate,
+                            appointmentTime = appointmentTime,
+                            appointmentCategory = appointmentCategory,
+                            appointmentDuration = appointmentDuration
+                        )
+                    )
                 },
-                onFailure = {
-                    _postAppointmentCreateState.emit(UiState.Failure(it.message.toString()))
+                onFailure = { throwable ->
+                    when (throwable) {
+                        is IOException -> {
+                            _postAppointmentCreateState.emit(UiState.Failure(throwable.message.toString()))
+                            emitSideEffect(AppointmentSubmitSideEffect.ShowErrorDialog(true, DialogType.NETWORK_FAILURE))
+                        }
+                        else -> {
+                            _postAppointmentCreateState.emit(UiState.Failure(throwable.message.toString()))
+                            emitSideEffect(AppointmentSubmitSideEffect.ShowErrorDialog(true, DialogType.DATA_FAILURE))
+                        }
+                    }
                 }
             )
         }
+    }
+    fun showErrorDialog(show: Boolean, dialogType: DialogType) {
+        _showErrorDialog.update { it.copy(first = show, second = dialogType) }
     }
 }
 
@@ -103,4 +112,5 @@ sealed class AppointmentSubmitSideEffect {
         val appointmentCategory: String,
         val appointmentDuration: Int
     ) : AppointmentSubmitSideEffect()
+    data class ShowErrorDialog(val show: Boolean, val dialogType: DialogType) : AppointmentSubmitSideEffect()
 }

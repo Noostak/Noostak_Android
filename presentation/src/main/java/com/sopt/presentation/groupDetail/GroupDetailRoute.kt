@@ -51,9 +51,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.sopt.core.designsystem.component.button.NoostakFloatingActionButton
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakFailureScreen
+import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.state.UiState
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.domain.entity.ConfirmedEntity
 import com.sopt.domain.entity.ProgressEntity
@@ -73,8 +76,8 @@ fun GroupDetailRoute(
     navigateToAppointmentCreate: (Long) -> Unit,
     groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
 ) {
-    val groupOngoing by groupDetailViewModel.groupOngoingAppointments.collectAsState()
-    val confirmedAppointments by groupDetailViewModel.groupConfirmedAppointments.collectAsState()
+    val groupOngoingState by groupDetailViewModel.groupOngoingState.collectAsState()
+    val groupConfirmedState by groupDetailViewModel.groupConfirmedState.collectAsState()
 
     LaunchedEffect(Unit) {
         groupDetailViewModel.getGroupOngoingAppointments(groupId)
@@ -92,50 +95,64 @@ fun GroupDetailRoute(
                         sideEffect.appointmentName
                     )
                 }
-
-                is GroupDetailSideEffect.NavigateToGroupMember -> {
-                    navigateToGroupMember(sideEffect.groupId)
-                }
-
-                is GroupDetailSideEffect.NavigateToAppointment -> {
-                    navigateToAppointment(
-                        sideEffect.groupId,
-                        sideEffect.appointmentsId,
-                        sideEffect.appointmentName
-                    )
-                }
-
-                is GroupDetailSideEffect.NavigateToAppointmentCreate -> {
-                    navigateToAppointmentCreate(sideEffect.groupId)
-                }
+                is GroupDetailSideEffect.NavigateToGroupMember -> navigateToGroupMember(sideEffect.groupId)
+                is GroupDetailSideEffect.NavigateToAppointment -> navigateToAppointment(
+                    sideEffect.groupId,
+                    sideEffect.appointmentsId,
+                    sideEffect.appointmentName
+                )
+                is GroupDetailSideEffect.NavigateToAppointmentCreate -> navigateToAppointmentCreate(sideEffect.groupId)
             }
         }
     }
 
-    groupOngoing?.let { data ->
-        GroupDetailScreen(
-            groupId = groupId,
-            tabs = groupDetailViewModel.tabs,
-            groupName = data.groupOngoingInfo.groupName,
-            groupImage = data.groupOngoingInfo.groupProfileImageUrl,
-            groupMembersCount = data.groupOngoingInfo.groupMemberCount.toInt(),
-            progressEntities = data.ongoingAppointments.map {
-                ProgressEntity(
-                    appointmentId = it.appointmentId,
-                    appointmentName = it.appointmentName,
-                    startDate = it.appointmentTime.startTime,
-                    endDate = it.appointmentTime.endTime,
-                    participants = it.availableGroupMemberCount.toInt(),
-                    maxParticipants = data.groupOngoingInfo.groupMemberCount.toInt()
-                )
-            },
-            confirmedEntities = confirmedAppointments,
-            onBackButtonClick = groupDetailViewModel::navigateUp,
-            onConfirmedClick = groupDetailViewModel::navigateToConfirmedDetail,
-            onGroupMemberClick = groupDetailViewModel::navigateToGroupMember,
-            onProgressClick = groupDetailViewModel::navigateToAppointment,
-            onAppointmentCreateClick = groupDetailViewModel::navigateToAppointmentCreate
-        )
+    when {
+        groupOngoingState is UiState.Loading || groupConfirmedState is UiState.Loading -> {
+            NoostakLoadingScreen()
+        }
+
+        groupOngoingState is UiState.Failure || groupConfirmedState is UiState.Failure -> {
+            NoostakFailureScreen(
+                onBackButtonClick = groupDetailViewModel::navigateUp,
+                onRetryButtonClick = {
+                    groupDetailViewModel.getGroupOngoingAppointments(groupId)
+                    groupDetailViewModel.getGroupConfirmedAppointments(groupId)
+                }
+            )
+        }
+
+        groupOngoingState is UiState.Success && groupConfirmedState is UiState.Success -> {
+            val groupOngoing = (groupOngoingState as UiState.Success).data
+            val confirmedAppointments = (groupConfirmedState as UiState.Success).data
+
+            GroupDetailScreen(
+                groupId = groupId,
+                tabs = groupDetailViewModel.tabs,
+                groupName = groupOngoing.groupOngoingInfo.groupName,
+                groupImage = groupOngoing.groupOngoingInfo.groupProfileImageUrl,
+                groupMembersCount = groupOngoing.groupOngoingInfo.groupMemberCount.toInt(),
+                progressEntities = groupOngoing.ongoingAppointments.map {
+                    ProgressEntity(
+                        appointmentId = it.appointmentId,
+                        appointmentName = it.appointmentName,
+                        startDate = it.appointmentTime.startTime,
+                        endDate = it.appointmentTime.endTime,
+                        participants = it.availableGroupMemberCount.toInt(),
+                        maxParticipants = groupOngoing.groupOngoingInfo.groupMemberCount.toInt()
+                    )
+                },
+                confirmedEntities = confirmedAppointments,
+                onBackButtonClick = groupDetailViewModel::navigateUp,
+                onConfirmedClick = groupDetailViewModel::navigateToConfirmedDetail,
+                onGroupMemberClick = groupDetailViewModel::navigateToGroupMember,
+                onProgressClick = groupDetailViewModel::navigateToAppointment,
+                onAppointmentCreateClick = groupDetailViewModel::navigateToAppointmentCreate
+            )
+        }
+
+        else -> {
+            NoostakLoadingScreen()
+        }
     }
 }
 
