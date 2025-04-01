@@ -50,9 +50,12 @@
     <string name="tv_invite_description_2">그룹코드를 받으셨나요?</string>
     <string name="tv_invite_empty">아니요, 초대받은 그룹이 없어요.</string>
     <string name="btn_invite_code">그룹코드 입력하기</string>
-    <string name="tv_input_code_description_1">초대를 받으셨다면,</string>
-    <string name="tv_input_code_description_2">그룹코드를 입력해주세요.</string>
-    <string name="btn_invite_code_confirm">확인</string>
+
+    <!-- 그룹 입장 -->
+    <string name="tv_group_enter_description_1">초대를 받으셨다면,</string>
+    <string name="tv_group_enter_description_2">그룹코드를 입력해주세요.</string>
+    <string name="btn_group_enter_confirm">확인</string>
+    <string name="sb_group_enter_non_exist_code">존재하지 않는 그룹코드입니다.</string>
 
     <!-- 그룹 상세 -->
     <string name="tab_group_detail_progress">진행 중</string>

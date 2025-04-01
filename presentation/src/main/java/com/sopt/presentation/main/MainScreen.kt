@@ -1,7 +1,9 @@
 package com.sopt.presentation.main
 
 import android.app.Activity
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
@@ -53,7 +55,6 @@ import com.sopt.presentation.appointment.navigation.appointmentNavGraph
 import com.sopt.presentation.appointmentCreate.navigation.appointmentCreateNavGraph
 import com.sopt.presentation.auth.login.navigation.loginNavGraph
 import com.sopt.presentation.auth.signup.checkInvite.navigation.checkInviteNavGraph
-import com.sopt.presentation.auth.signup.inputGroupCode.navigation.inputGroupCodeNavGraph
 import com.sopt.presentation.auth.signup.navigation.signUpNavGraph
 import com.sopt.presentation.calendar.navigation.calendarNavGraph
 import com.sopt.presentation.example.navigation.exampleNavGraph
@@ -61,10 +62,12 @@ import com.sopt.presentation.group.navigation.groupNavGraph
 import com.sopt.presentation.groupCreate.groupCreateSuccess.navigation.groupCreateSuccessNavGraph
 import com.sopt.presentation.groupCreate.navigation.groupCreateNavGraph
 import com.sopt.presentation.groupDetail.navigation.groupDetailNavGraph
+import com.sopt.presentation.groupEnter.navigation.groupEnterNavGraph
 import com.sopt.presentation.mypage.navigation.myPageNavGraph
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun MainScreen(
     navigator: MainNavigator = rememberMainNavigator()
@@ -97,7 +100,8 @@ fun MainScreen(
         } else {
             backPressedState = true
             coroutineScope.launch {
-                val job = launch { snackBarHostState.showSnackbar(message = context.getString(R.string.snackbar_back_handler)) }
+                val job =
+                    launch { snackBarHostState.showSnackbar(message = context.getString(R.string.snackbar_back_handler)) }
                 delay(SNACK_BAR_DURATION)
                 job.cancel()
             }
@@ -168,7 +172,7 @@ fun MainScreen(
                 loginNavGraph(navHostController = navigator.navController)
                 signUpNavGraph(navHostController = navigator.navController)
                 checkInviteNavGraph(navHostController = navigator.navController)
-                inputGroupCodeNavGraph(navHostController = navigator.navController)
+                groupEnterNavGraph(navHostController = navigator.navController)
                 appointmentNavGraph(navHostController = navigator.navController)
                 appointmentCreateNavGraph(navHostController = navigator.navController)
             }

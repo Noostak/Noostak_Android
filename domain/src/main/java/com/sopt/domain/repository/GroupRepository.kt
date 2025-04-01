@@ -9,4 +9,6 @@ interface GroupRepository {
         groupName: String,
         groupProfileImage: String?
     ): Result<GroupSuccessEntity>
+
+    suspend fun postGroupCode(groupInviteCode: String): Result<Long>
 }

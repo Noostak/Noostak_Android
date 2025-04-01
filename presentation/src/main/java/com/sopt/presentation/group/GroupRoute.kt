@@ -118,6 +118,7 @@ fun GroupRoute(
                 showFABDialog = showFABDialog
             )
         }
+        is UiState.Failure -> groupViewModel.triggerErrorDialog()
 
         else -> {}
     }

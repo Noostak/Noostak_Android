@@ -31,10 +31,7 @@ class GroupViewModel @Inject constructor(
         viewModelScope.launch {
             _getGroupsState.emit(UiState.Loading)
             groupRepository.getGroups().onSuccess { _getGroupsState.emit(UiState.Success(it)) }
-                .onFailure {
-                    _getGroupsState.emit(UiState.Failure(it.message.toString()))
-                    triggerErrorDialog()
-                }
+                .onFailure { _getGroupsState.emit(UiState.Failure(it.message.toString())) }
         }
     }
 
@@ -42,7 +39,7 @@ class GroupViewModel @Inject constructor(
         _showErrorDialog.update { show }
     }
 
-    private fun triggerErrorDialog() {
+    fun triggerErrorDialog() {
         emitSideEffect(GroupSideEffect.ShowErrorDialog)
     }
 

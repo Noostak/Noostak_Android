@@ -63,7 +63,7 @@ class SignUpViewModel @Inject constructor(
         }
     }
 
-    fun navigateToCheckInvite() {
+    private fun navigateToCheckInvite() {
         val nickname = _signUpState.value.nickname
         if (nickname.isNotEmpty()) {
             saveUserNickname(nickname)

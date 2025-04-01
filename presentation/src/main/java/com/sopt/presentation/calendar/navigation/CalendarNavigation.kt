@@ -7,9 +7,9 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sopt.core.navigation.MainTabRoute
 import com.sopt.presentation.appointmentCreate.navigation.navigateAppointmentCreateInfo
-import com.sopt.presentation.auth.signup.inputGroupCode.navigation.navigateInputGroupCode
 import com.sopt.presentation.calendar.CalendarRoute
 import com.sopt.presentation.groupCreate.navigation.navigateToGroupCreate
+import com.sopt.presentation.groupEnter.navigation.navigateGroupEnter
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateCalendar(
@@ -31,7 +31,7 @@ fun NavGraphBuilder.calendarNavGraph(
         CalendarRoute(
             paddingValues = paddingValues,
             navigateToGroupCreate = { navHostController.navigateToGroupCreate() },
-            navigateToGroupEnter = { navHostController.navigateInputGroupCode() },
+            navigateToGroupEnter = { navHostController.navigateGroupEnter() },
             navigateToAppointmentCreate = { groupId ->
                 navHostController.navigateAppointmentCreateInfo(groupId = groupId)
             }
