@@ -7,4 +7,5 @@
     <dimen name="bnv_vertical_padding">6dp</dimen>
     <dimen name="bottom_padding_snack_bar_gallery_permission">96dp</dimen>
     <dimen name="bottom_padding_snack_bar_copy_code">78dp</dimen>
+    <dimen name="bottom_padding_snack_bar_non_exist_code">86dp</dimen>
 </resources>

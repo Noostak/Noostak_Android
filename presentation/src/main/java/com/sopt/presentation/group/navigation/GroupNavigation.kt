@@ -6,10 +6,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.sopt.core.navigation.MainTabRoute
-import com.sopt.presentation.auth.signup.inputGroupCode.navigation.navigateInputGroupCode
 import com.sopt.presentation.group.GroupRoute
 import com.sopt.presentation.groupCreate.navigation.navigateToGroupCreate
 import com.sopt.presentation.groupDetail.navigation.navigateGroupDetail
+import com.sopt.presentation.groupEnter.navigation.navigateGroupEnter
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateGroup(navOptions: NavOptions? = null) {
@@ -32,7 +32,7 @@ fun NavGraphBuilder.groupNavGraph(
                 navHostController.navigateGroupDetail(groupId = groupId)
             },
             navigateToGroupCreate = { navHostController.navigateToGroupCreate() },
-            navigateToGroupEnter = { navHostController.navigateInputGroupCode() }
+            navigateToGroupEnter = { navHostController.navigateGroupEnter() }
         )
     }
 }

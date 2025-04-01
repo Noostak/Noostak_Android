@@ -8,8 +8,8 @@ import androidx.navigation.toRoute
 import com.sopt.core.navigation.Route
 import com.sopt.presentation.auth.login.navigation.Login
 import com.sopt.presentation.auth.signup.checkInvite.CheckInviteRoute
-import com.sopt.presentation.auth.signup.inputGroupCode.navigation.navigateInputGroupCode
 import com.sopt.presentation.group.navigation.navigateGroup
+import com.sopt.presentation.groupEnter.navigation.navigateGroupEnter
 import kotlinx.serialization.Serializable
 
 fun NavController.navigateCheckInvite(
@@ -35,7 +35,7 @@ fun NavGraphBuilder.checkInviteNavGraph(
                 navHostController.navigateGroup()
             },
             navigateToInputGroupCode = {
-                navHostController.navigateInputGroupCode()
+                navHostController.navigateGroupEnter()
             }
         )
     }

@@ -1,5 +1,6 @@
 package com.sopt.presentation.groupDetail.screen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -40,8 +41,13 @@ fun ProgressScreen(
     onItemClicked: (Long, Long, String) -> Unit
 ) {
     if (progressEntities.isEmpty()) {
+        Image(
+            modifier = Modifier
+                .padding(top = 103.dp, bottom = 4.dp),
+            imageVector = ImageVector.vectorResource(R.drawable.ic_group_detail_empty),
+            contentDescription = null
+        )
         Text(
-            modifier = Modifier.padding(top = 119.dp),
             text = stringResource(R.string.tv_group_detail_no_progress),
             color = NoostakTheme.colors.gray900,
             style = NoostakTheme.typography.b2Regular
