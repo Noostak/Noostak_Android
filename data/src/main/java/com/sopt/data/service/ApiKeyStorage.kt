@@ -34,4 +34,5 @@ object ApiKeyStorage {
     const val CALENDAR = "calendar"
     const val YEAR = "year"
     const val MONTH = "month"
+    const val ONGOING = "ongoing"
 }

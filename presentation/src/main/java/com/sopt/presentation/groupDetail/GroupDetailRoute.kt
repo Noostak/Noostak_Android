@@ -30,6 +30,8 @@ import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -49,12 +51,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.sopt.core.designsystem.component.button.NoostakFloatingActionButton
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakFailureScreen
+import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
+import com.sopt.core.state.UiState
 import com.sopt.core.util.NoRippleInteractionSource
 import com.sopt.domain.entity.ConfirmedEntity
-import com.sopt.domain.entity.GroupDetailEntity
 import com.sopt.domain.entity.ProgressEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.screen.ConfirmedScreen
@@ -72,6 +76,14 @@ fun GroupDetailRoute(
     navigateToAppointmentCreate: (Long) -> Unit,
     groupDetailViewModel: GroupDetailViewModel = hiltViewModel()
 ) {
+    val groupOngoingState by groupDetailViewModel.groupOngoingState.collectAsState()
+    val groupConfirmedState by groupDetailViewModel.groupConfirmedState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        groupDetailViewModel.getGroupOngoingAppointments(groupId)
+        groupDetailViewModel.getGroupConfirmedAppointments(groupId)
+    }
+
     LaunchedEffect(key1 = groupDetailViewModel.sideEffects) {
         groupDetailViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -83,43 +95,76 @@ fun GroupDetailRoute(
                         sideEffect.appointmentName
                     )
                 }
-
-                is GroupDetailSideEffect.NavigateToGroupMember -> {
-                    navigateToGroupMember(sideEffect.groupId)
-                }
-
-                is GroupDetailSideEffect.NavigateToAppointment -> {
-                    navigateToAppointment(
-                        sideEffect.groupId,
-                        sideEffect.appointmentsId,
-                        sideEffect.appointmentName
-                    )
-                }
-
-                is GroupDetailSideEffect.NavigateToAppointmentCreate -> {
-                    navigateToAppointmentCreate(sideEffect.groupId)
-                }
+                is GroupDetailSideEffect.NavigateToGroupMember -> navigateToGroupMember(sideEffect.groupId)
+                is GroupDetailSideEffect.NavigateToAppointment -> navigateToAppointment(
+                    sideEffect.groupId,
+                    sideEffect.appointmentsId,
+                    sideEffect.appointmentName
+                )
+                is GroupDetailSideEffect.NavigateToAppointmentCreate -> navigateToAppointmentCreate(sideEffect.groupId)
             }
         }
     }
 
-    GroupDetailScreen(
-        groupId = groupId,
-        tabs = groupDetailViewModel.tabs,
-        data = groupDetailViewModel.mockGroupDetail,
-        onBackButtonClick = groupDetailViewModel::navigateUp,
-        onConfirmedClick = groupDetailViewModel::navigateToConfirmedDetail,
-        onGroupMemberClick = groupDetailViewModel::navigateToGroupMember,
-        onProgressClick = groupDetailViewModel::navigateToAppointment,
-        onAppointmentCreateClick = groupDetailViewModel::navigateToAppointmentCreate
-    )
+    when {
+        groupOngoingState is UiState.Loading || groupConfirmedState is UiState.Loading -> {
+            NoostakLoadingScreen()
+        }
+
+        groupOngoingState is UiState.Failure || groupConfirmedState is UiState.Failure -> {
+            NoostakFailureScreen(
+                onBackButtonClick = groupDetailViewModel::navigateUp,
+                onRetryButtonClick = {
+                    groupDetailViewModel.getGroupOngoingAppointments(groupId)
+                    groupDetailViewModel.getGroupConfirmedAppointments(groupId)
+                }
+            )
+        }
+
+        groupOngoingState is UiState.Success && groupConfirmedState is UiState.Success -> {
+            val groupOngoing = (groupOngoingState as UiState.Success).data
+            val confirmedAppointments = (groupConfirmedState as UiState.Success).data
+
+            GroupDetailScreen(
+                groupId = groupId,
+                tabs = groupDetailViewModel.tabs,
+                groupName = groupOngoing.groupOngoingInfo.groupName,
+                groupImage = groupOngoing.groupOngoingInfo.groupProfileImageUrl,
+                groupMembersCount = groupOngoing.groupOngoingInfo.groupMemberCount.toInt(),
+                progressEntities = groupOngoing.ongoingAppointments.map {
+                    ProgressEntity(
+                        appointmentId = it.appointmentId,
+                        appointmentName = it.appointmentName,
+                        startDate = it.appointmentTime.startTime,
+                        endDate = it.appointmentTime.endTime,
+                        participants = it.availableGroupMemberCount.toInt(),
+                        maxParticipants = groupOngoing.groupOngoingInfo.groupMemberCount.toInt()
+                    )
+                },
+                confirmedEntities = confirmedAppointments,
+                onBackButtonClick = groupDetailViewModel::navigateUp,
+                onConfirmedClick = groupDetailViewModel::navigateToConfirmedDetail,
+                onGroupMemberClick = groupDetailViewModel::navigateToGroupMember,
+                onProgressClick = groupDetailViewModel::navigateToAppointment,
+                onAppointmentCreateClick = groupDetailViewModel::navigateToAppointmentCreate
+            )
+        }
+
+        else -> {
+            NoostakLoadingScreen()
+        }
+    }
 }
 
 @Composable
 fun GroupDetailScreen(
     groupId: Long,
     tabs: List<String>,
-    data: GroupDetailEntity,
+    groupName: String,
+    groupImage: String?,
+    groupMembersCount: Int,
+    progressEntities: List<ProgressEntity>,
+    confirmedEntities: List<ConfirmedEntity>,
     onBackButtonClick: () -> Unit,
     onConfirmedClick: (Long, Long, String) -> Unit,
     onGroupMemberClick: (Long) -> Unit,
@@ -158,8 +203,8 @@ fun GroupDetailScreen(
         ) {
             GroupDetailHeader(
                 groupId = groupId,
-                groupImage = data.groupImage,
-                groupName = data.groupName
+                groupImage = groupImage,
+                groupName = groupName
             )
             Row(
                 modifier = Modifier
@@ -168,7 +213,7 @@ fun GroupDetailScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(R.string.tv_group_detail_member, data.groupMembersCount),
+                    text = stringResource(R.string.tv_group_detail_member, groupMembersCount),
                     color = NoostakTheme.colors.gray800,
                     style = NoostakTheme.typography.b2Regular
                 )
@@ -189,8 +234,8 @@ fun GroupDetailScreen(
                 groupId = groupId,
                 pagerState = pagerState,
                 tabs = tabs,
-                progressEntities = data.progressEntities,
-                confirmedEntities = data.confirmedEntities,
+                progressEntities = progressEntities,
+                confirmedEntities = confirmedEntities,
                 onProgressClick = onProgressClick,
                 onConfirmedClick = onConfirmedClick
             )
@@ -269,8 +314,8 @@ fun CustomTabPager(
                     1 -> ConfirmedScreen(
                         groupId = groupId,
                         confirmedEntities = confirmedEntities,
-                        onItemClicked = { groupId, confirmedId, appointmentName ->
-                            onConfirmedClick(groupId, confirmedId, appointmentName)
+                        onItemClicked = { groupId, optionId, name ->
+                            onConfirmedClick(groupId, optionId, name)
                         }
                     )
                 }
@@ -282,7 +327,7 @@ fun CustomTabPager(
 @Composable
 fun GroupDetailHeader(
     groupId: Long,
-    groupImage: String,
+    groupImage: String?,
     groupName: String
 ) {
     val context = LocalContext.current
@@ -342,28 +387,37 @@ fun GroupDetailRoutePreview() {
         GroupDetailScreen(
             groupId = 0,
             tabs = persistentListOf("진행 중", "확정"),
-            data = GroupDetailEntity(
-                groupName = "누스탁",
-                groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4",
-                groupMembersCount = 10,
-                progressEntities = emptyList(),
-                confirmedEntities = listOf(
-                    ConfirmedEntity(
-                        appointmentId = 1,
-                        appointmentName = "3차 회의",
-                        date = "2025-01-06T14:00:00",
-                        startTime = "2025-01-06T14:00:00",
-                        endTime = "2025-01-06T15:00:00",
-                        category = "기타"
-                    ),
-                    ConfirmedEntity(
-                        appointmentId = 2,
-                        appointmentName = "회의",
-                        date = "2025-01-06T14:00:00",
-                        startTime = "2025-01-06T14:00:00",
-                        endTime = "2025-01-06T15:00:00",
-                        category = "일정"
-                    )
+            groupName = "누스탁",
+            groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4",
+            groupMembersCount = 10,
+            progressEntities = listOf(
+                ProgressEntity(
+                    appointmentId = 1,
+                    appointmentName = "1차 회의",
+                    startDate = "2025-01-06T14:00:00",
+                    endDate = "2025-01-06T15:00:00",
+                    participants = 5,
+                    maxParticipants = 10
+                )
+            ),
+            confirmedEntities = listOf(
+                ConfirmedEntity(
+                    appointmentId = 1,
+                    appointmentName = "3차 회의",
+                    date = "2025-01-06T14:00:00",
+                    startTime = "2025-01-06T14:00:00",
+                    endTime = "2025-01-06T15:00:00",
+                    category = "기타",
+                    appointmentOptionId = 1
+                ),
+                ConfirmedEntity(
+                    appointmentId = 2,
+                    appointmentName = "회의",
+                    date = "2025-01-06T14:00:00",
+                    startTime = "2025-01-06T14:00:00",
+                    endTime = "2025-01-06T15:00:00",
+                    category = "일정",
+                    appointmentOptionId = 1
                 )
             ),
             onBackButtonClick = {},
