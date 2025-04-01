@@ -6,8 +6,6 @@ data class ConfirmedDetailEntity(
     val startTime: String,
     val endTime: String,
     val category: String,
-    val likes: Int,
-    val liked: Boolean,
     val availableMembersCount: Int,
     val availableMembers: List<String>,
     val unavailableMembersCount: Int,

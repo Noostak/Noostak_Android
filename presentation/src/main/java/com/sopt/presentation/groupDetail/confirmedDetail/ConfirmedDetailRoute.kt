@@ -20,6 +20,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -31,8 +33,11 @@ import com.sopt.core.designsystem.component.chip.AvailableUserChips
 import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
 import com.sopt.core.designsystem.component.chip.UnavailableUserChips
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakFailureScreen
+import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.state.UiState
 import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.ConfirmedDetailEntity
@@ -46,18 +51,44 @@ fun ConfirmedDetailRoute(
     navigateUp: () -> Unit,
     confirmedDetailViewModel: ConfirmedDetailViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(key1 = confirmedDetailViewModel.sideEffects) {
+    val confirmedDetailState by confirmedDetailViewModel.confirmedDetailState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        confirmedDetailViewModel.getConfirmedDetail(confirmedId)
+    }
+
+    LaunchedEffect(confirmedDetailViewModel.sideEffects) {
         confirmedDetailViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
                 is ConfirmedDetailSideEffect.NavigateUp -> navigateUp()
             }
         }
     }
-    ConfirmedDetailScreen(
-        appointmentName = appointmentName,
-        data = confirmedDetailViewModel.mockConfirmedDetail,
-        onBackButtonClick = confirmedDetailViewModel::navigateUp
-    )
+
+    when (confirmedDetailState) {
+        is UiState.Loading -> {
+            NoostakLoadingScreen()
+        }
+
+        is UiState.Failure -> {
+            NoostakFailureScreen(
+                onBackButtonClick = confirmedDetailViewModel::navigateUp,
+                onRetryButtonClick = { confirmedDetailViewModel.getConfirmedDetail(confirmedId) }
+            )
+        }
+
+        is UiState.Success -> {
+            ConfirmedDetailScreen(
+                appointmentName = appointmentName,
+                data = (confirmedDetailState as UiState.Success).data,
+                onBackButtonClick = confirmedDetailViewModel::navigateUp
+            )
+        }
+
+        else -> {
+            NoostakLoadingScreen()
+        }
+    }
 }
 
 @OptIn(ExperimentalLayoutApi::class)

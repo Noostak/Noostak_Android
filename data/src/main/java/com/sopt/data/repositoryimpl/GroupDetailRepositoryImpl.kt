@@ -1,9 +1,11 @@
 package com.sopt.data.repositoryimpl
 
 import com.sopt.data.datasource.GroupDetailDataSource
+import com.sopt.data.mapper.toConfirmedDetailEntity
 import com.sopt.data.mapper.toGroupConfirmedAppointmentsEntity
 import com.sopt.data.mapper.toGroupDetailInfoEntity
 import com.sopt.data.mapper.toGroupOngoingAppointmentsEntity
+import com.sopt.domain.entity.ConfirmedDetailEntity
 import com.sopt.domain.entity.GroupConfirmedAppointmentsEntity
 import com.sopt.domain.entity.GroupDetailInfoEntity
 import com.sopt.domain.entity.GroupOngoingAppointmentsEntity
@@ -34,6 +36,13 @@ class GroupDetailRepositoryImpl @Inject constructor(
             groupDetailDataSource.getGroupConfirmedAppointments(groupId)
                 .result?.toGroupConfirmedAppointmentsEntity()
                 ?: throw Exception("getGroupConfirmedAppointments failed")
+        }
+    }
+
+    override suspend fun getConfirmedDetail(appointmentId: Long): Result<ConfirmedDetailEntity> {
+        return runCatching {
+            groupDetailDataSource.getConfirmedDetail(appointmentId).result?.toConfirmedDetailEntity()
+                ?: throw Exception("getConfirmedDetail failed")
         }
     }
 }

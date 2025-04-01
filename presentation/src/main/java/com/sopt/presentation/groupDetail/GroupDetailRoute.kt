@@ -314,8 +314,8 @@ fun CustomTabPager(
                     1 -> ConfirmedScreen(
                         groupId = groupId,
                         confirmedEntities = confirmedEntities,
-                        onItemClicked = { groupId, confirmedId, appointmentName ->
-                            onConfirmedClick(groupId, confirmedId, appointmentName)
+                        onItemClicked = { groupId, optionId, name ->
+                            onConfirmedClick(groupId, optionId, name)
                         }
                     )
                 }
@@ -407,7 +407,8 @@ fun GroupDetailRoutePreview() {
                     date = "2025-01-06T14:00:00",
                     startTime = "2025-01-06T14:00:00",
                     endTime = "2025-01-06T15:00:00",
-                    category = "기타"
+                    category = "기타",
+                    appointmentOptionId = 1
                 ),
                 ConfirmedEntity(
                     appointmentId = 2,
@@ -415,7 +416,8 @@ fun GroupDetailRoutePreview() {
                     date = "2025-01-06T14:00:00",
                     startTime = "2025-01-06T14:00:00",
                     endTime = "2025-01-06T15:00:00",
-                    category = "일정"
+                    category = "일정",
+                    appointmentOptionId = 1
                 )
             ),
             onBackButtonClick = {},

@@ -2,6 +2,7 @@ package com.sopt.data.datasourceimpl
 
 import com.sopt.data.datasource.GroupDetailDataSource
 import com.sopt.data.dto.BaseResponse
+import com.sopt.data.dto.response.ResponseGetGroupConfirmedDetailDto
 import com.sopt.data.dto.response.ResponseGetGroupConfirmedDto
 import com.sopt.data.dto.response.ResponseGetGroupMembersDto
 import com.sopt.data.dto.response.ResponseGetGroupOngoingDto
@@ -22,5 +23,9 @@ class GroupDetailDataSourceImpl @Inject constructor(
 
     override suspend fun getGroupConfirmedAppointments(groupId: Long): BaseResponse<ResponseGetGroupConfirmedDto> {
         return groupDetailApiService.getGroupConfirmedAppointments(groupId)
+    }
+
+    override suspend fun getConfirmedDetail(appointmentId: Long): BaseResponse<ResponseGetGroupConfirmedDetailDto> {
+        return groupDetailApiService.getGroupConfirmedAppointment(appointmentId)
     }
 }
