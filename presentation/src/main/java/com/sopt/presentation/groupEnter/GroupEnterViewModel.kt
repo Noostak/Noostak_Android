@@ -26,12 +26,10 @@ class GroupEnterViewModel @Inject constructor(
     fun postGroupCode(groupInviteCode: String) {
         viewModelScope.launch {
             _postGroupEnterState.emit(UiState.Loading)
-            groupRepository.postGroupCode(groupInviteCode)
-                .onSuccess {
-                    _postGroupEnterState.emit(UiState.Success(it))
-                    navigateToGroup()
-                }
-                .onFailure { throwable ->
+            groupRepository.postGroupCode(groupInviteCode).fold(onSuccess = {
+                _postGroupEnterState.emit(UiState.Success(it))
+                navigateToGroup()
+            }, onFailure = { throwable ->
                     when (throwable) {
                         is IOException -> {
                             _postGroupEnterState.emit(UiState.Failure(throwable.message.toString()))
@@ -43,7 +41,7 @@ class GroupEnterViewModel @Inject constructor(
                             triggerFailureSnackBar()
                         }
                     }
-                }
+                })
         }
     }
 
