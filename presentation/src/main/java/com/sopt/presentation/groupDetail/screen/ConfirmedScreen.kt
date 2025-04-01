@@ -82,7 +82,7 @@ fun ConfirmedItem(
             .noRippleClickable {
                 onItemClicked(
                     groupId,
-                    confirmedEntity.appointmentId,
+                    confirmedEntity.appointmentOptionId,
                     confirmedEntity.appointmentName
                 )
             }
