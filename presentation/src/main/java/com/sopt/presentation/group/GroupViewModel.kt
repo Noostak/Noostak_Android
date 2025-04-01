@@ -30,8 +30,13 @@ class GroupViewModel @Inject constructor(
     fun getGroups() {
         viewModelScope.launch {
             _getGroupsState.emit(UiState.Loading)
-            groupRepository.getGroups().onSuccess { _getGroupsState.emit(UiState.Success(it)) }
-                .onFailure { _getGroupsState.emit(UiState.Failure(it.message.toString())) }
+            groupRepository.getGroups()
+                .fold(
+                    onSuccess = { _getGroupsState.emit(UiState.Success(it)) },
+                    onFailure = {
+                        _getGroupsState.emit(UiState.Failure(it.message.toString()))
+                    }
+                )
         }
     }
 

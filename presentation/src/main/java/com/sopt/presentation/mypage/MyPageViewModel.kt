@@ -45,11 +45,11 @@ class MyPageViewModel @Inject constructor(
     private fun loadUserInfo() {
         viewModelScope.launch {
             _getProfileState.emit(UiState.Loading)
-            profileRepository.getProfile().onSuccess { data ->
+            profileRepository.getProfile().fold(onSuccess = { data ->
                 _getProfileState.emit(UiState.Success(data))
                 _userInfoState.update { it.copy(memberName = data.memberName) }
                 _userInfoState.update { it.copy(memberProfileImage = data.memberProfileImage) }
-            }.onFailure { _getProfileState.emit(UiState.Failure(it.message.toString())) }
+            }, onFailure = { _getProfileState.emit(UiState.Failure(it.message.toString())) })
         }
     }
 
