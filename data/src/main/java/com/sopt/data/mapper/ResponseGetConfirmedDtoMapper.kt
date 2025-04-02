@@ -1,10 +1,10 @@
 package com.sopt.data.mapper
 
-import com.sopt.data.dto.response.ResponseGetConfirmedDto
+import com.sopt.data.dto.response.ResponseGetOptionDetailDto
 import com.sopt.domain.entity.AppointmentDetailEntity
 import com.sopt.domain.entity.IdentityEntity
 
-fun ResponseGetConfirmedDto.toAppointmentDetailEntity() = AppointmentDetailEntity(
+fun ResponseGetOptionDetailDto.toAppointmentDetailEntity() = AppointmentDetailEntity(
     myIdentity = myInfo?.toIdentityEntity() ?: IdentityEntity("unavailable", -1, "나"),
     date = appointmentTime.date,
     startTime = appointmentTime.startTime,

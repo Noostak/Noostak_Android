@@ -22,4 +22,4 @@ fun UnavailableUserChips(
     }
 }
 
-private const val UNAVAILABLE = "UNAVAILABLE"
+private const val UNAVAILABLE = "약속 불가능"

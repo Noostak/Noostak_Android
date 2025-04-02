@@ -29,12 +29,11 @@ class AppointmentConfirmViewModel @Inject constructor(
 
     private val _postConfirmedState: MutableStateFlow<UiState<Unit>> =
         MutableStateFlow(UiState.Empty)
-    val postConfirmedState: StateFlow<UiState<Unit>> = _postConfirmedState.asStateFlow()
 
-    fun getConfirmed(appointmentOptionId: Long) {
+    fun getOptionDetail(appointmentOptionId: Long) {
         viewModelScope.launch {
             _getConfirmedState.emit(UiState.Loading)
-            appointmentConfirmRepository.getConfirmed(appointmentOptionId).fold(
+            appointmentConfirmRepository.getOptionDetail(appointmentOptionId).fold(
                 onSuccess = {
                     _getConfirmedState.emit(UiState.Success(it))
                 },
@@ -45,12 +44,13 @@ class AppointmentConfirmViewModel @Inject constructor(
         }
     }
 
-    fun postConfirmed(appointmentOptionId: Long) {
+    fun postOptionConfirm(groupId: Long, appointmentOptionId: Long) {
         viewModelScope.launch {
             _postConfirmedState.emit(UiState.Loading)
-            appointmentConfirmRepository.postConfirmed(appointmentOptionId).fold(
+            appointmentConfirmRepository.postOptionConfirm(appointmentOptionId).fold(
                 onSuccess = {
                     _postConfirmedState.emit(UiState.Success(it))
+                    emitSideEffect(AppointmentConfirmSideEffect.NavigateToGroupDetail(groupId))
                 },
                 onFailure = { throwable ->
                     when (throwable) {

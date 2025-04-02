@@ -24,14 +24,25 @@ class AppointmentCheckViewModel @Inject constructor(
 
     private val _postTimeTableState: MutableStateFlow<UiState<Unit>> =
         MutableStateFlow(UiState.Empty)
-    val postTimeTableState: StateFlow<UiState<Unit>> get() = _postTimeTableState.asStateFlow()
 
-    fun postTimeTable(appointmentId: Long, availableTimes: List<TimeEntity>) {
+    fun postTimeTable(
+        groupId: Long,
+        appointmentId: Long,
+        appointmentName: String,
+        availableTimes: List<TimeEntity>
+    ) {
         viewModelScope.launch {
             _postTimeTableState.emit(UiState.Loading)
             appointmentConfirmRepository.postTimeTable(appointmentId, availableTimes).fold(
                 onSuccess = {
                     _postTimeTableState.emit(UiState.Success(it))
+                    emitSideEffect(
+                        AppointmentCheckSideEffect.NavigateToAppointment(
+                            groupId,
+                            appointmentId,
+                            appointmentName
+                        )
+                    )
                 },
                 onFailure = { throwable ->
                     when (throwable) {

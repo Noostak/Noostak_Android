@@ -28,7 +28,6 @@ import com.sopt.core.designsystem.component.timetable.NoostakEditableTimeTable
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.state.UiState
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
 import timber.log.Timber
@@ -44,7 +43,6 @@ fun AppointmentCheckRoute(
     navigateToGroupDetail: (Long) -> Unit,
     appointmentCheckViewModel: AppointmentCheckViewModel = hiltViewModel()
 ) {
-    val postTimeTableState by appointmentCheckViewModel.postTimeTableState.collectAsStateWithLifecycle()
     val showErrorDialog by appointmentCheckViewModel.showErrorDialog.collectAsStateWithLifecycle()
     var selectedData by remember { mutableStateOf(emptyList<TimeEntity>()) }
     val rememberedAvailablePeriods = remember { availablePeriods }
@@ -72,22 +70,6 @@ fun AppointmentCheckRoute(
         }
     }
 
-    LaunchedEffect(key1 = postTimeTableState) {
-        when (postTimeTableState) {
-            is UiState.Success -> appointmentCheckViewModel.navigateToAppointment(
-                groupId,
-                appointmentId,
-                appointmentName
-            )
-
-            is UiState.Failure -> {
-                Timber.e("postTimeTable 실패: ${(postTimeTableState as UiState.Failure).msg}")
-            }
-
-            else -> {}
-        }
-    }
-
     AppointmentCheckScreen(
         groupId = groupId,
         appointmentName = appointmentName,
@@ -95,7 +77,12 @@ fun AppointmentCheckRoute(
         onSelectedDataChange = { selectedData = it },
         onBackButtonClick = appointmentCheckViewModel::navigateToGroupDetail,
         onConfirmButtonClick = {
-            appointmentCheckViewModel.postTimeTable(appointmentId, selectedData)
+            appointmentCheckViewModel.postTimeTable(
+                groupId,
+                appointmentId,
+                appointmentName,
+                selectedData
+            )
         }
     )
 
@@ -104,7 +91,12 @@ fun AppointmentCheckRoute(
             dialogType = showErrorDialog.second,
             onClick = {
                 appointmentCheckViewModel.showErrorDialog(false, showErrorDialog.second)
-                appointmentCheckViewModel.postTimeTable(appointmentId, selectedData)
+                appointmentCheckViewModel.postTimeTable(
+                    groupId,
+                    appointmentId,
+                    appointmentName,
+                    selectedData
+                )
             },
             onDismissRequest = {
                 appointmentCheckViewModel.showErrorDialog(false, showErrorDialog.second)

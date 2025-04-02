@@ -7,7 +7,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ResponseGetConfirmedDto(
+data class ResponseGetOptionDetailDto(
     @SerialName("appointmentTime") val appointmentTime: BaseTimeDto,
     @SerialName("category") val category: String,
     @SerialName("appointmentName") val appointmentName: String,

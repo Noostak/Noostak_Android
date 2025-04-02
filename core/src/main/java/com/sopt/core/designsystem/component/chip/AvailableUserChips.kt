@@ -22,4 +22,4 @@ fun AvailableUserChips(
     }
 }
 
-private const val AVAILABLE = "AVAILABLE"
+private const val AVAILABLE = "약속 가능"

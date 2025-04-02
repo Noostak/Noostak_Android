@@ -49,7 +49,6 @@ import timber.log.Timber
 @Composable
 fun AppointmentConfirmRoute(
     groupId: Long,
-    appointmentId: Long,
     optionId: Long,
     appointmentName: String,
     isHost: Boolean,
@@ -59,7 +58,6 @@ fun AppointmentConfirmRoute(
 ) {
     val showErrorDialog by appointmentConfirmViewModel.showErrorDialog.collectAsStateWithLifecycle()
     val getConfirmedState by appointmentConfirmViewModel.getConfirmedState.collectAsStateWithLifecycle()
-    val postConfirmedState by appointmentConfirmViewModel.postConfirmedState.collectAsStateWithLifecycle()
     LaunchedEffect(key1 = appointmentConfirmViewModel.sideEffects) {
         appointmentConfirmViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -77,17 +75,7 @@ fun AppointmentConfirmRoute(
     }
 
     LaunchedEffect(key1 = Unit) {
-        appointmentConfirmViewModel.getConfirmed(optionId)
-    }
-
-    LaunchedEffect(key1 = postConfirmedState) {
-        when (postConfirmedState) {
-            is UiState.Success -> appointmentConfirmViewModel.navigateToGroupDetail(
-                groupId
-            )
-
-            else -> {}
-        }
+        appointmentConfirmViewModel.getOptionDetail(optionId)
     }
 
     when (getConfirmedState) {
@@ -99,7 +87,7 @@ fun AppointmentConfirmRoute(
                 isHost = isHost,
                 onBackButtonClick = appointmentConfirmViewModel::navigateUp,
                 onConfirmButtonClick = {
-                    appointmentConfirmViewModel.postConfirmed(optionId)
+                    appointmentConfirmViewModel.postOptionConfirm(groupId, optionId)
                 },
                 data = (getConfirmedState as UiState.Success).data
             )
@@ -110,7 +98,7 @@ fun AppointmentConfirmRoute(
             NoostakFailureScreen(
                 onBackButtonClick = appointmentConfirmViewModel::navigateUp,
                 onRetryButtonClick = {
-                    appointmentConfirmViewModel.getConfirmed(optionId)
+                    appointmentConfirmViewModel.getOptionDetail(optionId)
                 }
             )
         }
@@ -123,7 +111,7 @@ fun AppointmentConfirmRoute(
             dialogType = showErrorDialog.second,
             onClick = {
                 appointmentConfirmViewModel.showErrorDialog(false, showErrorDialog.second)
-                appointmentConfirmViewModel.postConfirmed(optionId)
+                appointmentConfirmViewModel.postOptionConfirm(groupId, optionId)
             },
             onDismissRequest = {
                 appointmentConfirmViewModel.showErrorDialog(false, showErrorDialog.second)

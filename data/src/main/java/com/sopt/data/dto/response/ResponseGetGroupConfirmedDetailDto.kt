@@ -26,5 +26,3 @@ data class FriendsDto(
     @SerialName("count") val count: Int,
     @SerialName("names") val names: List<String>
 )
-
-

@@ -62,7 +62,6 @@ import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
 import com.sopt.presentation.appointment.screen.RecommendationScreen
-import timber.log.Timber
 
 @Composable
 fun AppointmentRoute(
@@ -136,8 +135,7 @@ fun AppointmentRoute(
             }
         )
     }
-    Timber.d("getOptionsState: $getOptionsState")
-    Timber.d("getTimeTableState: $getTimeTableState")
+
     when {
         getOptionsState is UiState.Success && getTimeTableState is UiState.Success -> {
             val timeTableSuccess = getTimeTableState as UiState.Success
