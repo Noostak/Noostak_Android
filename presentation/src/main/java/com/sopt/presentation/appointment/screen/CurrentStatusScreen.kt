@@ -59,7 +59,7 @@ fun CurrentStatusScreen(
 fun CurrentStatusScreenPreview() {
     val appointmentViewModel: AppointmentViewModel = hiltViewModel()
     CurrentStatusScreen(
-        availablePeriods = appointmentViewModel.mockAvailablePeriods,
-        availableTimes = appointmentViewModel.mockAvailableTimes
+        availablePeriods = emptyList(),
+        availableTimes = emptyList()
     )
 }

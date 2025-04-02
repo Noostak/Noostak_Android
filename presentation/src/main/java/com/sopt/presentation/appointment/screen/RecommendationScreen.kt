@@ -20,8 +20,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,6 +33,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.component.chip.AvailableUserChips
 import com.sopt.core.designsystem.component.chip.UnavailableUserChips
@@ -104,10 +105,15 @@ fun RecommendationItem(
     data: OptionEntity,
     isSelected: Boolean,
     onItemClick: () -> Unit,
-    onLikeClick: (Boolean) -> Unit
+    onLikeClick: (Boolean) -> Unit,
+    recommendationViewModel: RecommendationViewModel = hiltViewModel()
 ) {
-    var isLiked by remember { mutableStateOf(data.liked) }
-    var likes by remember { mutableIntStateOf(data.likes) }
+    val likeState by remember {
+        derivedStateOf {
+            recommendationViewModel.likeStates[data.id] ?: (data.liked to data.likes)
+        }
+    }
+    val (isLiked, likes) = likeState
     val calculateTime = CalculateTime()
     val date = calculateTime.extractDateWithKorean(data.date)
     val dayOfWeek = calculateTime.extractDayOfWeekWithBraces(data.date)
@@ -172,9 +178,8 @@ fun RecommendationItem(
             ) {
                 Image(
                     modifier = Modifier.noRippleClickable {
-                        isLiked = !isLiked
-                        likes = if (isLiked) likes + 1 else likes - 1
-                        onLikeClick(isLiked)
+                        recommendationViewModel.toggleLike(data.id, data.liked, data.likes)
+                        onLikeClick(!isLiked)
                     },
                     imageVector = if (isLiked) {
                         ImageVector.vectorResource(id = R.drawable.ic_heart_on)

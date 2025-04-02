@@ -2,7 +2,7 @@ package com.sopt.data.service
 
 import com.sopt.data.dto.BaseResponse
 import com.sopt.data.dto.request.RequestPostTimeTableDto
-import com.sopt.data.dto.response.ResponseGetConfirmedDto
+import com.sopt.data.dto.response.ResponseGetOptionDetailDto
 import com.sopt.data.dto.response.ResponseGetOptionsDto
 import com.sopt.data.dto.response.ResponseGetTimeTableDto
 import com.sopt.data.dto.response.ResponseLikesDto
@@ -13,9 +13,8 @@ import com.sopt.data.service.ApiKeyStorage.APPOINTMENT_MEMBERS
 import com.sopt.data.service.ApiKeyStorage.APPOINTMENT_OPTIONS
 import com.sopt.data.service.ApiKeyStorage.APPOINTMENT_OPTION_ID
 import com.sopt.data.service.ApiKeyStorage.CONFIRM
-import com.sopt.data.service.ApiKeyStorage.CONFIRMED
 import com.sopt.data.service.ApiKeyStorage.LIKE
-import com.sopt.data.service.ApiKeyStorage.OPTIONS
+import com.sopt.data.service.ApiKeyStorage.RECOMMENDED_OPTIONS
 import com.sopt.data.service.ApiKeyStorage.TIMETABLE
 import com.sopt.data.service.ApiKeyStorage.V1
 import retrofit2.http.Body
@@ -37,18 +36,18 @@ interface AppointmentConfirmApiService {
         @Path(APPOINTMENT_OPTION_ID) appointmentOptionId: Long
     ): BaseResponse<ResponseLikesDto>
 
-    @GET("/$API/$V1/$APPOINTMENTS/{$APPOINTMENT_ID}/$OPTIONS")
+    @GET("/$API/$V1/$APPOINTMENTS/{$APPOINTMENT_ID}/$RECOMMENDED_OPTIONS")
     suspend fun getOptions(
         @Path(APPOINTMENT_ID) appointmentId: Long
     ): BaseResponse<ResponseGetOptionsDto>
 
-    @GET("/$API/$V1/$APPOINTMENT_OPTIONS/{$APPOINTMENT_OPTION_ID}/$CONFIRMED")
-    suspend fun getConfirmed(
+    @GET("/$API/$V1/$APPOINTMENT_OPTIONS/{$APPOINTMENT_OPTION_ID}")
+    suspend fun getOptionDetail(
         @Path(APPOINTMENT_OPTION_ID) appointmentOptionId: Long
-    ): BaseResponse<ResponseGetConfirmedDto>
+    ): BaseResponse<ResponseGetOptionDetailDto>
 
     @POST("/$API/$V1/$APPOINTMENT_OPTIONS/{$APPOINTMENT_OPTION_ID}/$CONFIRM")
-    suspend fun postConfirmed(
+    suspend fun postOptionConfirm(
         @Path(APPOINTMENT_OPTION_ID) appointmentOptionId: Long
     ): BaseResponse<Unit>
 

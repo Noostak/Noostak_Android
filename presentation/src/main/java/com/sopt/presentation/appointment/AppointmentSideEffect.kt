@@ -15,7 +15,8 @@ sealed class AppointmentSideEffect {
         val groupId: Long,
         val appointmentsId: Long,
         val optionId: Long,
-        val appointmentName: String
+        val appointmentName: String,
+        val isHost: Boolean
     ) : AppointmentSideEffect()
 
     data class ShowDialog(val show: Boolean) : AppointmentSideEffect()

@@ -130,6 +130,7 @@ fun GroupDetailRoute(
                 tabs = groupDetailViewModel.tabs,
                 groupName = groupOngoing.groupOngoingInfo.groupName,
                 groupImage = groupOngoing.groupOngoingInfo.groupProfileImageUrl,
+                groupInvitationCode = groupOngoing.groupOngoingInfo.groupInviteCode,
                 groupMembersCount = groupOngoing.groupOngoingInfo.groupMemberCount.toInt(),
                 progressEntities = groupOngoing.ongoingAppointments.map {
                     ProgressEntity(
@@ -162,6 +163,7 @@ fun GroupDetailScreen(
     tabs: List<String>,
     groupName: String,
     groupImage: String?,
+    groupInvitationCode: String = "",
     groupMembersCount: Int,
     progressEntities: List<ProgressEntity>,
     confirmedEntities: List<ConfirmedEntity>,
@@ -202,7 +204,7 @@ fun GroupDetailScreen(
                 .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
         ) {
             GroupDetailHeader(
-                groupId = groupId,
+                groupInvitationCode = groupInvitationCode,
                 groupImage = groupImage,
                 groupName = groupName
             )
@@ -326,7 +328,7 @@ fun CustomTabPager(
 
 @Composable
 fun GroupDetailHeader(
-    groupId: Long,
+    groupInvitationCode: String,
     groupImage: String?,
     groupName: String
 ) {
@@ -366,7 +368,7 @@ fun GroupDetailHeader(
                         action = Intent.ACTION_SEND
                         putExtra(
                             Intent.EXTRA_TEXT,
-                            "공유하고자 하는 그룹 아이디: $groupId"
+                            groupInvitationCode
                         )
                         type = "text/plain"
                     }

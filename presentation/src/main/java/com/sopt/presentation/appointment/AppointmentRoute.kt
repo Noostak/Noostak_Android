@@ -44,6 +44,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakFailureScreen
 import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -54,6 +55,9 @@ import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.AppointmentEntity
 import com.sopt.domain.entity.AppointmentMembersInfoEntity
+import com.sopt.domain.entity.IdentityEntity
+import com.sopt.domain.entity.OptionEntity
+import com.sopt.domain.entity.RecommendationPriorityEntity
 import com.sopt.domain.entity.TimeEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.appointment.screen.CurrentStatusScreen
@@ -66,7 +70,7 @@ fun AppointmentRoute(
     appointmentName: String,
     navigateUp: () -> Unit,
     navigateToAppointmentCheck: (Long, Long, String, List<TimeEntity>) -> Unit,
-    navigateToAppointmentConfirm: (Long, Long, Long, String) -> Unit,
+    navigateToAppointmentConfirm: (Long, Long, Long, String, Boolean) -> Unit,
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
     val showDialog by appointmentViewModel.showDialog.collectAsStateWithLifecycle()
@@ -90,7 +94,8 @@ fun AppointmentRoute(
                         sideEffect.groupId,
                         sideEffect.appointmentsId,
                         sideEffect.optionId,
-                        sideEffect.appointmentName
+                        sideEffect.appointmentName,
+                        sideEffect.isHost
                     )
                 }
 
@@ -119,13 +124,6 @@ fun AppointmentRoute(
                             appointmentName,
                             (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentHostSelectionTimes
                         )
-                    } else {
-                        navigateToAppointmentCheck(
-                            groupId,
-                            appointmentId,
-                            appointmentName,
-                            mockAvailablePeriods
-                        )
                     }
                 }
             },
@@ -137,51 +135,44 @@ fun AppointmentRoute(
             }
         )
     }
-    if (getOptionsState is UiState.Success && getTimeTableState is UiState.Success) {
-        AppointmentScreen(
-            groupId = groupId,
-            appointmentsId = appointmentId,
-            appointmentName = appointmentName,
-            onBackButtonClick = appointmentViewModel::navigateUp,
-            onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
-            availablePeriods = (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentHostSelectionTimes,
-            availableTimes = (getTimeTableState as UiState.Success).data.appointmentSchedule.appointmentMembersInfo,
-            recommendations = (getOptionsState as UiState.Success).data,
-            onLikeClick = { appointmentOptionId, isLiked ->
-                if (isLiked) {
-                    appointmentViewModel.postLike(appointmentId, appointmentOptionId)
-                } else {
-                    appointmentViewModel.deleteLike(appointmentId, appointmentOptionId)
+
+    when {
+        getOptionsState is UiState.Success && getTimeTableState is UiState.Success -> {
+            val timeTableSuccess = getTimeTableState as UiState.Success
+            val optionsSuccess = getOptionsState as UiState.Success
+
+            AppointmentScreen(
+                groupId = groupId,
+                appointmentsId = appointmentId,
+                appointmentName = appointmentName,
+                onBackButtonClick = appointmentViewModel::navigateUp,
+                onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
+                availablePeriods = timeTableSuccess.data.appointmentSchedule.appointmentHostSelectionTimes,
+                availableTimes = timeTableSuccess.data.appointmentSchedule.appointmentMembersInfo,
+                recommendations = optionsSuccess.data,
+                onLikeClick = { appointmentOptionId, isLiked ->
+                    if (isLiked) {
+                        appointmentViewModel.postLike(appointmentId, appointmentOptionId)
+                    } else {
+                        appointmentViewModel.deleteLike(appointmentId, appointmentOptionId)
+                    }
                 }
-            }
-        )
-    } else if (getOptionsState is UiState.Loading || getTimeTableState is UiState.Loading) {
-        NoostakLoadingScreen()
-    } else if (getOptionsState is UiState.Failure || getTimeTableState is UiState.Failure) {
-//        NoostakFailureScreen(
-//            onBackButtonClick = appointmentViewModel::navigateUp,
-//            onRetryButtonClick = {
-//                appointmentViewModel.getOptions(appointmentId = appointmentId)
-//                appointmentViewModel.getTimeTable(appointmentId = appointmentId)
-//            }
-//        )
-        AppointmentScreen(
-            groupId = groupId,
-            appointmentsId = appointmentId,
-            appointmentName = appointmentName,
-            onBackButtonClick = appointmentViewModel::navigateUp,
-            onConfirmButtonClick = appointmentViewModel::navigateToAppointmentConfirm,
-            availablePeriods = appointmentViewModel.mockAvailablePeriods,
-            availableTimes = appointmentViewModel.mockAvailableTimes,
-            recommendations = appointmentViewModel.mockRecommendations,
-            onLikeClick = { appointmentOptionId, isLiked ->
-                if (isLiked) {
-                    appointmentViewModel.postLike(appointmentId, appointmentOptionId)
-                } else {
-                    appointmentViewModel.deleteLike(appointmentId, appointmentOptionId)
+            )
+        }
+
+        getOptionsState is UiState.Loading || getTimeTableState is UiState.Loading -> {
+            NoostakLoadingScreen()
+        }
+
+        getOptionsState is UiState.Failure && getTimeTableState is UiState.Failure -> {
+            NoostakFailureScreen(
+                onBackButtonClick = appointmentViewModel::navigateUp,
+                onRetryButtonClick = {
+                    appointmentViewModel.getOptions(appointmentId = appointmentId)
+                    appointmentViewModel.getTimeTable(appointmentId = appointmentId)
                 }
-            }
-        )
+            )
+        }
     }
 }
 
@@ -191,7 +182,7 @@ fun AppointmentScreen(
     appointmentsId: Long,
     appointmentName: String,
     onBackButtonClick: () -> Unit,
-    onConfirmButtonClick: (Long, Long, Long, String) -> Unit,
+    onConfirmButtonClick: (Long, Long, Long, String, Boolean) -> Unit,
     availablePeriods: List<TimeEntity>,
     availableTimes: List<AppointmentMembersInfoEntity>,
     recommendations: AppointmentEntity,
@@ -314,7 +305,13 @@ fun AppointmentScreen(
                     selectedItemIndex = selectedItemIndex,
                     data = recommendations.recommendationPriority,
                     onConfirmButtonClick = { optionId ->
-                        onConfirmButtonClick(groupId, appointmentsId, optionId, appointmentName)
+                        onConfirmButtonClick(
+                            groupId,
+                            appointmentsId,
+                            optionId,
+                            appointmentName,
+                            recommendations.isHost
+                        )
                     },
                     onLikeClick = onLikeClick
                 )
@@ -419,16 +416,162 @@ fun RecommendationHeaderItem(
 @Composable
 fun AppointmentScreenPreview() {
     NoostakAndroidTheme {
-        val appointmentViewModel: AppointmentViewModel = hiltViewModel()
         AppointmentScreen(
             groupId = 1,
             appointmentsId = 1,
             appointmentName = "3차 회의",
             onBackButtonClick = {},
-            onConfirmButtonClick = { _, _, _, _ -> },
-            availablePeriods = appointmentViewModel.mockAvailablePeriods,
-            availableTimes = appointmentViewModel.mockAvailableTimes,
-            recommendations = appointmentViewModel.mockRecommendations
+            onConfirmButtonClick = { _, _, _, _, _ -> },
+            availablePeriods = listOf(
+                TimeEntity(
+                    date = "2024-09-05T10:00:00",
+                    startTime = "2024-09-05T10:00:00",
+                    endTime = "2024-09-05T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-06T10:00:00",
+                    startTime = "2024-09-06T10:00:00",
+                    endTime = "2024-09-06T18:00:00"
+                ),
+                TimeEntity(
+                    date = "2024-09-07T10:00:00",
+                    startTime = "2024-09-07T10:00:00",
+                    endTime = "2024-09-07T18:00:00"
+                )
+            ),
+            availableTimes = listOf(
+                AppointmentMembersInfoEntity(
+                    memberId = 1,
+                    memberName = "범태하",
+                    appointmentMemberAvailableTimes = listOf(
+                        TimeEntity(
+                            date = "2024-09-05T00:00:00",
+                            startTime = "2024-09-05T10:00:00",
+                            endTime = "2024-09-05T11:00:00"
+                        ),
+                        TimeEntity(
+                            date = "2024-09-05T00:00:00",
+                            startTime = "2024-09-06T14:00:00",
+                            endTime = "2024-09-06T15:00:00"
+                        ),
+                        TimeEntity(
+                            date = "2024-09-06T00:00:00",
+                            startTime = "2024-09-06T10:00:00",
+                            endTime = "2024-09-06T11:00:00"
+                        ),
+                        TimeEntity(
+                            date = "2024-09-07T00:00:00",
+                            startTime = "2024-09-07T10:00:00",
+                            endTime = "2024-09-07T11:00:00"
+                        )
+                    )
+                ),
+                AppointmentMembersInfoEntity(
+                    memberId = 2,
+                    memberName = "김민수",
+                    appointmentMemberAvailableTimes = listOf(
+                        TimeEntity(
+                            date = "2024-09-05T00:00:00",
+                            startTime = "2024-09-05T10:00:00",
+                            endTime = "2024-09-05T11:00:00"
+                        ),
+                        TimeEntity(
+                            date = "2024-09-05T00:00:00",
+                            startTime = "2024-09-05T11:00:00",
+                            endTime = "2024-09-05T12:00:00"
+                        )
+                    )
+                )
+            ),
+            recommendations = AppointmentEntity(
+                isHost = true,
+                recommendationPriority = listOf(
+                    RecommendationPriorityEntity(
+                        priority = 1,
+                        options = listOf(
+                            OptionEntity(
+                                id = 1,
+                                totalMemberCount = 20,
+                                myIdentity = IdentityEntity(
+                                    availability = "AVAILABLE",
+                                    position = 0,
+                                    name = "이가을"
+                                ),
+                                date = "2024-09-27T00:00:00",
+                                startTime = "2024-09-27T11:00:00",
+                                endTime = "2024-09-27T14:00:00",
+                                likes = 15,
+                                liked = true,
+                                availableMemberCount = 10,
+                                availableMembers = listOf(
+                                    "이가을", "선우정아", "대한민국만세", "최영희", "정영수",
+                                    "이가을", "김언지", "박유진", "임하늘", "변우석"
+                                ),
+                                unavailableMemberCount = 5,
+                                unavailableMembers = listOf("한강", "이영희", "박영수", "최영희", "정영수")
+                            )
+                        )
+                    ),
+                    RecommendationPriorityEntity(
+                        priority = 2,
+                        options = listOf(
+                            OptionEntity(
+                                id = 3,
+                                totalMemberCount = 10,
+                                myIdentity = IdentityEntity(
+                                    availability = "AVAILABLE",
+                                    position = 0,
+                                    name = "이가을"
+                                ),
+                                date = "2024-09-27T00:00:00",
+                                startTime = "2024-09-27T11:00:00",
+                                endTime = "2024-09-27T14:00:00",
+                                likes = 15,
+                                liked = true,
+                                availableMemberCount = 5,
+                                availableMembers = listOf(
+                                    "이가을",
+                                    "선우정아",
+                                    "대한민국만세",
+                                    "최영희",
+                                    "정영수"
+                                ),
+                                unavailableMemberCount = 5,
+                                unavailableMembers = listOf("한강", "이영희", "박영수", "최영희", "정영수")
+                            )
+                        )
+                    ),
+                    RecommendationPriorityEntity(
+                        priority = 3,
+                        options = listOf(
+                            OptionEntity(
+                                id = 5,
+                                totalMemberCount = 10,
+                                myIdentity = IdentityEntity(
+                                    availability = "AVAILABLE",
+                                    position = 0,
+                                    name = "이가을"
+                                ),
+                                date = "2024-09-27T00:00:00",
+                                startTime = "2024-09-27T11:00:00",
+                                endTime = "2024-09-27T14:00:00",
+                                likes = 15,
+                                liked = true,
+                                availableMemberCount = 5,
+                                availableMembers = listOf(
+                                    "이가을",
+                                    "선우정아",
+                                    "대한민국만세",
+                                    "최영희",
+                                    "정영수"
+                                ),
+                                unavailableMemberCount = 5,
+                                unavailableMembers = listOf("한강", "이영희", "박영수", "최영희", "정영수")
+                            )
+                        )
+                    )
+                )
+            )
         )
     }
 }
