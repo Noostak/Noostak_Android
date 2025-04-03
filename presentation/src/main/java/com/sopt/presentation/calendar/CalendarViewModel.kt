@@ -36,7 +36,7 @@ class CalendarViewModel @Inject constructor(
     val getGroupsState: StateFlow<UiState<List<GroupEntity>>> get() = _getGroupsState.asStateFlow()
 
     private val _selectedGroupId = MutableStateFlow<Long?>(null)
-    val selectedGroupId: StateFlow<Long?> get() = _selectedGroupId
+    private val selectedGroupId: StateFlow<Long?> get() = _selectedGroupId
 
     private val _showAddDialog = MutableStateFlow(false)
     val showAddDialog get() = _showAddDialog
