@@ -38,8 +38,9 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.getYearMonthByPage
 import com.sopt.core.extension.initialPage
 import com.sopt.core.extension.pageCount
-import com.sopt.domain.entity.CalendarGroupEntity
+import com.sopt.core.state.UiState
 import com.sopt.domain.entity.CalendarSchedule
+import com.sopt.domain.entity.GroupEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.calendar.component.CalendarFloatingActionDialog
 import com.sopt.presentation.calendar.component.CalendarGroup
@@ -57,8 +58,8 @@ fun CalendarRoute(
     navigateToGroupEnter: () -> Unit,
     navigateToAppointmentCreate: (Long) -> Unit
 ) {
+    val getGroupsState by calendarViewModel.getGroupsState.collectAsStateWithLifecycle()
     val showAddDialog by calendarViewModel.showAddDialog.collectAsStateWithLifecycle()
-
     val showBottomSheet by calendarViewModel.showBottomSheet.collectAsStateWithLifecycle()
     val navController = rememberNavController()
 
@@ -149,7 +150,7 @@ fun CalendarRoute(
 
     CalendarScreen(
         paddingValues = paddingValues,
-        groups = calendarViewModel.mockGroups,
+        groups = (getGroupsState as? UiState.Success)?.data ?: emptyList(),
         scheduleMap = scheduleMap,
         pagerState = pagerState,
         currentYearMonth = currentYearMonth,
@@ -157,6 +158,9 @@ fun CalendarRoute(
         onAddBtnClick = { calendarViewModel.showAddDialog(true) },
         onItemClick = { clickedDate ->
             calendarViewModel.onDayClicked(clickedDate)
+        },
+        onGroupClick = { groupId ->
+            calendarViewModel.selectGroup(groupId)
         }
     )
 }
@@ -164,13 +168,14 @@ fun CalendarRoute(
 @Composable
 fun CalendarScreen(
     paddingValues: PaddingValues = PaddingValues(),
-    groups: List<CalendarGroupEntity>,
+    groups: List<GroupEntity>,
     scheduleMap: Map<String, List<CalendarSchedule>>,
     pagerState: PagerState,
     currentYearMonth: YearMonth,
     showAddDialog: Boolean = false,
     onAddBtnClick: () -> Unit = {},
-    onItemClick: (LocalDate) -> Unit = {}
+    onItemClick: (LocalDate) -> Unit = {},
+    onGroupClick: (Long) -> Unit = {}
 ) {
     Scaffold(
         modifier = Modifier
@@ -190,7 +195,8 @@ fun CalendarScreen(
             CalendarGroup(
                 groups = groups,
                 showAddDialog = showAddDialog,
-                onAddBtnClick = onAddBtnClick
+                onAddBtnClick = onAddBtnClick,
+                onGroupClick = onGroupClick
             )
             Spacer(modifier = Modifier.height(24.dp))
             CalendarContent(
@@ -245,35 +251,11 @@ fun CalendarScreenPreview() {
 
         CalendarScreen(
             groups = listOf(
-                CalendarGroupEntity(
-                    id = 1,
-                    groupName = "가응가",
-                    groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 2,
-                    groupName = "먼지 난다",
-                    groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 3,
-                    groupName = "유진면",
-                    groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 4,
-                    groupName = "마늘",
-                    groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 5,
-                    groupName = "누스탁1",
-                    groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 6,
-                    groupName = "누스탁2",
-                    groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
+                GroupEntity(
+                    groupId = 0,
+                    groupName = "그룹 이름",
+                    groupMemberCount = 1,
+                    groupProfileImageUrl = ""
                 )
             ),
             scheduleMap = emptyMap(),
