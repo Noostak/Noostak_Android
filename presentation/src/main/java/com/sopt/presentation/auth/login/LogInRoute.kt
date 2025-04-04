@@ -1,5 +1,10 @@
 package com.sopt.presentation.auth.login
 
+import android.app.Activity
+import android.content.Context
+import android.content.ContextWrapper
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -39,7 +44,16 @@ fun LoginRoute(
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val activity = context.findActivity() ?: run {
+        return
+    }
     val showDialog by loginViewModel.showDialog.collectAsStateWithLifecycle()
+
+    val googleLoginLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        loginViewModel.handleGoogleLoginResult(result.data)
+    }
 
     LaunchedEffect(loginViewModel.sideEffects) {
         loginViewModel.sideEffects.collect { sideEffect ->
@@ -63,7 +77,10 @@ fun LoginRoute(
                     loginViewModel.showDialog(dialogType, false)
                     when (dialogType) {
                         DialogType.NETWORK_LOGIN_KAKAO_FAILURE -> loginViewModel.kakaoLogin(context)
-                        DialogType.NETWORK_LOGIN_GOOGLE_FAILURE -> loginViewModel.googleLogin(context)
+                        DialogType.NETWORK_LOGIN_GOOGLE_FAILURE -> {
+                            googleLoginLauncher.launch(loginViewModel.getGoogleSignInIntent(activity))
+                        }
+
                         else -> Unit
                     }
                 },
@@ -74,7 +91,9 @@ fun LoginRoute(
 
     LoginScreen(
         onKakaoLoginClick = { loginViewModel.kakaoLogin(context) },
-        onGoogleLoginClick = { loginViewModel.googleLogin(context) }
+        onGoogleLoginClick = {
+            googleLoginLauncher.launch(loginViewModel.getGoogleSignInIntent(activity))
+        }
     )
 }
 
@@ -151,4 +170,13 @@ fun LoginScreenPreview() {
             onGoogleLoginClick = {}
         )
     }
+}
+
+fun Context.findActivity(): Activity? {
+    var context = this
+    while (context is ContextWrapper) {
+        if (context is Activity) return context
+        context = context.baseContext
+    }
+    return null
 }
