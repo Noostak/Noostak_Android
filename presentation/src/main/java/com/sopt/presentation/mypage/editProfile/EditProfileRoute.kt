@@ -2,7 +2,6 @@ package com.sopt.presentation.mypage.editProfile
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
@@ -107,21 +106,8 @@ fun EditProfileRoute(
 
     var isInitialized by remember { mutableStateOf(false) }
 
-    val profileImageUri = remember { mutableStateOf<Uri?>(null) }
-
     LaunchedEffect(Unit) {
-        editProfileViewModel.onMemberNameChanged(nickname)
-
-        if (profileImage != null) {
-            val contentUri = editProfileViewModel.urlToContentUri(context, profileImage)
-            contentUri?.let { uri ->
-                profileImageUri.value = uri
-                editProfileViewModel.onImageSelected(uri.toString())
-            }
-        } else {
-            editProfileViewModel.onImageSelected(null)
-        }
-
+        editProfileViewModel.initProfile()
         isInitialized = true
     }
 
@@ -155,7 +141,8 @@ fun EditProfileRoute(
             onClick = {
                 editProfileViewModel.patchProfile(
                     userProfileState.memberName,
-                    userProfileState.memberProfileImage
+                    editProfileViewModel.isChangedImage().toString(),
+                    if (editProfileViewModel.isChangedImage()) userProfileState.memberProfileImage else null
                 )
             },
             onDismissRequest = { editProfileViewModel.showErrorDialog(false) }
@@ -187,14 +174,13 @@ fun EditProfileRoute(
                 editProfileViewModel.onMemberNameChanged(newName)
             },
             onNextBtnClick = { memberName, memberProfileImage ->
-                editProfileViewModel.patchProfile(memberName, memberProfileImage)
+                editProfileViewModel.patchProfile(
+                    memberName,
+                    editProfileViewModel.isChangedImage().toString(),
+                    if (editProfileViewModel.isChangedImage()) memberProfileImage else null
+                )
             },
-            isNextBtnActive = (
-                userProfileState.isMemberNameCheck && editProfileViewModel.validateProfile(
-                    nickname,
-                    profileImageUri.value.toString()
-                )
-                )
+            isNextBtnActive = (userProfileState.isMemberNameCheck && editProfileViewModel.validateProfile())
         )
     } else {
         NoostakLoadingScreen()
