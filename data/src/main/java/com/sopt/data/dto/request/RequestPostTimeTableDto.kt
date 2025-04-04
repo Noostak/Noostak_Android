@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class RequestPostTimeTableDto(
-    @SerialName("availableTimes") val availableTimes: List<BaseTimeDto>
+    @SerialName("appointmentMemberAvailableTimes") val availableTimes: List<BaseTimeDto>
 )

@@ -20,7 +20,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,15 +32,16 @@ import com.sopt.core.designsystem.component.chip.NoostakCategoryChip
 import com.sopt.core.designsystem.component.chip.UnavailableUserChips
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
+import com.sopt.core.designsystem.screen.NoostakFailureScreen
 import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
-import com.sopt.core.extension.toast
 import com.sopt.core.state.UiState
 import com.sopt.core.util.CalculateTime
 import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.AppointmentDetailEntity
+import com.sopt.domain.entity.IdentityEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
 import timber.log.Timber
@@ -49,17 +49,15 @@ import timber.log.Timber
 @Composable
 fun AppointmentConfirmRoute(
     groupId: Long,
-    appointmentId: Long,
     optionId: Long,
     appointmentName: String,
+    isHost: Boolean,
     navigateUp: () -> Unit,
     navigateToGroupDetail: (Long) -> Unit,
     appointmentConfirmViewModel: AppointmentConfirmViewModel = hiltViewModel()
 ) {
     val showErrorDialog by appointmentConfirmViewModel.showErrorDialog.collectAsStateWithLifecycle()
     val getConfirmedState by appointmentConfirmViewModel.getConfirmedState.collectAsStateWithLifecycle()
-    val postConfirmedState by appointmentConfirmViewModel.postConfirmedState.collectAsStateWithLifecycle()
-    val context = LocalContext.current
     LaunchedEffect(key1 = appointmentConfirmViewModel.sideEffects) {
         appointmentConfirmViewModel.sideEffects.collect { sideEffect ->
             when (sideEffect) {
@@ -68,7 +66,6 @@ fun AppointmentConfirmRoute(
                     navigateToGroupDetail(sideEffect.groupId)
                 }
 
-                is AppointmentConfirmSideEffect.ShowToast -> context.toast(sideEffect.message)
                 is AppointmentConfirmSideEffect.ShowErrorDialog -> appointmentConfirmViewModel.showErrorDialog(
                     sideEffect.show,
                     sideEffect.dialogType
@@ -78,17 +75,7 @@ fun AppointmentConfirmRoute(
     }
 
     LaunchedEffect(key1 = Unit) {
-        appointmentConfirmViewModel.getConfirmed(optionId)
-    }
-
-    LaunchedEffect(key1 = postConfirmedState) {
-        when (postConfirmedState) {
-            is UiState.Success -> appointmentConfirmViewModel.navigateToGroupDetail(
-                groupId
-            )
-
-            else -> {}
-        }
+        appointmentConfirmViewModel.getOptionDetail(optionId)
     }
 
     when (getConfirmedState) {
@@ -97,9 +84,10 @@ fun AppointmentConfirmRoute(
             AppointmentConfirmScreen(
                 groupId = groupId,
                 appointmentName = appointmentName,
+                isHost = isHost,
                 onBackButtonClick = appointmentConfirmViewModel::navigateUp,
                 onConfirmButtonClick = {
-                    appointmentConfirmViewModel.postConfirmed(optionId)
+                    appointmentConfirmViewModel.postOptionConfirm(groupId, optionId)
                 },
                 data = (getConfirmedState as UiState.Success).data
             )
@@ -107,20 +95,11 @@ fun AppointmentConfirmRoute(
 
         is UiState.Failure -> {
             Timber.e("getConfirmedState is failure $getConfirmedState")
-//            NoostakFailureScreen(
-//                onBackButtonClick = appointmentConfirmViewModel::navigateUp,
-//                onRetryButtonClick = {
-//                    appointmentConfirmViewModel.getConfirmed(optionId)
-//                }
-//            )
-            AppointmentConfirmScreen(
-                groupId = groupId,
-                appointmentName = appointmentName,
+            NoostakFailureScreen(
                 onBackButtonClick = appointmentConfirmViewModel::navigateUp,
-                onConfirmButtonClick = {
-                    appointmentConfirmViewModel.postConfirmed(optionId)
-                },
-                data = appointmentConfirmViewModel.mockAppointmentDetail
+                onRetryButtonClick = {
+                    appointmentConfirmViewModel.getOptionDetail(optionId)
+                }
             )
         }
 
@@ -132,7 +111,7 @@ fun AppointmentConfirmRoute(
             dialogType = showErrorDialog.second,
             onClick = {
                 appointmentConfirmViewModel.showErrorDialog(false, showErrorDialog.second)
-                appointmentConfirmViewModel.postConfirmed(optionId)
+                appointmentConfirmViewModel.postOptionConfirm(groupId, optionId)
             },
             onDismissRequest = {
                 appointmentConfirmViewModel.showErrorDialog(false, showErrorDialog.second)
@@ -146,6 +125,7 @@ fun AppointmentConfirmRoute(
 fun AppointmentConfirmScreen(
     groupId: Long,
     appointmentName: String,
+    isHost: Boolean = false,
     onBackButtonClick: () -> Unit,
     onConfirmButtonClick: (Long) -> Unit,
     data: AppointmentDetailEntity
@@ -267,7 +247,7 @@ fun AppointmentConfirmScreen(
             }
             Spacer(modifier = Modifier.weight(1f))
             NoostakBottomButton(
-                modifier = Modifier.showIf(data.isHost),
+                modifier = Modifier.showIf(isHost),
                 text = stringResource(R.string.btn_appointment_confirm_complete),
                 onButtonClick = { onConfirmButtonClick(groupId) },
                 isEnabled = true,
@@ -280,14 +260,32 @@ fun AppointmentConfirmScreen(
 @Preview(showBackground = true)
 @Composable
 fun AppointmentConfirmScreenPreview() {
-    val appointmentConfirmViewModel: AppointmentConfirmViewModel = hiltViewModel()
     NoostakAndroidTheme {
         AppointmentConfirmScreen(
             groupId = 1,
             appointmentName = "약속 이름",
+            isHost = true,
             onBackButtonClick = {},
             onConfirmButtonClick = {},
-            data = appointmentConfirmViewModel.mockAppointmentDetail
+            data = AppointmentDetailEntity(
+                myIdentity = IdentityEntity(
+                    availability = "UNAVAILABLE",
+                    position = 2,
+                    name = "박영수"
+                ),
+                date = "2025-01-06T00:00:00",
+                startTime = "2025-01-06T11:00:00",
+                endTime = "2025-01-06T14:00:00",
+                category = "기타",
+                availableMembersCount = 22,
+                availableMembers = listOf(
+                    "선우정아", "대한민국만세", "최영희", "정영수",
+                    "이가을", "김언지", "박유진", "임하늘", "변우석", "김혜윤", "정해인", "카리나", "닝닝",
+                    "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
+                ),
+                unavailableMembersCount = 5,
+                unavailableMembers = listOf("한강", "이영희", "박영수", "최영희", "정영수")
+            )
         )
     }
 }

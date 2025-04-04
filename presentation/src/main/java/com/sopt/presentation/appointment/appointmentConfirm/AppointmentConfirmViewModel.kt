@@ -5,11 +5,11 @@ import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.AppointmentDetailEntity
-import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.repository.AppointmentConfirmRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -20,20 +20,20 @@ class AppointmentConfirmViewModel @Inject constructor(
     private val appointmentConfirmRepository: AppointmentConfirmRepository
 ) : BaseViewModel<AppointmentConfirmSideEffect>() {
     private val _showErrorDialog = MutableStateFlow(Pair(false, DialogType.DATA_FAILURE))
-    val showErrorDialog: StateFlow<Pair<Boolean, DialogType>> get() = _showErrorDialog
+    val showErrorDialog: StateFlow<Pair<Boolean, DialogType>> get() = _showErrorDialog.asStateFlow()
 
     private val _getConfirmedState: MutableStateFlow<UiState<AppointmentDetailEntity>> =
         MutableStateFlow(UiState.Empty)
-    val getConfirmedState: MutableStateFlow<UiState<AppointmentDetailEntity>> = _getConfirmedState
+    val getConfirmedState: StateFlow<UiState<AppointmentDetailEntity>> =
+        _getConfirmedState.asStateFlow()
 
     private val _postConfirmedState: MutableStateFlow<UiState<Unit>> =
         MutableStateFlow(UiState.Empty)
-    val postConfirmedState: MutableStateFlow<UiState<Unit>> = _postConfirmedState
 
-    fun getConfirmed(appointmentOptionId: Long) {
+    fun getOptionDetail(appointmentOptionId: Long) {
         viewModelScope.launch {
             _getConfirmedState.emit(UiState.Loading)
-            appointmentConfirmRepository.getConfirmed(appointmentOptionId).fold(
+            appointmentConfirmRepository.getOptionDetail(appointmentOptionId).fold(
                 onSuccess = {
                     _getConfirmedState.emit(UiState.Success(it))
                 },
@@ -44,22 +44,34 @@ class AppointmentConfirmViewModel @Inject constructor(
         }
     }
 
-    fun postConfirmed(appointmentOptionId: Long) {
+    fun postOptionConfirm(groupId: Long, appointmentOptionId: Long) {
         viewModelScope.launch {
             _postConfirmedState.emit(UiState.Loading)
-            appointmentConfirmRepository.postConfirmed(appointmentOptionId).fold(
+            appointmentConfirmRepository.postOptionConfirm(appointmentOptionId).fold(
                 onSuccess = {
                     _postConfirmedState.emit(UiState.Success(it))
+                    emitSideEffect(AppointmentConfirmSideEffect.NavigateToGroupDetail(groupId))
                 },
                 onFailure = { throwable ->
                     when (throwable) {
                         is IOException -> { // 네트워크 에러
                             _postConfirmedState.emit(UiState.Failure(throwable.message.toString()))
-                            emitSideEffect(AppointmentConfirmSideEffect.ShowErrorDialog(true, DialogType.NETWORK_FAILURE))
+                            emitSideEffect(
+                                AppointmentConfirmSideEffect.ShowErrorDialog(
+                                    true,
+                                    DialogType.NETWORK_FAILURE
+                                )
+                            )
                         }
+
                         else -> { // 서버 통신 에러
                             _postConfirmedState.emit(UiState.Failure(throwable.message.toString()))
-                            emitSideEffect(AppointmentConfirmSideEffect.ShowErrorDialog(true, DialogType.DATA_FAILURE))
+                            emitSideEffect(
+                                AppointmentConfirmSideEffect.ShowErrorDialog(
+                                    true,
+                                    DialogType.DATA_FAILURE
+                                )
+                            )
                         }
                     }
                 }
@@ -78,27 +90,6 @@ class AppointmentConfirmViewModel @Inject constructor(
     fun navigateToGroupDetail(groupId: Long) {
         emitSideEffect(AppointmentConfirmSideEffect.NavigateToGroupDetail(groupId))
     }
-
-    val mockAppointmentDetail = AppointmentDetailEntity(
-        isHost = true,
-        myIdentity = IdentityEntity(
-            availability = "unavailable",
-            position = 2,
-            name = "박영수"
-        ),
-        date = "2025-01-06T00:00:00",
-        startTime = "2025-01-06T11:00:00",
-        endTime = "2025-01-06T14:00:00",
-        category = "기타",
-        availableMembersCount = 22,
-        availableMembers = listOf(
-            "선우정아", "대한민국만세", "최영희", "정영수",
-            "이가을", "김언지", "박유진", "임하늘", "변우석", "김혜윤", "정해인", "카리나", "닝닝",
-            "지젤", "장원영", "이채연", "김민주", "김채원", "김민주", "김채원", "김민주"
-        ),
-        unavailableMembersCount = 5,
-        unavailableMembers = listOf("한강", "이영희", "박영수", "최영희", "정영수")
-    )
 }
 
 sealed class AppointmentConfirmSideEffect {
@@ -107,6 +98,6 @@ sealed class AppointmentConfirmSideEffect {
         val groupId: Long
     ) : AppointmentConfirmSideEffect()
 
-    data class ShowToast(val message: Int) : AppointmentConfirmSideEffect()
-    data class ShowErrorDialog(val show: Boolean, val dialogType: DialogType) : AppointmentConfirmSideEffect()
+    data class ShowErrorDialog(val show: Boolean, val dialogType: DialogType) :
+        AppointmentConfirmSideEffect()
 }

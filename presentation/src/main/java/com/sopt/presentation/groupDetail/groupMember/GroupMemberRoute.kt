@@ -117,7 +117,7 @@ fun GroupMemberScreen(
                 .padding(horizontal = dimensionResource(id = R.dimen.horizontal_padding))
         ) {
             GroupDetailHeader(
-                groupId = groupId,
+                groupInvitationCode = groupInfo.groupInvitationCode,
                 groupImage = groupInfo.groupProfileImageUrl,
                 groupName = groupInfo.groupName
             )

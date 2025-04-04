@@ -58,14 +58,15 @@ fun NavController.navigateAppointmentConfirm(
     appointmentId: Long,
     appointmentName: String,
     optionId: Long,
+    isHost: Boolean,
     navOptions: NavOptions? = null
 ) {
     navigate(
         route = AppointmentConfirm(
             groupId = groupId,
-            appointmentId = appointmentId,
             appointmentName = appointmentName,
-            optionId = optionId
+            optionId = optionId,
+            isHost = isHost
         ),
         navOptions = navOptions
     )
@@ -92,12 +93,13 @@ fun NavGraphBuilder.appointmentNavGraph(
                     appointmentName = appointmentName
                 )
             },
-            navigateToAppointmentConfirm = { groupId, appointmentId, optionId, appointmentName ->
+            navigateToAppointmentConfirm = { groupId, appointmentId, optionId, appointmentName, isHost ->
                 navHostController.navigateAppointmentConfirm(
                     groupId = groupId,
                     appointmentId = appointmentId,
                     optionId = optionId,
-                    appointmentName = appointmentName
+                    appointmentName = appointmentName,
+                    isHost = isHost
                 )
             }
         )
@@ -132,9 +134,9 @@ fun NavGraphBuilder.appointmentNavGraph(
         val args = it.toRoute<AppointmentConfirm>()
         AppointmentConfirmRoute(
             groupId = args.groupId,
-            appointmentId = args.appointmentId,
             optionId = args.optionId,
             appointmentName = args.appointmentName,
+            isHost = args.isHost,
             navigateUp = navHostController::navigateUp,
             navigateToGroupDetail = { groupId ->
                 navHostController.navigateGroupDetail(groupId = groupId)
@@ -160,7 +162,7 @@ data class AppointmentCheck(
 @Serializable
 data class AppointmentConfirm(
     val groupId: Long,
-    val appointmentId: Long,
     val optionId: Long,
-    val appointmentName: String
+    val appointmentName: String,
+    val isHost: Boolean
 ) : Route
