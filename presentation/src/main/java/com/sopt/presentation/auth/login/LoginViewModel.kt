@@ -97,7 +97,7 @@ class LoginViewModel @Inject constructor(
     private fun handleGoogleLoginResult(credential: Credential) {
         if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
             val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-            postSocialLogin(googleIdTokenCredential.id, GOOGLE)
+            postSocialLogin(BEARER + googleIdTokenCredential.idToken, GOOGLE)
             showToast(R.string.toast_google_login_success)
         } else {
             showDialog(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, true)
