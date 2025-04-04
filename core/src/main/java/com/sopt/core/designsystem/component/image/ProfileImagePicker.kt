@@ -44,7 +44,17 @@ fun ProfileImagePicker(
                 .size(imagePickerType.size)
                 .aspectRatio(1f)
                 .clip(imagePickerType.shape),
-            previewPlaceholder = painterResource(id = imagePickerType.profileImage)
+            previewPlaceholder = painterResource(id = imagePickerType.profileImage),
+            failure = {
+                Image(
+                    painter = painterResource(id = imagePickerType.profileImage),
+                    contentDescription = null,
+                    modifier = modifier
+                        .size(imagePickerType.size)
+                        .aspectRatio(1f)
+                        .clip(imagePickerType.shape)
+                )
+            }
         )
         Image(
             painter = painterResource(id = R.drawable.ic_profile_camera),

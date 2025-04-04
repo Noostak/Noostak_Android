@@ -1,16 +1,17 @@
 package com.sopt.presentation.mypage
 
 import androidx.lifecycle.viewModelScope
+import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.core.util.BaseViewModel
 import com.sopt.domain.entity.ProfileEntity
+import com.sopt.domain.repository.ProfileRepository
 import com.sopt.domain.repository.UserInfoRepository
 import com.sopt.domain.usecase.DeleteWithdrawUseCase
 import com.sopt.domain.usecase.PostLogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -19,11 +20,15 @@ import javax.inject.Inject
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
     private val userInfoRepository: UserInfoRepository,
+    private val profileRepository: ProfileRepository,
     private val postLogoutUseCase: PostLogoutUseCase,
     private val deleteWithdrawUseCase: DeleteWithdrawUseCase
 ) : BaseViewModel<MyPageSideEffect>() {
     private val _userInfoState = MutableStateFlow(ProfileEntity())
     val userInfoState: StateFlow<ProfileEntity> = _userInfoState
+
+    private val _getProfileState: MutableStateFlow<UiState<ProfileEntity>> =
+        MutableStateFlow(UiState.Empty)
 
     private val _showLogoutDialog = MutableStateFlow(false)
     val showLogoutDialog: StateFlow<Boolean> get() = _showLogoutDialog
@@ -36,23 +41,13 @@ class MyPageViewModel @Inject constructor(
     }
 
     private fun loadUserInfo() {
-        loadNickname()
-        loadProfileImage()
-    }
-
-    private fun loadNickname() {
         viewModelScope.launch {
-            userInfoRepository.getNickname().collectLatest { newNickname ->
-                _userInfoState.update { it.copy(memberName = newNickname) }
-            }
-        }
-    }
-
-    private fun loadProfileImage() {
-        viewModelScope.launch {
-            userInfoRepository.getProfileImage().collectLatest { newImageUrl ->
-                _userInfoState.update { it.copy(memberProfileImage = newImageUrl) }
-            }
+            _getProfileState.emit(UiState.Loading)
+            profileRepository.getProfile().fold(onSuccess = { data ->
+                _getProfileState.emit(UiState.Success(data))
+                _userInfoState.update { it.copy(memberName = data.memberName) }
+                _userInfoState.update { it.copy(memberProfileImage = data.memberProfileImage) }
+            }, onFailure = { _getProfileState.emit(UiState.Failure(it.message.toString())) })
         }
     }
 

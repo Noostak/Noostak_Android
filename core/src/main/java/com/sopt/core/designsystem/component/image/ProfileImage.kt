@@ -1,26 +1,27 @@
-package com.sopt.presentation.group.component
+package com.sopt.core.designsystem.component.image
 
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
+import com.sopt.core.R
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
-import com.sopt.presentation.R
 
 @Composable
-fun GroupImage(
+fun ProfileImage(
     imageUrl: String?,
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = dimensionResource(id = R.dimen.image_radius)
+    shape: Shape = CircleShape,
+    @DrawableRes placeholder: Int
 ) {
     if (!imageUrl.isNullOrBlank()) {
         GlideImage(
@@ -29,25 +30,32 @@ fun GroupImage(
                 contentScale = ContentScale.Crop,
                 alignment = Alignment.Center
             ),
-            modifier = modifier.clip(RoundedCornerShape(cornerRadius)),
-            previewPlaceholder = painterResource(id = R.drawable.ic_group_profile)
+            modifier = modifier.clip(shape),
+            previewPlaceholder = painterResource(id = placeholder),
+            failure = {
+                Image(
+                    painter = painterResource(id = placeholder),
+                    contentDescription = null,
+                    modifier = modifier.clip(shape)
+                )
+            }
         )
     } else {
         Image(
-            painter = painterResource(id = R.drawable.ic_group_profile),
+            painter = painterResource(id = placeholder),
             contentDescription = null,
-            modifier = modifier.clip(RoundedCornerShape(cornerRadius))
+            modifier = modifier.clip(shape)
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun GroupImagePreview() {
+fun ProfileImagePreview() {
     NoostakAndroidTheme {
-        GroupImage(
+        ProfileImage(
             imageUrl = null,
-            modifier = Modifier
+            placeholder = R.drawable.ic_user_profile
         )
     }
 }

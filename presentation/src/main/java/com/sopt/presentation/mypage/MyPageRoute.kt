@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,11 +19,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,14 +28,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.glide.GlideImage
 import com.sopt.core.R
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
+import com.sopt.core.designsystem.component.image.ProfileImage
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.type.DialogType
+import com.sopt.domain.entity.ProfileEntity
 import com.sopt.presentation.mypage.component.MyPageItem
 import com.sopt.presentation.mypage.component.MyPageProfileEditButton
 
@@ -105,8 +101,7 @@ fun MyPageRoute(
 
     MyPageScreen(
         paddingValues = paddingValues,
-        nickname = userInfoState.memberName,
-        profileImage = userInfoState.memberProfileImage,
+        data = userInfoState,
         onProfileEditBtnClick = { myPageViewModel.navigateToEditProfile() },
         onPolicyBtnClick = {
             Intent(
@@ -122,8 +117,7 @@ fun MyPageRoute(
 @Composable
 fun MyPageScreen(
     paddingValues: PaddingValues = PaddingValues(),
-    nickname: String = "",
-    profileImage: String?,
+    data: ProfileEntity,
     onProfileEditBtnClick: () -> Unit = {},
     onPolicyBtnClick: () -> Unit = {},
     onLogoutBtnClick: () -> Unit = {},
@@ -152,23 +146,16 @@ fun MyPageScreen(
                     bottom = 19.dp
                 )
             ) {
-                GlideImage(
-                    imageModel = {
-                        profileImage?.takeIf { it.isNotBlank() } ?: R.drawable.ic_user_profile
-                    },
-                    imageOptions = ImageOptions(
-                        contentScale = ContentScale.Crop,
-                        alignment = Alignment.Center
-                    ),
+                ProfileImage(
+                    imageUrl = data.memberProfileImage,
                     modifier = Modifier
                         .padding(end = 12.dp)
                         .size(61.dp)
-                        .aspectRatio(1f)
-                        .clip(CircleShape),
-                    previewPlaceholder = painterResource(id = R.drawable.ic_user_profile)
+                        .aspectRatio(1f),
+                    placeholder = R.drawable.ic_user_profile
                 )
                 Text(
-                    text = nickname,
+                    text = data.memberName,
                     color = NoostakTheme.colors.gray900,
                     style = NoostakTheme.typography.t4Bold
                 )
@@ -201,8 +188,10 @@ fun MyPageScreen(
 fun MyPageScreenPreview() {
     NoostakAndroidTheme {
         MyPageScreen(
-            nickname = "정해인",
-            profileImage = null
+            data = ProfileEntity(
+                memberName = "정해인",
+                memberProfileImage = null
+            )
         )
     }
 }

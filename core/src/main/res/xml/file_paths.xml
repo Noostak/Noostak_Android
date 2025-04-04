@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <external-files-path
+        name="images"
+        path="Android/media/com.sopt.noostak/" />
+    <cache-path
+        name="cache"
+        path="." />
+</paths>
