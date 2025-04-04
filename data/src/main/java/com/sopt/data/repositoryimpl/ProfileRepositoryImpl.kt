@@ -22,12 +22,17 @@ class ProfileRepositoryImpl @Inject constructor(
 
     override suspend fun patchProfile(
         memberName: String,
+        profileImageUpdated: String,
         memberProfileImage: String?
     ): Result<Unit> {
         return runCatching {
             val imagePart = contentResolver.createImagePart(memberProfileImage, FILE_NAME)
 
-            profileDataSource.patchProfile(memberName.toRequestBody(), imagePart).result
+            profileDataSource.patchProfile(
+                memberName.toRequestBody(),
+                profileImageUpdated.toRequestBody(),
+                imagePart
+            ).result
             Unit
         }.onFailure { return it.handleThrowable() }
     }

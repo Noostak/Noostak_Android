@@ -16,8 +16,9 @@ class ProfileDataSourceImpl @Inject constructor(private val profileApiService: P
 
     override suspend fun patchProfile(
         memberName: RequestBody,
+        profileImageUpdated: RequestBody,
         memberProfileImage: MultipartBody.Part?
     ): BaseResponse<Unit> {
-        return profileApiService.patchProfile(memberName, memberProfileImage)
+        return profileApiService.patchProfile(memberName, profileImageUpdated, memberProfileImage)
     }
 }

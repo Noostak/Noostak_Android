@@ -20,6 +20,7 @@ interface ProfileApiService {
     @PATCH("/$API/$V1/$PROFILE")
     suspend fun patchProfile(
         @Part("memberName") memberName: RequestBody,
+        @Part("profileImageUpdated") profileImageUpdated: RequestBody,
         @Part memberProfileImage: MultipartBody.Part?
     ): BaseResponse<Unit>
 }

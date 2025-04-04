@@ -6,6 +6,7 @@ interface ProfileRepository {
     suspend fun getProfile(): Result<ProfileEntity>
     suspend fun patchProfile(
         memberName: String,
+        profileImageUpdated: String,
         memberProfileImage: String?
     ): Result<Unit>
 }

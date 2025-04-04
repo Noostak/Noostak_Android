@@ -9,6 +9,7 @@ interface ProfileDataSource {
     suspend fun getProfile(): BaseResponse<ResponseGetProfileDto>
     suspend fun patchProfile(
         memberName: RequestBody,
+        profileImageUpdated: RequestBody,
         memberProfileImage: MultipartBody.Part?
     ): BaseResponse<Unit>
 }
