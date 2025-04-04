@@ -27,15 +27,15 @@ import com.sopt.core.designsystem.component.chip.UnavailableUserChips
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.RearrangeList
+import com.sopt.domain.entity.AppointmentDetailEntity
 import com.sopt.domain.entity.IdentityEntity
-import com.sopt.domain.entity.ScheduleDetailEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ScheduleDetailScreen(
-    data: ScheduleDetailEntity,
+    data: AppointmentDetailEntity,
     onBackBtnClick: () -> Unit = {}
 ) {
     val rearrangeList = RearrangeList()
@@ -129,7 +129,7 @@ fun ScheduleDetailScreen(
 fun ScheduleDetailScreenPreview() {
     NoostakAndroidTheme {
         ScheduleDetailScreen(
-            ScheduleDetailEntity(
+            AppointmentDetailEntity(
                 myIdentity = IdentityEntity(
                     availability = "available",
                     position = 0,
