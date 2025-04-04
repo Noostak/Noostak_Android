@@ -24,13 +24,13 @@ import com.sopt.presentation.R
 @Composable
 fun ScheduleItem(
     data: CalendarAppointmentEntity,
-    onItemClick: (CalendarAppointmentEntity) -> Unit = {}
+    onItemClick: (Long) -> Unit = {}
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .noRippleClickable { onItemClick(data) }
+            .noRippleClickable { onItemClick(data.id) }
             .background(color = NoostakTheme.colors.gray50, shape = RoundedCornerShape(8.dp))
             .padding(8.dp)
     ) {
