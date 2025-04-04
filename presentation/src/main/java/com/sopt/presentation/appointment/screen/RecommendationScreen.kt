@@ -41,7 +41,7 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.extension.showIf
-import com.sopt.core.util.CalculateTime
+import com.sopt.core.util.time.CalculateTimeFromString
 import com.sopt.core.util.RearrangeList
 import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.entity.OptionEntity
@@ -114,7 +114,7 @@ fun RecommendationItem(
         }
     }
     val (isLiked, likes) = likeState
-    val calculateTime = CalculateTime()
+    val calculateTime = CalculateTimeFromString()
     val date = calculateTime.extractDateWithKorean(data.date)
     val dayOfWeek = calculateTime.extractDayOfWeekWithBraces(data.date)
     val startHour = calculateTime.extractHourWithZero(data.startTime)
