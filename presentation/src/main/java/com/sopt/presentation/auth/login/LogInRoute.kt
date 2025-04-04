@@ -5,6 +5,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -107,6 +108,7 @@ fun LoginRoute(
                         DialogType.NETWORK_LOGIN_GOOGLE_FAILURE -> loginViewModel.prepareGoogleSignInIntent(
                             context
                         )
+
                         else -> Unit
                     }
                 },
@@ -131,6 +133,7 @@ fun LoginScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(NoostakTheme.colors.blue600)
             .statusBarsPadding()
             .navigationBarsPadding()
             .padding(dimensionResource(R.dimen.horizontal_padding)),
@@ -165,8 +168,8 @@ private fun SocialLoginBottom(
     ) {
         Text(
             text = stringResource(R.string.tv_login_description),
-            color = NoostakTheme.colors.gray900,
-            style = NoostakTheme.typography.c3Regular,
+            color = NoostakTheme.colors.white,
+            style = NoostakTheme.typography.c3SemiBold,
             modifier = Modifier.padding(bottom = 8.dp)
         )
         LoginButton(
