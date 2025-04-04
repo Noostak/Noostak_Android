@@ -12,7 +12,6 @@ import com.sopt.domain.usecase.PostLogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -30,7 +29,6 @@ class MyPageViewModel @Inject constructor(
 
     private val _getProfileState: MutableStateFlow<UiState<ProfileEntity>> =
         MutableStateFlow(UiState.Empty)
-    val getProfileState: StateFlow<UiState<ProfileEntity>> get() = _getProfileState.asStateFlow()
 
     private val _showLogoutDialog = MutableStateFlow(false)
     val showLogoutDialog: StateFlow<Boolean> get() = _showLogoutDialog
