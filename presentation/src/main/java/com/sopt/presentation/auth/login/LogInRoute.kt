@@ -1,8 +1,6 @@
 package com.sopt.presentation.auth.login
 
 import android.app.Activity
-import android.content.Context
-import android.content.ContextWrapper
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.Animatable
@@ -29,6 +27,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.common.api.ApiException
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
@@ -36,6 +37,9 @@ import com.sopt.core.extension.toast
 import com.sopt.core.type.DialogType
 import com.sopt.presentation.R
 import com.sopt.presentation.auth.component.LoginButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginRoute(
@@ -44,15 +48,38 @@ fun LoginRoute(
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val activity = context.findActivity() ?: run {
-        return
-    }
     val showDialog by loginViewModel.showDialog.collectAsStateWithLifecycle()
+    val googleSignInIntent by loginViewModel.googleSignInIntent.collectAsStateWithLifecycle()
 
-    val googleLoginLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.StartActivityForResult()
+    val googleSignInLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        loginViewModel.handleGoogleLoginResult(result.data)
+        if (result.resultCode != Activity.RESULT_OK) {
+            loginViewModel.showDialog(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, true)
+            return@rememberLauncherForActivityResult
+        }
+
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        CoroutineScope(Dispatchers.Main).launch {
+            try {
+                val account: GoogleSignInAccount = task.getResult(ApiException::class.java)
+                val authCode = account.serverAuthCode
+                if (!authCode.isNullOrBlank()) {
+                    loginViewModel.exchangeAuthCodeForAccessToken(authCode)
+                } else {
+                    loginViewModel.showDialog(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, true)
+                }
+            } catch (e: Exception) {
+                loginViewModel.showDialog(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, true)
+            }
+        }
+        loginViewModel.clearGoogleSignInIntent()
+    }
+
+    LaunchedEffect(googleSignInIntent) {
+        googleSignInIntent?.let { intent ->
+            googleSignInLauncher.launch(intent)
+        }
     }
 
     LaunchedEffect(loginViewModel.sideEffects) {
@@ -77,10 +104,9 @@ fun LoginRoute(
                     loginViewModel.showDialog(dialogType, false)
                     when (dialogType) {
                         DialogType.NETWORK_LOGIN_KAKAO_FAILURE -> loginViewModel.kakaoLogin(context)
-                        DialogType.NETWORK_LOGIN_GOOGLE_FAILURE -> {
-                            googleLoginLauncher.launch(loginViewModel.getGoogleSignInIntent(activity))
-                        }
-
+                        DialogType.NETWORK_LOGIN_GOOGLE_FAILURE -> loginViewModel.prepareGoogleSignInIntent(
+                            context
+                        )
                         else -> Unit
                     }
                 },
@@ -91,9 +117,7 @@ fun LoginRoute(
 
     LoginScreen(
         onKakaoLoginClick = { loginViewModel.kakaoLogin(context) },
-        onGoogleLoginClick = {
-            googleLoginLauncher.launch(loginViewModel.getGoogleSignInIntent(activity))
-        }
+        onGoogleLoginClick = { loginViewModel.prepareGoogleSignInIntent(context) }
     )
 }
 
@@ -170,13 +194,4 @@ fun LoginScreenPreview() {
             onGoogleLoginClick = {}
         )
     }
-}
-
-fun Context.findActivity(): Activity? {
-    var context = this
-    while (context is ContextWrapper) {
-        if (context is Activity) return context
-        context = context.baseContext
-    }
-    return null
 }
