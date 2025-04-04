@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,11 +15,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.sopt.core.designsystem.component.image.ProfileImage
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.domain.entity.GroupEntity
-import com.sopt.presentation.group.component.GroupImage
+import com.sopt.presentation.R
 
 @Composable
 fun CalendarGroupItem(
@@ -39,12 +41,13 @@ fun CalendarGroupItem(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        GroupImage(
+        ProfileImage(
             imageUrl = data.groupProfileImageUrl,
             modifier = Modifier
                 .size(56.dp)
                 .aspectRatio(1f),
-            cornerRadius = 12.dp
+            shape = RoundedCornerShape(12.dp),
+            placeholder = R.drawable.ic_group_profile
         )
         Text(
             text = data.groupName,

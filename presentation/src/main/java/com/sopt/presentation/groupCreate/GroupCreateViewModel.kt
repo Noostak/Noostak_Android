@@ -23,19 +23,22 @@ class GroupCreateViewModel @Inject constructor(
     private val _showErrorDialog = MutableStateFlow(false)
     val showErrorDialog: StateFlow<Boolean> get() = _showErrorDialog
 
-    private val _postGroupState: MutableStateFlow<UiState<GroupSuccessEntity>> = MutableStateFlow(UiState.Empty)
+    private val _postGroupState: MutableStateFlow<UiState<GroupSuccessEntity>> =
+        MutableStateFlow(UiState.Empty)
 
     fun postGroup(groupName: String, groupProfileImage: String?) {
         viewModelScope.launch {
             _postGroupState.emit(UiState.Loading)
-            groupRepository.postGroup(groupName, groupProfileImage)
-                .onSuccess {
+            groupRepository.postGroup(groupName, groupProfileImage).fold(
+                onSuccess = {
                     _postGroupState.emit(UiState.Success(it))
                     navigateToGroupCreateSuccess(it)
-                }.onFailure {
+                },
+                onFailure = {
                     _postGroupState.emit(UiState.Failure(it.message.toString()))
                     triggerErrorDialog()
                 }
+            )
         }
     }
 
@@ -48,7 +51,12 @@ class GroupCreateViewModel @Inject constructor(
     }
 
     private fun navigateToGroupCreateSuccess(groupSuccessData: GroupSuccessEntity) {
-        emitSideEffect(GroupCreateSideEffect.NavigateToGroupCreateSuccess(groupSuccessData.groupId, groupSuccessData.groupInvitationCode))
+        emitSideEffect(
+            GroupCreateSideEffect.NavigateToGroupCreateSuccess(
+                groupSuccessData.groupId,
+                groupSuccessData.groupInvitationCode
+            )
+        )
     }
 
     fun requestGalleryPicker() {
