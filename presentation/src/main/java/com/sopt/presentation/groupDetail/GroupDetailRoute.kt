@@ -349,8 +349,8 @@ fun GroupDetailHeader(
                     .size(40.dp),
                 model = groupImage,
                 contentDescription = null,
-                placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                error = painterResource(id = R.drawable.ic_launcher_background),
+                placeholder = painterResource(id = R.drawable.ic_group_profile),
+                error = painterResource(id = R.drawable.ic_group_profile),
                 contentScale = ContentScale.FillBounds
             )
             Text(
