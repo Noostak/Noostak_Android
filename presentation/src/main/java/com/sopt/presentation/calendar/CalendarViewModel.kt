@@ -2,19 +2,22 @@ package com.sopt.presentation.calendar
 
 import androidx.lifecycle.viewModelScope
 import com.sopt.core.extension.toDateString
+import com.sopt.core.state.UiState
 import com.sopt.core.util.BaseViewModel
 import com.sopt.core.util.calendar.toFormattedKoreanDate
 import com.sopt.domain.entity.CalendarAppointmentDayEntity
 import com.sopt.domain.entity.CalendarAppointmentEntity
-import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
+import com.sopt.domain.entity.GroupEntity
 import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.entity.ScheduleDetailEntity
 import com.sopt.domain.entity.ScheduleEntity
 import com.sopt.domain.usecase.GetCalendarAppointmentsUseCase
+import com.sopt.domain.usecase.GetCalendarGroupsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -24,9 +27,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
-    private val getCalendarAppointmentsUseCase: GetCalendarAppointmentsUseCase
+    private val getCalendarAppointmentsUseCase: GetCalendarAppointmentsUseCase,
+    private val getCalendarGroupsUseCase: GetCalendarGroupsUseCase
 ) :
     BaseViewModel<CalendarSideEffect>() {
+    private val _getGroupsState: MutableStateFlow<UiState<List<GroupEntity>>> =
+        MutableStateFlow(UiState.Empty)
+    val getGroupsState: StateFlow<UiState<List<GroupEntity>>> get() = _getGroupsState.asStateFlow()
+
+    private val _selectedGroupId = MutableStateFlow<Long?>(null)
+    private val selectedGroupId: StateFlow<Long?> get() = _selectedGroupId
+
     private val _showAddDialog = MutableStateFlow(false)
     val showAddDialog get() = _showAddDialog
 
@@ -38,13 +49,14 @@ class CalendarViewModel @Inject constructor(
 
     private var currentYearMonth: YearMonth = YearMonth.now()
 
-    private val _selectedDayAppointments = MutableStateFlow<List<CalendarAppointmentEntity>>(emptyList())
+    private val _selectedDayAppointments =
+        MutableStateFlow<List<CalendarAppointmentEntity>>(emptyList())
     val selectedDayAppointments: StateFlow<List<CalendarAppointmentEntity>> get() = _selectedDayAppointments
 
     private var _currentMonthAppointments = emptyList<CalendarAppointmentDayEntity>()
 
     init {
-        getCalendarAppointments(currentYearMonth.year, currentYearMonth.monthValue)
+        getGroups()
     }
 
     fun showAddDialog(show: Boolean) {
@@ -67,30 +79,54 @@ class CalendarViewModel @Inject constructor(
         emitSideEffect(CalendarSideEffect.NavigateToAppointmentCreate)
     }
 
+    private fun getGroups() {
+        viewModelScope.launch {
+            _getGroupsState.emit(UiState.Loading)
+            getCalendarGroupsUseCase().fold(
+                onSuccess = {
+                    _getGroupsState.emit(UiState.Success(it))
+                    if (it.isNotEmpty()) {
+                        selectGroup(it.first().groupId)
+                    }
+                },
+                onFailure = {
+                    _getGroupsState.emit(UiState.Failure(it.message.toString()))
+                }
+            )
+        }
+    }
+
+    fun selectGroup(groupId: Long) {
+        _selectedGroupId.value = groupId
+        getCalendarAppointments(currentYearMonth.year, currentYearMonth.monthValue)
+    }
+
     // 캘린더 약속 정보 가져오기
     private fun getCalendarAppointments(year: Int, month: Int) {
         viewModelScope.launch {
-            getCalendarAppointmentsUseCase(1, year, month)
-                .fold(
-                    onSuccess = { response ->
-                        val newScheduleMap =
-                            response.currentMonthAppointments.associate { dayAppointments ->
-                                LocalDate.of(year, month, dayAppointments.day)
-                                    .toDateString() to dayAppointments.appointments.map { appointment ->
-                                    CalendarSchedule(
-                                        scrapId = appointment.id,
-                                        title = appointment.name,
-                                        categoryType = appointment.category
-                                    )
+            selectedGroupId.value?.let {
+                getCalendarAppointmentsUseCase(it, year, month)
+                    .fold(
+                        onSuccess = { response ->
+                            val newScheduleMap =
+                                response.currentMonthAppointments.associate { dayAppointments ->
+                                    LocalDate.of(year, month, dayAppointments.day)
+                                        .toDateString() to dayAppointments.appointments.map { appointment ->
+                                        CalendarSchedule(
+                                            scrapId = appointment.id,
+                                            title = appointment.name,
+                                            categoryType = appointment.category
+                                        )
+                                    }
                                 }
-                            }
-                        _scheduleMap.value = newScheduleMap
-                        _currentMonthAppointments = response.currentMonthAppointments
-                    },
-                    onFailure = { error ->
-                        Timber.e("getCalendarAppointments Failed: ${error.message}")
-                    }
-                )
+                            _scheduleMap.value = newScheduleMap
+                            _currentMonthAppointments = response.currentMonthAppointments
+                        },
+                        onFailure = { error ->
+                            Timber.e("getCalendarAppointments Failed: ${error.message}")
+                        }
+                    )
+            }
         }
     }
 
@@ -137,54 +173,6 @@ class CalendarViewModel @Inject constructor(
             }
         )
     }
-
-    val mockGroups = listOf(
-        CalendarGroupEntity(
-            id = 1,
-            groupName = "가응가",
-            groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
-        ),
-        CalendarGroupEntity(
-            id = 2,
-            groupName = "먼지 난다",
-            groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-        ),
-        CalendarGroupEntity(
-            id = 3,
-            groupName = "유잔면",
-            groupImage = "https://avatars.githubusercontent.com/u/68536115?s=96&v=4"
-        ),
-        CalendarGroupEntity(
-            id = 4,
-            groupName = "마늘",
-            groupImage = "https://avatars.githubusercontent.com/u/79982452?s=96&v=4"
-        ),
-        CalendarGroupEntity(
-            id = 5,
-            groupName = "누스탁1",
-            groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-        ),
-        CalendarGroupEntity(
-            id = 6,
-            groupName = "누스탁2",
-            groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-        ),
-        CalendarGroupEntity(
-            id = 7,
-            groupName = "누스탁3",
-            groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-        ),
-        CalendarGroupEntity(
-            id = 8,
-            groupName = "누스탁4",
-            groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-        ),
-        CalendarGroupEntity(
-            id = 9,
-            groupName = "누스탁5",
-            groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-        )
-    )
 
     val mockScheduleDetail = ScheduleDetailEntity(
         myIdentity = IdentityEntity(

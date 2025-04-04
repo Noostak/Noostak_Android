@@ -38,14 +38,15 @@ import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.extension.scrollToItem
 import com.sopt.core.extension.showIf
-import com.sopt.domain.entity.CalendarGroupEntity
+import com.sopt.domain.entity.GroupEntity
 import com.sopt.presentation.R
 
 @Composable
 fun CalendarGroup(
-    groups: List<CalendarGroupEntity>,
+    groups: List<GroupEntity>,
     showAddDialog: Boolean = false,
-    onAddBtnClick: () -> Unit = {}
+    onAddBtnClick: () -> Unit = {},
+    onGroupClick: (Long) -> Unit = {}
 ) {
     val coroutineScope = rememberCoroutineScope()
     val listState = rememberLazyListState()
@@ -111,7 +112,7 @@ fun CalendarGroup(
                     .padding(end = 42.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                itemsIndexed(items = groups, key = { _, item -> item.id }) { index, group ->
+                itemsIndexed(items = groups, key = { _, item -> item.groupId }) { index, group ->
                     if (index == 0) {
                         Spacer(
                             modifier = Modifier.width(16.dp)
@@ -123,6 +124,7 @@ fun CalendarGroup(
                         onClick = {
                             selectedGroup = index
                             listState.scrollToItem(coroutineScope, density, index)
+                            onGroupClick(group.groupId)
                         }
                     )
                     if (index == groups.lastIndex) {
@@ -142,50 +144,11 @@ fun CalendarGroupPreview() {
     NoostakAndroidTheme {
         CalendarGroup(
             groups = listOf(
-                CalendarGroupEntity(
-                    id = 1,
+                GroupEntity(
+                    groupId = 1,
                     groupName = "가응가",
-                    groupImage = "https://avatars.githubusercontent.com/u/91470334?v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 2,
-                    groupName = "먼지 난다",
-                    groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 3,
-                    groupName = "유잔면",
-                    groupImage = "https://avatars.githubusercontent.com/u/68536115?s=96&v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 4,
-                    groupName = "마늘",
-                    groupImage = "https://avatars.githubusercontent.com/u/79982452?s=96&v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 5,
-                    groupName = "누스탁1",
-                    groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 6,
-                    groupName = "누스탁2",
-                    groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 7,
-                    groupName = "누스탁3",
-                    groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 8,
-                    groupName = "누스탁4",
-                    groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
-                ),
-                CalendarGroupEntity(
-                    id = 9,
-                    groupName = "누스탁5",
-                    groupImage = "https://avatars.githubusercontent.com/u/85453429?s=96&v=4"
+                    groupMemberCount = 5,
+                    groupProfileImageUrl = "https://avatars.githubusercontent.com/u/91470334?v=4"
                 )
             )
         )
