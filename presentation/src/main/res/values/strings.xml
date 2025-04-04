@@ -154,6 +154,7 @@
     <string name="btn_appointment_submit">등록하기</string>
     <string name="text_appointment_submit_info">약속 정보</string>
     <string name="text_appointment_submit_name">약속 이름</string>
+    <string name="text_appointment_submit_name_space">약속 이름을 입력해주세요!</string>
     <string name="text_appointment_submit_time">약속 기한</string>
     <string name="text_appointment_submit_category">약속 카테고리</string>
     <string name="text_appointment_submit_duration">소요시간</string>
