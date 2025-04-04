@@ -1,5 +1,6 @@
 package com.sopt.presentation.calendar
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,13 +36,17 @@ import com.sopt.core.designsystem.component.bottomsheet.NoostakBottomSheet
 import com.sopt.core.designsystem.component.calendar.WeekDaysHeader
 import com.sopt.core.designsystem.component.calendar.YearMonthHeader
 import com.sopt.core.designsystem.component.topappbar.NoostakLogoAppBar
+import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.getYearMonthByPage
 import com.sopt.core.extension.initialPage
 import com.sopt.core.extension.pageCount
+import com.sopt.core.state.UiState
+import com.sopt.domain.entity.CalendarAppointmentEntity
 import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
+import com.sopt.domain.entity.ScheduleEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.calendar.component.CalendarFloatingActionDialog
 import com.sopt.presentation.calendar.component.CalendarGroup
@@ -48,6 +55,7 @@ import com.sopt.presentation.calendar.component.bottomsheet.ScheduleListScreen
 import java.time.LocalDate
 import java.time.YearMonth
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarRoute(
@@ -57,12 +65,13 @@ fun CalendarRoute(
     navigateToGroupEnter: () -> Unit,
     navigateToAppointmentCreate: (Long) -> Unit
 ) {
-    val showAddDialog by calendarViewModel.showAddDialog.collectAsStateWithLifecycle()
-
-    val showBottomSheet by calendarViewModel.showBottomSheet.collectAsStateWithLifecycle()
     val navController = rememberNavController()
 
+    val showAddDialog by calendarViewModel.showAddDialog.collectAsStateWithLifecycle()
+    val showBottomSheet by calendarViewModel.showBottomSheet.collectAsStateWithLifecycle()
+
     val scheduleMap by calendarViewModel.scheduleMap.collectAsStateWithLifecycle()
+    val getConfirmedState by calendarViewModel.getConfirmedState.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(
         initialPage = initialPage,
@@ -70,6 +79,8 @@ fun CalendarRoute(
     )
 
     val currentYearMonth by remember { derivedStateOf { getYearMonthByPage(pagerState.currentPage) } }
+
+    var clickDate by remember { mutableStateOf<LocalDate?>(null) }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
@@ -83,10 +94,7 @@ fun CalendarRoute(
             when (sideEffect) {
                 is CalendarSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
                 is CalendarSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
-                is CalendarSideEffect.NavigateToAppointmentCreate -> navigateToAppointmentCreate(
-                    calendarViewModel.getSelectedScheduleEntity().groupId
-                )
-
+                is CalendarSideEffect.NavigateToAppointmentCreate -> navigateToAppointmentCreate(10006) // 임의 GroupId
                 is CalendarSideEffect.ShowAddDialog -> calendarViewModel.showAddDialog(true)
                 is CalendarSideEffect.ShowBottomSheet -> calendarViewModel.showBottomSheet(true)
             }
@@ -116,30 +124,46 @@ fun CalendarRoute(
             },
             content = {
                 NavHost(navController, startDestination = SCHEDULE_LIST) {
-                    composable(SCHEDULE_LIST) { backStackEntry ->
-                        ScheduleListScreen(
-                            data = calendarViewModel.getSelectedScheduleEntity(),
-                            onItemClick = { schedule ->
-                                backStackEntry.savedStateHandle[SCHEDULE] =
-                                    schedule.id // 바꿔야 함
-                                navController.navigate(SCHEDULE_DETAIL)
-                            },
-                            onCreateAppointmentBtnClick = {
-                                calendarViewModel.navigateToAppointmentCreate()
-                                calendarViewModel.showBottomSheet(false)
-                            }
-                        )
+                    composable(SCHEDULE_LIST) {
+                        clickDate?.let { date ->
+                            ScheduleListScreen(
+                                data = ScheduleEntity(
+                                    groupId = 10006, // 임의 GroupId
+                                    date = date,
+                                    scheduleList = calendarViewModel.selectedDayAppointments.value.map {
+                                        CalendarAppointmentEntity(
+                                            id = it.id,
+                                            name = it.name,
+                                            category = it.category,
+                                            startTime = it.startTime,
+                                            endTime = it.endTime,
+                                            duration = it.duration,
+                                            date = it.date
+                                        )
+                                    }
+                                ),
+                                onItemClick = { id ->
+                                    calendarViewModel.getOptionDetail(id)
+                                    navController.navigate(SCHEDULE_DETAIL)
+                                },
+                                onCreateAppointmentBtnClick = {
+                                    calendarViewModel.navigateToAppointmentCreate()
+                                    calendarViewModel.showBottomSheet(false)
+                                }
+                            )
+                        }
                     }
                     composable(SCHEDULE_DETAIL) {
-                        val schedule =
-                            navController.previousBackStackEntry?.savedStateHandle?.get<Long>(
-                                SCHEDULE
-                            )
-                        schedule?.let { id ->
-                            ScheduleDetailScreen(
-                                data = calendarViewModel.mockScheduleDetail,
-                                onBackBtnClick = { navController.popBackStack() }
-                            )
+                        when (getConfirmedState) {
+                            is UiState.Loading -> NoostakLoadingScreen()
+                            is UiState.Success -> {
+                                ScheduleDetailScreen(
+                                    data = (getConfirmedState as UiState.Success).data,
+                                    onBackBtnClick = { navController.popBackStack() }
+                                )
+                            }
+
+                            else -> Unit
                         }
                     }
                 }
@@ -156,6 +180,7 @@ fun CalendarRoute(
         showAddDialog = showAddDialog,
         onAddBtnClick = { calendarViewModel.showAddDialog(true) },
         onItemClick = { clickedDate ->
+            clickDate = clickedDate
             calendarViewModel.onDayClicked(clickedDate)
         }
     )
@@ -230,7 +255,7 @@ private fun CalendarContent(
     }
 }
 
-const val SCHEDULE = "schedule"
+
 const val SCHEDULE_LIST = "schedule_list"
 const val SCHEDULE_DETAIL = "schedule_detail"
 
