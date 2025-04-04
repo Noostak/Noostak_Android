@@ -152,6 +152,7 @@ fun AppointmentCheckScreen(
                         top.linkTo(title.bottom)
                         start.linkTo(parent.start)
                         end.linkTo(parent.end)
+                        bottom.linkTo(button.top)
                         height = Dimension.fillToConstraints
                     }
             ) {
