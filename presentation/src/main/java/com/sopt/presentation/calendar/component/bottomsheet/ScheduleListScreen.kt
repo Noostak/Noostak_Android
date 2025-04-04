@@ -23,14 +23,16 @@ import com.sopt.core.designsystem.component.button.NoostakBottomButton
 import com.sopt.core.designsystem.screen.NoostakEmptyScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
+import com.sopt.core.util.time.CalculateTimeFromLocalDate
 import com.sopt.domain.entity.CalendarAppointmentEntity
 import com.sopt.domain.entity.ScheduleEntity
 import com.sopt.presentation.R
+import java.time.LocalDate
 
 @Composable
 fun ScheduleListScreen(
     data: ScheduleEntity,
-    onItemClick: (CalendarAppointmentEntity) -> Unit = {},
+    onItemClick: (Long) -> Unit = {},
     onCreateAppointmentBtnClick: () -> Unit = {}
 ) {
     Column(
@@ -45,7 +47,7 @@ fun ScheduleListScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = data.date,
+                    text = CalculateTimeFromLocalDate().formatLocalDateWithDay(data.date),
                     color = NoostakTheme.colors.black,
                     style = NoostakTheme.typography.b1SemiBold
                 )
@@ -99,7 +101,7 @@ fun ScheduleListScreenPreview() {
         ScheduleListScreen(
             data = ScheduleEntity(
                 groupId = 1,
-                date = "1월 13일 (월)",
+                date = LocalDate.of(2025, 4, 4),
                 scheduleList = listOf(
                     CalendarAppointmentEntity(
                         id = 1,
