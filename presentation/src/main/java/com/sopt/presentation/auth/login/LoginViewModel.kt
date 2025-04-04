@@ -1,13 +1,14 @@
 package com.sopt.presentation.auth.login
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import androidx.annotation.StringRes
-import androidx.credentials.Credential
-import androidx.credentials.CredentialManager
-import androidx.credentials.GetCredentialRequest
 import androidx.lifecycle.viewModelScope
-import com.google.android.libraries.identity.googleid.GetGoogleIdOption
-import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.kakao.sdk.auth.model.OAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
@@ -23,7 +24,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -37,6 +37,8 @@ class LoginViewModel @Inject constructor(
     private val _showDialog = MutableStateFlow(Pair(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, false))
     val showDialog: StateFlow<Pair<DialogType, Boolean>> get() = _showDialog
 
+    private lateinit var googleSignInClient: GoogleSignInClient
+
     fun showDialog(dialogType: DialogType, isVisible: Boolean) {
         _showDialog.update { it.copy(first = dialogType, second = isVisible) }
     }
@@ -44,7 +46,6 @@ class LoginViewModel @Inject constructor(
     // Kakao Login
     fun kakaoLogin(context: Context) {
         val loginCallback: (OAuthToken?, Throwable?) -> Unit = this::handleKakaoLoginResult
-
         with(UserApiClient.instance) {
             if (isKakaoTalkLoginAvailable(context)) {
                 loginWithKakaoTalk(context, callback = loginCallback)
@@ -70,37 +71,32 @@ class LoginViewModel @Inject constructor(
     }
 
     // Google Login
-    fun googleLogin(context: Context) {
-        val credentialManager = CredentialManager.create(context)
-
-        val googleIdOption = GetGoogleIdOption.Builder()
-            .setFilterByAuthorizedAccounts(false)
-            .setServerClientId(googleClientId)
-            .setAutoSelectEnabled(true)
+    fun getGoogleSignInIntent(activity: Activity): Intent {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestServerAuthCode(googleClientId, true)
             .build()
-
-        val request = GetCredentialRequest.Builder()
-            .addCredentialOption(googleIdOption)
-            .build()
-
-        viewModelScope.launch {
-            runCatching {
-                val result = credentialManager.getCredential(context, request)
-                handleGoogleLoginResult(result.credential)
-            }.onFailure { exception ->
-                handleError(exception, R.string.toast_google_login_failed)
-                showDialog(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, true)
-            }
-        }
+        googleSignInClient = GoogleSignIn.getClient(activity, gso)
+        return googleSignInClient.signInIntent
     }
 
-    private fun handleGoogleLoginResult(credential: Credential) {
-        if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
-            val googleIdTokenCredential = GoogleIdTokenCredential.createFrom(credential.data)
-            postSocialLogin(BEARER + googleIdTokenCredential.idToken, GOOGLE)
-            showToast(R.string.toast_google_login_success)
-        } else {
-            showDialog(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, true)
+    fun handleGoogleLoginResult(data: Intent?) {
+        val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+        viewModelScope.launch {
+            runCatching {
+                val account = task.getResult(ApiException::class.java)
+                val authCode = account?.serverAuthCode
+
+                if (!authCode.isNullOrBlank()) {
+                    postSocialLogin(BEARER + authCode, GOOGLE)
+                    showToast(R.string.toast_google_login_success)
+                } else {
+                    showDialog(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, true)
+                }
+            }.onFailure {
+                handleError(it, R.string.toast_google_login_failed)
+                showDialog(DialogType.NETWORK_LOGIN_GOOGLE_FAILURE, true)
+            }
         }
     }
 
@@ -134,7 +130,6 @@ class LoginViewModel @Inject constructor(
                 },
                 onFailure = { error ->
                     emitSideEffect(LoginSideEffect.NavigateToOnboarding(accessToken, socialType))
-                    Timber.e("postSocialLogin Failed: ${error.message}")
                 }
             )
         }
