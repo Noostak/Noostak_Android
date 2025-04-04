@@ -32,10 +32,8 @@ import com.sopt.core.R
 import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.image.ProfileImage
 import com.sopt.core.designsystem.component.topappbar.NoostakTopAppBar
-import com.sopt.core.designsystem.screen.NoostakFailureScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
-import com.sopt.core.state.UiState
 import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.ProfileEntity
 import com.sopt.presentation.mypage.component.MyPageItem
@@ -54,8 +52,6 @@ fun MyPageRoute(
     val userInfoState by myPageViewModel.userInfoState.collectAsStateWithLifecycle()
     val showLogoutDialog by myPageViewModel.showLogoutDialog.collectAsStateWithLifecycle()
     val showWithdrawalDialog by myPageViewModel.showWithdrawalDialog.collectAsStateWithLifecycle()
-
-    val getProfileState by myPageViewModel.getProfileState.collectAsStateWithLifecycle()
 
     LaunchedEffect(lifecycleOwner) {
         myPageViewModel.sideEffects.flowWithLifecycle(lifecycleOwner.lifecycle)
@@ -103,26 +99,19 @@ fun MyPageRoute(
         )
     }
 
-    when (getProfileState) {
-        is UiState.Success -> {
-            MyPageScreen(
-                paddingValues = paddingValues,
-                data = userInfoState,
-                onProfileEditBtnClick = { myPageViewModel.navigateToEditProfile() },
-                onPolicyBtnClick = {
-                    Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse("https://tough-sled-044.notion.site/5a1ad92b5b484747a6ddd97e939e86f7?pvs=4")
-                    ).let { context.startActivity(it) }
-                },
-                onLogoutBtnClick = { myPageViewModel.triggerDialog(DialogType.LOGOUT) },
-                onWithdrawalBtnClick = { myPageViewModel.triggerDialog(DialogType.WITHDRAWAL) }
-            )
-        }
-
-        is UiState.Failure -> NoostakFailureScreen()
-        else -> Unit
-    }
+    MyPageScreen(
+        paddingValues = paddingValues,
+        data = userInfoState,
+        onProfileEditBtnClick = { myPageViewModel.navigateToEditProfile() },
+        onPolicyBtnClick = {
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("https://tough-sled-044.notion.site/5a1ad92b5b484747a6ddd97e939e86f7?pvs=4")
+            ).let { context.startActivity(it) }
+        },
+        onLogoutBtnClick = { myPageViewModel.triggerDialog(DialogType.LOGOUT) },
+        onWithdrawalBtnClick = { myPageViewModel.triggerDialog(DialogType.WITHDRAWAL) }
+    )
 }
 
 @Composable
