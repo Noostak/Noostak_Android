@@ -187,7 +187,10 @@ fun AppointmentConfirmScreen(
                         shape = RoundedCornerShape(20.dp),
                         color = NoostakTheme.colors.blue700
                     )
-                    .background(color = NoostakTheme.colors.blue50)
+                    .background(
+                        color = NoostakTheme.colors.blue50,
+                        shape = RoundedCornerShape(20.dp)
+                    )
                     .padding(dimensionResource(id = R.dimen.default_padding)),
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
