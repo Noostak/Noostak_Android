@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.sopt.core.designsystem.component.bottomsheet.NoostakBottomSheet
 import com.sopt.core.designsystem.component.calendar.WeekDaysHeader
 import com.sopt.core.designsystem.component.calendar.YearMonthHeader
+import com.sopt.core.designsystem.component.dialog.NoostakDialog
 import com.sopt.core.designsystem.component.topappbar.NoostakLogoAppBar
 import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
@@ -43,11 +45,11 @@ import com.sopt.core.extension.getYearMonthByPage
 import com.sopt.core.extension.initialPage
 import com.sopt.core.extension.pageCount
 import com.sopt.core.state.UiState
+import com.sopt.core.type.DialogType
 import com.sopt.domain.entity.CalendarAppointmentEntity
-import com.sopt.domain.entity.CalendarGroupEntity
 import com.sopt.domain.entity.CalendarSchedule
-import com.sopt.domain.entity.ScheduleEntity
 import com.sopt.domain.entity.GroupEntity
+import com.sopt.domain.entity.ScheduleEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.calendar.component.CalendarFloatingActionDialog
 import com.sopt.presentation.calendar.component.CalendarGroup
@@ -69,12 +71,13 @@ fun CalendarRoute(
     val navController = rememberNavController()
 
     val getGroupsState by calendarViewModel.getGroupsState.collectAsStateWithLifecycle()
+    val getConfirmedDetailState by calendarViewModel.getConfirmedDetailState.collectAsStateWithLifecycle()
 
     val showAddDialog by calendarViewModel.showAddDialog.collectAsStateWithLifecycle()
     val showBottomSheet by calendarViewModel.showBottomSheet.collectAsStateWithLifecycle()
+    val showDataErrorDialog by calendarViewModel.showDataErrorDialog.collectAsStateWithLifecycle()
 
     val scheduleMap by calendarViewModel.scheduleMap.collectAsStateWithLifecycle()
-    val getConfirmedState by calendarViewModel.getConfirmedState.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(
         initialPage = initialPage,
@@ -84,6 +87,7 @@ fun CalendarRoute(
     val currentYearMonth by remember { derivedStateOf { getYearMonthByPage(pagerState.currentPage) } }
 
     var clickDate by remember { mutableStateOf<LocalDate?>(null) }
+    var clickAppointmentId by remember { mutableLongStateOf(-1) }
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }
@@ -97,11 +101,30 @@ fun CalendarRoute(
             when (sideEffect) {
                 is CalendarSideEffect.NavigateToGroupCreate -> navigateToGroupCreate()
                 is CalendarSideEffect.NavigateToGroupEnter -> navigateToGroupEnter()
-                is CalendarSideEffect.NavigateToAppointmentCreate -> navigateToAppointmentCreate(10006) // 임의 GroupId
+                is CalendarSideEffect.NavigateToAppointmentCreate -> navigateToAppointmentCreate(
+                    calendarViewModel.selectedGroupId.value ?: -1
+                )
+
                 is CalendarSideEffect.ShowAddDialog -> calendarViewModel.showAddDialog(true)
                 is CalendarSideEffect.ShowBottomSheet -> calendarViewModel.showBottomSheet(true)
+                is CalendarSideEffect.ShowDataErrorDialog -> calendarViewModel.showDataErrorDialog(
+                    true
+                )
             }
         }
+    }
+
+    if (showDataErrorDialog) {
+        NoostakDialog(
+            dialogType = DialogType.DATA_FAILURE,
+            onClick = {
+                calendarViewModel.getConfirmedDetail(clickAppointmentId)
+            },
+            onDismissRequest = {
+                calendarViewModel.showDataErrorDialog(false)
+                navController.popBackStack()
+            }
+        )
     }
 
     if (showAddDialog) {
@@ -131,7 +154,7 @@ fun CalendarRoute(
                         clickDate?.let { date ->
                             ScheduleListScreen(
                                 data = ScheduleEntity(
-                                    groupId = 10006, // 임의 GroupId
+                                    groupId = calendarViewModel.selectedGroupId.value ?: -1,
                                     date = date,
                                     scheduleList = calendarViewModel.selectedDayAppointments.value.map {
                                         CalendarAppointmentEntity(
@@ -146,7 +169,8 @@ fun CalendarRoute(
                                     }
                                 ),
                                 onItemClick = { id ->
-                                    calendarViewModel.getOptionDetail(id)
+                                    clickAppointmentId = id
+                                    calendarViewModel.getConfirmedDetail(clickAppointmentId)
                                     navController.navigate(SCHEDULE_DETAIL)
                                 },
                                 onCreateAppointmentBtnClick = {
@@ -157,11 +181,11 @@ fun CalendarRoute(
                         }
                     }
                     composable(SCHEDULE_DETAIL) {
-                        when (getConfirmedState) {
+                        when (getConfirmedDetailState) {
                             is UiState.Loading -> NoostakLoadingScreen()
                             is UiState.Success -> {
                                 ScheduleDetailScreen(
-                                    data = (getConfirmedState as UiState.Success).data,
+                                    data = (getConfirmedDetailState as UiState.Success).data,
                                     onBackBtnClick = { navController.popBackStack() }
                                 )
                             }
@@ -262,7 +286,6 @@ private fun CalendarContent(
         )
     }
 }
-
 
 const val SCHEDULE_LIST = "schedule_list"
 const val SCHEDULE_DETAIL = "schedule_detail"
