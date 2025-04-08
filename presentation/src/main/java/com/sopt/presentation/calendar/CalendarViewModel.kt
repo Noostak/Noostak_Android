@@ -158,7 +158,7 @@ class CalendarViewModel @Inject constructor(
     // 해당 날짜 일정 가져오기
     fun getSelectedScheduleEntity(): ScheduleEntity {
         return ScheduleEntity(
-            groupId = 1,
+            groupId = selectedGroupId.value ?: -1,
             date = _selectedDayAppointments.value.first().date.toFormattedKoreanDate(),
             scheduleList = _selectedDayAppointments.value.map {
                 CalendarAppointmentEntity(
