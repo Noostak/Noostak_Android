@@ -38,8 +38,8 @@ import com.sopt.core.designsystem.screen.NoostakLoadingScreen
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.state.UiState
-import com.sopt.core.util.time.CalculateTimeFromString
 import com.sopt.core.util.RearrangeList
+import com.sopt.core.util.time.CalculateTimeFromString
 import com.sopt.domain.entity.ConfirmedDetailEntity
 import com.sopt.presentation.R
 
