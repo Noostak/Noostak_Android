@@ -107,8 +107,8 @@ fun ScheduleListScreenPreview() {
                         id = 1,
                         name = "누스탁 회의dasfdsafsafdafdafsdfsafdsafdsadsdafsadfsdfsdafadafdsafsdafsaf",
                         category = "중요",
-                        startTime = "1월 13일(월)",
-                        endTime = "1월 13일(월)",
+                        startTime = "2024-09-07T00:00:00",
+                        endTime = "2024-09-07T00:20:00",
                         duration = 24,
                         date = ""
                     ),
@@ -116,8 +116,8 @@ fun ScheduleListScreenPreview() {
                         id = 2,
                         name = "누스탁 모각작",
                         category = "일정",
-                        startTime = "1월 15일(수)",
-                        endTime = "1월 15일(수)",
+                        startTime = "2024-09-07T06:00:00",
+                        endTime = "2024-09-07T08:00:00",
                         duration = 5,
                         date = ""
                     ),
@@ -125,8 +125,8 @@ fun ScheduleListScreenPreview() {
                         id = 3,
                         name = "누스탁 회식",
                         category = "취미",
-                        startTime = "1월 20일(화)",
-                        endTime = "1월 20일(화)",
+                        startTime = "2024-09-07T12:00:00",
+                        endTime = "2024-09-07T13:00:00",
                         duration = 2,
                         date = ""
                     )
