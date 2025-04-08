@@ -4,15 +4,12 @@ import androidx.lifecycle.viewModelScope
 import com.sopt.core.extension.toDateString
 import com.sopt.core.state.UiState
 import com.sopt.core.util.BaseViewModel
-import com.sopt.domain.entity.AppointmentDetailEntity
 import com.sopt.domain.entity.CalendarAppointmentDayEntity
 import com.sopt.domain.entity.CalendarAppointmentEntity
 import com.sopt.domain.entity.CalendarSchedule
-import com.sopt.domain.repository.AppointmentConfirmRepository
+import com.sopt.domain.entity.ConfirmedDetailEntity
 import com.sopt.domain.entity.GroupEntity
-import com.sopt.domain.entity.IdentityEntity
-import com.sopt.domain.entity.ScheduleDetailEntity
-import com.sopt.domain.entity.ScheduleEntity
+import com.sopt.domain.repository.GroupDetailRepository
 import com.sopt.domain.usecase.GetCalendarAppointmentsUseCase
 import com.sopt.domain.usecase.GetCalendarGroupsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +26,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CalendarViewModel @Inject constructor(
     private val getCalendarAppointmentsUseCase: GetCalendarAppointmentsUseCase,
-    private val appointmentConfirmRepository: AppointmentConfirmRepository,
+    private val groupDetailRepository: GroupDetailRepository,
     private val getCalendarGroupsUseCase: GetCalendarGroupsUseCase
 ) :
     BaseViewModel<CalendarSideEffect>() {
@@ -38,13 +35,16 @@ class CalendarViewModel @Inject constructor(
     val getGroupsState: StateFlow<UiState<List<GroupEntity>>> get() = _getGroupsState.asStateFlow()
 
     private val _selectedGroupId = MutableStateFlow<Long?>(null)
-    private val selectedGroupId: StateFlow<Long?> get() = _selectedGroupId
+    val selectedGroupId: StateFlow<Long?> get() = _selectedGroupId
 
     private val _showAddDialog = MutableStateFlow(false)
     val showAddDialog get() = _showAddDialog
 
     private val _showBottomSheet = MutableStateFlow(false)
     val showBottomSheet: StateFlow<Boolean> get() = _showBottomSheet
+
+    private val _showDataErrorDialog = MutableStateFlow(false)
+    val showDataErrorDialog: StateFlow<Boolean> get() = _showDataErrorDialog
 
     private val _scheduleMap = MutableStateFlow<Map<String, List<CalendarSchedule>>>(emptyMap())
     val scheduleMap: StateFlow<Map<String, List<CalendarSchedule>>> get() = _scheduleMap
@@ -57,27 +57,30 @@ class CalendarViewModel @Inject constructor(
 
     private var _currentMonthAppointments = emptyList<CalendarAppointmentDayEntity>()
 
-    private val _getConfirmedState: MutableStateFlow<UiState<AppointmentDetailEntity>> =
-        MutableStateFlow(UiState.Empty)
-    val getConfirmedState: StateFlow<UiState<AppointmentDetailEntity>> =
-        _getConfirmedState.asStateFlow()
+    private val _getConfirmedDetailState =
+        MutableStateFlow<UiState<ConfirmedDetailEntity>>(UiState.Empty)
+    val getConfirmedDetailState: StateFlow<UiState<ConfirmedDetailEntity>> =
+        _getConfirmedDetailState.asStateFlow()
 
     init {
         getGroups()
     }
 
-    fun getOptionDetail(appointmentOptionId: Long) {
+    fun getConfirmedDetail(appointmentId: Long) {
         viewModelScope.launch {
-            _getConfirmedState.emit(UiState.Loading)
-            appointmentConfirmRepository.getOptionDetail(appointmentOptionId).fold(
-                onSuccess = {
-                    _getConfirmedState.emit(UiState.Success(it))
-                },
-                onFailure = {
-                    _getConfirmedState.emit(UiState.Failure(it.message.toString()))
+            _getConfirmedDetailState.emit(UiState.Loading)
+            groupDetailRepository.getConfirmedDetail(appointmentId)
+                .onSuccess {
+                    _getConfirmedDetailState.emit(UiState.Success(it))
+                }.onFailure {
+                    triggerDataErrorDialog()
+                    _getConfirmedDetailState.emit(UiState.Failure(it.message.toString()))
                 }
-            )
         }
+    }
+
+    fun showDataErrorDialog(show: Boolean) {
+        _showDataErrorDialog.update { show }
     }
 
     fun showAddDialog(show: Boolean) {
@@ -86,6 +89,10 @@ class CalendarViewModel @Inject constructor(
 
     fun showBottomSheet(show: Boolean) {
         _showBottomSheet.update { show }
+    }
+
+    private fun triggerDataErrorDialog() {
+        emitSideEffect(CalendarSideEffect.ShowDataErrorDialog)
     }
 
     private fun triggerShowBottomSheet() {
@@ -126,30 +133,8 @@ class CalendarViewModel @Inject constructor(
         getCalendarAppointments(currentYearMonth.year, currentYearMonth.monthValue)
     }
 
-    // 캘린더 약속 정보 가져오기
     private fun getCalendarAppointments(year: Int, month: Int) {
         viewModelScope.launch {
-            getCalendarAppointmentsUseCase(10006, year, month)
-                .fold(
-                    onSuccess = { response ->
-                        val newScheduleMap =
-                            response.currentMonthAppointments.associate { dayAppointments ->
-                                LocalDate.of(year, month, dayAppointments.day)
-                                    .toDateString() to dayAppointments.appointments.map { appointment ->
-                                    CalendarSchedule(
-                                        scrapId = appointment.id,
-                                        title = appointment.name,
-                                        categoryType = appointment.category
-                                    )
-                                }
-                            }
-                        _scheduleMap.value = newScheduleMap
-                        _currentMonthAppointments = response.currentMonthAppointments
-                    },
-                    onFailure = { error ->
-                        Timber.e("getCalendarAppointments Failed: ${error.message}")
-                    }
-                )
             selectedGroupId.value?.let {
                 getCalendarAppointmentsUseCase(it, year, month)
                     .fold(
@@ -189,8 +174,8 @@ class CalendarViewModel @Inject constructor(
         val appointments = _currentMonthAppointments
             .firstOrNull {
                 it.day == date.dayOfMonth &&
-                        currentYearMonth.year == date.year &&
-                        currentYearMonth.monthValue == date.monthValue
+                    currentYearMonth.year == date.year &&
+                    currentYearMonth.monthValue == date.monthValue
             }?.appointments ?: emptyList()
 
         _selectedDayAppointments.value = appointments
