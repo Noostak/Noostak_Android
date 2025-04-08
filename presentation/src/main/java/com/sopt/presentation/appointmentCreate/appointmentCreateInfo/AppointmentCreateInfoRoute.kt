@@ -297,7 +297,6 @@ fun AppointmentCreateInfoScreen(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
                     val trimmedName = appointmentName.trim()
-
                     if (trimmedName.isEmpty()) {
                         showSnackBar()
                         return@NoostakBottomButton
@@ -305,7 +304,7 @@ fun AppointmentCreateInfoScreen(
                     val time = appointmentDuration.toIntOrNull() ?: 0
                     onButtonClick(groupId, trimmedName, appointmentCategory, time)
                 },
-                isEnabled = appointmentCategory.isNotBlank() &&
+                isEnabled = appointmentName.isNotEmpty() &&appointmentCategory.isNotBlank() &&
                         appointmentDuration.isNotBlank() &&
                         (appointmentDuration.toIntOrNull()?.let { it in 1..10 } == true),
                 deactivateColor = NoostakTheme.colors.gray500,
