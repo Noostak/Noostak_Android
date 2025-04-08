@@ -27,7 +27,8 @@ import com.sopt.core.designsystem.component.chip.UnavailableUserChips
 import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.util.RearrangeList
-import com.sopt.domain.entity.AppointmentDetailEntity
+import com.sopt.core.util.time.CalculateTimeFromString
+import com.sopt.domain.entity.ConfirmedDetailEntity
 import com.sopt.domain.entity.IdentityEntity
 import com.sopt.presentation.R
 import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
@@ -35,7 +36,7 @@ import com.sopt.presentation.groupDetail.confirmedDetail.CompleteDetailInfo
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ScheduleDetailScreen(
-    data: AppointmentDetailEntity,
+    data: ConfirmedDetailEntity,
     onBackBtnClick: () -> Unit = {}
 ) {
     val rearrangeList = RearrangeList()
@@ -71,7 +72,12 @@ fun ScheduleDetailScreen(
                     horizontalArrangement = Arrangement.spacedBy(13.dp)
                 ) {
                     Text(
-                        text = data.date,
+                        text = CalculateTimeFromString().extractDateWithSlash(data.date),
+                        color = NoostakTheme.colors.black,
+                        style = NoostakTheme.typography.b4SemiBold
+                    )
+                    Text(
+                        text = CalculateTimeFromString().extractHourWithZero(data.date),
                         color = NoostakTheme.colors.black,
                         style = NoostakTheme.typography.b4SemiBold
                     )
@@ -129,14 +135,14 @@ fun ScheduleDetailScreen(
 fun ScheduleDetailScreenPreview() {
     NoostakAndroidTheme {
         ScheduleDetailScreen(
-            AppointmentDetailEntity(
+            ConfirmedDetailEntity(
                 myIdentity = IdentityEntity(
                     availability = "available",
                     position = 0,
                     name = "김언지"
                 ),
                 appointmentName = "누스탁 전체회의 호이호이호이호이호이",
-                date = "1월 13일 (월)",
+                date = "2024-09-07T00:00:00",
                 startTime = "1/13 21:00",
                 endTime = "1/13 21:00",
                 category = "기타",
