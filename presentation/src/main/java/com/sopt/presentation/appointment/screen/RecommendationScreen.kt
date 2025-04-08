@@ -41,8 +41,8 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.noRippleClickable
 import com.sopt.core.extension.showIf
-import com.sopt.core.util.time.CalculateTimeFromString
 import com.sopt.core.util.RearrangeList
+import com.sopt.core.util.time.CalculateTimeFromString
 import com.sopt.domain.entity.IdentityEntity
 import com.sopt.domain.entity.OptionEntity
 import com.sopt.domain.entity.RecommendationPriorityEntity
