@@ -26,7 +26,7 @@ class AppointmentCreateInfoViewModel @Inject constructor() : BaseViewModel<Appoi
     }
 
     fun showSnackBar() {
-        emitSideEffect(AppointmentCreateInfoSideEffect.ShowSnackBar(R.string.text_appointment_submit_name_space))
+        emitSideEffect(AppointmentCreateInfoSideEffect.ShowSnackBar(R.string.sb_appointment_submit_blank_name))
     }
 }
 

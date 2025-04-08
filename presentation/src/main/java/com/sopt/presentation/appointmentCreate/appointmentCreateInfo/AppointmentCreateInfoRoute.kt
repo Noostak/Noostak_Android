@@ -131,7 +131,7 @@ fun AppointmentCreateInfoScreen(
     var appointmentCategory by remember { mutableStateOf("") }
     var appointmentDuration by remember { mutableStateOf("") }
     var hasInput by remember { mutableStateOf(false) }
-    val isOnlySpace = hasInput && appointmentName.isNotEmpty() && appointmentName.trim().isEmpty()
+    val isOnlySpace = hasInput && appointmentName.isBlank()
 
     Scaffold(
         modifier = Modifier
@@ -297,14 +297,13 @@ fun AppointmentCreateInfoScreen(
                 text = stringResource(R.string.text_calendar_appointment_next),
                 onButtonClick = {
                     val trimmedName = appointmentName.trim()
-                    val trimmedCategory = appointmentCategory.trim()
 
                     if (trimmedName.isEmpty()) {
                         showSnackBar()
                         return@NoostakBottomButton
                     }
                     val time = appointmentDuration.toIntOrNull() ?: 0
-                    onButtonClick(groupId, trimmedName, trimmedCategory, time)
+                    onButtonClick(groupId, trimmedName, appointmentCategory, time)
                 },
                 isEnabled = appointmentCategory.isNotBlank() &&
                         appointmentDuration.isNotBlank() &&
