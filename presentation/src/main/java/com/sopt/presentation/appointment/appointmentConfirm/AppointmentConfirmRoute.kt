@@ -38,8 +38,8 @@ import com.sopt.core.designsystem.theme.NoostakAndroidTheme
 import com.sopt.core.designsystem.theme.NoostakTheme
 import com.sopt.core.extension.showIf
 import com.sopt.core.state.UiState
-import com.sopt.core.util.time.CalculateTimeFromString
 import com.sopt.core.util.RearrangeList
+import com.sopt.core.util.time.CalculateTimeFromString
 import com.sopt.domain.entity.AppointmentDetailEntity
 import com.sopt.domain.entity.IdentityEntity
 import com.sopt.presentation.R
@@ -103,7 +103,7 @@ fun AppointmentConfirmRoute(
             )
         }
 
-        else -> {}
+        else -> Unit
     }
 
     if (showErrorDialog.first) {
